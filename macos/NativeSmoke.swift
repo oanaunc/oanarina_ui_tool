@@ -4,6 +4,21 @@ import Darwin
 
 /** Opt-in native integration checks. Smoke runs use an isolated, nonpersistent WebKit store. */
 extension Studio {
+    // Sheet completion callbacks can run before AppKit has unwound the previous
+    // modal/termination loop. Start the next synthetic Quit from the default loop.
+    func lifecycleQuitWhenIdle(_ document:DocumentWindow,deadline:TimeInterval?=nil){
+        let end=deadline ?? ProcessInfo.processInfo.systemUptime+5
+        let timer=Timer(timeInterval:0.05,repeats:false){_ in
+            if !self.quitting && !document.closing && document.window.attachedSheet==nil && NSApp.modalWindow==nil{NSApp.terminate(nil)}
+            else if ProcessInfo.processInfo.systemUptime>=end{self.smokeFail("Lifecycle Quit did not return to idle after cancellation")}
+            else{self.lifecycleQuitWhenIdle(document,deadline:end)}
+        }
+        RunLoop.main.add(timer,forMode:.default)
+    }
+    func finishLifecycleSmoke(){
+        guard smokeFinishing,smokeChecks.count==37,documents.isEmpty else{smokeFail("Lifecycle terminated before completion (\(smokeChecks.count)/37 checks, stage \(smokeStage))")}
+        print(json(["nativeLifecycle":true,"checks":smokeChecks,"count":smokeChecks.count]));fflush(stdout)
+    }
     func smokeTerminate(){let timer=Timer(timeInterval:0,repeats:false){_ in NSApp.terminate(nil)};RunLoop.main.add(timer,forMode:.common);RunLoop.main.add(timer,forMode:.modalPanel)}
     func smokeFail(_ message:String)->Never {fputs("Native smoke failed: \(message)\n",stderr);exit(1)}
     func check(_ condition:Bool,_ name:String){if !condition{smokeFail(name)};smokeChecks.append(name)}
@@ -152,12 +167,11 @@ extension Studio {
                             self.check(self.quitSessions.count==1 && !self.quitSessions[0].dirty,"successful Quit retains clean session for relaunch")
                             self.check(FileManager.default.fileExists(atPath:document.session.file!.path),"Quit Save wrote project bytes")
                             self.smokeQuitResult=nil;self.smokeFinishing=true
-                            print(self.json(["nativeLifecycle":true,"checks":self.smokeChecks,"count":self.smokeChecks.count]));fflush(stdout)
                             if let directory=self.smokeDirectory{try? FileManager.default.removeItem(at:directory)}
                         }
-                        DispatchQueue.main.asyncAfter(deadline:.now()+0.1){self.smokeTerminate()}
+                        self.lifecycleQuitWhenIdle(document)
                     }
-                    self.smokeTerminate()
+                    self.lifecycleQuitWhenIdle(document)
                 }
             }
         }
