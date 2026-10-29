@@ -1,0 +1,50 @@
+import {test,expect} from '@playwright/test';
+import {blankDocument,node} from '../../src/model';
+import {insertInstance,synchronizeComponents} from '../../src/components-model';
+import {readFileSync} from 'node:fs';
+
+async function fixtures(context:any,docs:any[]){
+ let board:any={kind:'empty'},writeAllowed=true,release:(()=>void)|undefined,wait=false;const saved:string[]=[];
+ await context.exposeBinding('clipboardTestRead',()=>board);await context.exposeBinding('clipboardTestWrite',async(_source:any,value:any)=>{if(wait)await new Promise<void>(resolve=>release=resolve);if(!writeAllowed)return false;board={kind:'nodes',data:value.nodes};return true;});await context.exposeBinding('clipboardTestSave',(_source:any,raw:string)=>{saved.push(raw);return true;});
+ const pages=[];for(const doc of docs){const page=await context.newPage();await page.addInitScript((raw:string)=>{let command:any;const w=window as any;w.desktop={bootstrap:async()=>({kind:'file',raw}),ready:async()=>true,reportDocument:async()=>true,onCommand:(fn:any)=>{command=fn;w.nativeCommand=(id:string)=>command(id);return()=>{};},onDocument:()=>()=>{},fonts:async()=>[],save:async(_name:string,raw:string)=>w.clipboardTestSave(raw),beginClipboard:(event:Event)=>{if(!event.isTrusted)throw Error('Untrusted test command');},clipboardRead:()=>w.clipboardTestRead(),clipboardWrite:(value:any)=>w.clipboardTestWrite(value)};},JSON.stringify(doc));await page.goto('/');await expect(page.locator('.layer-row')).toHaveCount(doc.pages[0].nodes.length);pages.push(page);}
+ return {pages,get board(){return board;},setBoard:(value:any)=>board=value,setAllowed:(value:boolean)=>writeAllowed=value,setWait:(value:boolean)=>wait=value,release:()=>release?.(),saved};
+}
+test('two renderer windows copy linked editable layers with fresh references, undo and a saved backup',async({browser})=>{
+ const context=await browser.newContext(),source=blankDocument(),main=node('component',{name:'Clipboard main',width:200}),text=node('text',{name:'Clipboard text',text:'Editable',parentId:main.id});source.pages.push({id:'library',name:'Library',nodes:[main,text],comments:[]});const instance=insertInstance(source,source.pages[0].id,main.id);synchronizeComponents(source);
+ const fixture=await fixtures(context,[source,blankDocument()]),[a,b]=fixture.pages;await a.locator(`[data-layer-id="${instance}"]`).click();await a.locator('svg.canvas').focus();await a.keyboard.press('Meta+c');await expect.poll(()=>fixture.board.kind).toBe('nodes');expect(JSON.parse(fixture.board.data).project.pages).toHaveLength(2);
+ await b.locator('svg.canvas').focus();await b.keyboard.press('Meta+v');await expect(b.locator('.layer-row')).toHaveCount(2);await b.getByRole('spinbutton',{name:'W',exact:true}).fill('250');await b.getByRole('spinbutton',{name:'W',exact:true}).press('Enter');await b.locator('svg.canvas').focus();await b.keyboard.press('Meta+s');await expect.poll(()=>fixture.saved.length).toBe(1);const saved=JSON.parse(fixture.saved[0]),copy=saved.pages[0].nodes.find((n:any)=>n.type==='instance');expect(copy.componentId).not.toBe(main.id);expect(copy.width).toBe(250);expect(saved.pages.some((p:any)=>p.nodes.some((n:any)=>n.id===copy.componentId&&n.type==='component'))).toBe(true);
+ await b.keyboard.press('Meta+z');await b.keyboard.press('Meta+z');await expect(b.locator('.layer-row')).toHaveCount(0);await b.keyboard.press('Meta+Shift+z');await expect(b.locator('.layer-row')).toHaveCount(2);await context.close();
+});
+test('failed or stale asynchronous Cut does not remove either current or captured selection',async({browser})=>{
+ const context=await browser.newContext(),source=blankDocument(),a=node('rectangle',{name:'First'}),b=node('rectangle',{name:'Second'});source.pages[0].nodes=[a,b];const fixture=await fixtures(context,[source]),[page]=fixture.pages;
+ fixture.setAllowed(false);await page.locator(`[data-layer-id="${a.id}"]`).click();await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+x');await page.waitForTimeout(50);await expect(page.locator('.layer-row')).toHaveCount(2);
+ fixture.setAllowed(true);fixture.setWait(true);await page.keyboard.press('Meta+x');await page.locator(`[data-layer-id="${b.id}"]`).click();fixture.release();await expect(page.getByText('Selection copied. The editor changed, so Cut was cancelled.',{exact:true})).toBeVisible();await expect(page.locator('.layer-row')).toHaveCount(2);await context.close();
+});
+test('external text and reviewed SVG replace stale design clipboard; malformed custom content never falls back',async({browser})=>{
+ const context=await browser.newContext(),fixture=await fixtures(context,[blankDocument()]),[page]=fixture.pages;
+ fixture.setBoard({kind:'text',data:'External editable text'});await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+v');await expect(page.locator('.layer-row')).toHaveCount(1);await expect(page.locator('.layer-row').getByText('External editable text')).toBeVisible();
+ fixture.setBoard({kind:'nodes',data:'{"format":"forma-clipboard","version":1,"project":{}}'});await page.keyboard.press('Meta+v');await expect(page.locator('.toast')).toBeVisible();await expect(page.locator('.layer-row')).toHaveCount(1);
+ fixture.setBoard({kind:'svg',data:'<svg xmlns="http://www.w3.org/2000/svg" width="80" height="60"><rect width="80" height="60" fill="#ff0000"/></svg>'});await page.keyboard.press('Meta+v');await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('button',{name:'Import editable layers'}).click();await expect(page.locator('.layer-row')).toHaveCount(3);await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+z');await expect(page.locator('.layer-row')).toHaveCount(1);await context.close();
+});
+
+test('the shipped native bridge rejects synthetic, delayed and ungranted clipboard reads',async({page})=>{
+ const source=readFileSync('macos/main.swift','utf8'),bridge=source.match(/static let bridge=#"""([\s\S]*?)"""#/)![1].replaceAll('__FORMA_CLIPBOARD_NONCE__','private-test-window-nonce'),raw=JSON.stringify(blankDocument());
+ await page.addInitScript({content:`window.clipboardCalls=[];window.webkit={messageHandlers:{studio:{postMessage:async body=>{window.clipboardCalls.push(body.type);if(body.type==='bootstrap')return {kind:'file',raw:${JSON.stringify(raw)}};if(body.type==='fonts')return [];if(body.type==='clipboardRead')return {kind:'text',data:'Trusted command text'};return true;}}}};${bridge}`});
+ await page.goto('/');await expect(page.locator('.layer-row')).toHaveCount(0);
+ expect(await page.evaluate(async()=>{try{await(window as any).desktop.clipboardRead();return false;}catch{return true;}})).toBe(true);
+ expect(await page.evaluate(()=>{try{(window as any).desktop.beginClipboard(new MouseEvent('click'),'paste');return false;}catch{return true;}})).toBe(true);
+ await page.evaluate(()=>window.addEventListener('click',e=>(window as any).savedTrustedEvent=e,{once:true}));await page.locator('svg.canvas').click({position:{x:100,y:100}});
+ expect(await page.evaluate(()=>{const event=(window as any).savedTrustedEvent;Object.defineProperty(event,'eventPhase',{value:3});try{(window as any).desktop.beginClipboard(event,'paste');return false;}catch{return true;}})).toBe(true);
+ expect(await page.evaluate(()=>(window as any).clipboardCalls.filter((x:string)=>x.startsWith('clipboard')).length)).toBe(0);
+ expect(await page.evaluate(()=>(window as any).desktop.clipboardRead.toString())).not.toContain('private-test-window-nonce');
+ await page.evaluate(()=>{(window as any).leaked=[];const original=(window as any).webkit.messageHandlers.studio.postMessage;(window as any).webkit.messageHandlers.studio.postMessage=(body:any)=>{if(body.nonce)(window as any).leaked.push(body.nonce);return original(body);};});
+ await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+v');await expect(page.locator('.layer-row')).toHaveCount(1);expect(await page.evaluate(()=>(window as any).clipboardCalls.filter((x:string)=>x.startsWith('clipboard')))).toEqual(['clipboardAuthorize','clipboardRead']);expect(await page.evaluate(()=>(window as any).leaked)).toEqual([]);
+ expect(await page.evaluate(async()=>{try{await(window as any).desktop.clipboardRead();return false;}catch{return true;}})).toBe(true);
+});
+
+test('native Cut refuses a referenced main before writing, while Copy and cross-page Paste retain live same-session linkage',async({browser})=>{
+ const context=await browser.newContext(),doc=blankDocument(),main=node('component',{name:'Still referenced main'}),text=node('text',{parentId:main.id,text:'Live label'});doc.pages[0].nodes=[main,text];const instance=insertInstance(doc,doc.pages[0].id,main.id);synchronizeComponents(doc);const fixture=await fixtures(context,[doc]),[page]=fixture.pages;
+ await page.locator(`[data-layer-id="${main.id}"]`).click();await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+x');await expect(page.getByText('Instances or other layers still use this main component. Copy it, or move it within the project instead of cutting it.',{exact:true})).toBeVisible();expect(fixture.board.kind).toBe('empty');await expect(page.locator('.layer-row')).toHaveCount(4);
+ await page.locator(`[data-layer-id="${instance}"]`).click();await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+c');await expect.poll(()=>fixture.board.kind).toBe('nodes');await page.getByRole('button',{name:'Add page',exact:true}).click();await expect(page.locator('.layer-row')).toHaveCount(0);await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+v');await expect(page.locator('.layer-row')).toHaveCount(2);await page.keyboard.press('Meta+s');await expect.poll(()=>fixture.saved.length).toBe(1);
+ const saved=JSON.parse(fixture.saved[0]);expect(saved.pages).toHaveLength(2);expect(saved.pages[1].nodes.find((n:any)=>n.type==='instance').componentId).toBe(main.id);expect(saved.pages.flatMap((p:any)=>p.nodes).filter((n:any)=>n.type==='component')).toHaveLength(1);await page.keyboard.press('Meta+z');await expect(page.locator('.layer-row')).toHaveCount(0);await context.close();
+});

@@ -19,18 +19,18 @@ export default function ActionPalette({onClose}:{onClose:()=>void}){
  const results=sections.flatMap(section=>section.items),index=results.length?Math.max(0,Math.min(active,results.length-1)):-1,selected=results[index];
  useEffect(()=>{input.current?.focus();},[]);
  useEffect(()=>{if(selected)list.current?.querySelector<HTMLElement>(`[data-action-id="${selected[0]}"]`)?.scrollIntoView({block:'nearest'});},[selected]);
- function run(command:PaletteCommand){onClose();runCommand(command[0]);}
+ function run(command:PaletteCommand,event:Event){onClose();runCommand(command[0],event);}
  return <div className="action-palette">
   <div className="search-field large"><Search size={18}/><input ref={input} aria-label="Search actions" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls={listId} aria-activedescendant={selected?`${listId}-${selected[0]}`:undefined} aria-describedby={hintId} placeholder="Search actions, categories or keywords…" value={query} onChange={e=>{setQuery(e.target.value);setActive(0);}} onKeyDown={e=>{
    if(e.nativeEvent.isComposing)return;
    if(e.key==='Escape'){e.preventDefault();e.stopPropagation();onClose();return;}
    if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)return;
    if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();e.stopPropagation();setActive(moveActiveAction(index,e.key,results.length));}
-   else if(e.key==='Enter'){e.preventDefault();e.stopPropagation();if(selected)run(selected);}
+   else if(e.key==='Enter'){e.preventDefault();e.stopPropagation();if(selected)run(selected,e.nativeEvent);}
   }}/><kbd>esc</kbd></div>
   <div className="action-palette-filter"><label htmlFor={`${listId}-category`}>Category</label><select id={`${listId}-category`} aria-label="Action category" value={category} onChange={e=>{setCategory(e.target.value);setActive(0);input.current?.focus();}}><option>All</option><option>Recent</option>{groups.map(group=><option key={group}>{group}</option>)}</select><button disabled={!recent.length} onClick={()=>{clearRecentActions();setActive(0);input.current?.focus();}}>Clear recent actions</button></div>
   <div ref={list} className="action-palette-results" id={listId} role="listbox" aria-label="Available actions">
-   {sections.map(section=>!!section.items.length&&<div role="group" aria-label={section.label} key={section.label}><div className="action-palette-heading" aria-hidden="true">{section.label}</div>{section.items.map(command=><div id={`${listId}-${command[0]}`} key={command[0]} role="option" aria-selected={selected?.[0]===command[0]} aria-label={command[1]} data-action-id={command[0]} className="action-palette-option" onPointerMove={()=>setActive(results.indexOf(command))} onPointerDown={e=>{if(e.button===0)e.preventDefault();}} onClick={()=>run(command)}><span className="action-palette-label">{command[1]}<small>{command[2]}</small></span>{command[3]&&<kbd aria-label={`Shortcut ${command[3]}`}>{command[3]}</kbd>}</div>)}</div>)}
+   {sections.map(section=>!!section.items.length&&<div role="group" aria-label={section.label} key={section.label}><div className="action-palette-heading" aria-hidden="true">{section.label}</div>{section.items.map(command=><div id={`${listId}-${command[0]}`} key={command[0]} role="option" aria-selected={selected?.[0]===command[0]} aria-label={command[1]} data-action-id={command[0]} className="action-palette-option" onPointerMove={()=>setActive(results.indexOf(command))} onPointerDown={e=>{if(e.button===0)e.preventDefault();}} onClick={e=>run(command,e.nativeEvent)}><span className="action-palette-label">{command[1]}<small>{command[2]}</small></span>{command[3]&&<kbd aria-label={`Shortcut ${command[3]}`}>{command[3]}</kbd>}</div>)}</div>)}
   </div>
   {!results.length&&<p className="action-palette-empty" role="status">{category==='Recent'&&!query.trim()?'No recent actions yet. Run an action from the menus or here.':'No actions match. Try a different keyword or category.'}</p>}
   <p className="action-palette-hint" id={hintId}><span>{results.length} action{results.length===1?'':'s'}</span><span>↑ ↓ navigate · Home / End · Enter run · Esc close</span></p>

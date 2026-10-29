@@ -1,0 +1,38 @@
+# Editable Mac clipboard
+
+Copy, Cut and Paste use the macOS pasteboard in the native Forma app. Use the native Edit menu, Command–C / Command–X / Command–V, the editor menus, layer menu, canvas context menu or Actions palette. Focused text fields retain normal macOS text editing. The browser preview keeps its existing renderer-local design clipboard.
+
+Copy writes three fixed representations: Forma editable layers (`com.oanarinaldi.forma.nodes-json`), SVG (`public.svg-image`) and the selection's plain text. It copies selected artwork and required definitions; it does not put the entire project, unrelated artwork, comments or document paths on the pasteboard. Ancestor transforms/clips and sibling masks needed for the selected appearance are retained as editable containers and geometry.
+
+Paste into another document assigns fresh identities to artwork, component mains and their descendants, variant sets, properties' referenced layers, styles, variable collections/modes/aliases and layout-guide styles. Component dependencies appear on a separate **Pasted component dependencies** page. Pasted instances remain linked to these new local mains; there is no live link to the source document. Used embeddable font faces travel with the copied artwork. Installed commercial fonts are not read or bundled by the clipboard.
+
+A paste in the same editing session can retain existing main/style/variable links when it exactly matches a successful local Copy. This uses an in-memory copy receipt and document-history identity; a clipboard payload's claimed document ID never authorizes linking to coincident destination IDs. Copies from another window, a restarted editor, or an unrelated document use independent definitions. Destination objects are never overwritten by matching incoming IDs.
+
+Copied ancestor containers retain geometry, clipping and inherited variable context with transparent paint and fixed layout. Descendants keep their own mode choices and continue inheriting later parent-mode edits. A component definition's external variable context is retained on a separate group, preserving the distinction between a main's own modes and an instance's placement context.
+
+Paste preserves world geometry with a 24-point offset. Pasting into an available slide/container uses the copied selection's original parent origin. Each paste is one undoable document edit, including its dependencies, libraries, fonts and logical whiteboard records. Saving a `.oui` persists the result. References needed to reconstruct a self-contained transfer must exist: missing component/style/variable/guide definitions cause an actionable rejection before the clipboard or destination document changes.
+
+Cut removes source artwork only after the native pasteboard write succeeds. A changed document/page/selection during the pending write cancels removal. Cutting a main still referenced by surviving instances, swap controls, variant sets or prototype actions is refused before writing: copy it or move it within the project instead. Cutting the complete graph is supported when no references survive. This does not implement cross-document restoration of a main's old identity.
+
+## External content and limits
+
+- Explicit Paste reads one supported representation from the first pasteboard item, preferring Forma layers, then SVG, then text. Malformed Forma data is rejected; it never falls back to text or to an old local clipboard.
+- External SVG opens the existing editable/visual/cancel import review on the design canvas. Its supported geometry and reductions are documented in [SVG import](SVG-IMPORT.md). SVG clipboard paste into a slide/container is refused with guidance to review it on the design canvas first. SVG arriving only as ordinary text remains text.
+- External plain text becomes an editable text layer, using the local default text style. Plain-text paste supports up to 100,000 characters per operation.
+- The combined outgoing representations and each incoming representation are limited to 20 MB; copied artwork plus dependencies is limited to 20,000 layers. A combined project exceeding 50 MB is rejected before committing. Conflicting embedded font faces with the same family/weight/style/range require resolution before pasting. Very large supported selections can exceed the short command-grant window and fail safely; copy fewer layers or transfer a `.oui` file.
+- Prototype references outside the copied closure, variable/conditional prototype actions, timelines, comments and page backgrounds are not transferred. Missing whiteboard connector endpoints leave ordinary editable paths; self-contained logical records are preserved. Cross-app raster-image clipboard, browser-system editable clipboard and Figma's private editable clipboard are not implemented by this path.
+- Repeated Paste creates independent copies at the same 24-point offset; it does not cascade each subsequent paste farther across the canvas. Geometry requiring unsupported skew, collapsed destination transforms, locked/managed containers or malformed references is rejected before mutation.
+
+## Bridge boundary and validation
+
+There is no clipboard monitor, automatic read, arbitrary pasteboard type/name IPC, file promise handling or filesystem access. Clipboard IPC retains the window/main-frame/`127.0.0.1:51981` origin guards and additionally requires the active initialized window, its private nonce and a fresh one-use operation token. Native menu commands issue native grants. Editor controls authorize only a trusted event during its actual dispatch; retained or synthetic events cannot authorize later reads. The injected bridge captures the event-dispatch getter and pasteboard sender before page code can replace them. Mismatched stale requests do not revoke a newer valid grant.
+
+Native validation bounds the fixed representations and checks the transfer envelope before pasteboard write/renderer delivery. The shared parser validates every incoming project, complete references, selected roots and metadata before constructing a draft; the full destination is validated before one store edit. macOS supplies pasteboard data as a complete `Data` object, so the native limit is checked immediately after retrieval; it is not a streaming limit on an external provider's internal allocations.
+
+## Checks
+
+- `npx vitest run tests/clipboard-transfer.test.ts`: geometry, self-contained dependencies, collisions, inherited variable modes, logical records, font usage, undo, Cut safety and trusted same-session reuse.
+- `PLAYWRIGHT_BASE_URL=http://127.0.0.1:5194 PLAYWRIGHT_SERVER_COMMAND='npm run dev -- --port 5194 --strictPort' npx playwright test tests/e2e/native-clipboard.spec.ts`: two renderer windows, actual editable UI/save/undo, failed/stale Cut, cross-page linkage, external text/SVG, malformed custom data and the shipped bridge's trusted-event/replay protections. The browser bridge is an IPC fixture, not AppKit acceptance.
+- After `npm run build:mac`, run `build/Forma.app/Contents/MacOS/OanarinaUITool --clipboard-smoke-test`. This opens two real WKWebViews and uses an isolated named `NSPasteboard`, never the user's general clipboard. It checks Copy/Cut/Paste, component identity remapping, editable saved artwork, undo, blocked referenced-main Cut, malformed input, external text/SVG review and unauthorized requests.
+
+Apple's public [NSPasteboard](https://developer.apple.com/documentation/appkit/nspasteboard) and [NSPasteboardItem](https://developer.apple.com/documentation/appkit/nspasteboarditem) APIs provide the native representations. These checks do not claim a Figma desktop clipboard round trip or complete Figma parity.

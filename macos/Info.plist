@@ -42,6 +42,14 @@
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.oanarinaldi.forma.nodes-json</string>
+			<key>UTTypeDescription</key>
+			<string>Forma editable layer clipboard</string>
+			<key>UTTypeConformsTo</key>
+			<array><string>public.json</string></array>
+		</dict>
+		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.json</string>

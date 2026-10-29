@@ -1,5 +1,6 @@
 import {applyMotionEdits,sampleMotion} from './motion';
 import {recordAction} from './action-history';
+import {copyEditorSelection,pasteEditorClipboard} from './native-clipboard';
 import {getPreferences} from './preferences';
 import {selectionChildren,selectionParents,selectionSibling,selectMatching} from './selection';
 import {applyMask,releaseMask,setMaskMode} from './masks';
@@ -26,11 +27,11 @@ export const commands=[
  ['forward','Bring forward','Object','⌘]'],['backward','Send backward','Object','⌘['],
  ['present','Present prototype','Prototype','⌥⌘↵'],['prototype','Prototype mode','Prototype',''],['motion','Motion timeline','View',''],['layout-guides','Show layout guides','View','⇧G'],['inspect','Inspect / Dev Mode','View','⇧D'],['comments','Comments','View',''],['fonts','Font library · Google & installed','Resources',''],['variables','Variables and modes…','Resources',''],['styles','Local design styles…','Resources',''],['components','Components and variants…','Resources',''],['colors','Color palette','Resources',''],['mcp','Free local MCP automation…','Resources',''],['roadmap','Feature register','Resources',''],['shortcuts','Keyboard shortcuts','Help','⌃⇧?'],['about','About Forma','Help',''],
 ] as const;
-export function runCommand(id:string){if(typeof window!=='undefined'&&window.desktop?.newWindow&&['new','new-slides','new-whiteboard','sample'].includes(id)){void window.desktop.newWindow(id).catch(notifyError);return;}if(commands.some(c=>c[0]===id))recordAction(id);if(['save','save-as'].includes(id)&&typeof document!=='undefined')(document.activeElement as HTMLElement|null)?.blur();const s=useEditor.getState(),ns=currentPage().nodes,sel=ns.filter(n=>s.selection.includes(n.id));
+export function runCommand(id:string,event?:Event){if(event&&['copy','cut','paste'].includes(id))window.desktop?.beginClipboard?.(event,id);if(typeof window!=='undefined'&&window.desktop?.newWindow&&['new','new-slides','new-whiteboard','sample'].includes(id)){void window.desktop.newWindow(id).catch(notifyError);return;}if(commands.some(c=>c[0]===id))recordAction(id);if(['save','save-as'].includes(id)&&typeof document!=='undefined')(document.activeElement as HTMLElement|null)?.blur();const s=useEditor.getState(),ns=currentPage().nodes,sel=ns.filter(n=>s.selection.includes(n.id));
  try{if(id.startsWith('tool-')&&commands.some(c=>c[0]===id&&c[2]==='Tools')){s.set({tool:id.slice(5) as Tool});return;}if(s.doc.workspace==='slides'&&['paste','duplicate','delete','cut','import'].includes(id)){window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:id}));return;}switch(id){
  case 'new-slides':s.load(createSlideDocument());break;case 'new-whiteboard':s.load(createWhiteboardDocument());break;case 'new':s.newDocument();break;case 'sample':s.newDocument(true);break;case 'open':void openProject();break;case 'save':void saveProject();break;case 'save-as':void saveProject(true);break;
  case 'import':pickFile('image/png,image/jpeg,image/webp,image/gif,.svg',importImages);break;
- case 'undo':s.undo();break;case 'redo':s.redo();break;case 'copy':s.copy();break;case 'paste':s.paste();break;case 'cut':s.copy();s.remove();break;case 'delete':{const ids=descendants(ns,s.selection),affected=s.doc.pages.flatMap(p=>p.nodes).filter(n=>n.type==='instance'&&n.componentId&&ids.includes(n.componentId));if(affected.length)s.set({modal:'delete-component'});else s.remove();break;}case 'duplicate':s.duplicate();break;
+ case 'undo':s.undo();break;case 'redo':s.redo();break;case 'copy':void copyEditorSelection().catch(notifyError);break;case 'paste':void pasteEditorClipboard().catch(notifyError);break;case 'cut':void copyEditorSelection(true).catch(notifyError);break;case 'delete':{const ids=descendants(ns,s.selection),affected=s.doc.pages.flatMap(p=>p.nodes).filter(n=>n.type==='instance'&&n.componentId&&ids.includes(n.componentId));if(affected.length)s.set({modal:'delete-component'});else s.remove();break;}case 'duplicate':s.duplicate();break;
  case 'select-all':s.set({selection:ns.filter(n=>!isLocked(n,ns)&&n.visible&&!n.parentId).map(n=>n.id)});break;case 'deselect':s.set({selection:[],modal:null,tool:'move'});break;
  case 'preferences':s.set({modal:'preferences'});break;case 'select-child':s.set({selection:selectionChildren(ns,s.selection)});break;case 'select-parent':s.set({selection:selectionParents(ns,s.selection)});break;case 'select-next-sibling':case 'select-previous-sibling':s.set({selection:selectionSibling(ns,s.selection,id==='select-next-sibling'?1:-1)});break;
  case 'select-same-fill':case 'select-same-stroke':case 'select-same-text':case 'select-same-component':s.set({selection:selectMatching(ns,s.selection,id.slice(12) as 'fill'|'stroke'|'text'|'component')});break;
@@ -87,7 +88,7 @@ export function handleKey(e:KeyboardEvent){if(e.defaultPrevented)return;const s=
  if(!cmd&&k.startsWith('arrow')){const prefs=getPreferences(),step=e.shiftKey?prefs.largeNudge:prefs.smallNudge;s.move(k==='arrowleft'?-step:k==='arrowright'?step:0,k==='arrowup'?-step:k==='arrowdown'?step:0);e.preventDefault();return;}
  if(e.ctrlKey&&e.shiftKey&&(k==='?'||k==='/')){e.preventDefault();runCommand('shortcuts');return;}
  const action=commands.find(c=>!navigationIds.includes(c[0])&&matchesShortcut(e,c[3])&&(c[0]!=='edit-vector'||s.tool==='move'&&s.selection.length===1));
- if(action){e.preventDefault();runCommand(action[0]);return;}
+ if(action){e.preventDefault();runCommand(action[0],e);return;}
  if(cmd&&k==='/'){e.preventDefault();runCommand('actions');return;}
  if(!cmd){if(/^[0-9]$/.test(k)&&s.selection.length){e.preventDefault();s.patch(s.selection,{opacity:k==='0'?1:Number(k)/10});return;}
  const tool=({v:'move',f:'frame',r:'rectangle',o:'ellipse',l:e.shiftKey?'arrow':'line',t:'text',p:e.shiftKey?'pencil':'pen',h:'hand',k:'scale',c:'comment',s:e.shiftKey?'section':'slice'} as const)[k as 'v'];if(tool){e.preventDefault();s.set({tool});}}
