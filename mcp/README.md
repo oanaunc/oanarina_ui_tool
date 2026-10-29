@@ -55,7 +55,7 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 
 The resource `oanarina://project/summary` provides current metadata. Tool schemas are discoverable through MCP. Every write requires a `revision` returned by a read. Stale revisions fail without changing the file.
 
-`apply_operations` supports `rename_document`, `create_page`, `rename_page`, `delete_page`, `create_node`, `update_node`, `delete_node` and `set_design_system`. Nodes can specify an optional unique `id` when created, so children can reference parents created earlier in the same atomic batch. Node `properties` use the shared `.oui` node fields; changing `id` or `type` through an update is rejected. Deleting a frame also deletes its descendants; deleting an owned instance child records a visibility override. Moving a container moves its descendants.
+`apply_operations` supports `rename_document`, `create_page`, `rename_page`, `duplicate_page`, `reorder_page`, `delete_page`, `create_node`, `update_node`, `delete_node` and `set_design_system`. Nodes can specify an optional unique `id` when created, so children can reference parents created earlier in the same atomic batch. Node `properties` use the shared `.oui` node fields; changing `id` or `type` through an update is rejected. Deleting a frame also deletes its descendants; deleting an owned instance child records a visibility override. Moving a container moves its descendants.
 
 A minimal operation batch, after obtaining the revision and page ID:
 
@@ -67,6 +67,24 @@ A minimal operation batch, after obtaining the revision and page ID:
     {"op":"create_node","pageId":"PAGE_ID","type":"text","properties":{"parentId":"card","name":"Heading","x":124,"y":124,"text":"Created locally."}}
   ]
 }
+```
+
+### Page organization
+
+- `duplicate_page` takes `pageId` and returns `{pageId, index}` for the new page. It inserts the copy immediately after its source and chooses a unique copy name. Page and owned layer IDs are fresh; typed internal component/prototype/flow/motion/guide references follow the copied artwork. External references and shared style/variable/font identities remain in this document. Ordinary text, URLs and expressions are not rewritten just because they equal an ID. Supported whiteboard logical records and wholly owned component sets are copied; the global timer and existing votes are retained rather than duplicated.
+- `reorder_page` takes `pageId` and an integer `index` from `0` through the current page count minus one. This is the page’s **final zero-based position**, not an insertion gap or a relative offset. It returns `{pageId, index}`. Page identities and references do not change. A transaction containing only reorders with no net change preserves the exact saved bytes/revision and consumes no undo entry; its supplied revision must still be current. A mixed no-op reorder plus real edit remains one normal transaction.
+- `delete_page` uses the editor’s shared reference checks. It refuses deletion of the last page, an active presentation deck page, a page with incoming surviving component/prototype/flow/motion references, or a page splitting a component set or mind map. It cleans owned component-set and whiteboard records only after validation. Explicitly remove or move incoming references first; earlier valid operations in the same atomic batch can do this. There is no implicit detach or silent reassignment.
+
+An active Slides deck page cannot be duplicated/deleted through these page operations. Use the presentation workspace’s individual-slide commands instead. Other pages can still be ordered. Duplicate refuses the shared 1,000-page limit; the 50 MB document limit and 500-operation transaction limit still apply. A page helper validates the draft after preceding edits have passed the same rich-text/component/layout/whiteboard derivation pipeline used at save. The complete batch still performs a single atomic file save and records one undo entry; any failure rolls back every operation and leaves history intact.
+
+Example: first duplicate a known page, then use its returned ID and revision in the next request:
+
+```json
+{"revision":"<current SHA-256>","operations":[{"op":"duplicate_page","pageId":"<source page ID>"}]}
+```
+
+```json
+{"revision":"<returned SHA-256>","operations":[{"op":"reorder_page","pageId":"<returned copy page ID>","index":0}]}
 ```
 
 ## File handling and limits
@@ -86,3 +104,5 @@ npm run mcp:test
 Tests cover atomic rollback, stale revisions, concurrent writers, scope/symlink rejection, locks, undo, invalid geometry, design-system cycles, hierarchy edits, deterministic/escaped SVG, and an actual SDK client communicating with the spawned server over stdio.
 
 Uses the current stable official MCP SDK v2 packages (`@modelcontextprotocol/server` and test client `@modelcontextprotocol/client`, pinned to 2.4.0), verified October 29, 2026. Source/API references: [official first server guide](https://ts.sdk.modelcontextprotocol.io/v2/get-started/first-server), [SDK repository](https://github.com/modelcontextprotocol/typescript-sdk). Dependencies are locked in `package-lock.json`. The server itself is MIT licensed as part of this repository; dependency licenses remain their own.
+
+Public standalone startup guide: https://www.oanarinaldi.com/ui-tool-guide.html#mcp-development . The bundled server and its included instructions do not require access to the application repository.
