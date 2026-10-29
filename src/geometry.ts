@@ -1,4 +1,4 @@
-import paper from 'paper/dist/paper-core';
+import paper from 'paper/dist/paper-core.js';
 import {bounds,descendants} from './model';
 import type {DesignNode,VectorPoint,VectorContour} from './model';
 const scope=new paper.PaperScope();scope.setup(new scope.Size(1,1));

@@ -3,7 +3,11 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 npm run build > /tmp/oanarina-ui-vite-build.log
 mkdir -p build release build/icon.iconset
-swift scripts/icon.swift build/icon-1024.png
+if [ -f public/app-icon-v2.png ]; then
+ sips -z 1024 1024 public/app-icon-v2.png --out build/icon-1024.png > /dev/null
+else
+ swift scripts/icon.swift build/icon-1024.png
+fi
 rm -f build/icon.iconset/*.png
 for size in 16 32 128 256 512; do
  sips -z "$size" "$size" build/icon-1024.png --out "build/icon.iconset/icon_${size}x${size}.png" > /dev/null

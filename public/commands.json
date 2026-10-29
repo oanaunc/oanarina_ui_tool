@@ -6,6 +6,18 @@
     "⌘N"
   ],
   [
+    "new-whiteboard",
+    "New whiteboard",
+    "File",
+    ""
+  ],
+  [
+    "new-slides",
+    "New presentation",
+    "File",
+    ""
+  ],
+  [
     "open",
     "Open project…",
     "File",
@@ -528,6 +540,30 @@
     ""
   ],
   [
+    "vector-join",
+    "Join vector endpoints",
+    "Vector",
+    "⌘J"
+  ],
+  [
+    "vector-smooth-join",
+    "Smooth join vector endpoints",
+    "Vector",
+    "⇧⌘J"
+  ],
+  [
+    "vector-split",
+    "Split vector path",
+    "Vector",
+    ""
+  ],
+  [
+    "vector-heal",
+    "Delete points and heal path",
+    "Vector",
+    "⇧⌫"
+  ],
+  [
     "vector-reverse",
     "Reverse vector direction",
     "Vector",
@@ -630,6 +666,12 @@
     ""
   ],
   [
+    "layout-guides",
+    "Show layout guides",
+    "View",
+    "⇧G"
+  ],
+  [
     "inspect",
     "Inspect / Dev Mode",
     "View",
@@ -668,6 +710,12 @@
   [
     "colors",
     "Color palette",
+    "Resources",
+    ""
+  ],
+  [
+    "mcp",
+    "Free local MCP automation…",
     "Resources",
     ""
   ],

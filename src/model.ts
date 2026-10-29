@@ -1,3 +1,15 @@
+import {validateRichTextDocument} from './rich-text';
+import type {TextRun,UnderlineStyle} from './rich-text';
+import {validateSlides} from './slides';
+import type {SlideDeck} from './slides';
+import {validateWhiteboard} from './whiteboard';
+import type {WhiteboardData} from './whiteboard';
+import {validateFontAsset} from './font-data';
+import type {FontAsset} from './font-data';
+import {validatePrototype} from './prototype';
+import type {PrototypeReaction,PrototypeFlow,PrototypeSettings} from './prototype';
+import {validateGuides} from './guides';
+import type {LayoutGuide,LayoutGuideStyle,CanvasGuide,SnapPreferences} from './guides';
 import {validateMotionStyles,validateTimeline} from './motion';
 import type {MotionStyle,Timeline} from './motion';
 import {validateDesignSystems} from './design-systems';
@@ -19,17 +31,19 @@ export interface DesignNode {
   x:number; y:number; width:number; height:number; rotation:number;
   fill:string; paints?:Paint[]; strokes?:StrokeStyle[]; blendMode?:string; effects?:Effect[]; isolate?:boolean; stroke:string; strokeWidth:number; opacity:number; radius:number;
   exportGhost?:boolean;motionScaleX?:number;motionScaleY?:number;visible:boolean; locked:boolean; text:string; fontSize:number; fontFamily:string; fontWeight:number;
+  textRuns?:TextRun[];fontAxes?:Record<string,number>;fontFeatures?:Record<string,number>;underline?:UnderlineStyle;
   textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number; letterSpacing:number;
   path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
   sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch';wrap?:boolean;
   variableBindings?:Partial<Record<BindingField,string>>;variableModes?:Record<string,string>;styleIds?:Partial<Record<StyleKind,string>>;
   sourceId?:string;instanceRootId?:string;overrideKeys?:string[];componentKey?:string;componentMetadata?:ComponentMetadata;propertyValues?:Record<string,string|boolean>;
+  layoutGuides?:LayoutGuide[];layoutGuideStyleId?:string;reactions?:PrototypeReaction[];prototypeScroll?:'none'|'horizontal'|'vertical'|'both';prototypePosition?:'normal'|'fixed'|'sticky';
   clip:boolean; componentId:string|null; targetId:string|null; gradient:boolean;
 }
 export interface Comment {id:string; x:number;y:number; text:string; resolved:boolean;}
-export interface Page {id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;}
-export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:{family:string;weight:string;data:string}[];}
+export interface Page {id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;flows?:PrototypeFlow[];prototypeSettings?:PrototypeSettings;guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
+export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides';whiteboard?:WhiteboardData;slides?:SlideDeck;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
 export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
@@ -58,6 +72,7 @@ export function parseDocument(raw:string):DesignDocument {
   if(raw.length>50_000_000)throw Error('This file exceeds the 50 MB project limit.');
   const d=JSON.parse(raw);
   if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file or a Figma Bridge .oui file. Direct .fig files are not supported yet.');
+  if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
   if(d.pages.length>1000)throw Error('Too many pages.');
   const ids=new Set<string>();
   for(const p of d.pages){if(typeof p.id!=='string'||ids.has(p.id)||typeof p.name!=='string'||!Array.isArray(p.nodes)||!Array.isArray(p.comments)||p.nodes.length>20000)throw Error('Invalid page.');ids.add(p.id);
@@ -82,6 +97,7 @@ export function parseDocument(raw:string):DesignDocument {
       for(const [key,values] of Object.entries({sizingX:['fixed','hug','fill'],sizingY:['fixed','hug','fill'],constraintX:['start','end','center','stretch','scale'],constraintY:['start','end','center','stretch','scale'],justifyContent:['start','center','end','space-between','space-around','space-evenly'],alignItems:['start','center','end','stretch']}))if(n[key]!==undefined&&!values.includes(n[key]))throw Error('Invalid layout setting.');
       for(const key of ['wrap','ignoreLayout'])if(n[key]!==undefined&&typeof n[key]!=='boolean')throw Error('Invalid layout flag.');
       if(n.effects!==undefined){if(!Array.isArray(n.effects)||n.effects.length>100)throw Error('Invalid effect stack.');n.effects.forEach(validateEffect);}
+      for(const k of ['flipX','flipY','exportGhost'])if(n[k]!==undefined&&typeof n[k]!=='boolean')throw Error('Invalid rendering flag.');for(const k of ['motionScaleX','motionScaleY'])if(n[k]!==undefined&&(!Number.isFinite(n[k])||n[k]<0||n[k]>10000))throw Error('Invalid render scale.');
       if(n.isolate!==undefined&&typeof n.isolate!=='boolean')throw Error('Invalid isolation flag.');
       if(n.blendMode!==undefined&&!['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity'].includes(n.blendMode))throw Error('Invalid blend mode.');
       if(n.strokes!==undefined){if(!Array.isArray(n.strokes)||n.strokes.length>100)throw Error('Invalid stroke stack.');for(const stroke of n.strokes){validatePaint(stroke.paint);if(typeof stroke.id!=='string'||typeof stroke.visible!=='boolean'||!Number.isFinite(stroke.miterLimit)||stroke.miterLimit<1||!Number.isFinite(stroke.dashOffset)||!Number.isFinite(stroke.width)||stroke.width<0||!['inside','center','outside'].includes(stroke.align)||!['butt','round','square'].includes(stroke.cap)||!['miter','round','bevel'].includes(stroke.join)||!Array.isArray(stroke.dash)||stroke.dash.some((v:number)=>!Number.isFinite(v)||v<0))throw Error('Invalid stroke style.');}}
@@ -95,7 +111,7 @@ export function parseDocument(raw:string):DesignDocument {
       const seen=new Set([n.id]);let id=n.parentId;while(id){if(seen.has(id))throw Error('Cyclic layer hierarchy.');seen.add(id);const parent=p.nodes.find((a:DesignNode)=>a.id===id);if(!parent)throw Error('Missing parent layer.');id=parent.parentId;}}
   }
   if(!Array.isArray(d.colors)||d.colors.some((c:{name:string;value:string})=>typeof c.name!=='string'||!/^#[0-9a-f]{6}$/i.test(c.value)))throw Error('Invalid color styles.');
-  if(d.fonts&&(!Array.isArray(d.fonts)||d.fonts.some((f:{family:string;weight:string;data:string})=>typeof f.family!=='string'||!/^\d+(?: \d+)?$/.test(f.weight)||!/^data:font\/(?:ttf|woff2);base64,/.test(f.data))))throw Error('Invalid embedded fonts.');
-  validateComponents(d);validateDesignSystems(d);validateMotionStyles(d.motionStyles);d.version=2;return d as DesignDocument;
+  if(d.fonts!==undefined){if(!Array.isArray(d.fonts)||d.fonts.length>500)throw Error('Invalid embedded fonts.');d.fonts.forEach(validateFontAsset);}
+  validateRichTextDocument(d);validateWhiteboard(d);validateSlides(d);validatePrototype(d);validateGuides(d);validateComponents(d);validateDesignSystems(d);validateMotionStyles(d.motionStyles);d.version=2;return d as DesignDocument;
 }
 export const polygonPoints=(n:DesignNode)=>Array.from({length:n.type==='star'?10:6},(_,i)=>{const a=i*Math.PI*2/(n.type==='star'?10:6)-Math.PI/2,r=n.type==='star'&&i%2?0.43:1;return `${n.width/2+Math.cos(a)*n.width/2*r},${n.height/2+Math.sin(a)*n.height/2*r}`;}).join(' ');

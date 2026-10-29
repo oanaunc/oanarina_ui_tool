@@ -89,7 +89,7 @@ final class Studio: NSObject, NSApplicationDelegate, WKScriptMessageHandlerWithR
         if type=="fonts"{replyHandler(NSFontManager.shared.availableFontFamilies.sorted(),nil);return}
         if type=="open"{let panel=NSOpenPanel();panel.allowedContentTypes=[UTType(filenameExtension:"oui") ?? .json,.json];panel.allowsMultipleSelection=false;panel.canChooseDirectories=false;panel.beginSheetModal(for:window){response in guard response == .OK,let url=panel.url else{replyHandler(NSNull(),nil);return};do{replyHandler(try self.read(url),nil)}catch{replyHandler(nil,error.localizedDescription)}};return}
         guard type=="save",let raw=body["data"] as? String,raw.utf8.count<150_000_000,let name=body["name"] as? String else{replyHandler(nil,"Invalid export");return}
-        let safe=(name as NSString).lastPathComponent,ext=(safe as NSString).pathExtension.lowercased();guard ["oui","png","jpg","svg","json","gif","webm","mp4"].contains(ext) else{replyHandler(nil,"Unsupported format");return}
+        let safe=(name as NSString).lastPathComponent,ext=(safe as NSString).pathExtension.lowercased();guard ["oui","png","jpg","svg","json","gif","webm","mp4","ttf","otf","pdf","zip"].contains(ext) else{replyHandler(nil,"Unsupported format");return}
         let bytes:Data? = body["base64"] as? Bool == true ? Data(base64Encoded:raw) : raw.data(using:.utf8)
         guard let bytes else{replyHandler(nil,"Invalid file data");return}
         var projectId:String?

@@ -1,0 +1,14 @@
+import {test,expect} from '@playwright/test';
+import fs from 'node:fs/promises';
+import {createSlideDocument,deckFor} from '../../src/slides';
+async function save(page:any){const event=page.waitForEvent('download');await page.getByRole('button',{name:'Save .oui',exact:true}).click();return JSON.parse(await fs.readFile((await (await event).path())!,'utf8'));}
+test('keyboard duplicate and cross-slide paste retain containment, relative position, undo and persistence',async({page})=>{
+ const d=createSlideDocument(),first=deckFor(d).slides[0],sourceFrame=d.pages[0].nodes.find(n=>n.id===first.frameId)!,title=d.pages[0].nodes.find(n=>n.parentId===first.frameId&&n.name==='Slide title')!;
+ await page.addInitScript((doc:any)=>{if(!localStorage.getItem('oui-active'))localStorage.setItem('oui-active',JSON.stringify(doc));},d);await page.goto('/');await expect(page.getByRole('region',{name:'Slides workspace',exact:true})).toBeVisible();
+ await page.locator('.slides-layer-list').getByRole('button',{name:'Slide title',exact:true}).click();await page.keyboard.press('Meta+d');await expect(page.locator('.slides-stage [aria-label="Slide title"]')).toHaveCount(2);
+ const duplicated=await save(page),copies=duplicated.pages[0].nodes.filter((n:any)=>n.parentId===first.frameId&&n.name==='Slide title');expect(copies).toHaveLength(2);const copy=copies.find((n:any)=>n.id!==title.id)!;expect(copy).toMatchObject({x:title.x+24,y:title.y+24,parentId:first.frameId});
+ await page.locator('.slides-layer-list').getByRole('button',{name:'Slide title',exact:true}).last().click();await page.keyboard.press('Meta+c');await page.getByRole('combobox',{name:'Slide template',exact:true}).selectOption('blank');await page.getByRole('button',{name:'+ Add slide',exact:true}).click();await page.keyboard.press('Meta+v');await expect(page.locator('.slides-stage [aria-label="Slide title"]')).toHaveCount(1);
+ const pasted=await save(page),second=pasted.slides.slides[1],secondFrame=pasted.pages[0].nodes.find((n:any)=>n.id===second.frameId),target=pasted.pages[0].nodes.find((n:any)=>n.parentId===second.frameId&&n.name==='Slide title');expect(target).toBeTruthy();expect(target.x-secondFrame.x).toBe(copy.x-sourceFrame.x+24);expect(target.y-secondFrame.y).toBe(copy.y-sourceFrame.y+24);expect(second.roles[target.id]).toBe(first.roles[title.id]);
+ await page.keyboard.press('Meta+z');await expect(page.locator('.slides-stage [aria-label="Slide title"]')).toHaveCount(0);await page.keyboard.press('Meta+Shift+z');await expect(page.locator('.slides-stage [aria-label="Slide title"]')).toHaveCount(1);
+ await page.waitForTimeout(900);await page.reload();await page.getByRole('button',{name:'Go to slide 2: Slide 2',exact:true}).click();await expect(page.locator('.slides-stage [aria-label="Slide title"]')).toHaveCount(1);const restored=await save(page);expect(restored.pages[0].nodes.find((n:any)=>n.id===target.id)).toMatchObject({parentId:second.frameId,x:target.x,y:target.y});
+});

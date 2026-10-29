@@ -1,24 +1,26 @@
 import type {DesignNode} from './model';
-export interface TextLine {text:string;x:number;y:number;width:number;paragraphEnd:boolean;}
-let context:CanvasRenderingContext2D|null=null;
-function measure(text:string,n:DesignNode){if(typeof document!=='undefined'&&!context)context=document.createElement('canvas').getContext('2d');if(context)context.font=`${n.fontStyle??'normal'} ${n.fontWeight} ${n.fontSize}px "${n.fontFamily}"`;return (context?context.measureText(text).width:text.length*n.fontSize*.55)+Math.max(0,text.length-1)*n.letterSpacing;}
-export function textLines(n:DesignNode,truncate=true):TextLine[]{
- const lines:TextLine[]=[],width=Math.max(1,n.width),indent=n.paragraphIndent??0,lineHeight=n.fontSize*n.lineHeight,spacing=n.paragraphSpacing??0;let y=n.fontSize;
- for(const [index,raw] of n.text.split('\n').entries()){
-  const prefix=n.listStyle==='bullet'?'• ':n.listStyle==='number'?`${index+1}. `:'',paragraph=prefix+raw;
-  const words=paragraph.split(/(\s+)/);let line='';let first=true;
-  const append=(last:boolean)=>{lines.push({text:line,x:first?indent:0,y,width:measure(line,n),paragraphEnd:last});y+=lineHeight;first=false;line='';};
-  if(n.textResize==='auto-width'){line=paragraph;append(true);}else{
-   for(const word of words){if(!line.trim()&&!word.trim())continue;const available=width-(first?indent:0);if(measure(line+word,n)<=available){line+=word;continue;}if(line.trim()){line=line.trimEnd();append(false);}if(measure(word,n)<=width){line=word.trimStart();continue;}
-    for(const char of word){if(line&&measure(line+char,n)>width-(first?indent:0))append(false);line+=char;}
-   }append(true);
-  }y+=spacing;
- }
- let result=lines;
- const max=n.maxLines&&n.maxLines>0?n.maxLines:Infinity;
- const byHeight=n.textResize==='fixed'&&n.textOverflow==='ellipsis'?Math.max(1,Math.floor(n.height/lineHeight)):Infinity;
- if(truncate&&Math.min(max,byHeight)<lines.length){result=lines.slice(0,Math.min(max,byHeight));const tail={...result.at(-1)!};while(tail.text&&measure(tail.text+'…',n)>width-tail.x)tail.text=tail.text.slice(0,-1);tail.text+='…';tail.width=measure(tail.text,n);tail.paragraphEnd=true;result[result.length-1]=tail;}
- const height=result.length?result.at(-1)!.y:0,offset=n.verticalAlign==='middle'?Math.max(0,(n.height-height)/2):n.verticalAlign==='bottom'?Math.max(0,n.height-height):0;
- return result.map(line=>({...line,y:line.y+offset}));
+import {baseTextStyle,fontSettings,textSegments} from './rich-text';
+import type {TextSegment,TextStyle} from './rich-text';
+export interface TextLine {text:string;x:number;y:number;width:number;paragraphEnd:boolean;runs:TextSegment[];fontSize:number;}
+let context:CanvasRenderingContext2D|null=null,probe:HTMLSpanElement|null=null;
+function measureText(text:string,style:TextStyle){const size=style.fontSize??24,family=style.fontFamily??'Inter',weight=style.fontAxes?.wght??style.fontWeight??400,fontStyle=style.fontStyle??'normal';if(typeof document!=='undefined'&&!context)context=document.createElement('canvas').getContext('2d');
+ if(typeof document!=='undefined'&&document.body&&(style.fontAxes||style.fontFeatures)){if(!probe){probe=document.createElement('span');Object.assign(probe.style,{position:'absolute',visibility:'hidden',whiteSpace:'pre',pointerEvents:'none',left:'-100000px',top:'-100000px'});document.body.appendChild(probe);}Object.assign(probe.style,{fontFamily:family,fontSize:size+'px',fontWeight:String(weight),fontStyle,letterSpacing:'0px',fontVariationSettings:fontSettings(style.fontAxes)??'normal',fontFeatureSettings:fontSettings(style.fontFeatures)??'normal'});probe.textContent=text;return probe.getBoundingClientRect().width+Math.max(0,[...text].length-1)*(style.letterSpacing??0);}
+ if(context){context.font=`${fontStyle} ${weight} ${size}px ${JSON.stringify(family)}`;context.fontKerning=style.fontFeatures?.kern===0?'none':'normal';}return (context?context.measureText(text).width:[...text].length*size*.55)+Math.max(0,[...text].length-1)*(style.letterSpacing??0);
 }
-export function updateTextMetrics(nodes:DesignNode[]){for(const n of nodes){if(n.type!=='text'||!n.textResize||n.textResize==='fixed')continue;if(n.textResize==='auto-width'){n.width=Math.max(1,...n.text.split('\n').map((text,i)=>measure((n.listStyle==='bullet'?'• ':n.listStyle==='number'?`${i+1}. `:'')+text,n)+(n.paragraphIndent??0)));}const lines=textLines(n,false);n.height=Math.max(n.fontSize,lines.at(-1)?.y??n.fontSize);}}
+function metricKey(style:TextStyle){return JSON.stringify([style.fontFamily,style.fontSize,style.fontWeight,style.fontStyle,style.letterSpacing,style.fontAxes,style.fontFeatures]);}
+function measureFragments(fragments:TextSegment[]){let result=0,current='',previous:TextStyle|undefined,key='';const flush=()=>{if(previous)result+=measureText(current,previous);};for(const f of fragments){const next=metricKey(f.style);if(previous&&key===next)current+=f.text;else{flush();current=f.text;previous=f.style;key=next;}}flush();return result;}
+function graphemes(text:string){return typeof Intl.Segmenter==='function'?[...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(text)].map(s=>s.segment):Array.from(text);}
+export function textLines(n:DesignNode,truncate=true):TextLine[]{const lines:TextLine[]=[],width=Math.max(1,n.width),indent=n.paragraphIndent??0,spacing=n.paragraphSpacing??0,base=baseTextStyle(n);let top=0,sourceOffset=0;
+ for(const [paragraphIndex,raw] of n.text.split('\n').entries()){const prefix=n.listStyle==='bullet'?'• ':n.listStyle==='number'?`${paragraphIndex+1}. `:'',paragraph=prefix+raw,paragraphStart=sourceOffset;sourceOffset+=raw.length+1;let first=true;const cache=new Map<string,number>();
+ const fragments=(from:number,to:number):TextSegment[]=>{const out:TextSegment[]=[];if(from<prefix.length&&to>0)out.push({start:-1,end:-1,text:prefix.slice(from,Math.min(to,prefix.length)),style:base});const a=Math.max(0,from-prefix.length),b=Math.max(0,to-prefix.length);if(b>a)out.push(...textSegments(n,paragraphStart+a,paragraphStart+b));return out;};
+ const measure=(from:number,to:number)=>{const key=from+':'+to;if(cache.has(key))return cache.get(key)!;const value=measureFragments(fragments(from,to));cache.set(key,value);return value;};
+ const append=(from:number,to:number,last:boolean)=>{const runs=fragments(from,to),fontSize=runs.length?Math.max(...runs.map(r=>r.style.fontSize??n.fontSize)):n.fontSize,line:TextLine={text:paragraph.slice(from,to),x:first?indent:0,y:top+fontSize,width:measure(from,to),paragraphEnd:last,runs,fontSize};lines.push(line);top+=fontSize*n.lineHeight;first=false;};
+ if(n.textResize==='auto-width'){append(0,paragraph.length,true);}else{const words=paragraph.match(/\s+|\S+/gu)??[''];let cursor=0,start=0,end=0;for(const word of words){const next=cursor+word.length;if(end===start&&!word.trim()){cursor=next;start=end=next;continue;}const available=width-(first?indent:0);if(measure(start,next)<=available){end=next;cursor=next;continue;}
+ if(end>start&&paragraph.slice(start,end).trim()){const trimmed=paragraph.slice(start,end).trimEnd();append(start,start+trimmed.length,false);start=end=cursor;}
+ if(!word.trim()){cursor=next;start=end=next;continue;}if(measure(cursor,next)<=width-(first?indent:0)){start=cursor;end=next;cursor=next;continue;}
+ for(const char of graphemes(word)){const charEnd=cursor+char.length;if(end>start&&measure(start,charEnd)>width-(first?indent:0)){append(start,end,false);start=end=cursor;}end=charEnd;cursor=charEnd;}
+ }append(start,end,true);}top+=spacing;}
+ let result=lines;const max=n.maxLines&&n.maxLines>0?n.maxLines:Infinity,byHeight=n.textResize==='fixed'&&n.textOverflow==='ellipsis'?Math.max(1,lines.filter(line=>line.y<=n.height).length):Infinity,limit=Math.min(max,byHeight);
+ if(truncate&&limit<lines.length){result=lines.slice(0,limit);const tail={...result.at(-1)!,runs:result.at(-1)!.runs.map(r=>({...r}))};let glyphs=graphemes(tail.text);const ellipsisStyle=tail.runs.at(-1)?.style??base;const ellipsis:TextSegment={start:-1,end:-1,text:'…',style:ellipsisStyle};while(glyphs.length&&measureFragments([...tail.runs,ellipsis])>width-tail.x){const removed=glyphs.pop()!;let left=removed.length;while(left&&tail.runs.length){const run=tail.runs.at(-1)!,take=Math.min(left,run.text.length);run.text=run.text.slice(0,-take);if(run.end>=0)run.end-=take;left-=take;if(!run.text)tail.runs.pop();}}tail.runs.push(ellipsis);tail.text=glyphs.join('')+'…';tail.width=measureFragments(tail.runs);tail.paragraphEnd=true;result[result.length-1]=tail;}
+ const height=result.at(-1)?.y??0,offset=n.verticalAlign==='middle'?Math.max(0,(n.height-height)/2):n.verticalAlign==='bottom'?Math.max(0,n.height-height):0;return result.map(line=>({...line,y:line.y+offset}));}
+export function updateTextMetrics(nodes:DesignNode[]){for(const n of nodes){if(n.type!=='text'||!n.textResize||n.textResize==='fixed')continue;const lines=textLines(n,false);if(n.textResize==='auto-width')n.width=Math.max(1,...lines.map(line=>line.width+line.x));n.height=Math.max(1,lines.at(-1)?.y??n.fontSize);}}

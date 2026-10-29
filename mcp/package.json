@@ -1,0 +1,24 @@
+{
+  "name": "oanarina-ui-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Free, project-scoped local MCP server for Oanarina UI Tool",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "tsx --tsconfig tsconfig.json server.ts",
+    "test": "tsx --tsconfig tsconfig.json --test tests/*.test.ts",
+    "pretest": "node ../scripts/bundle-mcp.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
+    "tsx": "4.23.15",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.4.0"
+  }
+}

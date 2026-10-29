@@ -3,6 +3,7 @@ import {effectsFor} from '../effects';
 import {EffectFilter} from './EffectFilter';
 import {scaledLocalPath} from '../geometry';
 import {textLines} from '../text-layout';
+import {fontSettings} from '../rich-text';
 import {fillsFor,rasterGradient,strokesFor} from '../paints';
 import type {Paint,StrokeStyle} from '../paints';
 import type {DesignNode} from '../model';
@@ -18,8 +19,8 @@ function PaintDefinition({paint:p,id,n}:{paint:Paint;id:string;n:DesignNode}){
  }
  return null;
 }
-function Shape({n,...props}:{n:DesignNode}&React.SVGProps<SVGPathElement>){
- if(n.type==='text')return <text {...props as React.SVGProps<SVGTextElement>} fontFamily={`${n.fontFamily}, system-ui, sans-serif`} fontSize={n.fontSize} fontWeight={n.fontWeight} fontStyle={n.fontStyle??'normal'} textDecoration={n.decorations?.join(' ')} letterSpacing={n.letterSpacing} textAnchor={n.textAlign==='center'?'middle':n.textAlign==='right'?'end':'start'} xmlSpace="preserve" style={{fontSynthesis:'style'}}>{textLines(n).map((line,i)=><tspan key={i} x={n.textAlign==='center'?n.width/2:n.textAlign==='right'?n.width:line.x} y={line.y} textLength={n.textAlign==='justify'&&!line.paragraphEnd?n.width-line.x:undefined} lengthAdjust={n.textAlign==='justify'?'spacing':undefined}>{line.text||' '}</tspan>)}</text>;
+function Shape({n,hyperlinks=false,...props}:{n:DesignNode;hyperlinks?:boolean}&React.SVGProps<SVGPathElement>){
+ if(n.type==='text')return <text {...props as React.SVGProps<SVGTextElement>} fontFamily={`${n.fontFamily}, system-ui, sans-serif`} fontSize={n.fontSize} fontWeight={n.fontWeight} fontStyle={n.fontStyle??'normal'} letterSpacing={n.letterSpacing} textAnchor={n.textAlign==='center'?'middle':n.textAlign==='right'?'end':'start'} xmlSpace="preserve" style={{fontSynthesis:'style',fontVariationSettings:fontSettings(n.fontAxes),fontFeatureSettings:fontSettings(n.fontFeatures)}}>{textLines(n).map((line,i)=><tspan key={i} x={n.textAlign==='center'?n.width/2:n.textAlign==='right'?n.width:line.x} y={line.y} textLength={n.textAlign==='justify'&&!line.paragraphEnd?n.width-line.x:undefined} lengthAdjust={n.textAlign==='justify'?'spacing':undefined}>{line.runs.length?line.runs.map((run,j)=>{const style=run.style,u=style.underline;const span=<tspan key={j} data-text-href={style.hyperlink||undefined} data-text-range={run.start>=0?`${run.start}:${run.end}`:undefined} fontFamily={style.fontFamily} fontSize={style.fontSize} fontWeight={style.fontWeight} fontStyle={style.fontStyle} letterSpacing={style.letterSpacing} fill={props.fill==='none'?undefined:style.fill===n.fill?undefined:style.fill} textDecoration={style.decorations?.join(' ')||'none'} style={{fontVariationSettings:fontSettings(style.fontAxes),fontFeatureSettings:fontSettings(style.fontFeatures),textDecorationColor:u?.color,textDecorationStyle:u?.style,textDecorationThickness:u?`${u.thickness}px`:undefined,textUnderlineOffset:u?`${u.offset}px`:undefined,textDecorationSkipInk:u?(u.skipInk?'auto':'none'):undefined}}>{run.text}</tspan>;return hyperlinks&&style.hyperlink?<a key={j} href={style.hyperlink} target="_blank" rel="noopener noreferrer">{span}</a>:span;}):' '}</tspan>)}</text>;
  return <path d={scaledLocalPath(n)} {...props} fillRule={n.type==='ellipse'?'evenodd':'nonzero'}/>;
 }
 function Stroke({n,s,id}:{n:DesignNode;s:StrokeStyle;id:string}){
@@ -27,15 +28,16 @@ function Stroke({n,s,id}:{n:DesignNode;s:StrokeStyle;id:string}){
  const props={fill:'none',stroke:paintValue(s.paint,id),strokeWidth:s.width*(alignment==='center'?1:2),opacity:s.paint.opacity,strokeLinecap:s.cap,strokeLinejoin:s.join,strokeMiterlimit:s.miterLimit,strokeDasharray:s.dash.length?s.dash.join(' '):undefined,strokeDashoffset:s.dashOffset};
  return <g clipPath={alignment==='inside'?`url(#local-clip-${n.id})`:undefined} mask={alignment==='outside'?`url(#outside-mask-${n.id})`:undefined}><Shape n={n} {...props}/>{n.type==='arrow'&&<path d={`M ${n.width-12} ${n.height-6} L ${n.width} ${n.height} L ${n.width-12} ${n.height+6}`} fill="none" stroke={s.paint.color} strokeWidth={s.width} transform={`rotate(${Math.atan2(n.height,n.width)*180/Math.PI} ${n.width} ${n.height})`}/>}</g>;
 }
-export function Artwork({nodes,outlines=false,onNode}:{nodes:DesignNode[];outlines?:boolean;onNode?:(e:React.PointerEvent,id:string)=>void}) {
+export function Artwork({nodes,outlines=false,hyperlinks=false,onNode,onInteraction}:{nodes:DesignNode[];outlines?:boolean;hyperlinks?:boolean;onNode?:(e:React.PointerEvent,id:string)=>void;onInteraction?:(e:React.SyntheticEvent,id:string,type:'click'|'pointerdown'|'pointerup'|'pointerenter'|'pointerleave')=>void}) {
  const ids=new Set(nodes.map(n=>n.id)),children=new Map<string|null,DesignNode[]>();
  for(const n of nodes){const parent=n.parentId&&ids.has(n.parentId)?n.parentId:null;const list=children.get(parent)??[];list.push(n);children.set(parent,list);}
  const render=(n:DesignNode,parent?:DesignNode):React.ReactNode=>{
   if(!n.visible||n.type==='slice')return null;
   const content=outlines?<Shape n={n} fill="none" stroke="#a8a3b4" strokeWidth={1}/>:<>
-   {fillsFor(n).filter(p=>p.visible&&p.opacity>0).reverse().map(p=><Shape key={p.id} n={n} fill={paintValue(p,`fill-${n.id}-${p.id}`)} stroke="none" opacity={p.opacity}/>)}
+   {fillsFor(n).filter(p=>p.visible&&p.opacity>0).reverse().map(p=><Shape key={p.id} n={n} hyperlinks={hyperlinks} fill={paintValue(p,`fill-${n.id}-${p.id}`)} stroke="none" opacity={p.opacity}/>)}
    {strokesFor(n).filter(s=>s.visible&&s.width>0&&s.paint.visible).reverse().map(s=><Stroke key={s.id} n={n} s={s} id={`stroke-${n.id}-${s.id}`}/>)}</>;
-  return <g key={n.id} data-node-id={n.id} aria-label={n.name} onPointerDown={onNode?e=>{e.stopPropagation();onNode(e,n.id);}:undefined} opacity={n.opacity} transform={`translate(${n.x-(parent?.x??0)} ${n.y-(parent?.y??0)}) rotate(${n.rotation} ${n.width/2} ${n.height/2})`} filter={!outlines&&effectsFor(n).some(e=>e.visible)?`url(#fx${n.id})`:undefined} style={{mixBlendMode:n.blendMode as CSSProperties['mixBlendMode'],isolation:n.isolate?'isolate':undefined}}><g transform={n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined?`translate(${n.width/2} ${n.height/2}) scale(${(n.flipX?-1:1)*(n.motionScaleX??1)} ${(n.flipY?-1:1)*(n.motionScaleY??1)}) translate(${-n.width/2} ${-n.height/2})`:undefined}>
+  return <g key={n.id} data-node-id={n.id} aria-label={n.name} onPointerDown={e=>{if(onNode){e.stopPropagation();onNode(e,n.id);}else onInteraction?.(e,n.id,'pointerdown');}} onPointerUp={onInteraction?e=>onInteraction(e,n.id,'pointerup'):undefined} onClick={onInteraction?e=>onInteraction(e,n.id,'click'):undefined} onPointerEnter={onInteraction?e=>onInteraction(e,n.id,'pointerenter'):undefined} onPointerLeave={onInteraction?e=>onInteraction(e,n.id,'pointerleave'):undefined} opacity={n.opacity} transform={`translate(${n.x-(parent?.x??0)} ${n.y-(parent?.y??0)}) rotate(${n.rotation} ${n.width/2} ${n.height/2})`} filter={!outlines&&effectsFor(n).some(e=>e.visible)?`url(#fx${n.id})`:undefined} style={{mixBlendMode:n.blendMode as CSSProperties['mixBlendMode'],isolation:n.isolate?'isolate':undefined}}><g transform={n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined?`translate(${n.width/2} ${n.height/2}) scale(${(n.flipX?-1:1)*(n.motionScaleX??1)} ${(n.flipY?-1:1)*(n.motionScaleY??1)}) translate(${-n.width/2} ${-n.height/2})`:undefined}>
+   {onInteraction&&<rect width={n.width} height={n.height} fill="transparent" pointerEvents="all"/>}
    <g clipPath={n.type==='text'&&n.clip?`url(#local-clip-${n.id})`:undefined}>{content}</g>
    {!n.booleanOp&&<g clipPath={n.clip?`url(#local-clip-${n.id})`:undefined}>{(children.get(n.id)??[]).map(c=>render(c,n))}</g>}
   </g></g>;

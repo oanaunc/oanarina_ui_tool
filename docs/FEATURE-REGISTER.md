@@ -1,10 +1,10 @@
 # Oanarina UI Tool — feature register
 
-1860 individually named requirements. 1830 required baseline items; 30 later Oanarina improvements.
+1991 individually named requirements. 1961 required baseline items; 30 later Oanarina improvements.
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":642,"planned":1086,"partial":132}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
+Status: {"implemented":924,"planned":909,"partial":158}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -202,13 +202,13 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-06-013 | Previous viewport | planned | reference-verification-pending |
 | UI-06-014 | Next viewport | planned | reference-verification-pending |
 | UI-06-015 | Canvas scrollbars | planned | reference-verification-pending |
-| UI-06-016 | Canvas rulers | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-06-017 | Horizontal guides | planned | Not implemented in this preview. |
-| UI-06-018 | Vertical guides | planned | Not implemented in this preview. |
-| UI-06-019 | Move canvas guide | planned | reference-verification-pending |
-| UI-06-020 | Delete canvas guide | planned | reference-verification-pending |
-| UI-06-021 | Lock canvas guides | planned | reference-verification-pending |
-| UI-06-022 | Toggle canvas guide visibility | planned | reference-verification-pending |
+| UI-06-016 | Canvas rulers | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-06-017 | Horizontal guides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-06-018 | Vertical guides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-06-019 | Move canvas guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-06-020 | Delete canvas guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-06-021 | Lock canvas guides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-06-022 | Toggle canvas guide visibility | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-06-023 | Toggle pixel grid | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-06-024 | Toggle outlines | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-06-025 | Toggle frame names | planned | reference-verification-pending |
@@ -433,41 +433,47 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-12-034 | Set equal widths | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-12-035 | Set equal heights | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-12-036 | Smart duplicate with transform | planned | reference-verification-pending |
+| UI-12-037 | Custom rotation origin | planned | reference-verification-pending |
+| UI-12-038 | Scrub numeric property fields | planned | reference-verification-pending |
+| UI-12-039 | Adjust numeric scrubbing speed | planned | reference-verification-pending |
+| UI-12-040 | Align a single layer to parent | planned | reference-verification-pending |
+| UI-12-041 | Align a selected group to parent | planned | reference-verification-pending |
 
 ## Snapping and measurement
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-13-001 | Snap to pixel | planned | reference-verification-pending |
-| UI-13-002 | Snap to half pixel | planned | reference-verification-pending |
-| UI-13-003 | Snap to object edges | planned | reference-verification-pending |
-| UI-13-004 | Snap to object centers | planned | reference-verification-pending |
-| UI-13-005 | Snap to guide | planned | reference-verification-pending |
-| UI-13-006 | Snap to frame edge | planned | reference-verification-pending |
-| UI-13-007 | Snap to layout columns | planned | reference-verification-pending |
-| UI-13-008 | Snap to layout rows | planned | reference-verification-pending |
-| UI-13-009 | Snap to equal spacing | planned | reference-verification-pending |
-| UI-13-010 | Smart alignment guides | planned | reference-verification-pending |
-| UI-13-011 | Smart distance labels | planned | reference-verification-pending |
-| UI-13-012 | Measure to parent | planned | reference-verification-pending |
-| UI-13-013 | Measure to sibling | planned | reference-verification-pending |
-| UI-13-014 | Measure to arbitrary object | planned | reference-verification-pending |
-| UI-13-015 | Measure overlapping objects | planned | reference-verification-pending |
-| UI-13-016 | Measure object padding | planned | reference-verification-pending |
-| UI-13-017 | Measure object gap | planned | reference-verification-pending |
-| UI-13-018 | Show selected object coordinates | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-13-019 | Measurement units in pixels | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-13-020 | Measurement labels during resize | planned | reference-verification-pending |
-| UI-13-021 | Disable snapping temporarily | planned | reference-verification-pending |
-| UI-13-022 | Persistent snapping preference | planned | reference-verification-pending |
-| UI-13-023 | Show frame dimensions | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-13-001 | Snap to pixel | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-002 | Snap to half pixel | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-003 | Snap to object edges | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-004 | Snap to object centers | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-005 | Snap to guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-006 | Snap to frame edge | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-007 | Snap to layout columns | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-008 | Snap to layout rows | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-009 | Snap to equal spacing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-010 | Smart alignment guides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-011 | Smart distance labels | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-012 | Measure to parent | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-013 | Measure to sibling | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-014 | Measure to arbitrary object | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-015 | Measure overlapping objects | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-016 | Measure object padding | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-017 | Measure object gap | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-018 | Show selected object coordinates | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-019 | Measurement units in pixels | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-020 | Measurement labels during resize | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-021 | Disable snapping temporarily | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-022 | Persistent snapping preference | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-023 | Show frame dimensions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
 | UI-13-024 | Show rotation while rotating | planned | reference-verification-pending |
-| UI-13-025 | Show equal spacing while moving | planned | reference-verification-pending |
+| UI-13-025 | Show equal spacing while moving | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
 | UI-13-026 | Fine pointer adjustment | planned | reference-verification-pending |
-| UI-13-027 | Keyboard coordinate entry | planned | reference-verification-pending |
-| UI-13-028 | Position arithmetic expressions | planned | reference-verification-pending |
-| UI-13-029 | Dimension arithmetic expressions | planned | reference-verification-pending |
-| UI-13-030 | Device pixel alignment | planned | reference-verification-pending |
+| UI-13-027 | Keyboard coordinate entry | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-028 | Position arithmetic expressions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-029 | Dimension arithmetic expressions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Measurements use transformed axis-aligned bounds; arbitrary angled guide snapping is excluded. Inspector fields accept parsed arithmetic and relative +/* operations; multi-selection uses the primary value. |
+| UI-13-030 | Device pixel alignment | partial | Whole/half design-pixel alignment works; physical-device-pixel alignment across scale factors is incomplete. |
+| UI-13-031 | Snap vector points to geometry | planned | reference-verification-pending |
 
 ## Vector pen and editing
 
@@ -493,8 +499,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-14-018 | Multi-select vector points | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-019 | Marquee vector points | planned | reference-verification-pending |
 | UI-14-020 | Vector point coordinates | planned | reference-verification-pending |
-| UI-14-021 | Join vector endpoints | planned | reference-verification-pending |
-| UI-14-022 | Split vector path | planned | reference-verification-pending |
+| UI-14-021 | Join vector endpoints | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Endpoint joins accept two open sibling layers or two selected endpoints. Splitting keeps separate contours in one layer; point transforms normalize bounds. |
+| UI-14-022 | Split vector path | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Endpoint joins accept two open sibling layers or two selected endpoints. Splitting keeps separate contours in one layer; point transforms normalize bounds. |
 | UI-14-023 | Reverse path direction | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-024 | Open closed path | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-025 | Bend tool | planned | reference-verification-pending |
@@ -509,6 +515,18 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-14-034 | Outline vector stroke | planned | reference-verification-pending |
 | UI-14-035 | Simplify vector path | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-036 | Paste SVG path data | planned | reference-verification-pending |
+| UI-14-037 | Smooth join vector endpoints | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Endpoint joins accept two open sibling layers or two selected endpoints. Splitting keeps separate contours in one layer; point transforms normalize bounds. |
+| UI-14-038 | Delete vector points and heal path | partial | Delete-and-heal uses tangent-preserving cubic approximation. Exact Figma curve fitting is not claimed. |
+| UI-14-039 | Offset vector path | planned | reference-verification-pending |
+| UI-14-040 | Offset distance control | planned | reference-verification-pending |
+| UI-14-041 | Offset square or round joins | planned | reference-verification-pending |
+| UI-14-042 | Vector cut tool | planned | reference-verification-pending |
+| UI-14-043 | Slice vectors into separate layers | planned | reference-verification-pending |
+| UI-14-044 | Vector eraser tool | planned | reference-verification-pending |
+| UI-14-045 | Vector eraser size and shape | planned | reference-verification-pending |
+| UI-14-046 | Move or resize a selected point group | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Endpoint joins accept two open sibling layers or two selected endpoints. Splitting keeps separate contours in one layer; point transforms normalize bounds. |
+| UI-14-047 | Rotate a selected point group | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Endpoint joins accept two open sibling layers or two selected endpoints. Splitting keeps separate contours in one layer; point transforms normalize bounds. |
+| UI-14-048 | Switch vector layer while editing | planned | reference-verification-pending |
 
 ## Boolean geometry
 
@@ -575,6 +593,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-16-034 | Illustration mode toolbar | planned | reference-verification-pending |
 | UI-16-035 | Radial repeat | planned | reference-verification-pending |
 | UI-16-036 | Linear repeat | planned | reference-verification-pending |
+| UI-16-037 | Stretch brush creation | planned | reference-verification-pending |
+| UI-16-038 | Scatter brush creation | planned | reference-verification-pending |
+| UI-16-039 | Sample a brush from canvas | planned | reference-verification-pending |
 
 ## Fills and colors
 
@@ -616,6 +637,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-17-034 | Mixed fill selection | planned | reference-verification-pending |
 | UI-17-035 | Selection colors panel | planned | reference-verification-pending |
 | UI-17-036 | Replace selection color | planned | reference-verification-pending |
+| UI-17-037 | Shader fill assignment | planned | reference-verification-pending |
+| UI-17-038 | Shader fill parameter controls | planned | reference-verification-pending |
+| UI-17-039 | Shader fill stacking | planned | reference-verification-pending |
 
 ## Strokes
 
@@ -651,6 +675,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-18-028 | Stroke scale behavior | planned | reference-verification-pending |
 | UI-18-029 | Per-point stroke width | planned | reference-verification-pending |
 | UI-18-030 | Stroke variable binding | planned | reference-verification-pending |
+| UI-18-031 | Shader stroke assignment | planned | reference-verification-pending |
 
 ## Effects and compositing
 
@@ -692,6 +717,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-19-034 | Layer opacity | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-19-035 | Group isolation | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
 | UI-19-036 | Backdrop filter clipping | planned | reference-verification-pending |
+| UI-19-037 | Shader effect assignment | planned | reference-verification-pending |
+| UI-19-038 | Shader effect parameter controls | planned | reference-verification-pending |
+| UI-19-039 | Shader effect stacking | planned | reference-verification-pending |
+| UI-19-040 | Shader texture clipping to layer | planned | reference-verification-pending |
+| UI-19-041 | Shader version update indicator | planned | reference-verification-pending |
 
 ## Images and media
 
@@ -744,10 +774,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-21-004 | Text content inspector | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-005 | Font family selection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-006 | Font family search | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-21-007 | Font style selection | partial | Single-style synthetic italic and line spacing justification exist. Real italic assets, mixed ranges, complex-script shaping and paragraph-level reference fidelity remain incomplete. |
+| UI-21-007 | Font style selection | partial | Normal/italic faces and numeric weights are available; comprehensive named font-face/style discovery and matching remain incomplete. |
 | UI-21-008 | Font weight | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-009 | Font size | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-21-010 | Font size arithmetic | planned | reference-verification-pending |
+| UI-21-010 | Font size arithmetic | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-21-011 | Line height | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-012 | Letter spacing | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-013 | Paragraph spacing | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
@@ -769,11 +799,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-21-029 | Text background | planned | Not implemented in this preview. |
 | UI-21-030 | Text opacity | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-031 | Text rotation | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-21-032 | Mixed text properties | planned | reference-verification-pending |
-| UI-21-033 | Character-level styling | planned | reference-verification-pending |
+| UI-21-032 | Mixed text properties | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Select character ranges in the inspector; mixed styles render and persist with style-preserving clipboard. Paragraph-level styling is separate and absent. |
+| UI-21-033 | Character-level styling | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Select character ranges in the inspector; mixed styles render and persist with style-preserving clipboard. Paragraph-level styling is separate and absent. |
 | UI-21-034 | Paragraph-level styling | planned | reference-verification-pending |
-| UI-21-035 | Font fallback warning | planned | reference-verification-pending |
-| UI-21-036 | Missing font replacement | planned | reference-verification-pending |
+| UI-21-035 | Font fallback warning | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic font styles, missing-family badge and document-wide replacement. Style-specific missing-face auditing is incomplete. |
+| UI-21-036 | Missing font replacement | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic font styles, missing-family badge and document-wide replacement. Style-specific missing-face auditing is incomplete. |
 
 ## Advanced typography
 
@@ -793,21 +823,21 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-22-012 | Bulleted lists | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
 | UI-22-013 | Nested lists | planned | reference-verification-pending |
 | UI-22-014 | List indentation | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
-| UI-22-015 | Text links | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
-| UI-22-016 | Link editing | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
-| UI-22-017 | OpenType ligatures | planned | reference-verification-pending |
-| UI-22-018 | OpenType alternates | planned | reference-verification-pending |
-| UI-22-019 | Stylistic sets | planned | reference-verification-pending |
-| UI-22-020 | Variable font axes | planned | reference-verification-pending |
-| UI-22-021 | Optical sizing | planned | reference-verification-pending |
-| UI-22-022 | Tabular numerals | planned | reference-verification-pending |
-| UI-22-023 | Proportional numerals | planned | reference-verification-pending |
-| UI-22-024 | Fractions | planned | reference-verification-pending |
-| UI-22-025 | Kerning | planned | reference-verification-pending |
+| UI-22-015 | Text links | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-016 | Link editing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-017 | OpenType ligatures | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-018 | OpenType alternates | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-019 | Stylistic sets | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-020 | Variable font axes | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-021 | Optical sizing | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-022 | Tabular numerals | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-023 | Proportional numerals | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-024 | Fractions | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
+| UI-22-025 | Kerning | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
 | UI-22-026 | Text selection color display | planned | reference-verification-pending |
-| UI-22-027 | Copy text content | planned | reference-verification-pending |
-| UI-22-028 | Paste text with style | planned | reference-verification-pending |
-| UI-22-029 | Paste text without style | planned | reference-verification-pending |
+| UI-22-027 | Copy text content | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-028 | Paste text with style | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-029 | Paste text without style | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
 | UI-22-030 | Text style creation | planned | reference-verification-pending |
 | UI-22-031 | Text style editing | planned | reference-verification-pending |
 | UI-22-032 | Text style detachment | planned | reference-verification-pending |
@@ -819,6 +849,21 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-22-038 | Multilingual font fallback | planned | reference-verification-pending |
 | UI-22-039 | Text on curve baseline | planned | reference-verification-pending |
 | UI-22-040 | Text accessibility description | planned | reference-verification-pending |
+| UI-22-041 | Smart quotation and symbol substitution | planned | reference-verification-pending |
+| UI-22-042 | Emoji colon-code completion | planned | reference-verification-pending |
+| UI-22-043 | Text vertical trim | planned | reference-verification-pending |
+| UI-22-044 | Balanced and pretty text wrapping | planned | reference-verification-pending |
+| UI-22-045 | Hanging quotation marks | planned | reference-verification-pending |
+| UI-22-046 | Hanging list markers | planned | reference-verification-pending |
+| UI-22-047 | List item spacing | planned | reference-verification-pending |
+| UI-22-048 | Underline style control | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-049 | Underline thickness | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-050 | Underline offset | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-051 | Underline skip ink | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-052 | Underline color | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
+| UI-22-053 | OpenType feature previews | planned | reference-verification-pending |
+| UI-22-054 | Type settings tabs | planned | reference-verification-pending |
+| UI-22-055 | Line-height unit conversion | planned | reference-verification-pending |
 
 ## Constraints and resizing
 
@@ -935,36 +980,36 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-26-001 | Uniform square grid | planned | reference-verification-pending |
-| UI-26-002 | Column layout guide | planned | reference-verification-pending |
-| UI-26-003 | Row layout guide | planned | reference-verification-pending |
-| UI-26-004 | Guide count | planned | reference-verification-pending |
-| UI-26-005 | Guide color | planned | reference-verification-pending |
-| UI-26-006 | Guide opacity | planned | reference-verification-pending |
-| UI-26-007 | Guide gutter | planned | reference-verification-pending |
-| UI-26-008 | Guide margin | planned | reference-verification-pending |
-| UI-26-009 | Guide fixed width | planned | reference-verification-pending |
-| UI-26-010 | Guide stretch width | planned | reference-verification-pending |
-| UI-26-011 | Guide center alignment | planned | reference-verification-pending |
-| UI-26-012 | Guide left alignment | planned | reference-verification-pending |
-| UI-26-013 | Guide right alignment | planned | reference-verification-pending |
-| UI-26-014 | Guide top alignment | planned | reference-verification-pending |
-| UI-26-015 | Guide bottom alignment | planned | reference-verification-pending |
-| UI-26-016 | Multiple layout guides | planned | reference-verification-pending |
-| UI-26-017 | Toggle individual guide | planned | reference-verification-pending |
-| UI-26-018 | Remove layout guide | planned | reference-verification-pending |
-| UI-26-019 | Duplicate layout guide | planned | reference-verification-pending |
-| UI-26-020 | Layout guide style | planned | reference-verification-pending |
-| UI-26-021 | Apply layout guide style | planned | reference-verification-pending |
-| UI-26-022 | Edit layout guide style | planned | reference-verification-pending |
-| UI-26-023 | Detach layout guide style | planned | reference-verification-pending |
-| UI-26-024 | Layout guide constraints | planned | reference-verification-pending |
-| UI-26-025 | Grid visibility shortcut | planned | reference-verification-pending |
-| UI-26-026 | Guide override in instance | planned | reference-verification-pending |
-| UI-26-027 | Per-frame layout guides | planned | reference-verification-pending |
-| UI-26-028 | Guide offset | planned | reference-verification-pending |
-| UI-26-029 | Export guides option | planned | reference-verification-pending |
-| UI-26-030 | Nested frame guide visibility | planned | reference-verification-pending |
+| UI-26-001 | Uniform square grid | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-002 | Column layout guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-003 | Row layout guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-004 | Guide count | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-005 | Guide color | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-006 | Guide opacity | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-007 | Guide gutter | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-008 | Guide margin | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-009 | Guide fixed width | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-010 | Guide stretch width | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-011 | Guide center alignment | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-012 | Guide left alignment | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-013 | Guide right alignment | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-014 | Guide top alignment | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-015 | Guide bottom alignment | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-016 | Multiple layout guides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-017 | Toggle individual guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-018 | Remove layout guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-019 | Duplicate layout guide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-020 | Layout guide style | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-021 | Apply layout guide style | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-022 | Edit layout guide style | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-023 | Detach layout guide style | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-024 | Layout guide constraints | partial | Guide geometry participates in snapping; child constraints to individual grid tracks are not implemented. |
+| UI-26-025 | Grid visibility shortcut | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-026 | Guide override in instance | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-027 | Per-frame layout guides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-028 | Guide offset | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-029 | Export guides option | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
+| UI-26-030 | Nested frame guide visibility | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Frame guides, style links, instance override preservation, nested visibility and optional SVG/PNG/JPEG export. |
 
 ## Components
 
@@ -1132,174 +1177,174 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-31-001 | Prototype mode canvas | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-002 | Create navigation link | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-003 | Remove prototype link | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-004 | Link from child layer | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-005 | Link from frame | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-006 | Link to frame | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-007 | Link to section | planned | reference-verification-pending |
-| UI-31-008 | Connection handle | planned | reference-verification-pending |
-| UI-31-009 | Connection path display | planned | reference-verification-pending |
-| UI-31-010 | Select connection | planned | reference-verification-pending |
-| UI-31-011 | Starting flow point | planned | reference-verification-pending |
-| UI-31-012 | Name prototype flow | planned | reference-verification-pending |
-| UI-31-013 | Multiple starting flows | planned | reference-verification-pending |
-| UI-31-014 | Reorder flows | planned | reference-verification-pending |
-| UI-31-015 | Flow description | planned | reference-verification-pending |
+| UI-31-001 | Prototype mode canvas | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-002 | Create navigation link | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-003 | Remove prototype link | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-004 | Link from child layer | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-005 | Link from frame | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-006 | Link to frame | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-007 | Link to section | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-008 | Connection handle | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-009 | Connection path display | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-010 | Select connection | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-011 | Starting flow point | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-012 | Name prototype flow | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-013 | Multiple starting flows | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-014 | Reorder flows | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-015 | Flow description | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
 | UI-31-016 | Flow link copying | planned | reference-verification-pending |
-| UI-31-017 | Navigate-to action | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-018 | Back action | planned | reference-verification-pending |
-| UI-31-019 | Open-link action | planned | reference-verification-pending |
-| UI-31-020 | Open-overlay action | planned | reference-verification-pending |
-| UI-31-021 | Swap-overlay action | planned | reference-verification-pending |
-| UI-31-022 | Close-overlay action | planned | reference-verification-pending |
-| UI-31-023 | Scroll-to action | planned | reference-verification-pending |
-| UI-31-024 | Change-to-variant action | planned | reference-verification-pending |
-| UI-31-025 | Set-variable action | planned | reference-verification-pending |
-| UI-31-026 | Conditional action | planned | reference-verification-pending |
-| UI-31-027 | Multiple actions on trigger | planned | reference-verification-pending |
-| UI-31-028 | Prototype link inspection | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-31-029 | Prototype connection search | planned | reference-verification-pending |
-| UI-31-030 | Broken destination warning | planned | Not implemented in this preview. |
+| UI-31-017 | Navigate-to action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-018 | Back action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-019 | Open-link action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-020 | Open-overlay action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-021 | Swap-overlay action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-022 | Close-overlay action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-023 | Scroll-to action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-024 | Change-to-variant action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-025 | Set-variable action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-026 | Conditional action | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-027 | Multiple actions on trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-028 | Prototype link inspection | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
+| UI-31-029 | Prototype connection search | partial | Search covers top-level destinations; nested conditional destinations are validated but not fully indexed. |
+| UI-31-030 | Broken destination warning | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Section destinations resolve to their first prototype frame. Named flows and visible canvas connections are local. |
 
 ## Prototype triggers
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-32-001 | On-click trigger | planned | reference-verification-pending |
-| UI-32-002 | On-drag trigger | planned | reference-verification-pending |
-| UI-32-003 | While-hovering trigger | planned | reference-verification-pending |
-| UI-32-004 | While-pressing trigger | planned | reference-verification-pending |
-| UI-32-005 | Mouse-enter trigger | planned | reference-verification-pending |
-| UI-32-006 | Mouse-leave trigger | planned | reference-verification-pending |
-| UI-32-007 | Mouse-down trigger | planned | reference-verification-pending |
-| UI-32-008 | Mouse-up trigger | planned | reference-verification-pending |
-| UI-32-009 | After-delay trigger | planned | reference-verification-pending |
-| UI-32-010 | Key-down trigger | planned | reference-verification-pending |
-| UI-32-011 | Gamepad trigger | planned | reference-verification-pending |
-| UI-32-012 | Touch interaction support | planned | reference-verification-pending |
-| UI-32-013 | Scroll interaction support | planned | reference-verification-pending |
-| UI-32-014 | Trigger delay | planned | reference-verification-pending |
-| UI-32-015 | Keyboard key picker | planned | reference-verification-pending |
-| UI-32-016 | Modifier key triggers | planned | reference-verification-pending |
-| UI-32-017 | Multiple trigger combinations | planned | reference-verification-pending |
-| UI-32-018 | Trigger duplication | planned | reference-verification-pending |
-| UI-32-019 | Trigger removal | planned | reference-verification-pending |
-| UI-32-020 | Trigger ordering | planned | reference-verification-pending |
+| UI-32-001 | On-click trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-002 | On-drag trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-003 | While-hovering trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-004 | While-pressing trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-005 | Mouse-enter trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-006 | Mouse-leave trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-007 | Mouse-down trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-008 | Mouse-up trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-009 | After-delay trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-010 | Key-down trigger | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-011 | Gamepad trigger | partial | Gamepad input and touch pointer paths are implemented; automated simulated gamepad/pointer checks do not establish physical controller and all native-device acceptance. |
+| UI-32-012 | Touch interaction support | partial | Gamepad input and touch pointer paths are implemented; automated simulated gamepad/pointer checks do not establish physical controller and all native-device acceptance. |
+| UI-32-013 | Scroll interaction support | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-014 | Trigger delay | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-015 | Keyboard key picker | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-016 | Modifier key triggers | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-017 | Multiple trigger combinations | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-018 | Trigger duplication | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-019 | Trigger removal | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-32-020 | Trigger ordering | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 
 ## Prototype animation and overlays
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-33-001 | Instant transition | planned | reference-verification-pending |
-| UI-33-002 | Dissolve transition | planned | reference-verification-pending |
-| UI-33-003 | Smart animate transition | planned | reference-verification-pending |
-| UI-33-004 | Move-in transition | planned | reference-verification-pending |
-| UI-33-005 | Move-out transition | planned | reference-verification-pending |
-| UI-33-006 | Push transition | planned | reference-verification-pending |
-| UI-33-007 | Slide-in transition | planned | reference-verification-pending |
-| UI-33-008 | Slide-out transition | planned | reference-verification-pending |
-| UI-33-009 | Animation duration | planned | reference-verification-pending |
-| UI-33-010 | Linear easing | planned | reference-verification-pending |
-| UI-33-011 | Ease-in easing | planned | reference-verification-pending |
-| UI-33-012 | Ease-out easing | planned | reference-verification-pending |
-| UI-33-013 | Ease-in-out easing | planned | reference-verification-pending |
-| UI-33-014 | Custom bezier easing | planned | reference-verification-pending |
-| UI-33-015 | Spring easing | planned | reference-verification-pending |
-| UI-33-016 | Match layers for animation | planned | reference-verification-pending |
-| UI-33-017 | Preserve scroll on navigation | planned | reference-verification-pending |
-| UI-33-018 | Reset component state on navigation | planned | reference-verification-pending |
-| UI-33-019 | Overlay center placement | planned | reference-verification-pending |
-| UI-33-020 | Overlay manual placement | planned | reference-verification-pending |
-| UI-33-021 | Overlay background color | planned | reference-verification-pending |
-| UI-33-022 | Overlay background opacity | planned | reference-verification-pending |
-| UI-33-023 | Close overlay on outside click | planned | reference-verification-pending |
-| UI-33-024 | Overlay overflow | planned | reference-verification-pending |
-| UI-33-025 | Nested overlays | planned | reference-verification-pending |
-| UI-33-026 | Overlay animation direction | planned | reference-verification-pending |
-| UI-33-027 | Smart animate rotation | planned | reference-verification-pending |
-| UI-33-028 | Smart animate opacity | planned | reference-verification-pending |
-| UI-33-029 | Smart animate size | planned | reference-verification-pending |
-| UI-33-030 | Smart animate fill | planned | reference-verification-pending |
-| UI-33-031 | Animation interruption | planned | reference-verification-pending |
-| UI-33-032 | Animation replay | planned | reference-verification-pending |
+| UI-33-001 | Instant transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-002 | Dissolve transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-003 | Smart animate transition | partial | Smart animate and interrupted transitions work for supported matched properties. Arbitrary topology/effect/text morphs and exact interruption semantics remain incomplete. |
+| UI-33-004 | Move-in transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-005 | Move-out transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-006 | Push transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-007 | Slide-in transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-008 | Slide-out transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-009 | Animation duration | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-010 | Linear easing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-011 | Ease-in easing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-012 | Ease-out easing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-013 | Ease-in-out easing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-014 | Custom bezier easing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-015 | Spring easing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-016 | Match layers for animation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-017 | Preserve scroll on navigation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-018 | Reset component state on navigation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-019 | Overlay center placement | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-020 | Overlay manual placement | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-021 | Overlay background color | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-022 | Overlay background opacity | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-023 | Close overlay on outside click | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-024 | Overlay overflow | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-025 | Nested overlays | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-026 | Overlay animation direction | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-027 | Smart animate rotation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-028 | Smart animate opacity | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-029 | Smart animate size | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-030 | Smart animate fill | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
+| UI-33-031 | Animation interruption | partial | Smart animate and interrupted transitions work for supported matched properties. Arbitrary topology/effect/text morphs and exact interruption semantics remain incomplete. |
+| UI-33-032 | Animation replay | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Compatible image/gradient/solid paint stacks and name-path matching are supported; see PROTOTYPES.md for scope. |
 
 ## Advanced prototype behavior
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-34-001 | Prototype variable state | planned | reference-verification-pending |
-| UI-34-002 | Set string variable | planned | reference-verification-pending |
-| UI-34-003 | Set number variable | planned | reference-verification-pending |
-| UI-34-004 | Set boolean variable | planned | reference-verification-pending |
-| UI-34-005 | Set color variable | planned | reference-verification-pending |
-| UI-34-006 | Variable expression editor | planned | reference-verification-pending |
-| UI-34-007 | Arithmetic expressions | planned | reference-verification-pending |
-| UI-34-008 | String expressions | planned | reference-verification-pending |
-| UI-34-009 | Boolean expressions | planned | reference-verification-pending |
-| UI-34-010 | Comparison expressions | planned | reference-verification-pending |
-| UI-34-011 | Logical expressions | planned | reference-verification-pending |
-| UI-34-012 | If branch | planned | reference-verification-pending |
-| UI-34-013 | Else-if branch | planned | reference-verification-pending |
-| UI-34-014 | Else branch | planned | reference-verification-pending |
-| UI-34-015 | Nested conditionals | planned | reference-verification-pending |
-| UI-34-016 | Multi-action ordering | planned | reference-verification-pending |
-| UI-34-017 | Reset variable state | planned | reference-verification-pending |
-| UI-34-018 | Interactive component state | planned | reference-verification-pending |
-| UI-34-019 | Nested interactive components | planned | reference-verification-pending |
+| UI-34-001 | Prototype variable state | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-002 | Set string variable | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-003 | Set number variable | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-004 | Set boolean variable | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-005 | Set color variable | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-006 | Variable expression editor | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-007 | Arithmetic expressions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-008 | String expressions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-009 | Boolean expressions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-010 | Comparison expressions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-011 | Logical expressions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-012 | If branch | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-013 | Else-if branch | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-014 | Else branch | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-015 | Nested conditionals | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-016 | Multi-action ordering | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-017 | Reset variable state | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-018 | Interactive component state | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-019 | Nested interactive components | partial | Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete. |
 | UI-34-020 | Form input simulation | planned | reference-verification-pending |
-| UI-34-021 | Checkbox simulation | planned | reference-verification-pending |
-| UI-34-022 | Radio control simulation | planned | reference-verification-pending |
-| UI-34-023 | Dropdown simulation | planned | reference-verification-pending |
-| UI-34-024 | Progress simulation | planned | reference-verification-pending |
-| UI-34-025 | Cart quantity simulation | planned | reference-verification-pending |
-| UI-34-026 | Conditional navigation | planned | reference-verification-pending |
-| UI-34-027 | Variable-bound text rendering | planned | reference-verification-pending |
-| UI-34-028 | Variable-bound layer visibility | planned | reference-verification-pending |
-| UI-34-029 | Variable-bound dimensions | planned | reference-verification-pending |
-| UI-34-030 | Expression validation | planned | reference-verification-pending |
+| UI-34-021 | Checkbox simulation | partial | Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete. |
+| UI-34-022 | Radio control simulation | partial | Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete. |
+| UI-34-023 | Dropdown simulation | partial | Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete. |
+| UI-34-024 | Progress simulation | partial | Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete. |
+| UI-34-025 | Cart quantity simulation | partial | Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete. |
+| UI-34-026 | Conditional navigation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-027 | Variable-bound text rendering | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-028 | Variable-bound layer visibility | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-029 | Variable-bound dimensions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
+| UI-34-030 | Expression validation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Else-if is authored by nesting a conditional in the else branch; expressions use a bounded parser, not eval. |
 
 ## Prototype presentation
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-35-001 | Present selected frame | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-35-002 | Present starting flow | planned | reference-verification-pending |
-| UI-35-003 | Presentation window | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-35-004 | Full-screen presentation | planned | reference-verification-pending |
-| UI-35-005 | Device frame selection | planned | reference-verification-pending |
-| UI-35-006 | Device orientation | planned | reference-verification-pending |
-| UI-35-007 | Device background | planned | reference-verification-pending |
-| UI-35-008 | Fit-to-screen scale | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-35-009 | Actual-size preview | planned | reference-verification-pending |
-| UI-35-010 | Fill-screen preview | planned | reference-verification-pending |
-| UI-35-011 | Preview hotspot hints | planned | reference-verification-pending |
-| UI-35-012 | Hide hotspot hints | planned | reference-verification-pending |
-| UI-35-013 | Prototype toolbar | planned | reference-verification-pending |
-| UI-35-014 | Previous frame | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-35-015 | Next frame | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-35-016 | Restart flow | planned | reference-verification-pending |
-| UI-35-017 | Back navigation | planned | Not implemented in this preview. |
-| UI-35-018 | Open external prototype link | planned | reference-verification-pending |
-| UI-35-019 | Keyboard navigation in preview | planned | Not implemented in this preview. |
-| UI-35-020 | Presentation frame picker | planned | Not implemented in this preview. |
+| UI-35-001 | Present selected frame | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-002 | Present starting flow | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-003 | Presentation window | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-004 | Full-screen presentation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-005 | Device frame selection | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
+| UI-35-006 | Device orientation | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
+| UI-35-007 | Device background | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-008 | Fit-to-screen scale | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-009 | Actual-size preview | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-010 | Fill-screen preview | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
+| UI-35-011 | Preview hotspot hints | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-012 | Hide hotspot hints | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-013 | Prototype toolbar | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-014 | Previous frame | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-015 | Next frame | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-016 | Restart flow | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-017 | Back navigation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-018 | Open external prototype link | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-019 | Keyboard navigation in preview | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-020 | Presentation frame picker | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-35-021 | Prototype comments | planned | reference-verification-pending |
 | UI-35-022 | Share prototype link | planned | reference-verification-pending |
 | UI-35-023 | Embed prototype | planned | reference-verification-pending |
 | UI-35-024 | Prototype password | planned | reference-verification-pending |
 | UI-35-025 | Prototype access permissions | planned | reference-verification-pending |
 | UI-35-026 | Mobile preview | planned | reference-verification-pending |
-| UI-35-027 | Fixed-position layers | planned | reference-verification-pending |
-| UI-35-028 | Sticky-position layers | planned | reference-verification-pending |
-| UI-35-029 | Horizontal scroll regions | planned | reference-verification-pending |
-| UI-35-030 | Vertical scroll regions | planned | reference-verification-pending |
-| UI-35-031 | Two-axis scroll regions | planned | reference-verification-pending |
-| UI-35-032 | Scroll overflow setting | planned | reference-verification-pending |
-| UI-35-033 | Scroll-to animation | planned | reference-verification-pending |
+| UI-35-027 | Fixed-position layers | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-028 | Sticky-position layers | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
+| UI-35-029 | Horizontal scroll regions | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
+| UI-35-030 | Vertical scroll regions | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
+| UI-35-031 | Two-axis scroll regions | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
+| UI-35-032 | Scroll overflow setting | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
+| UI-35-033 | Scroll-to animation | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
 | UI-35-034 | Prototype audio playback | planned | reference-verification-pending |
 | UI-35-035 | Prototype video playback | planned | reference-verification-pending |
-| UI-35-036 | Presentation reduced motion | planned | reference-verification-pending |
+| UI-35-036 | Presentation reduced motion | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 
 ## Comments and annotations
 
@@ -1446,7 +1491,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-39-022 | Preserve font properties across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
 | UI-39-023 | Preserve layout metadata across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
 | UI-39-024 | Preserve component identity across bridge | planned | reference-verification-pending |
-| UI-39-025 | Preserve prototype links across bridge | planned | reference-verification-pending |
+| UI-39-025 | Preserve prototype links across bridge | partial | Supported mouse/delay navigation, overlays, URL/back/scroll actions and standard/cubic transitions transfer through the bridge. Variable/condition/variant behavior and many input triggers are omitted with reports. Real connected API fixture passed; desktop plugin UI round trip remains unverified. |
 | UI-39-026 | Unsupported property report | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-027 | Missing font report | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-028 | Transfer validation errors | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
@@ -1618,6 +1663,14 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-43-028 | Widget interaction | planned | reference-verification-pending |
 | UI-43-029 | Widget property menu | planned | reference-verification-pending |
 | UI-43-030 | Widget permissions | planned | reference-verification-pending |
+| UI-43-031 | Shader discovery and filtering | planned | reference-verification-pending |
+| UI-43-032 | Shader source filtering | planned | reference-verification-pending |
+| UI-43-033 | Shader code inspection | planned | reference-verification-pending |
+| UI-43-034 | Generate shader fill with agent | planned | reference-verification-pending |
+| UI-43-035 | Generate shader effect with agent | planned | reference-verification-pending |
+| UI-43-036 | Edit shader with agent | planned | reference-verification-pending |
+| UI-43-037 | Generative plugin creation with agent | planned | reference-verification-pending |
+| UI-43-038 | Generative plugin prompt editing | planned | reference-verification-pending |
 
 ## Accessibility and localization
 
@@ -1688,6 +1741,28 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-45-028 | Usage analytics opt-in | planned | reference-verification-pending |
 | UI-45-029 | Reset preferences | planned | reference-verification-pending |
 | UI-45-030 | Preferences persistence | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-45-031 | Keep drawing tool selected preference | planned | reference-verification-pending |
+| UI-45-032 | Hover highlighting preference | planned | reference-verification-pending |
+| UI-45-033 | Rename duplicate layers preference | planned | reference-verification-pending |
+| UI-45-034 | Selection dimensions visibility preference | planned | reference-verification-pending |
+| UI-45-035 | Hide UI during property changes preference | planned | reference-verification-pending |
+| UI-45-036 | Smart quotes and symbols preference | planned | reference-verification-pending |
+| UI-45-037 | Flip objects while resizing preference | planned | reference-verification-pending |
+| UI-45-038 | Keyboard zoom targets selection preference | planned | reference-verification-pending |
+| UI-45-039 | Invert zoom direction preference | planned | reference-verification-pending |
+| UI-45-040 | Control-click context menu preference | planned | reference-verification-pending |
+| UI-45-041 | Number-key opacity preference | planned | reference-verification-pending |
+| UI-45-042 | Legacy outlines rendering preference | planned | reference-verification-pending |
+| UI-45-043 | Command-Option rotation preference | planned | reference-verification-pending |
+| UI-45-044 | AI audio notification preference | planned | reference-verification-pending |
+| UI-45-045 | Open design links in desktop preference | planned | reference-verification-pending |
+| UI-45-046 | Show Agents navigation preference | planned | reference-verification-pending |
+| UI-45-047 | Scroll wheel zoom preference | planned | reference-verification-pending |
+| UI-45-048 | Right-button drag panning preference | planned | reference-verification-pending |
+| UI-45-049 | Vector geometry snapping preference | planned | reference-verification-pending |
+| UI-45-050 | Object snapping preference | planned | reference-verification-pending |
+| UI-45-051 | Helper accessibility settings | planned | reference-verification-pending |
+| UI-45-052 | Helper permission settings | planned | reference-verification-pending |
 
 ## Teams accounts and administration
 
@@ -1769,77 +1844,77 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-48-001 | Create whiteboard file | planned | reference-verification-pending |
-| UI-48-002 | Infinite whiteboard | planned | reference-verification-pending |
-| UI-48-003 | Sticky notes | planned | reference-verification-pending |
-| UI-48-004 | Sticky note colors | planned | reference-verification-pending |
-| UI-48-005 | Sticky note text | planned | reference-verification-pending |
-| UI-48-006 | Sticky note author | planned | reference-verification-pending |
-| UI-48-007 | Freehand marker | planned | reference-verification-pending |
-| UI-48-008 | Highlighter | planned | reference-verification-pending |
-| UI-48-009 | Eraser | planned | reference-verification-pending |
-| UI-48-010 | Shape palette | planned | reference-verification-pending |
-| UI-48-011 | Shape text | planned | reference-verification-pending |
-| UI-48-012 | Straight connector | planned | reference-verification-pending |
-| UI-48-013 | Elbow connector | planned | reference-verification-pending |
-| UI-48-014 | Curved connector | planned | reference-verification-pending |
-| UI-48-015 | Connector arrowheads | planned | reference-verification-pending |
-| UI-48-016 | Connector labels | planned | reference-verification-pending |
-| UI-48-017 | Diagram sections | planned | reference-verification-pending |
-| UI-48-018 | Mind map creation | planned | reference-verification-pending |
-| UI-48-019 | Table creation | planned | reference-verification-pending |
-| UI-48-020 | Table rows | planned | reference-verification-pending |
-| UI-48-021 | Table columns | planned | reference-verification-pending |
-| UI-48-022 | Table cell editing | planned | reference-verification-pending |
-| UI-48-023 | Timer | planned | reference-verification-pending |
-| UI-48-024 | Voting session | planned | reference-verification-pending |
-| UI-48-025 | Stamps | planned | reference-verification-pending |
+| UI-48-001 | Create whiteboard file | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-002 | Infinite whiteboard | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-003 | Sticky notes | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-004 | Sticky note colors | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-005 | Sticky note text | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-006 | Sticky note author | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-007 | Freehand marker | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-008 | Highlighter | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-009 | Eraser | partial | Whole-stroke eraser, three-shape palette, persisted local timer/voting and ephemeral local laser work. General partial-stroke erasing, full FigJam shapes and shared sessions remain absent. |
+| UI-48-010 | Shape palette | partial | Whole-stroke eraser, three-shape palette, persisted local timer/voting and ephemeral local laser work. General partial-stroke erasing, full FigJam shapes and shared sessions remain absent. |
+| UI-48-011 | Shape text | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-012 | Straight connector | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-013 | Elbow connector | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-014 | Curved connector | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-015 | Connector arrowheads | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-016 | Connector labels | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-017 | Diagram sections | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-018 | Mind map creation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-019 | Table creation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-020 | Table rows | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-021 | Table columns | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-022 | Table cell editing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-023 | Timer | partial | Whole-stroke eraser, three-shape palette, persisted local timer/voting and ephemeral local laser work. General partial-stroke erasing, full FigJam shapes and shared sessions remain absent. |
+| UI-48-024 | Voting session | partial | Whole-stroke eraser, three-shape palette, persisted local timer/voting and ephemeral local laser work. General partial-stroke erasing, full FigJam shapes and shared sessions remain absent. |
+| UI-48-025 | Stamps | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
 | UI-48-026 | Emoji reactions | planned | reference-verification-pending |
 | UI-48-027 | Cursor chat | planned | reference-verification-pending |
-| UI-48-028 | Laser pointer | planned | reference-verification-pending |
+| UI-48-028 | Laser pointer | partial | Whole-stroke eraser, three-shape palette, persisted local timer/voting and ephemeral local laser work. General partial-stroke erasing, full FigJam shapes and shared sessions remain absent. |
 | UI-48-029 | Music session | planned | reference-verification-pending |
 | UI-48-030 | Templates | planned | reference-verification-pending |
 | UI-48-031 | Whiteboard widgets | planned | reference-verification-pending |
 | UI-48-032 | Code blocks | planned | reference-verification-pending |
-| UI-48-033 | Image placement | planned | reference-verification-pending |
+| UI-48-033 | Image placement | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
 | UI-48-034 | Link previews | planned | reference-verification-pending |
-| UI-48-035 | Whiteboard comments | planned | reference-verification-pending |
-| UI-48-036 | Whiteboard export | planned | reference-verification-pending |
+| UI-48-035 | Whiteboard comments | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
+| UI-48-036 | Whiteboard export | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
 
 ## Figma Slides presentations
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-49-001 | Create slide deck | planned | reference-verification-pending |
-| UI-49-002 | Slide thumbnail navigation | planned | reference-verification-pending |
-| UI-49-003 | Add slide | planned | reference-verification-pending |
-| UI-49-004 | Duplicate slide | planned | reference-verification-pending |
-| UI-49-005 | Delete slide | planned | reference-verification-pending |
-| UI-49-006 | Reorder slides | planned | reference-verification-pending |
-| UI-49-007 | Slide templates | planned | reference-verification-pending |
-| UI-49-008 | Slide themes | planned | reference-verification-pending |
-| UI-49-009 | Title slide | planned | reference-verification-pending |
-| UI-49-010 | Section slide | planned | reference-verification-pending |
-| UI-49-011 | Image slide | planned | reference-verification-pending |
-| UI-49-012 | Grid slide layout | planned | reference-verification-pending |
-| UI-49-013 | Editable slide text | planned | reference-verification-pending |
-| UI-49-014 | Slide shapes | planned | reference-verification-pending |
-| UI-49-015 | Slide components | planned | reference-verification-pending |
-| UI-49-016 | Slide notes | planned | reference-verification-pending |
-| UI-49-017 | Presenter view | planned | reference-verification-pending |
-| UI-49-018 | Audience view | planned | reference-verification-pending |
-| UI-49-019 | Presentation timer | planned | reference-verification-pending |
-| UI-49-020 | Slide transition | planned | reference-verification-pending |
+| UI-49-001 | Create slide deck | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-002 | Slide thumbnail navigation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-003 | Add slide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-004 | Duplicate slide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-005 | Delete slide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-006 | Reorder slides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-007 | Slide templates | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-008 | Slide themes | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-009 | Title slide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-010 | Section slide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-011 | Image slide | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-012 | Grid slide layout | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-013 | Editable slide text | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-014 | Slide shapes | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-015 | Slide components | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-016 | Slide notes | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-017 | Presenter view | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-018 | Audience view | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-019 | Presentation timer | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
+| UI-49-020 | Slide transition | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
 | UI-49-021 | Prototype embeds | planned | reference-verification-pending |
 | UI-49-022 | Video embeds | planned | reference-verification-pending |
 | UI-49-023 | Live polls | planned | reference-verification-pending |
-| UI-49-024 | Slide comments | planned | reference-verification-pending |
+| UI-49-024 | Slide comments | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
 | UI-49-025 | Collaborator presentation | planned | reference-verification-pending |
 | UI-49-026 | Deck sharing | planned | reference-verification-pending |
-| UI-49-027 | Slide export PDF | planned | reference-verification-pending |
-| UI-49-028 | Slide export images | planned | reference-verification-pending |
+| UI-49-027 | Slide export PDF | partial | Working locally generated PDF has one page per visible slide, using rendered 1.5x slide images. Vector/text PDF editability is not implemented. |
+| UI-49-028 | Slide export images | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
 | UI-49-029 | PowerPoint interchange | planned | reference-verification-pending |
-| UI-49-030 | Slide aspect ratio | planned | reference-verification-pending |
+| UI-49-030 | Slide aspect ratio | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
 
 ## Figma Sites publishing
 
@@ -1986,7 +2061,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-54-009 | No-account editing workflow | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-54-010 | Design health report | planned | reference-verification-pending |
 | UI-54-011 | Accessibility contrast audit | planned | reference-verification-pending |
-| UI-54-012 | Missing font audit | planned | reference-verification-pending |
+| UI-54-012 | Missing font audit | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Family audit includes character-range font families. |
 | UI-54-013 | Unused style audit | planned | reference-verification-pending |
 | UI-54-014 | Detached instance audit | planned | reference-verification-pending |
 | UI-54-015 | Duplicate color audit | planned | reference-verification-pending |
@@ -2035,13 +2110,13 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-55-023 | Font download progress | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-55-024 | Font download error handling | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-55-025 | Font family fallback | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-55-026 | Google catalog refresh command | planned | reference-verification-pending |
-| UI-55-027 | Font language filter | planned | reference-verification-pending |
-| UI-55-028 | Font favorites | planned | reference-verification-pending |
-| UI-55-029 | Font italic styles | planned | reference-verification-pending |
-| UI-55-030 | Local font file import | planned | reference-verification-pending |
-| UI-55-031 | Local font file export | planned | reference-verification-pending |
-| UI-55-032 | Missing font audit | planned | reference-verification-pending |
+| UI-55-026 | Google catalog refresh command | planned | Catalog refresh is a maintainer script with an explicit snapshot path; a user-facing live refresh command is not implemented. |
+| UI-55-027 | Font language filter | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic faces, language filtering, Google favorites, local TTF/OTF import/export and family audit. Embedding restrictions are honored; unsupported font formats are rejected. |
+| UI-55-028 | Font favorites | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic faces, language filtering, Google favorites, local TTF/OTF import/export and family audit. Embedding restrictions are honored; unsupported font formats are rejected. |
+| UI-55-029 | Font italic styles | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic faces, language filtering, Google favorites, local TTF/OTF import/export and family audit. Embedding restrictions are honored; unsupported font formats are rejected. |
+| UI-55-030 | Local font file import | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic faces, language filtering, Google favorites, local TTF/OTF import/export and family audit. Embedding restrictions are honored; unsupported font formats are rejected. |
+| UI-55-031 | Local font file export | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic faces, language filtering, Google favorites, local TTF/OTF import/export and family audit. Embedding restrictions are honored; unsupported font formats are rejected. |
+| UI-55-032 | Missing font audit | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic faces, language filtering, Google favorites, local TTF/OTF import/export and family audit. Embedding restrictions are honored; unsupported font formats are rejected. |
 
 ## Motion workspace and timeline
 
@@ -2107,6 +2182,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-56-058 | Animation loop export | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
 | UI-56-059 | Motion reduced-motion behavior | planned | reference-verification-pending |
 | UI-56-060 | Animated property reset | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-061 | Animated shader preview | planned | reference-verification-pending |
+| UI-56-062 | Interactive shader preview | planned | reference-verification-pending |
+| UI-56-063 | Shader parameter keyframes | planned | reference-verification-pending |
 
 ## Agents and code workspace
 
@@ -2132,6 +2210,21 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-57-018 | Code layer property controls | planned | reference-verification-pending |
 | UI-57-019 | Code layer preview | planned | reference-verification-pending |
 | UI-57-020 | Code layer source editing | planned | reference-verification-pending |
+| UI-57-021 | On-canvas agent prompt | planned | reference-verification-pending |
+| UI-57-022 | Agent prompt voice dictation | planned | reference-verification-pending |
+| UI-57-023 | Agent file and image attachments | planned | reference-verification-pending |
+| UI-57-024 | Agent library context | planned | reference-verification-pending |
+| UI-57-025 | Design-system mentions in agent prompts | planned | reference-verification-pending |
+| UI-57-026 | Parallel agent prompts | planned | reference-verification-pending |
+| UI-57-027 | Agent chat visibility controls | planned | reference-verification-pending |
+| UI-57-028 | Undo an agent change | planned | reference-verification-pending |
+| UI-57-029 | Detached desktop agent window | planned | reference-verification-pending |
+| UI-57-030 | Agent MCP connector context | planned | reference-verification-pending |
+| UI-57-031 | Reusable agent skills | planned | reference-verification-pending |
+| UI-57-032 | Agent web search | planned | reference-verification-pending |
+| UI-57-033 | Agent comment review | planned | reference-verification-pending |
+| UI-57-034 | Agent design critique | planned | reference-verification-pending |
+| UI-57-035 | Agent raster-to-vector conversion | planned | reference-verification-pending |
 
 ## Live interface verification additions
 
@@ -2150,13 +2243,56 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-58-011 | File-browser shared files tab | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-012 | File-browser shared folders tab | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-013 | File-browser AI prompt area | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-58-014 | Missing fonts button | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-58-014 | Missing fonts button | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Missing-font badge opens the document audit. |
 | UI-58-015 | Prototype view dropdown | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-016 | Multiplayer tools dropdown | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-017 | Frame preset archive | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-018 | Foldable device closed preset | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-019 | Foldable device open preset | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-020 | Motion timeline accessibility summary | planned | observed-in-signed-in-Figma-2026-10-29 |
+
+## Free local MCP integration
+
+| ID | Required behavior | Status | Verification / limits |
+| --- | --- | --- | --- |
+| UI-59-001 | Local stdio MCP server | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-002 | No-account MCP startup | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-003 | No API key requirement for local MCP | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-004 | No server usage charge or subscription | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-005 | Explicit selected-project scope | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-006 | Discoverable MCP tool schemas | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-007 | Project summary resource | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-008 | Inspect project metadata and revision | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-009 | Search and paginate project nodes | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-010 | Read complete saved document | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-011 | Read local design system through MCP | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-012 | Atomic document operation batches | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-013 | Validated complete document replacement | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-014 | Undo MCP transaction | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-015 | Validate selected project through MCP | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-016 | Export vector SVG through MCP | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-017 | SHA-256 revision preconditions | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-018 | Reject stale MCP writes | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-019 | Shared editor and MCP document validators | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-020 | Validate operations before mutation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-021 | Atomic temporary-file commit | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-022 | Exclusive per-project writer lock | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-023 | Reject project-file symlinks | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-024 | Canonicalize project parent directories | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-025 | Bound MCP inputs and responses | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-026 | Reject arbitrary filesystem paths in tools | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-027 | No shell or script evaluation | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-028 | No network listener for local server | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-029 | Propagate component and variable edits through MCP | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-030 | Offline saved-file MCP editing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Saved-file stdio server, nine tools, SDK client integration and standalone bundle checked. Vector-only SVG rejects raster/image dependencies and headless text measurement is approximate. |
+| UI-59-031 | Live editor document synchronization | planned | reference-verification-pending |
+| UI-59-032 | Live editor selection access | planned | reference-verification-pending |
+| UI-59-033 | Live editor screenshot capture | planned | reference-verification-pending |
+| UI-59-034 | MCP raster artwork export | planned | reference-verification-pending |
+| UI-59-035 | MCP image asset import | planned | reference-verification-pending |
+| UI-59-036 | MCP installed-font query | planned | reference-verification-pending |
+| UI-59-037 | Coordinate native editor and MCP writers | partial | MCP writers coordinate with an exclusive project lock; the native editor does not yet participate. Avoid editing the same file concurrently. |
+| UI-59-038 | Durable MCP undo history | partial | Last twenty transaction snapshots support undo in the running server; they are not persisted across restarts. |
 
 ## Reference starting points
 

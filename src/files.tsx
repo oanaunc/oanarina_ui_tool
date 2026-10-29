@@ -2,8 +2,10 @@ import {exportSelection,visualBounds} from './transforms';
 import {sampleMotion} from './motion';
 import {insertInstance} from './components-model';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {assetsForFamilies,fontCssForFamilies} from './fonts';
+import {assetsForUsage,fontCssForUsage,projectFontUsage,textFontUsage} from './fonts';
+import {serializeFontDocument} from './font-data';
 import {Artwork} from './components/Artwork';
+import {LayoutGuideOverlay} from './components/LayoutGuides';
 import {node,parseDocument} from './model';
 import type {DesignNode} from './model';
 import {currentPage,useEditor} from './store';
@@ -12,15 +14,15 @@ export async function download(name:string,data:string|Blob,mime='text/plain',sa
  if(window.desktop){const b=typeof data==='string'?data:await data.arrayBuffer().then(b=>{let s='';new Uint8Array(b).forEach(v=>s+=String.fromCharCode(v));return btoa(s);});return window.desktop.save(name,b,typeof data!=='string',saveAs);}
  const url=URL.createObjectURL(typeof data==='string'?new Blob([data],{type:mime}):data);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);return true;
 }
-export function serializedProject(){const s=useEditor.getState();return JSON.stringify({...s.doc,fonts:assetsForFamilies(s.doc.pages.flatMap(p=>p.nodes.filter(n=>n.type==='text').map(n=>n.fontFamily)))},null,2);}
+export function serializedProject(){const s=useEditor.getState();return serializeFontDocument(s.doc,assetsForUsage(projectFontUsage(s.doc),s.doc.fonts));}
 export async function saveProject(saveAs=false){try{const s=useEditor.getState();if(await download(s.doc.name+'.oui',serializedProject(),'application/json',saveAs))s.set({savedAt:s.doc.updatedAt,toast:'Project saved'});}catch(e){notifyError(e);}}
 export function notifyError(e:unknown){useEditor.getState().set({toast:e instanceof Error?e.message:'Something went wrong.'});}
 export async function openProject(){try{if(window.desktop){const raw=await window.desktop.open();if(raw)useEditor.getState().load(parseDocument(raw));}else pickFile('.oui,.json',async files=>useEditor.getState().load(parseDocument(await files[0].text())));}catch(e){notifyError(e);}}
-export function pickFile(accept:string,fn:(files:File[])=>void|Promise<void>){const input=document.createElement('input');input.type='file';input.accept=accept;input.multiple=accept.includes('image');input.onchange=()=>{if(input.files?.length)Promise.resolve(fn([...input.files])).catch(notifyError);};input.click();}
-export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number}){const b=viewport??visualBounds(nodes);return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width)}" height="${Math.ceil(b.height)}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForFamilies(nodes.filter(n=>n.type==='text').map(n=>n.fontFamily))}</style>${renderToStaticMarkup(<Artwork nodes={nodes}/>)}</svg>`;}
+export function pickFile(accept:string,fn:(files:File[])=>void|Promise<void>){const input=document.createElement('input');input.type='file';input.accept=accept;input.multiple=accept.includes('image');input.hidden=true;document.body.appendChild(input);input.onchange=()=>{const files=[...(input.files??[])];input.remove();if(files.length)Promise.resolve(fn(files)).catch(notifyError);};input.addEventListener('cancel',()=>input.remove(),{once:true});input.click();}
+export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number},includeGuides=false){const b=viewport??visualBounds(nodes);return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width)}" height="${Math.ceil(b.height)}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForUsage(textFontUsage(nodes),useEditor.getState().doc.fonts)}</style>${renderToStaticMarkup(<><Artwork nodes={nodes} hyperlinks/>{includeGuides&&<LayoutGuideOverlay nodes={nodes}/>}</>)}</svg>`;}
 export function exportNodes(){const s=useEditor.getState(),page=currentPage(),ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;return exportSelection(ns,s.selection);}
-export async function exportArtwork(format:'svg'|'png'|'jpg',scale=1){
- try{const s=useEditor.getState(),ns=exportNodes();if(!ns.length){s.set({toast:'Add a layer before exporting.'});return;}const b=visualBounds(ns),svg=exportSvg(ns),name=(ns.length===1?ns[0].name:s.doc.name);
+export async function exportArtwork(format:'svg'|'png'|'jpg',scale=1,includeGuides=false){
+ try{const s=useEditor.getState(),ns=exportNodes();if(!ns.length){s.set({toast:'Add a layer before exporting.'});return;}const b=visualBounds(ns),svg=exportSvg(ns,undefined,includeGuides),name=(ns.length===1?ns[0].name:s.doc.name);
  if(format==='svg'){await download(name+'.svg',svg,'image/svg+xml');return;}
  if(b.width*scale>16384||b.height*scale>16384||b.width*b.height*scale*scale>80_000_000)throw Error('Export is too large. Use a smaller scale or select fewer layers.');
  const image=new Image(),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));

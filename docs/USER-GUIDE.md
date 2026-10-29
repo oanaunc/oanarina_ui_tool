@@ -10,7 +10,7 @@ Open **Oanarina UI Tool.app** on Mac, or run `npm run dev` for the browser edito
 - Command-G groups, Command-Shift-G ungroups, Command-D duplicates. Command-Z undoes and Command-Shift-Z redoes. Object/Arrange menus expose further commands.
 - Select a container and choose Row/Stack/Grid in Auto layout. Gap, independent padding, fixed/hug/fill sizing, distribution and wrapping arrange children.
 - Create components through Object → Create component; Assets offers live instances. Resources → Components and variants manages descriptions, tags, properties and sets. Select an instance for override reset, swap, variant selection or main-component navigation.
-- In Prototype, choose a destination frame for a selected layer. Present and click that layer to navigate. This preview supports simple frame navigation.
+- In Prototype, choose a destination frame for a selected layer. Present and click that layer to navigate. Add interactions, transitions, overlays, variables and conditions; see [prototype controls and limits](PROTOTYPES.md).
 - Press C and click the canvas to add a local note. Comments can be resolved/reopened in View → Comments.
 - **Command-S** saves a portable `.oui`; Command-Shift-S saves a new copy. Recovery and recent files stay on this device, subject to storage limits. Use File → Save a named version for a local checkpoint.
 - Export a selected layer/subtree or the page through **Export**, as SVG, PNG or JPEG, at 1×–4×.
@@ -21,7 +21,7 @@ Open **Oanarina UI Tool.app** on Mac, or run `npm run dev` for the browser edito
 
 The source preview adds Text and Vector menus. Enter vector editing from the inspector; drag anchors/handles, Shift-select anchors, Alt-drag independent handles and double-click a segment to insert an anchor. Live booleans are under Vector/Object actions; expand their operands in Layers.
 
-Fill, Stroke and Effects support stacks with add, duplicate, visibility, reorder and remove controls. Expand an item to edit its parameters. Text resizing controls wrap or auto-size a single-style text node. Resizing and Auto layout sections provide constraints, hug/fill, size limits, independent padding, distribution and wrapping. These development features are not included in the older v0.1 website installer. See the [current validation report](VALIDATION-v0.2-systems-motion.md) for limits.
+Fill, Stroke and Effects support stacks with add, duplicate, visibility, reorder and remove controls. Expand an item to edit its parameters. Text resizing controls wrap or auto-size text nodes. Resizing and Auto layout sections provide constraints, hug/fill, size limits, independent padding, distribution and wrapping. These development features are not included in the older v0.1 website installer. See the [current validation report](VALIDATION-v0.2-prototypes-workspaces.md) for limits.
 
 ## Design systems and motion in 0.2.0-dev.2
 
@@ -34,3 +34,17 @@ Click **Motion** in the floating toolbar, or use View → Motion timeline. Selec
 Expand **Export animation** to choose GIF or an available video codec, scale, quality and transparency. Export reports progress and can be cancelled. GIF transparency is one-bit; video currently uses an opaque white background. Exports are limited to 1,800 frames, 4,096 pixels per edge and 8 megapixels. MP4/WebM depend on browser encoders and need broader Mac validation.
 
 Recovery and named versions now use a local IndexedDB database. The migration preserves old localStorage backups. Keep explicit `.oui` saves for portable backups; browser storage can still be evicted and an abrupt exit can precede the next recovery write.
+
+## Workspaces, typography and automation in 0.2.0-dev.3
+
+Start **New whiteboard** or **New presentation** from Home or File. Whiteboard adds sticky notes, connectors, tables, mind maps, drawings, stamps, a local timer and voting. Slides adds editable templates, themes, speaker notes, local presenter/audience views, PNG/ZIP and raster PDF. Read the [whiteboard](WHITEBOARD.md) and [Slides](SLIDES.md) guides for controls and remaining scope.
+
+**Character formatting** contains a selectable text editor for range formatting, mixed fonts/colors, links, underline appearance, numeric font axes/OpenType features and styled clipboard. Ordinary text edits keep ranges aligned. Font library also imports TTF/OTF files, filters languages, stores Google favorites and audits missing families. See [rich text](RICH-TEXT.md) and [font licenses/embedding](FONTS.md).
+
+Inspector X/Y/W/H and typography fields accept expressions such as `(40 + 20) * 3`, `+8` and `/2`. Arrow keys adjust the input, Shift multiplies the step by ten and Option by one tenth. Enter commits; Escape cancels the draft. Invalid expressions retain the previous value.
+
+Enable rulers with Shift-R; drag or add/move/remove guides through their controls. Frame Layout guides supports grids/rows/columns and reusable styles. Shift-G toggles layout-guide visibility. Guides & snapping controls object/center/frame/spacing/pixel snaps; Command temporarily bypasses snapping. Hold Option to measure to hovered artwork. The export panel can include visible layout guides.
+
+[Vector endpoint tools](VECTOR-OPERATIONS.md) join/split contours, heal removed anchors and transform selected point groups. Command-J joins two open sibling layers or selected endpoints; Shift-Command-J smooths the join. Healing remains an approximate curve fit.
+
+**Resources → Free local MCP automation** provides a standalone download and configuration for one saved `.oui` file. Save before automation and reopen afterward; live editor synchronization is not implemented. See [MCP setup](../mcp/README.md).

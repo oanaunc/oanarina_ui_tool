@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {"jsx": "react-jsx", "types": ["node"], "noUnusedLocals": false, "noUnusedParameters": false},
+  "include": ["../src/**/*.ts", "../src/**/*.tsx", "*.ts", "*.tsx", "tests/*.ts"]
+}

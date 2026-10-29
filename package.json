@@ -1,6 +1,6 @@
 {
   "name": "oanarina-ui-tool",
-  "version": "0.2.0-dev.2",
+  "version": "0.2.0-dev.3",
   "private": true,
   "description": "A local-first interface design studio for Mac",
   "author": "Oana Rinaldi",
@@ -9,7 +9,7 @@
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "node scripts/bundle-plugin.mjs && node scripts/build-command-registry.mjs && tsc -b && vite build",
+    "build": "node scripts/bundle-plugin.mjs && node scripts/bundle-mcp.mjs && node scripts/build-command-registry.mjs && tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "desktop": "bash scripts/build-mac.sh && open \"build/Oanarina UI Tool.app\"",
@@ -17,12 +17,18 @@
     "test:e2e": "playwright test",
     "inventory": "node scripts/inventory.mjs",
     "build:mac": "bash scripts/build-mac.sh",
-    "desktop:electron": "npm run build && electron ."
+    "desktop:electron": "npm run build && electron .",
+    "mcp:install": "npm ci --prefix mcp --ignore-scripts",
+    "mcp:test": "npm test --prefix mcp",
+    "mcp:check": "tsc -p mcp/tsconfig.json --noEmit",
+    "mcp:start": "node mcp/node_modules/tsx/dist/cli.mjs --tsconfig mcp/tsconfig.json mcp/server.ts",
+    "mcp:bundle": "node scripts/bundle-mcp.mjs"
   },
   "dependencies": {
     "gifenc": "^1.0.3",
     "lucide-react": "^0.577.0",
     "paper": "^0.16.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "zustand": "^5.0.8"
