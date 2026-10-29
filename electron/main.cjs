@@ -2,11 +2,11 @@ const {app,BrowserWindow,Menu,dialog,ipcMain,session}=require('electron');
 const fs=require('node:fs/promises');
 const path=require('node:path');
 let win,pendingFile=null;const projectPaths=new Map();
-app.setName('Oanarina UI Tool');
+app.setName('Forma');
 const send=async id=>{if(!win)return;const edit={copy:'copy',paste:'paste',cut:'cut',undo:'undo',redo:'redo','select-all':'selectAll'}[id];if(edit&&await win.webContents.executeJavaScript("!!document.activeElement?.closest('input,textarea,[contenteditable=true]')")){win.webContents[edit]();return;}win.webContents.send('command',id);};
 const item=(label,id,accelerator)=>({label,accelerator,click:()=>send(id)});
 function menu(){Menu.setApplicationMenu(Menu.buildFromTemplate([
- {label:app.name,submenu:[item('About Oanarina UI Tool','about'),{type:'separator'},item('Preferences…','theme'),{type:'separator'},{role:'services'},{type:'separator'},{role:'hide'},{role:'hideOthers'},{role:'unhide'},{type:'separator'},{role:'quit'}]},
+ {label:app.name,submenu:[item('About Forma','about'),{type:'separator'},item('Preferences…','theme'),{type:'separator'},{role:'services'},{type:'separator'},{role:'hide'},{role:'hideOthers'},{role:'unhide'},{type:'separator'},{role:'quit'}]},
  {label:'File',submenu:[item('New Design File','new','CmdOrCtrl+N'),item('Open Project…','open','CmdOrCtrl+O'),{type:'separator'},item('Save','save','CmdOrCtrl+S'),item('Save As…','save-as','CmdOrCtrl+Shift+S'),item('Place Image or SVG…','import','CmdOrCtrl+Shift+K'),item('Figma Import / Export…','figma'),{type:'separator'},item('Export…','export','CmdOrCtrl+Shift+E'),item('Save a Named Version…','snapshot'),item('Version History','history'),{type:'separator'},{role:'close'}]},
  {label:'Edit',submenu:[item('Undo','undo','CmdOrCtrl+Z'),item('Redo','redo','CmdOrCtrl+Shift+Z'),{type:'separator'},item('Cut','cut','CmdOrCtrl+X'),item('Copy','copy','CmdOrCtrl+C'),item('Paste','paste','CmdOrCtrl+V'),item('Duplicate','duplicate','CmdOrCtrl+D'),item('Delete','delete'),item('Select All','select-all','CmdOrCtrl+A'),item('Rename Layer…','rename','CmdOrCtrl+R')]},
  {label:'Object',submenu:[item('Group Selection','group','CmdOrCtrl+G'),item('Ungroup','ungroup','CmdOrCtrl+Shift+G'),item('Frame Selection','frame-selection','CmdOrCtrl+Alt+G'),item('Create Component','component','CmdOrCtrl+Alt+K'),item('Create Instance','instance'),item('Reset Instance','sync'),item('Detach Instance','detach'),item('Add Auto Layout','auto-layout'),{type:'separator'},item('Bring to Front','front','CmdOrCtrl+Alt+]'),item('Send to Back','back','CmdOrCtrl+Alt+['),item('Toggle Lock','lock','CmdOrCtrl+Shift+L'),item('Toggle Visibility','hide','CmdOrCtrl+Shift+H')]},

@@ -5,9 +5,9 @@ IDENTITY="${SIGNING_IDENTITY:-16B4420E76E5FB9B5EB8C984B5A54C07D7E8B739}"
 PROFILE="${NOTARY_PROFILE-oanarina-notary}"
 npm test
 ./scripts/build-mac.sh
-APP="build/Oanarina UI Tool.app"
+APP="build/Forma.app"
 VERSION="$(node -p 'JSON.parse(require("fs").readFileSync("package.json","utf8")).version')"
-DMG="release/Oanarina-UI-Tool-$VERSION.dmg"
+DMG="release/Forma-$VERSION.dmg"
 if [[ -e "$DMG" ]]; then
  printf 'Refusing to overwrite existing release: %s\n' "$DMG" >&2
  exit 1
@@ -29,10 +29,10 @@ if [[ -n "$PROFILE" ]]; then
 fi
 STAGE="$(mktemp -d build/dmg.XXXXXX)"
 trap 'rm -rf "$STAGE"' EXIT
-ditto "$APP" "$STAGE/Oanarina UI Tool.app"
+ditto "$APP" "$STAGE/Forma.app"
 ln -s /Applications "$STAGE/Applications"
 cp LICENSE "$STAGE/License.txt"
-hdiutil create -volname 'Oanarina UI Tool' -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+hdiutil create -volname 'Forma' -srcfolder "$STAGE" -ov -format UDZO "$DMG"
 codesign --force --sign "$IDENTITY" --timestamp "$DMG"
 if [[ -n "$PROFILE" ]]; then
  notarize "$DMG" build/notary-dmg.json
@@ -40,5 +40,5 @@ if [[ -n "$PROFILE" ]]; then
  spctl --assess --type execute --verbose=2 "$APP"
  spctl --assess --type open --context context:primary-signature --verbose=2 "$DMG"
 fi
-(cd release && shasum -a 256 "Oanarina-UI-Tool-$VERSION.dmg" > "SHA256SUMS-$VERSION.txt")
+(cd release && shasum -a 256 "Forma-$VERSION.dmg" > "SHA256SUMS-$VERSION.txt")
 ls -lh "$DMG"

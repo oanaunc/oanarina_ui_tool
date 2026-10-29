@@ -1,6 +1,6 @@
 # Getting started
 
-Open **Oanarina UI Tool.app** on Mac, or run `npm run dev` for the browser editor. The sample has editable desktop/mobile frames; click the home icon to start blank or reopen a recent local file.
+Open **Forma.app** on Mac, or run `npm run dev` for the browser editor. The sample has editable desktop/mobile frames; click the home icon to start blank or reopen a recent local file.
 
 - **V** move, **F** frame, **R** rectangle, **O** ellipse, **L** line, **Shift L** arrow, **T** text, **P** cubic pen, **Shift P** pencil, **H** hand, **K** scale, **C** comment. Shape dropdowns include polygon/star. **S** slice and **Shift S** section.
 - Drag to create; hold Shift for equal dimensions. Select layers from the canvas or left hierarchy. Shift-click extends selection. Drag a blank area for marquee selection.
@@ -66,3 +66,7 @@ Drag layer rows before/after a sibling or inside an eligible container; use the 
 Use the circle above a selection to rotate; Shift snaps, and Option-resize keeps the center fixed. Lock the aspect ratio beside the dimensions to preserve each selected layer’s own ratio. Single-layer alignment targets the parent; Shift alignment moves sibling selections as one group. [Transform scope](CANVAS-TRANSFORMS.md).
 
 Command-K searches actions and tools. Use category filters, arrows/Home/End and Enter; Recent retains the last 20 distinct command IDs. Escape closes without leaking keys to the canvas. [Action details](ACTIONS.md).
+
+## Grid, local library and Mac windows
+
+See [responsive grid tracks and cells](GRID-LAYOUT.md), [local file organization](LOCAL-FILES.md), and [Mac document windows](MAC-WINDOWS.md) for the new workflows, save/close safeguards and practical limits.

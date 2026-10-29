@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>Oanarina UI Tool</string>
+	<string>Forma</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -26,13 +26,13 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.oanarinaldi.uitool</string>
 	<key>CFBundleName</key>
-	<string>Oanarina UI Tool</string>
+	<string>Forma</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.2.0</string>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>7</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>NSHighResolutionCapable</key>

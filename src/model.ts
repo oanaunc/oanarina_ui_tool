@@ -1,3 +1,5 @@
+import {validateGrids} from './grid';
+import type {GridTrack,GridAlignment} from './grid';
 import {validateMasks} from './masks';
 import type {LayerMask} from './masks';
 import {validateRichTextDocument} from './rich-text';
@@ -37,7 +39,8 @@ export interface DesignNode {
   textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number; letterSpacing:number;
   path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
-  sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch';wrap?:boolean;
+  gridRows?:number;gridColumns?:GridTrack[];gridRowTracks?:GridTrack[];gridColumn?:number;gridRow?:number;gridColumnSpan?:number;gridRowSpan?:number;gridAlignX?:GridAlignment;gridAlignY?:GridAlignment;
+  sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch'|'baseline';wrap?:boolean;
   variableBindings?:Partial<Record<BindingField,string>>;variableModes?:Record<string,string>;styleIds?:Partial<Record<StyleKind,string>>;
   sourceId?:string;instanceRootId?:string;overrideKeys?:string[];componentKey?:string;componentMetadata?:ComponentMetadata;propertyValues?:Record<string,string|boolean>;
   layoutGuides?:LayoutGuide[];layoutGuideStyleId?:string;reactions?:PrototypeReaction[];prototypeScroll?:'none'|'horizontal'|'vertical'|'both';prototypePosition?:'normal'|'fixed'|'sticky';
@@ -96,7 +99,7 @@ export function parseDocument(raw:string):DesignDocument {
       for(const key of ['minWidth','maxWidth','minHeight','maxHeight','gapX','gapY'])if(n[key]!==undefined&&(!Number.isFinite(n[key])||Math.abs(n[key])>1e6||key.startsWith('min')&&n[key]<0||key.startsWith('max')&&n[key]<0))throw Error('Invalid layout dimension.');
       if(n.minWidth>n.maxWidth||n.minHeight>n.maxHeight)throw Error('Minimum size exceeds maximum.');
       if(n.paddings!==undefined&&(!Array.isArray(n.paddings)||n.paddings.length!==4||n.paddings.some((v:number)=>!Number.isFinite(v)||v<0||v>1e6)))throw Error('Invalid layout padding.');
-      for(const [key,values] of Object.entries({sizingX:['fixed','hug','fill'],sizingY:['fixed','hug','fill'],constraintX:['start','end','center','stretch','scale'],constraintY:['start','end','center','stretch','scale'],justifyContent:['start','center','end','space-between','space-around','space-evenly'],alignItems:['start','center','end','stretch']}))if(n[key]!==undefined&&!values.includes(n[key]))throw Error('Invalid layout setting.');
+      for(const [key,values] of Object.entries({sizingX:['fixed','hug','fill'],sizingY:['fixed','hug','fill'],constraintX:['start','end','center','stretch','scale'],constraintY:['start','end','center','stretch','scale'],justifyContent:['start','center','end','space-between','space-around','space-evenly'],alignItems:['start','center','end','stretch','baseline']}))if(n[key]!==undefined&&!values.includes(n[key]))throw Error('Invalid layout setting.');
       for(const key of ['wrap','ignoreLayout'])if(n[key]!==undefined&&typeof n[key]!=='boolean')throw Error('Invalid layout flag.');
       if(n.effects!==undefined){if(!Array.isArray(n.effects)||n.effects.length>100)throw Error('Invalid effect stack.');n.effects.forEach(validateEffect);}
       for(const k of ['aspectLocked','flipX','flipY','exportGhost'])if(n[k]!==undefined&&typeof n[k]!=='boolean')throw Error('Invalid rendering flag.');for(const k of ['motionScaleX','motionScaleY'])if(n[k]!==undefined&&(!Number.isFinite(n[k])||n[k]<0||n[k]>10000))throw Error('Invalid render scale.');
@@ -114,6 +117,6 @@ export function parseDocument(raw:string):DesignDocument {
   }
   if(!Array.isArray(d.colors)||d.colors.some((c:{name:string;value:string})=>typeof c.name!=='string'||!/^#[0-9a-f]{6}$/i.test(c.value)))throw Error('Invalid color styles.');
   if(d.fonts!==undefined){if(!Array.isArray(d.fonts)||d.fonts.length>500)throw Error('Invalid embedded fonts.');d.fonts.forEach(validateFontAsset);}
-  validateMasks(d);validateRichTextDocument(d);validateWhiteboard(d);validateSlides(d);validatePrototype(d);validateGuides(d);validateComponents(d);validateDesignSystems(d);validateMotionStyles(d.motionStyles);d.version=2;return d as DesignDocument;
+  validateGrids(d);validateMasks(d);validateRichTextDocument(d);validateWhiteboard(d);validateSlides(d);validatePrototype(d);validateGuides(d);validateComponents(d);validateDesignSystems(d);validateMotionStyles(d.motionStyles);d.version=2;return d as DesignDocument;
 }
 export const polygonPoints=(n:DesignNode)=>Array.from({length:n.type==='star'?10:6},(_,i)=>{const a=i*Math.PI*2/(n.type==='star'?10:6)-Math.PI/2,r=n.type==='star'&&i%2?0.43:1;return `${n.width/2+Math.cos(a)*n.width/2*r},${n.height/2+Math.sin(a)*n.height/2*r}`;}).join(' ');

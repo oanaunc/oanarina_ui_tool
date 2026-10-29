@@ -1,3 +1,6 @@
+import {openDocumentForEditing} from './repository';
+import {markDesktopSaved} from './desktop-lifecycle';
+import type {DesktopBootstrap,DesktopDocumentState} from './desktop-lifecycle';
 import {exportSelection,visualBounds} from './transforms';
 import {sampleMotion} from './motion';
 import {insertInstance} from './components-model';
@@ -10,15 +13,15 @@ import {node,parseDocument} from './model';
 import type {EditableSvgImport} from './svg-import';
 import type {DesignNode} from './model';
 import {currentPage,useEditor} from './store';
-declare global { interface Window {desktop?:{save:(name:string,data:string,base64?:boolean,saveAs?:boolean)=>Promise<boolean>;open:()=>Promise<string|null>;onCommand:(fn:(id:string)=>void)=>()=>void;fonts?:()=>Promise<string[]>;onDocument:(fn:(raw:string)=>void)=>()=>void;};} }
+declare global { interface Window {desktop?:{save:(name:string,data:string,base64?:boolean,saveAs?:boolean)=>Promise<boolean>;open:()=>Promise<string|null>;onCommand:(fn:(id:string)=>void)=>()=>void;fonts?:()=>Promise<string[]>;onDocument:(fn:(raw:string)=>boolean|Promise<boolean>)=>()=>void;newWindow?:(command?:string)=>Promise<boolean>;openDocument?:(raw:string)=>Promise<boolean>;openDocumentIds?:()=>Promise<string[]>;bootstrap?:()=>Promise<DesktopBootstrap>;ready?:()=>Promise<boolean>;reportDocument?:(state:DesktopDocumentState)=>Promise<boolean>;onSaveRequested?:(fn:()=>Promise<boolean>)=>()=>void;onStateRequested?:(fn:()=>DesktopDocumentState|Promise<DesktopDocumentState>)=>()=>void;};} }
 export async function download(name:string,data:string|Blob,mime='text/plain',saveAs=false){
  if(window.desktop){const b=typeof data==='string'?data:await data.arrayBuffer().then(b=>{let s='';new Uint8Array(b).forEach(v=>s+=String.fromCharCode(v));return btoa(s);});return window.desktop.save(name,b,typeof data!=='string',saveAs);}
  const url=URL.createObjectURL(typeof data==='string'?new Blob([data],{type:mime}):data);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);return true;
 }
 export function serializedProject(){const s=useEditor.getState();return serializeFontDocument(s.doc,assetsForUsage(projectFontUsage(s.doc),s.doc.fonts));}
-export async function saveProject(saveAs=false){try{const s=useEditor.getState();if(await download(s.doc.name+'.oui',serializedProject(),'application/json',saveAs))s.set({savedAt:s.doc.updatedAt,toast:'Project saved'});}catch(e){notifyError(e);}}
+export async function saveProject(saveAs=false):Promise<boolean>{try{const s=useEditor.getState(),doc=s.doc,raw=serializeFontDocument(doc,assetsForUsage(projectFontUsage(doc),doc.fonts));if(!await download(doc.name+'.oui',raw,'application/json',saveAs))return false;if(useEditor.getState().doc.id===doc.id)s.set({savedAt:doc.updatedAt,toast:'Project saved'});await markDesktopSaved(doc);return true;}catch(e){notifyError(e);return false;}}
 export function notifyError(e:unknown){useEditor.getState().set({toast:e instanceof Error?e.message:'Something went wrong.'});}
-export async function openProject(){try{if(window.desktop){const raw=await window.desktop.open();if(raw)useEditor.getState().load(parseDocument(raw));}else pickFile('.oui,.json',async files=>useEditor.getState().load(parseDocument(await files[0].text())));}catch(e){notifyError(e);}}
+export async function openProject(){const load=async(raw:string)=>{const opened=await openDocumentForEditing(parseDocument(raw));useEditor.getState().load(opened.document);if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});};try{if(window.desktop){const raw=await window.desktop.open();if(raw)await load(raw);}else pickFile('.oui,.json',async files=>load(await files[0].text()));}catch(e){notifyError(e);}}
 export function pickFile(accept:string,fn:(files:File[])=>void|Promise<void>){const input=document.createElement('input');input.type='file';input.accept=accept;input.multiple=accept.includes('image');input.hidden=true;document.body.appendChild(input);input.onchange=()=>{const files=[...(input.files??[])];input.remove();if(files.length)Promise.resolve(fn(files)).catch(notifyError);};input.addEventListener('cancel',()=>input.remove(),{once:true});input.click();}
 export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number},includeGuides=false){const b=viewport??visualBounds(nodes);return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width)}" height="${Math.ceil(b.height)}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForUsage(textFontUsage(nodes),useEditor.getState().doc.fonts)}</style>${renderToStaticMarkup(<><Artwork nodes={nodes} hyperlinks/>{includeGuides&&<LayoutGuideOverlay nodes={nodes}/>}</>)}</svg>`;}
 export function exportNodes(){const s=useEditor.getState(),page=currentPage(),ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;return exportSelection(ns,s.selection);}

@@ -1,6 +1,6 @@
 {
   "name": "oanarina-ui-tool",
-  "version": "0.2.0-dev.5",
+  "version": "0.2.0-dev.6",
   "private": true,
   "description": "A local-first interface design studio for Mac",
   "author": "Oana Rinaldi",
@@ -12,7 +12,7 @@
     "build": "node scripts/bundle-plugin.mjs && node scripts/bundle-mcp.mjs && node scripts/build-command-registry.mjs && tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
-    "desktop": "bash scripts/build-mac.sh && open \"build/Oanarina UI Tool.app\"",
+    "desktop": "bash scripts/build-mac.sh && open \"build/Forma.app\"",
     "package:mac": "bash scripts/package-mac.sh",
     "test:e2e": "playwright test",
     "inventory": "node scripts/inventory.mjs",
@@ -47,7 +47,7 @@
   },
   "build": {
     "appId": "com.oanarinaldi.uitool",
-    "productName": "Oanarina UI Tool",
+    "productName": "Forma",
     "directories": {
       "output": "release"
     },
@@ -67,7 +67,7 @@
       "minimumSystemVersion": "13.0.0"
     },
     "dmg": {
-      "title": "Oanarina UI Tool",
+      "title": "Forma",
       "contents": [
         {
           "x": 130,

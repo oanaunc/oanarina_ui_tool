@@ -1,0 +1,12 @@
+import {afterEach,describe,it,expect,vi} from 'vitest';
+import {blankDocument,node} from '../src/model';
+import {DesktopDocumentTracker,desktopDocuments,desktopDocumentState} from '../src/desktop-lifecycle';
+import {useEditor} from '../src/store';
+import {saveProject} from '../src/files';
+afterEach(()=>vi.unstubAllGlobals());
+describe('native document lifecycle',()=>{
+ it('clears dirty on undo-to-saved content even when the document timestamp differs',()=>{const tracker=new DesktopDocumentTracker(),d=blankDocument();tracker.mark(d);const changed={...d,name:'Changed'};expect(tracker.state(changed).dirty).toBe(true);expect(tracker.state({...d,updatedAt:'2026-10-29T10:00:00.000Z'}).dirty).toBe(false);});
+ it('retains recovered unsaved state until an explicit save and keeps renderer trackers independent',()=>{const d=blankDocument(),a=new DesktopDocumentTracker(),b=new DesktopDocumentTracker();a.mark(d,true);b.mark(d);expect(a.state(d).dirty).toBe(true);expect(b.state(d).dirty).toBe(false);a.mark(d);expect(a.state(d).dirty).toBe(false);const other={...d,id:'another-window'};expect(a.state(other).dirty).toBe(true);expect(b.state(d).dirty).toBe(false);});
+ it('does not mark edits made during a pending native save as saved',async()=>{const d=blankDocument();d.pages[0].nodes=[node('rectangle')];useEditor.getState().load(d);desktopDocuments.mark(d);let resolve!:(value:boolean)=>void;vi.stubGlobal('window',{desktop:{save:vi.fn(()=>new Promise<boolean>(r=>{resolve=r;})),reportDocument:vi.fn(async()=>true)}});const pending=saveProject();useEditor.getState().edit(d=>{d.pages[0].nodes[0].width+=30;});resolve(true);expect(await pending).toBe(true);expect(desktopDocumentState().dirty).toBe(true);});
+ it('keeps cancelled saves dirty and reports successful saves after the actual promise resolves',async()=>{const d=blankDocument();useEditor.getState().load(d);desktopDocuments.mark(d);useEditor.getState().edit(d=>{d.name='Unsaved work';});const report=vi.fn(async()=>true),save=vi.fn(async()=>false);vi.stubGlobal('window',{desktop:{save,reportDocument:report}});expect(await saveProject()).toBe(false);expect(desktopDocumentState().dirty).toBe(true);expect(report).not.toHaveBeenCalled();save.mockResolvedValue(true);expect(await saveProject()).toBe(true);expect(desktopDocumentState().dirty).toBe(false);expect(report).toHaveBeenCalledWith(expect.objectContaining({name:'Unsaved work',dirty:false}));});
+});

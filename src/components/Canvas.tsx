@@ -1,3 +1,4 @@
+import GridOverlay from './GridOverlay';
 import WhiteboardWorkspace from './WhiteboardWorkspace';
 import {drawingDefaults,getPreferences,usePreferences} from '../preferences';
 import './canvas-selection.css';
@@ -88,6 +89,7 @@ export default function Canvas(){
  {ns.filter(n=>['frame','section','component'].includes(n.type)&&!n.parentId&&n.visible).map(n=><text key={n.id} x={n.x} y={n.y-14/s.zoom} fill={n.type==='component'?'#b89af3':'#a29da9'} fontSize={11/s.zoom} onPointerDown={e=>begin(e,n.id)}>{n.type==='component'?'◇  ':'▦  '}{n.name}</text>)}
  <Artwork nodes={ns} outlines={s.outlines} onNode={(e,id)=>begin(e,id)}/>
  {s.mode==='prototype'&&<PrototypeConnections nodes={ns}/>}
+ <GridOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>
  {s.doc.layoutGuidesVisible!==false&&<LayoutGuideOverlay nodes={ns} zoom={s.zoom}/>}<CanvasGuideOverlay page={page} zoom={s.zoom} pan={s.pan}/><SnapOverlay lines={snapLines} zoom={s.zoom}/>{measuring&&s.selection.length===1&&<MeasurementOverlay nodes={ns} selectedId={s.selection[0]} targetId={hoveredId} zoom={s.zoom}/>}
  {pen.length>0&&<path d={contourPath(pen)} fill="none" stroke="#c7adf4" strokeWidth={2/s.zoom}/>}
  {pen.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={3/s.zoom} fill="#fff"/>)}

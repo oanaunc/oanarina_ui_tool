@@ -34,10 +34,10 @@
     "category": "Mac application",
     "name": "Dock recent files",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Native independent WKWebViews route menus/save/export to their own document, guard dirty close with acknowledged Save/Discard/Cancel, and offer saved-file Dock recents. See docs/MAC-WINDOWS.md."
   },
   {
     "id": "UI-01-005",
@@ -204,10 +204,10 @@
     "category": "Mac application",
     "name": "Window close behavior",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Native independent WKWebViews route menus/save/export to their own document, guard dirty close with acknowledged Save/Discard/Cancel, and offer saved-file Dock recents. See docs/MAC-WINDOWS.md."
   },
   {
     "id": "UI-01-022",
@@ -224,10 +224,10 @@
     "category": "Mac application",
     "name": "Multiple document windows",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Native independent WKWebViews route menus/save/export to their own document, guard dirty close with acknowledged Save/Discard/Cancel, and offer saved-file Dock recents. See docs/MAC-WINDOWS.md."
   },
   {
     "id": "UI-01-024",
@@ -474,10 +474,10 @@
     "category": "Mac system integration",
     "name": "Reopen closed documents",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Native Reopen Closed Window restores the last closed window from its own local recovery identity. Availability depends on browser database retention. See docs/MAC-WINDOWS.md."
   },
   {
     "id": "UI-02-019",
@@ -607,17 +607,17 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-002",
     "category": "Home and file browser",
     "name": "Draft files view",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-003",
@@ -634,10 +634,10 @@
     "category": "Home and file browser",
     "name": "Project folders",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-005",
@@ -647,17 +647,17 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-006",
     "category": "Home and file browser",
     "name": "File list view",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-007",
@@ -667,27 +667,27 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-008",
     "category": "Home and file browser",
     "name": "Sort files by name",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-009",
     "category": "Home and file browser",
     "name": "Sort files by modified date",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-010",
@@ -707,27 +707,27 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-012",
     "category": "Home and file browser",
     "name": "Filter files by type",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-013",
     "category": "Home and file browser",
     "name": "Filter files by project",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-014",
@@ -754,10 +754,10 @@
     "category": "Home and file browser",
     "name": "Duplicate file",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-017",
@@ -767,17 +767,17 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-018",
     "category": "Home and file browser",
     "name": "Move file to project",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-019",
@@ -794,60 +794,60 @@
     "category": "Home and file browser",
     "name": "Star file",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-021",
     "category": "Home and file browser",
     "name": "Pin file",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-022",
     "category": "Home and file browser",
     "name": "Archive file",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-023",
     "category": "Home and file browser",
     "name": "Trash file",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-024",
     "category": "Home and file browser",
     "name": "Restore trashed file",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-025",
     "category": "Home and file browser",
     "name": "Permanently remove trashed file",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-026",
@@ -867,17 +867,17 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-028",
     "category": "Home and file browser",
     "name": "File context menu",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-03-029",
@@ -894,10 +894,10 @@
     "category": "Home and file browser",
     "name": "Import files from home",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md."
   },
   {
     "id": "UI-04-001",
@@ -1124,10 +1124,10 @@
     "category": "Navigation and editor shell",
     "name": "File save status",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Native titles show document edited state, and the inspector distinguishes pending/saved local recovery. Complete web saved/unsaved/path status UI and cloud sync status are unfinished."
   },
   {
     "id": "UI-04-024",
@@ -8044,10 +8044,10 @@
     "category": "Auto layout fundamentals",
     "name": "Baseline alignment",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Horizontal rows align direct text first-line SVG baselines, with bottom-edge fallback and ascent/descent hug measurement. Nested container baseline extraction and complete native font metric fidelity remain unfinished. See docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-24-029",
@@ -8154,60 +8154,60 @@
     "category": "Auto layout grid and wrap",
     "name": "Grid row count",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "Explicit minimum row count preserves empty rows and grows for all objects. Figma fixed-count migration/column creation semantics and deleting rows with their object migration remain unfinished. See docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-004",
     "category": "Auto layout grid and wrap",
     "name": "Fixed grid tracks",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-005",
     "category": "Auto layout grid and wrap",
     "name": "Flexible grid tracks",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-006",
     "category": "Auto layout grid and wrap",
     "name": "Hug grid tracks",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-007",
     "category": "Auto layout grid and wrap",
     "name": "Minimum grid track size",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-008",
     "category": "Auto layout grid and wrap",
     "name": "Maximum grid track size",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-009",
@@ -8234,80 +8234,80 @@
     "category": "Auto layout grid and wrap",
     "name": "Grid cell positioning",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-012",
     "category": "Auto layout grid and wrap",
     "name": "Grid column span",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-013",
     "category": "Auto layout grid and wrap",
     "name": "Grid row span",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-014",
     "category": "Auto layout grid and wrap",
     "name": "Grid track drag resize",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-015",
     "category": "Auto layout grid and wrap",
     "name": "Auto-created grid cells",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-016",
     "category": "Auto layout grid and wrap",
     "name": "Empty grid cell display",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-017",
     "category": "Auto layout grid and wrap",
     "name": "Grid item alignment",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-018",
     "category": "Auto layout grid and wrap",
     "name": "Grid item fill sizing",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": "Fixed-count grid and basic child fill sizing exist; track definitions, spans, row sizing and arbitrary grid alignment remain incomplete."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-019",
@@ -8324,10 +8324,10 @@
     "category": "Auto layout grid and wrap",
     "name": "Nested grid layout",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": "Fixed-count grid and basic child fill sizing exist; track definitions, spans, row sizing and arbitrary grid alignment remain incomplete."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-021",
@@ -8404,10 +8404,10 @@
     "category": "Auto layout grid and wrap",
     "name": "Grid layout guide overlay",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-25-029",
@@ -8424,10 +8424,10 @@
     "category": "Auto layout grid and wrap",
     "name": "Convert stack to grid",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Fixed, weighted fractional and hug tracks with limits, cell placement/spans/alignment, implicit rows, nested/component layout and editor-only cell/track overlays. Canvas edge dragging commits one fixed-track edit; bounded sizes/search and remaining differences: docs/GRID-LAYOUT.md."
   },
   {
     "id": "UI-26-001",
@@ -19894,10 +19894,10 @@
     "category": "Free local MCP integration",
     "name": "Coordinate native editor and MCP writers",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": "MCP writers coordinate with an exclusive project lock; the native editor does not yet participate. Avoid editing the same file concurrently."
+    "notes": "v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Native and MCP writers share the exclusive project lock; native saves compare disk SHA-256 and require an explicit choice after external changes. Live renderer synchronization and non-cooperating application locking remain outside this behavior. See docs/MAC-WINDOWS.md and mcp/README.md."
   },
   {
     "id": "UI-59-038",
