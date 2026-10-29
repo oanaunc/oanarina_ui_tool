@@ -157,7 +157,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Native Application Preferences and Command-comma open working local drawing/navigation settings. Full Figma settings parity and system theme/scale/notification/helper controls remain incomplete."
   },
   {
     "id": "UI-01-017",
@@ -2134,20 +2134,20 @@
     "category": "Layer tree",
     "name": "Expand all descendants",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-005",
     "category": "Layer tree",
     "name": "Collapse all descendants",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-006",
@@ -2164,10 +2164,10 @@
     "category": "Layer tree",
     "name": "Filter layers by type",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-008",
@@ -2184,10 +2184,10 @@
     "category": "Layer tree",
     "name": "Batch rename layers",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-010",
@@ -2264,30 +2264,30 @@
     "category": "Layer tree",
     "name": "Drag reorder layers",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-018",
     "category": "Layer tree",
     "name": "Drag reparent layers",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-019",
     "category": "Layer tree",
     "name": "Nest layers in container",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-020",
@@ -2314,10 +2314,10 @@
     "category": "Layer tree",
     "name": "Layer panel context menu",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
   },
   {
     "id": "UI-08-023",
@@ -3344,10 +3344,10 @@
     "category": "Transforms and arrangement",
     "name": "Custom nudge distance",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Per-node ratio locks and limits, Option center resizing, continuous rotation handles, Shift rotation snapping and parent-axis alignment. Genuine affine skew is rejected; intrinsic scale normalization remains unfinished."
   },
   {
     "id": "UI-12-006",
@@ -3394,20 +3394,20 @@
     "category": "Transforms and arrangement",
     "name": "Aspect-ratio lock control",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Per-node ratio locks and limits, Option center resizing, continuous rotation handles, Shift rotation snapping and parent-axis alignment. Genuine affine skew is rejected; intrinsic scale normalization remains unfinished."
   },
   {
     "id": "UI-12-011",
     "category": "Transforms and arrangement",
     "name": "Resize from center",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Per-node ratio locks and limits, Option center resizing, continuous rotation handles, Shift rotation snapping and parent-axis alignment. Genuine affine skew is rejected; intrinsic scale normalization remains unfinished."
   },
   {
     "id": "UI-12-012",
@@ -3454,10 +3454,10 @@
     "category": "Transforms and arrangement",
     "name": "Rotate by handle",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Per-node ratio locks and limits, Option center resizing, continuous rotation handles, Shift rotation snapping and parent-axis alignment. Genuine affine skew is rejected; intrinsic scale normalization remains unfinished."
   },
   {
     "id": "UI-12-017",
@@ -3474,10 +3474,10 @@
     "category": "Transforms and arrangement",
     "name": "Snap rotation increments",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Per-node ratio locks and limits, Option center resizing, continuous rotation handles, Shift rotation snapping and parent-axis alignment. Genuine affine skew is rejected; intrinsic scale normalization remains unfinished."
   },
   {
     "id": "UI-12-019",
@@ -3694,20 +3694,20 @@
     "category": "Transforms and arrangement",
     "name": "Align a single layer to parent",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Per-node ratio locks and limits, Option center resizing, continuous rotation handles, Shift rotation snapping and parent-axis alignment. Genuine affine skew is rejected; intrinsic scale normalization remains unfinished."
   },
   {
     "id": "UI-12-041",
     "category": "Transforms and arrangement",
     "name": "Align a selected group to parent",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Per-node ratio locks and limits, Option center resizing, continuous rotation handles, Shift rotation snapping and parent-axis alignment. Genuine affine skew is rejected; intrinsic scale normalization remains unfinished."
   },
   {
     "id": "UI-13-001",
@@ -8094,10 +8094,10 @@
     "category": "Auto layout fundamentals",
     "name": "Drag reorder layout children",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "General layer-tree drag ordering and insertion is implemented. Dedicated auto-layout insertion previews, gap targets and full auto-layout-specific reference acceptance remain incomplete."
   },
   {
     "id": "UI-24-034",
@@ -13817,17 +13817,17 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-002",
     "category": "Actions and keyboard",
     "name": "Search actions by keyword",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-003",
@@ -13837,7 +13837,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-004",
@@ -13847,7 +13847,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-005",
@@ -13884,30 +13884,30 @@
     "category": "Actions and keyboard",
     "name": "Recent actions",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-009",
     "category": "Actions and keyboard",
     "name": "Keyboard action selection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-010",
     "category": "Actions and keyboard",
     "name": "Action result categories",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-011",
@@ -13917,7 +13917,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-012",
@@ -14004,10 +14004,10 @@
     "category": "Actions and keyboard",
     "name": "Layer keyboard traversal",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Accessible layer arrows and canvas-focused Enter/Shift-Enter/Tab/Shift-Tab. Inputs retain native keyboard behavior."
   },
   {
     "id": "UI-42-021",
@@ -14024,30 +14024,30 @@
     "category": "Actions and keyboard",
     "name": "Enter object editing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Accessible layer arrows and canvas-focused Enter/Shift-Enter/Tab/Shift-Tab. Inputs retain native keyboard behavior."
   },
   {
     "id": "UI-42-023",
     "category": "Actions and keyboard",
     "name": "Tab next object",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Accessible layer arrows and canvas-focused Enter/Shift-Enter/Tab/Shift-Tab. Inputs retain native keyboard behavior."
   },
   {
     "id": "UI-42-024",
     "category": "Actions and keyboard",
     "name": "Shift-Tab previous object",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Accessible layer arrows and canvas-focused Enter/Shift-Enter/Tab/Shift-Tab. Inputs retain native keyboard behavior."
   },
   {
     "id": "UI-42-025",
@@ -14087,7 +14087,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent."
   },
   {
     "id": "UI-42-029",
@@ -14844,60 +14844,60 @@
     "category": "Preferences and document settings",
     "name": "Nudge amount preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-007",
     "category": "Preferences and document settings",
     "name": "Rotation snapping preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-008",
     "category": "Preferences and document settings",
     "name": "Default frame fill",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-009",
     "category": "Preferences and document settings",
     "name": "Default shape fill",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-010",
     "category": "Preferences and document settings",
     "name": "Default stroke color",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-011",
     "category": "Preferences and document settings",
     "name": "Default text style",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-012",
@@ -14984,30 +14984,30 @@
     "category": "Preferences and document settings",
     "name": "Canvas wheel behavior",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-021",
     "category": "Preferences and document settings",
     "name": "Zoom sensitivity",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-022",
     "category": "Preferences and document settings",
     "name": "Trackpad behavior",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Two-finger panning and modifier/wheel zoom work through shared wheel events. Separate hardware/device gesture customization and physical trackpad acceptance remain incomplete."
   },
   {
     "id": "UI-45-023",
@@ -15074,10 +15074,10 @@
     "category": "Preferences and document settings",
     "name": "Reset preferences",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-030",
@@ -15087,27 +15087,27 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-031",
     "category": "Preferences and document settings",
     "name": "Keep drawing tool selected preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-032",
     "category": "Preferences and document settings",
     "name": "Hover highlighting preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-033",
@@ -15124,10 +15124,10 @@
     "category": "Preferences and document settings",
     "name": "Selection dimensions visibility preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-035",
@@ -15174,10 +15174,10 @@
     "category": "Preferences and document settings",
     "name": "Invert zoom direction preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-040",
@@ -15254,20 +15254,20 @@
     "category": "Preferences and document settings",
     "name": "Scroll wheel zoom preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-048",
     "category": "Preferences and document settings",
     "name": "Right-button drag panning preference",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history."
   },
   {
     "id": "UI-45-049",
@@ -17894,10 +17894,10 @@
     "category": "Oanarina improvements after parity",
     "name": "Batch rename preview",
     "priority": "after-parity",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": null,
-    "notes": ""
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Batch rename shows every resulting name and validates the complete selection before a single edit."
   },
   {
     "id": "UI-54-018",

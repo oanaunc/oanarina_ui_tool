@@ -1,0 +1,36 @@
+# Local preferences
+
+Open **File → Preferences…**, press **Command-comma**, or use the Mac application's Preferences command. These settings belong to the current app/browser on this device. They are stored outside `.oui` documents, so importing, saving, undoing or sharing a project does not copy someone else's preferences. The native Mac app and a browser preview have separate local origins and therefore separate settings.
+
+Changes save immediately. **Reset preferences** restores the defaults below while preserving project data and existing artwork. Corrupt, unsupported-version or oversized stored data falls back to validated defaults. If local storage is blocked or full, the dialog reports the failure and does not claim the new value was saved.
+
+## Movement and drawing
+
+- **Small nudge / Large nudge:** arrow keys use the small distance, while Shift-arrow uses the large distance. Defaults are 1 and 10 pixels. Both can be customized, including fractional distances.
+- **Rotation snap increment:** Shift-dragging the rotation handle uses this angle in degrees. The default is 15°.
+- **Keep drawing tool:** retains a drawing tool after placing a shape, text or completed pen path, so the next placement can use it again. The default returns to selection/move.
+- **Highlight hovered layers:** controls the eligible-layer outline under the pointer.
+- **Show selection dimensions:** controls the width × height badge; it does not hide the selected artwork's outline or resize handles.
+
+## Navigation
+
+- **Zoom with wheel:** plain wheel/trackpad scrolling zooms when enabled; otherwise it pans. Command/control scrolling continues to zoom. The default is plain scrolling to pan.
+- **Zoom sensitivity:** multiplies wheel zoom speed; 1 is the original speed. Values range from 0.05 to 5.
+- **Invert zoom direction:** reverses the wheel zoom direction.
+- **Pan with right mouse button:** enables right-button dragging to pan. An ordinary right-click layer menu is disabled in this mode; Control-click remains a context-menu path. The default leaves the normal right-click menu available.
+
+## New artwork defaults
+
+Frame fill, shape fill, filled-shape stroke enablement, stroke color and width are configurable. Frame/shape fills can be transparent. Lines, arrows and pen/freehand paths retain a visible stroke color/width even when filled-shape strokes are disabled; a deliberately chosen zero stroke width is still respected.
+
+New text has configurable color, family, size, numeric weight, normal/italic style and line height. Choose a family available through the app's font workflows. Saving a default family does not install a font. Placing text may use the normal font loading/fallback behavior; font licensing and embedding permissions remain unchanged.
+
+These defaults affect caller-integrated creation paths, including canvas drawing and the editor's node-add helper. Explicit properties supplied by templates or other insertion actions take precedence. Existing layers keep their properties when preferences change or reset. A palette/template may intentionally specify its own design values.
+
+## Validation and implementation
+
+`src/preferences.ts` exposes a frozen typed snapshot through `getPreferences`/`usePreferences`, plus `updatePreferences`, `resetPreferences`, `reloadPreferences`, subscriptions and `drawingDefaults(type)`. The local key is `oui-preferences`, with a version-one envelope. Booleans, color syntax, font strings, finite numeric bounds and known keys are validated before a write. Unknown keys and prototype-pollution fields cannot become settings. Browser storage events refresh subscribed views across windows of the same origin.
+
+`tests/preferences.test.ts` covers defaults, immutable snapshots, versioned persistence/reload, invalid/corrupt data, reset isolation, cross-window notifications, blocked storage and creation properties. `tests/e2e/preferences.spec.ts` exercises actual dialog controls and consumers: custom nudge, shape/frame/text defaults, retained tools, hover/dimension visibility, wheel speed/inversion, right-button pan and context menu behavior, custom Shift rotation, saved/reloaded settings, reset without changing project artwork, and recovery from corrupt stored preferences.
+
+This implements a defined local preference set. It is not a claim of complete Figma settings parity. Theme/accent controls, cursor choices, UI scaling/language, pressure/touchpad calibration, configurable native shortcuts and broader system integration remain separate requirements.

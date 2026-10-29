@@ -1,5 +1,101 @@
 [
   [
+    "tool-move",
+    "Move tool",
+    "Tools",
+    "V"
+  ],
+  [
+    "tool-frame",
+    "Frame tool",
+    "Tools",
+    "F"
+  ],
+  [
+    "tool-section",
+    "Section tool",
+    "Tools",
+    "⇧S"
+  ],
+  [
+    "tool-slice",
+    "Slice tool",
+    "Tools",
+    "S"
+  ],
+  [
+    "tool-rectangle",
+    "Rectangle tool",
+    "Tools",
+    "R"
+  ],
+  [
+    "tool-ellipse",
+    "Ellipse tool",
+    "Tools",
+    "O"
+  ],
+  [
+    "tool-line",
+    "Line tool",
+    "Tools",
+    "L"
+  ],
+  [
+    "tool-arrow",
+    "Arrow tool",
+    "Tools",
+    "⇧L"
+  ],
+  [
+    "tool-polygon",
+    "Polygon tool",
+    "Tools",
+    ""
+  ],
+  [
+    "tool-star",
+    "Star tool",
+    "Tools",
+    ""
+  ],
+  [
+    "tool-pen",
+    "Pen tool",
+    "Tools",
+    "P"
+  ],
+  [
+    "tool-pencil",
+    "Pencil tool",
+    "Tools",
+    "⇧P"
+  ],
+  [
+    "tool-text",
+    "Text tool",
+    "Tools",
+    "T"
+  ],
+  [
+    "tool-hand",
+    "Hand tool",
+    "Tools",
+    "H"
+  ],
+  [
+    "tool-scale",
+    "Scale tool",
+    "Tools",
+    "K"
+  ],
+  [
+    "tool-comment",
+    "Comment tool",
+    "Tools",
+    "C"
+  ],
+  [
     "new",
     "New design file",
     "File",
@@ -76,6 +172,12 @@
     "Back to files",
     "File",
     ""
+  ],
+  [
+    "preferences",
+    "Preferences…",
+    "File",
+    "⌘,"
   ],
   [
     "actions",
@@ -356,6 +458,42 @@
   [
     "distribute-y",
     "Distribute vertically",
+    "Arrange",
+    ""
+  ],
+  [
+    "parent-left",
+    "Align selection to parent left",
+    "Arrange",
+    ""
+  ],
+  [
+    "parent-center",
+    "Center selection horizontally in parent",
+    "Arrange",
+    ""
+  ],
+  [
+    "parent-right",
+    "Align selection to parent right",
+    "Arrange",
+    ""
+  ],
+  [
+    "parent-top",
+    "Align selection to parent top",
+    "Arrange",
+    ""
+  ],
+  [
+    "parent-middle",
+    "Center selection vertically in parent",
+    "Arrange",
+    ""
+  ],
+  [
+    "parent-bottom",
+    "Align selection to parent bottom",
     "Arrange",
     ""
   ],

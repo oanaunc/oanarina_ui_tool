@@ -56,3 +56,13 @@ Use File → Place image or SVG, or drop an SVG onto the canvas. Review the edit
 Select sibling layers and choose Object → Use as mask (Control-Command-M). The backmost selected source masks the following artwork. Change alpha/vector/luminance in the inspector, or select the source and release the mask. Selected exports retain necessary mask sources. See [mask controls](MASKS.md).
 
 Normal canvas clicks select a containing object; Command-click selects deeper artwork. Double-click descends one level. With canvas focus, Enter selects children, Shift-Enter selects parents and Tab/Shift-Tab selects siblings. Right-click Select layer picks overlapping artwork. The layer tree supports Shift ranges, Command toggles and arrow navigation. See [selection](SELECTION.md) and [transformed gestures](CANVAS-TRANSFORMS.md).
+
+## Preferences and faster organization
+
+Command-comma opens local Preferences, including nudge distances, drawing defaults, Shift rotation increment, tool retention and navigation behavior. These settings stay outside `.oui` files and project Undo. [Preference details](PREFERENCES.md).
+
+Drag layer rows before/after a sibling or inside an eligible container; use the page-root control to unnest. Type filtering keeps matching ancestors visible. The row context menu supports descendant expansion and previewed batch renaming. [Layer details](LAYER-TREE.md).
+
+Use the circle above a selection to rotate; Shift snaps, and Option-resize keeps the center fixed. Lock the aspect ratio beside the dimensions to preserve each selected layer’s own ratio. Single-layer alignment targets the parent; Shift alignment moves sibling selections as one group. [Transform scope](CANVAS-TRANSFORMS.md).
+
+Command-K searches actions and tools. Use category filters, arrows/Home/End and Enter; Recent retains the last 20 distinct command IDs. Escape closes without leaking keys to the canvas. [Action details](ACTIONS.md).

@@ -70,11 +70,11 @@ final class Studio: NSObject, NSApplicationDelegate, WKScriptMessageHandlerWithR
     func makeMenus(){
         let bar=NSMenu();NSApp.mainMenu=bar
         func section(_ title:String)->NSMenu{let item=NSMenuItem(title:title,action:nil,keyEquivalent:"");bar.addItem(item);let menu=NSMenu(title:title);item.submenu=menu;return menu}
-        let application=section("Oanarina UI Tool");add(application,"About Oanarina UI Tool","about");application.addItem(.separator());add(application,"Toggle Light / Dark Appearance","theme");application.addItem(.separator());application.addItem(NSMenuItem(title:"Hide Oanarina UI Tool",action:#selector(NSApplication.hide(_:)),keyEquivalent:"h"));application.addItem(NSMenuItem(title:"Quit Oanarina UI Tool",action:#selector(NSApplication.terminate(_:)),keyEquivalent:"q"))
+        let application=section("Oanarina UI Tool");add(application,"About Oanarina UI Tool","about");add(application,"Preferences…","preferences",",");application.addItem(.separator());add(application,"Toggle Light / Dark Appearance","theme");application.addItem(.separator());application.addItem(NSMenuItem(title:"Hide Oanarina UI Tool",action:#selector(NSApplication.hide(_:)),keyEquivalent:"h"));application.addItem(NSMenuItem(title:"Quit Oanarina UI Tool",action:#selector(NSApplication.terminate(_:)),keyEquivalent:"q"))
         let data=try? Data(contentsOf:resources.appendingPathComponent("commands.json"));let commands=(data.flatMap{try? JSONSerialization.jsonObject(with:$0)}) as? [[String]] ?? []
         for group in ["File","Edit","View","Object","Text","Arrange","Vector","Page","Prototype","Resources","Help"] {
             let menu=section(group);if group=="Help"{NSApp.helpMenu=menu}
-            for row in commands where row.count==4&&row[2]==group {let (key,flags)=accelerator(row[3]);add(menu,row[1],row[0],key,flags)}
+            for row in commands where row.count==4&&row[2]==group&&row[0] != "preferences" {let (key,flags)=accelerator(row[3]);add(menu,row[1],row[0],key,flags)}
         }
         let win=section("Window");NSApp.windowsMenu=win;win.addItem(NSMenuItem(title:"Minimize",action:#selector(NSWindow.performMiniaturize(_:)),keyEquivalent:"m"));win.addItem(NSMenuItem(title:"Zoom",action:#selector(NSWindow.performZoom(_:)),keyEquivalent:""));let close=NSMenuItem(title:"Close",action:#selector(NSWindow.performClose(_:)),keyEquivalent:"w");win.addItem(close);let full=NSMenuItem(title:"Enter Full Screen",action:#selector(NSWindow.toggleFullScreen(_:)),keyEquivalent:"f");full.keyEquivalentModifierMask=[.control,.command];win.addItem(full);if let help=bar.items.first(where:{$0.title=="Help"}){bar.removeItem(help);bar.addItem(help)}
     }

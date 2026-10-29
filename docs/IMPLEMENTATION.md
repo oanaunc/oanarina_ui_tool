@@ -4,7 +4,7 @@ The register describes the target, not a completed clone. **Implemented** means 
 
 ## Current source versus public release
 
-The source is **0.2.0-dev.4**, with 965 implemented, 159 partial and 894 planned requirements. The public website still distributes the signed/notarized **v0.1.0** preview. See [v0.1 validation](VALIDATION-v0.1.0.md) for that release and [current development validation](VALIDATION-v0.2-svg-masks-selection.md) for the current source.
+The source is **0.2.0-dev.5**, with 1,004 implemented, 161 partial and 853 planned requirements. The public website still distributes the signed/notarized **v0.1.0** preview. See [v0.1 validation](VALIDATION-v0.1.0.md) for that release and [current development validation](VALIDATION-v0.2-controls-workflows.md) for the current source.
 
 ## Working development workflows
 
@@ -12,10 +12,12 @@ The editor draws frames, sections, slices, basic shapes, editable cubic curves a
 
 Pages, live local components, variants, exposed text/boolean properties, typed variables with modes/aliases, linked local styles, database snapshots, local comments, interactive prototype presentation, basic CSS inspection and SVG/PNG/JPEG export are present. Motion supports sampled keyframe tracks, autokey, playback, editable easing, reusable animation styles, GIF export and codec-dependent video export. The font catalog includes 1,959 families, with 24 bundled offline and installed Mac font discovery. The Figma development plugin converts a subset of editable nodes and properties through `.oui`, with known-loss reports.
 
+Local preferences, layer drag/reparent/type filters, previewed batch renaming and keyboard action categories/recents are implemented. See [preferences](PREFERENCES.md), [layers](LAYER-TREE.md) and [actions](ACTIONS.md).
+
 ## Material limits
 
-- The shell does not match every observed Figma rail, toolbelt, submenu, shortcut or dialog. The shared command registry is a subset. The motion workspace is a functional subset. Agents/Code, full Draw, Dev Mode and the wider suite remain largely planned.
-- Positions are stored as absolute coordinates. World-matrix gestures, oriented handles, vector overlays, clipboard and ungroup preserve supported ancestor transforms. Genuine affine shear is rejected atomically; intrinsic scale normalization, tight group bounds and exact group resizing remain incomplete. Booleans with text, arbitrary groups and full vector networks are incomplete. See [canvas scope](CANVAS-TRANSFORMS.md).
+- The shell does not match every observed Figma rail, toolbelt, submenu, shortcut or dialog. The shared command registry includes the keyboard palette and current drawing tools; shortcuts and reference coverage are still a subset. The motion workspace is a functional subset. Agents/Code, full Draw, Dev Mode and the wider suite remain largely planned.
+- Positions are stored as absolute coordinates. World-matrix gestures, oriented handles, vector overlays, clipboard and ungroup preserve supported ancestor transforms. Genuine affine shear is rejected atomically; intrinsic scale normalization, tight group bounds and exact group resizing remain incomplete. Booleans with text, arbitrary groups and full vector networks are incomplete. Continuous handle rotation, centered/locked resizing and parent/world alignment work with documented affine limits. See [canvas scope](CANVAS-TRANSFORMS.md).
 - Rich ranges, true italic files, styled clipboard and numeric OpenType/axis settings work. Paragraph-range styling, feature discovery/previews, automatic script fallback and complete native typography acceptance remain unfinished. Lists are simple prefixes. See [rich text](RICH-TEXT.md) and [fonts](FONTS.md).
 - Angular/diamond gradients are raster patterns. Alpha/vector/luminance masks render with nested sources and preserved export dependencies. Mask outlines/tree indicators/hover previews and exact reference nested semantics remain incomplete; no background blur, variable-width strokes or advanced Draw brushes. See [masks](MASKS.md). Exports now preserve ancestor transforms/clipping and include transformed geometry, strokes and effect padding. Text glyph overflow and complex clipping/effect bounds still need work.
 - The layout solver implements stacks and basic fixed-count grids. Grid tracks/spans, baseline alignment, all aspect-ratio/auto-size interactions and deep wrap stabilization remain incomplete.
@@ -28,4 +30,4 @@ Pages, live local components, variants, exposed text/boolean properties, typed v
 - SVG import supports reviewed editable layers and a separate sanitized visual route. Unsupported CSS, filters, complex clips/masks and text/paint semantics produce reductions; see [SVG import](SVG-IMPORT.md). No direct binary `.fig`, Sketch or PDF interchange. Bridge tests include API mocks and a synthetic connected Plugin API transfer. Desktop plugin UI transfer remains unverified; vector contour bounds and rotation origins remain approximate. Read the [bridge guide](../figma-plugin/README.md) and inspect every transfer.
 - Native Mac builds are universal; runtime tests were on Apple silicon only. Windows/Electron is experimental. Complete VoiceOver, keyboard-only canvas, localization, large-document and performance acceptance work remains.
 
-The [development validation report](VALIDATION-v0.2-svg-masks-selection.md) lists checks and practical limits. Future work must keep the per-feature register honest and expand tests with real behaviors rather than marking entire categories complete.
+The [development validation report](VALIDATION-v0.2-controls-workflows.md) lists checks and practical limits. Future work must keep the per-feature register honest and expand tests with real behaviors rather than marking entire categories complete.
