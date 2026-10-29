@@ -1,4 +1,5 @@
 import {constrainAspectPatch} from './transform-controls';
+import {duplicateDocumentPage,reorderDocumentPage,removeDocumentPage} from './pages';
 import {arrangeNodes} from './arrange';
 import type {ArrangeReference} from './arrange';
 import {drawingDefaults} from './preferences';
@@ -35,7 +36,7 @@ interface EditorState {
  undo:()=>void;redo:()=>void;patch:(ids:string[],p:Partial<DesignNode>)=>void;
  add:(type:NodeKind,props?:Partial<DesignNode>)=>string;remove:()=>void;duplicate:()=>void;copy:()=>void;paste:(parentId?:string,preserveParents?:boolean)=>void;
  group:(type?:NodeKind)=>void;ungroup:()=>void;align:(dir:string,reference?:ArrangeReference)=>void;order:(dir:string)=>void;
- refreshFonts:()=>void;newDocument:(sample?:boolean)=>void;load:(d:DesignDocument)=>void;addPage:()=>void;deletePage:()=>void;
+ refreshFonts:()=>void;newDocument:(sample?:boolean)=>void;load:(d:DesignDocument)=>void;addPage:()=>void;deletePage:(id?:string)=>void;selectPage:(id:string)=>void;duplicatePage:(id?:string)=>void;reorderPage:(id:string,index:number)=>void;
  select:(id:string,extend?:boolean)=>void;fit:(selected?:boolean)=>void;move:(dx:number,dy:number)=>void;
 }
 let timer:ReturnType<typeof setTimeout>;
@@ -62,8 +63,11 @@ export const useEditor=create<EditorState>((set,get)=>{
  refreshFonts:()=>{const s=get(),d=clone(s.doc),before=JSON.stringify(d.pages.map(p=>p.nodes.map(n=>[n.x,n.y,n.width,n.height])));d.pages.forEach(p=>{updateTextMetrics(p.nodes);reflow(p.nodes);});synchronizeComponents(d);d.pages.forEach(p=>{updateTextMetrics(p.nodes);reflow(p.nodes);});const boardText=clone(d);updateWhiteboard(d);reconcileRichText(boardText,d);d.pages.forEach(p=>updateTextMetrics(p.nodes));if(JSON.stringify(d.pages.map(p=>p.nodes.map(n=>[n.x,n.y,n.width,n.height])))!==before){d.updatedAt=new Date().toISOString();set({doc:d,fontRevision:s.fontRevision+1});}else set({fontRevision:s.fontRevision+1});},
  newDocument:(sample=false)=>{const d=sample?sampleDocument():blankDocument();set({doc:d,pageId:d.pages[0].id,selection:[],motionTime:0,motionPlaying:false,vectorEditId:null,vectorSelection:[],past:[],future:[],home:false,savedAt:'',pan:{x:12,y:16},zoom:.7});},
  load:(d)=>set({doc:d,pageId:d.pages[0].id,selection:[],motionTime:0,motionPlaying:false,vectorEditId:null,vectorSelection:[],past:[],future:[],home:false,savedAt:'',pan:{x:12,y:16},zoom:.7}),
- addPage:()=>{const id=uid(),background=get().doc.pages.find(p=>p.id===get().pageId)?.background;get().edit(d=>d.pages.push({...(background?{background:structuredClone(background)}:{}),id,name:`Page ${d.pages.length+1}`,nodes:[],comments:[]}));set({pageId:id,selection:[]});},
- deletePage:()=>{const s=get();if(s.doc.pages.length<=1)return;s.edit(d=>{d.pages=d.pages.filter(p=>p.id!==s.pageId);});set({pageId:get().doc.pages[0].id,selection:[]});},
+ addPage:()=>{if(get().doc.pages.length>=1000)throw Error('A project can contain up to 1,000 pages.');const id=uid(),background=get().doc.pages.find(p=>p.id===get().pageId)?.background;get().edit(d=>d.pages.push({...(background?{background:structuredClone(background)}:{}),id,name:`Page ${d.pages.length+1}`,nodes:[],comments:[]}));get().selectPage(id);},
+ selectPage:(id)=>{if(!get().doc.pages.some(p=>p.id===id))throw Error('This page no longer exists.');set({pageId:id,selection:[],vectorEditId:null,vectorSelection:[],motionPlaying:false,motionTime:0});},
+ duplicatePage:(id=get().pageId)=>{const s=get(),result=duplicateDocumentPage(s.doc,id);s.edit(d=>Object.assign(d,result.document));get().selectPage(result.pageId);},
+ reorderPage:(id,index)=>{const s=get(),doc=reorderDocumentPage(s.doc,id,index);if(doc!==s.doc)s.edit(d=>Object.assign(d,doc));},
+ deletePage:(id=get().pageId)=>{const s=get();if(s.doc.pages.length<=1)return;const index=s.doc.pages.findIndex(p=>p.id===id),doc=removeDocumentPage(s.doc,id);s.edit(d=>Object.assign(d,doc));get().selectPage(id===s.pageId?doc.pages[Math.min(index,doc.pages.length-1)].id:s.pageId);},
  select:(id,extend=false)=>set(s=>({selection:extend?s.selection.includes(id)?s.selection.filter(a=>a!==id):[...s.selection,id]:[id]})),
  fit:(selected=false)=>{const s=get(),ns=s.doc.pages.find(p=>p.id===s.pageId)!.nodes.filter(n=>n.visible&&(!selected||s.selection.includes(n.id))),b=bounds(ns);const el=document.querySelector('[data-canvas]'),w=el?.clientWidth??1000,h=el?.clientHeight??750,z=Math.max(.05,Math.min(Math.max(80,w-60)/(b.width||1),Math.max(80,h-120)/(b.height||1),2));set({zoom:z,pan:{x:(w-b.width*z)/2-b.x*z,y:(h-b.height*z)/2-b.y*z-20}});},
  move:(dx,dy)=>{const s=get();s.edit(d=>{const ns=d.pages.find(p=>p.id===s.pageId)!.nodes,roots=normalizedRootSelection(ns,s.selection).filter(n=>!isLocked(n,ns));const moves=roots.map(n=>{const parent=ns.find(p=>p.id===n.parentId),inverse=parent?inverseMatrix(worldMatrix(parent,ns)):undefined;return {ids:new Set(descendants(ns,[n.id])),dx:inverse?inverse[0]*dx+inverse[2]*dy:dx,dy:inverse?inverse[1]*dx+inverse[3]*dy:dy};});for(const move of moves)for(const n of ns)if(move.ids.has(n.id)){n.x+=move.dx;n.y+=move.dy;}});}

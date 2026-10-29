@@ -1,0 +1,11 @@
+.pages-list{max-height:240px;overflow-y:auto;flex-shrink:0;scrollbar-width:thin}
+.page-list-item{position:relative;display:flex;align-items:center;border-radius:4px}
+.page-list-item .page-row{min-width:0;flex:1;width:auto;text-align:left}
+.page-list-item .page-row>.page-name{width:auto;flex:1;overflow:hidden;text-overflow:ellipsis;color:inherit}
+.page-actions-button{flex-shrink:0;width:24px;padding:4px;opacity:0;color:var(--muted)}
+.page-list-item:hover .page-actions-button,.page-list-item:focus-within .page-actions-button,.page-actions-button[aria-expanded=true]{opacity:1}
+.page-drop-before:before,.page-drop-after:after{content:'';position:absolute;left:0;right:0;height:2px;background:var(--accent);z-index:1}
+.page-drop-before:before{top:0}.page-drop-after:after{bottom:0}
+.page-context-menu{position:fixed;z-index:90;width:220px;padding:6px;background:var(--panel);border:1px solid var(--line);box-shadow:0 12px 45px #0005;border-radius:8px}
+.page-context-menu>button{display:flex;width:100%;justify-content:flex-start;padding:9px 10px}
+.page-context-menu>p{margin:7px;padding:6px;color:var(--text);font-size:10px;line-height:1.6;white-space:normal}
