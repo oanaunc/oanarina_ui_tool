@@ -1,0 +1,39 @@
+import type {DesignNode} from './model';
+import {updateTextMetrics} from './text-layout';
+export type Sizing='fixed'|'hug'|'fill';
+export type Constraint='start'|'end'|'center'|'stretch'|'scale';
+export type Distribution='start'|'center'|'end'|'space-between'|'space-around'|'space-evenly';
+export function paddingFor(n:DesignNode){return n.paddings??[n.padding,n.padding,n.padding,n.padding] as [number,number,number,number];}
+const clamp=(v:number,min?:number,max?:number)=>Math.max(min??0,Math.min(max??1e6,v));
+function setSize(n:DesignNode,width:number,height:number){if(n.type==='path'&&(width!==n.width||height!==n.height)){n.pathWidth??=n.width;n.pathHeight??=n.height;}n.width=clamp(width,n.minWidth,n.maxWidth);n.height=clamp(height,n.minHeight,n.maxHeight);}
+function tree(nodes:DesignNode[]){const children=new Map<string|null,DesignNode[]>();for(const n of nodes){const list=children.get(n.parentId)??[];list.push(n);children.set(n.parentId,list);}return children;}
+/** Apply frame constraints only to children that the current edit did not explicitly transform. */
+export function applyConstraints(nodes:DesignNode[],previous:DesignNode[]){const old=new Map(previous.map(n=>[n.id,n])),children=tree(nodes);const visit=(p:DesignNode)=>{const before=old.get(p.id);if(before&&['frame','component','instance'].includes(p.type))for(const c of children.get(p.id)??[]){const oc=old.get(c.id);if(!oc||p.layout!=='none'&&!c.ignoreLayout)continue;for(const axis of ['x','y'] as const){const dim=axis==='x'?'width':'height',mode=axis==='x'?c.constraintX:c.constraintY;if(p[dim]===before[dim]||Math.abs(c[axis]-p[axis]-(oc[axis]-before[axis]))>.001||c[dim]!==oc[dim])continue;const delta=p[dim]-before[dim],offset=oc[axis]-before[axis];let size=c[dim],pos=offset;switch(mode){case 'end':pos+=delta;break;case 'center':pos+=delta/2;break;case 'stretch':size+=delta;break;case 'scale':{const scale=p[dim]/Math.max(.001,before[dim]);pos*=scale;size*=scale;break;}}
+ const change=p[axis]+pos-c[axis];const translate=(n:DesignNode)=>{n[axis]+=change;for(const child of children.get(n.id)??[])translate(child);};translate(c);if(axis==='x')setSize(c,size,c.height);else setSize(c,c.width,size);
+ }}for(const c of children.get(p.id)??[])visit(c);};for(const n of children.get(null)??[])visit(n);}
+function distribute(mode:Distribution,available:number,total:number,count:number,gap:number){const spare=available-total-Math.max(0,count-1)*gap;if(mode==='center')return {offset:spare/2,gap};if(mode==='end')return {offset:spare,gap};if(spare>0&&mode==='space-between'&&count>1)return {offset:0,gap:gap+spare/(count-1)};if(spare>0&&mode==='space-around'&&count)return {offset:spare/(2*count),gap:gap+spare/count};if(spare>0&&mode==='space-evenly'&&count)return {offset:spare/(count+1),gap:gap+spare/(count+1)};return {offset:0,gap};}
+function allocateFill(items:DesignNode[],main:'width'|'height',space:number){let pending=[...items],remaining=space;const result=new Map<string,number>();for(let pass=0;pending.length&&pass<=items.length;pass++){const share=Math.max(0,remaining/pending.length),bounded=pending.filter(n=>clamp(share,main==='width'?n.minWidth:n.minHeight,main==='width'?n.maxWidth:n.maxHeight)!==share);if(!bounded.length){pending.forEach(n=>result.set(n.id,share));break;}for(const n of bounded){const value=clamp(share,main==='width'?n.minWidth:n.minHeight,main==='width'?n.maxWidth:n.maxHeight);result.set(n.id,value);remaining-=value;}pending=pending.filter(n=>!bounded.includes(n));}return result;}
+/** Measure hug dimensions bottom-up, then arrange and resolve fill dimensions top-down. */
+export function reflow(nodes:DesignNode[]):void{const children=tree(nodes),items=(p:DesignNode)=>(children.get(p.id)??[]).filter(n=>n.visible&&!n.ignoreLayout);const move=(n:DesignNode,x:number,y:number)=>{const dx=x-n.x,dy=y-n.y;const visit=(a:DesignNode)=>{a.x+=dx;a.y+=dy;for(const c of children.get(a.id)??[])visit(c);};visit(n);};
+ const measure=(n:DesignNode)=>{for(const c of children.get(n.id)??[])measure(c);setSize(n,n.width,n.height);if(n.layout==='none')return;const kids=items(n),[t,r,b,l]=paddingFor(n),gx=n.gapX??n.gap,gy=n.gapY??n.gap;let w=0,h=0;
+ if(n.layout==='horizontal'){w=kids.reduce((a,c)=>a+c.width,0)+Math.max(0,kids.length-1)*gx;h=Math.max(0,...kids.map(c=>c.height));}
+ else if(n.layout==='vertical'){w=Math.max(0,...kids.map(c=>c.width));h=kids.reduce((a,c)=>a+c.height,0)+Math.max(0,kids.length-1)*gy;}
+ else {const cols=Math.max(1,Math.round(n.columns)),widths=Array.from({length:Math.min(cols,kids.length)},(_,i)=>Math.max(0,...kids.filter((_,j)=>j%cols===i).map(c=>c.width))),heights=Array.from({length:Math.ceil(kids.length/cols)},(_,i)=>Math.max(0,...kids.slice(i*cols,(i+1)*cols).map(c=>c.height)));w=widths.reduce((a,b)=>a+b,0)+Math.max(0,widths.length-1)*gx;h=heights.reduce((a,b)=>a+b,0)+Math.max(0,heights.length-1)*gy;}
+ const canHugW=n.sizingX==='hug'&&!kids.some(c=>c.sizingX==='fill')&&!n.wrap,canHugH=n.sizingY==='hug'&&!kids.some(c=>c.sizingY==='fill')&&!n.wrap;setSize(n,canHugW?w+l+r:n.width,canHugH?h+t+b:n.height);
+ };
+ const arrange=(p:DesignNode)=>{const kids=items(p),[t,r,b,l]=paddingFor(p),w=Math.max(0,p.width-l-r),h=Math.max(0,p.height-t-b),gx=p.gapX??p.gap,gy=p.gapY??p.gap;
+ if(p.layout==='grid'){const cols=Math.max(1,Math.round(p.columns)),rows=Math.ceil(kids.length/cols),cellW=Math.max(0,(w-(cols-1)*gx)/cols),heights=Array.from({length:rows},(_,i)=>Math.max(0,...kids.slice(i*cols,(i+1)*cols).map(n=>n.height)));let y=p.y+t;for(let row=0;row<rows;row++){let x=p.x+l;for(let col=0;col<cols;col++){const n=kids[row*cols+col];if(!n)break;setSize(n,n.sizingX==='fill'?cellW:n.width,n.sizingY==='fill'?heights[row]:n.height);move(n,x,y);x+=Math.max(cellW,n.width)+gx;}y+=heights[row]+gy;}}
+ else if(p.layout!=='none'){const horizontal=p.layout==='horizontal',main=horizontal?'width':'height',cross=horizontal?'height':'width',available=horizontal?w:h,crossAvailable=horizontal?h:w,gap=horizontal?gx:gy,crossGap=horizontal?gy:gx,lines:DesignNode[][]=[[]];let occupied=0;
+ for(const n of kids){if(p.wrap&&lines.at(-1)!.length&&occupied+gap+n[main]>available){lines.push([]);occupied=0;}lines.at(-1)!.push(n);occupied+=(lines.at(-1)!.length>1?gap:0)+n[main];}
+ const lineSizes=lines.map(line=>Math.max(0,...line.map(n=>n[cross])));let crossPos=horizontal?p.y+t:p.x+l;
+ for(const [index,line] of lines.entries()){const fill=line.filter(n=>(horizontal?n.sizingX:n.sizingY)==='fill'),fixed=line.filter(n=>!fill.includes(n)).reduce((s,n)=>s+n[main],0),shares=allocateFill(fill,main,available-fixed-Math.max(0,line.length-1)*gap),lineCross=p.wrap?lineSizes[index]:crossAvailable;
+ for(const n of line){const mainSize=shares.get(n.id)??n[main],crossSize=(horizontal?n.sizingY:n.sizingX)==='fill'||p.alignItems==='stretch'?lineCross:n[cross];if(horizontal)setSize(n,mainSize,crossSize);else setSize(n,crossSize,mainSize);if(n.type==='text')updateTextMetrics([n]);}
+ const total=line.reduce((sum,n)=>sum+n[main],0),spacing=distribute(p.justifyContent??'start',available,total,line.length,gap);let pos=(horizontal?p.x+l:p.y+t)+spacing.offset;
+ for(const n of line){const extra=p.alignItems==='center'?(lineCross-n[cross])/2:p.alignItems==='end'?lineCross-n[cross]:0;move(n,horizontal?pos:crossPos+extra,horizontal?crossPos+extra:pos);pos+=n[main]+spacing.gap;}crossPos+=lineCross+crossGap;
+ }
+ if(p.wrap&&horizontal&&p.sizingY==='hug')setSize(p,p.width,crossPos-p.y-crossGap+b);if(p.wrap&&!horizontal&&p.sizingX==='hug')setSize(p,crossPos-p.x-crossGap+r,p.height);
+ }
+ for(const n of children.get(p.id)??[])arrange(n);
+ };
+ for(let pass=0;pass<8;pass++){const before=nodes.map(n=>[n.width,n.height]);for(const root of children.get(null)??[])measure(root);for(const root of children.get(null)??[])arrange(root);if(nodes.every((n,i)=>n.width===before[i][0]&&n.height===before[i][1]))break;}
+}

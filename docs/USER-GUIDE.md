@@ -16,3 +16,9 @@ Open **Oanarina UI Tool.app** on Mac, or run `npm run dev` for the browser edito
 - Export a selected layer/subtree or the page through **Export**, as SVG, PNG or JPEG, at 1×–4×.
 - Choose **File → Figma import / export** for the plugin, supported property guide and visual SVG route. Direct `.fig` is not supported.
 - **Command-K** searches available actions. **Help → Feature register** shows implemented, partial and planned requirements. See [implementation limits](IMPLEMENTATION.md) before relying on advanced behavior.
+
+## v0.2 development controls
+
+The source preview adds Text and Vector menus. Enter vector editing from the inspector; drag anchors/handles, Shift-select anchors, Alt-drag independent handles and double-click a segment to insert an anchor. Live booleans are under Vector/Object actions; expand their operands in Layers.
+
+Fill, Stroke and Effects support stacks with add, duplicate, visibility, reorder and remove controls. Expand an item to edit its parameters. Text resizing controls wrap or auto-size a single-style text node. Resizing and Auto layout sections provide constraints, hug/fill, size limits, independent padding, distribution and wrapping. These development features are not included in the older v0.1 website installer. See the development validation report for limits.

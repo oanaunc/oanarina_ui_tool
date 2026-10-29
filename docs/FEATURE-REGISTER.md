@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":333,"planned":1440,"partial":87}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
+Status: {"implemented":508,"planned":1241,"partial":111}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -307,7 +307,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-09-013 | Frame background fill | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-014 | Frame stroke | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-015 | Frame corner radius | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-09-016 | Independent frame corners | planned | reference-verification-pending |
+| UI-09-016 | Independent frame corners | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-09-017 | Frame opacity | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-018 | Clip frame content | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-019 | Frame without clipping | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -343,7 +343,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-10-014 | Move group with contents | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-10-015 | Resize group proportionally | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-10-016 | Rename group | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-10-017 | Group transparency | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-10-017 | Group transparency | implemented | v0.2: nested SVG group opacity composites overlapping children once; exported pixel test. |
 | UI-10-018 | Group blend mode | planned | reference-verification-pending |
 | UI-10-019 | Group bounds from children | planned | reference-verification-pending |
 | UI-10-020 | Group export | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -365,13 +365,13 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-11-001 | Draw rectangle | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-11-002 | Draw square with Shift | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-11-003 | Rectangle corner radius | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-11-004 | Independent rectangle corners | planned | reference-verification-pending |
+| UI-11-004 | Independent rectangle corners | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-11-005 | Corner smoothing | planned | reference-verification-pending |
 | UI-11-006 | Draw ellipse | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-11-007 | Draw circle with Shift | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-11-008 | Ellipse arc start | planned | reference-verification-pending |
-| UI-11-009 | Ellipse arc sweep | planned | reference-verification-pending |
-| UI-11-010 | Ellipse inner radius | planned | reference-verification-pending |
+| UI-11-008 | Ellipse arc start | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-11-009 | Ellipse arc sweep | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-11-010 | Ellipse inner radius | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-11-011 | Draw line | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-11-012 | Line length | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-11-013 | Line angle | planned | reference-verification-pending |
@@ -381,11 +381,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-11-017 | Arrowhead at end | planned | reference-verification-pending |
 | UI-11-018 | Arrowhead style | planned | reference-verification-pending |
 | UI-11-019 | Draw polygon | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-11-020 | Polygon point count | planned | reference-verification-pending |
+| UI-11-020 | Polygon point count | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-11-021 | Polygon corner radius | planned | reference-verification-pending |
 | UI-11-022 | Draw star | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-11-023 | Star point count | planned | reference-verification-pending |
-| UI-11-024 | Star inner radius | planned | reference-verification-pending |
+| UI-11-023 | Star point count | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-11-024 | Star inner radius | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-11-025 | Star corner radius | planned | reference-verification-pending |
 | UI-11-026 | Shape fill | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-11-027 | Shape stroke | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -410,13 +410,13 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-12-011 | Resize from center | planned | reference-verification-pending |
 | UI-12-012 | Scale tool | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-12-013 | Scale text with object | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-12-014 | Scale stroke with object | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-12-015 | Scale corner radius | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-12-014 | Scale stroke with object | partial | Legacy stroke width/radius scale; advanced stroke stacks and independent corners still require scale-tool propagation. |
+| UI-12-015 | Scale corner radius | partial | Legacy stroke width/radius scale; advanced stroke stacks and independent corners still require scale-tool propagation. |
 | UI-12-016 | Rotate by handle | planned | reference-verification-pending |
 | UI-12-017 | Rotate by degrees | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-12-018 | Snap rotation increments | planned | reference-verification-pending |
-| UI-12-019 | Flip horizontally | planned | reference-verification-pending |
-| UI-12-020 | Flip vertically | planned | reference-verification-pending |
+| UI-12-019 | Flip horizontally | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-12-020 | Flip vertically | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-12-021 | Align left edges | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-12-022 | Align horizontal centers | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-12-023 | Align right edges | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -427,11 +427,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-12-028 | Distribute vertical spacing | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-12-029 | Bring to front | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-12-030 | Send to back | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-12-031 | Bring forward one layer | planned | reference-verification-pending |
-| UI-12-032 | Send backward one layer | planned | reference-verification-pending |
-| UI-12-033 | Tidy up selection | planned | reference-verification-pending |
-| UI-12-034 | Set equal widths | planned | reference-verification-pending |
-| UI-12-035 | Set equal heights | planned | reference-verification-pending |
+| UI-12-031 | Bring forward one layer | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-12-032 | Send backward one layer | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-12-033 | Tidy up selection | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-12-034 | Set equal widths | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-12-035 | Set equal heights | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-12-036 | Smart duplicate with transform | planned | reference-verification-pending |
 
 ## Snapping and measurement
@@ -478,70 +478,70 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-14-003 | Close vector path | planned | reference-verification-pending |
 | UI-14-004 | Continue open vector path | planned | reference-verification-pending |
 | UI-14-005 | Add straight segment | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-14-006 | Add cubic curve segment | planned | reference-verification-pending |
-| UI-14-007 | Drag bezier handle | planned | reference-verification-pending |
-| UI-14-008 | Independent tangent handles | planned | reference-verification-pending |
-| UI-14-009 | Mirrored tangent handles | planned | reference-verification-pending |
-| UI-14-010 | Aligned tangent handles | planned | reference-verification-pending |
-| UI-14-011 | Corner point | planned | reference-verification-pending |
-| UI-14-012 | Smooth point | planned | reference-verification-pending |
+| UI-14-006 | Add cubic curve segment | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-007 | Drag bezier handle | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-008 | Independent tangent handles | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-009 | Mirrored tangent handles | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-010 | Aligned tangent handles | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-011 | Corner point | partial | Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete. |
+| UI-14-012 | Smooth point | partial | Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete. |
 | UI-14-013 | Convert segment to curve | planned | reference-verification-pending |
 | UI-14-014 | Convert segment to line | planned | reference-verification-pending |
-| UI-14-015 | Insert point on segment | planned | reference-verification-pending |
-| UI-14-016 | Remove vector point | planned | reference-verification-pending |
-| UI-14-017 | Move vector point | planned | Not implemented in this preview. |
-| UI-14-018 | Multi-select vector points | planned | reference-verification-pending |
+| UI-14-015 | Insert point on segment | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-016 | Remove vector point | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-017 | Move vector point | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-018 | Multi-select vector points | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-019 | Marquee vector points | planned | reference-verification-pending |
 | UI-14-020 | Vector point coordinates | planned | reference-verification-pending |
 | UI-14-021 | Join vector endpoints | planned | reference-verification-pending |
 | UI-14-022 | Split vector path | planned | reference-verification-pending |
-| UI-14-023 | Reverse path direction | planned | reference-verification-pending |
-| UI-14-024 | Open closed path | planned | reference-verification-pending |
+| UI-14-023 | Reverse path direction | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-024 | Open closed path | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-025 | Bend tool | planned | reference-verification-pending |
 | UI-14-026 | Vector network branches | planned | reference-verification-pending |
 | UI-14-027 | Fill bounded vector region | planned | reference-verification-pending |
 | UI-14-028 | Remove vector region fill | planned | reference-verification-pending |
 | UI-14-029 | Vector winding rule | planned | reference-verification-pending |
-| UI-14-030 | Vector edit mode | planned | Not implemented in this preview. |
-| UI-14-031 | Exit vector edit mode | planned | reference-verification-pending |
+| UI-14-030 | Vector edit mode | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
+| UI-14-031 | Exit vector edit mode | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-032 | Round vector corners | planned | reference-verification-pending |
-| UI-14-033 | Flatten vector network | planned | reference-verification-pending |
+| UI-14-033 | Flatten vector network | partial | Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete. |
 | UI-14-034 | Outline vector stroke | planned | reference-verification-pending |
-| UI-14-035 | Simplify vector path | planned | reference-verification-pending |
+| UI-14-035 | Simplify vector path | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage. |
 | UI-14-036 | Paste SVG path data | planned | reference-verification-pending |
 
 ## Boolean geometry
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-15-001 | Union shapes | planned | reference-verification-pending |
-| UI-15-002 | Subtract shapes | planned | reference-verification-pending |
-| UI-15-003 | Intersect shapes | planned | reference-verification-pending |
-| UI-15-004 | Exclude overlapping shapes | planned | reference-verification-pending |
-| UI-15-005 | Live boolean group | planned | reference-verification-pending |
-| UI-15-006 | Edit boolean operands | planned | reference-verification-pending |
-| UI-15-007 | Reorder boolean operands | planned | reference-verification-pending |
-| UI-15-008 | Toggle operand visibility | planned | reference-verification-pending |
-| UI-15-009 | Release boolean group | planned | reference-verification-pending |
-| UI-15-010 | Flatten boolean result | planned | reference-verification-pending |
-| UI-15-011 | Nested boolean operations | planned | reference-verification-pending |
+| UI-15-001 | Union shapes | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-002 | Subtract shapes | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-003 | Intersect shapes | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-004 | Exclude overlapping shapes | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-005 | Live boolean group | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-006 | Edit boolean operands | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-007 | Reorder boolean operands | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-008 | Toggle operand visibility | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-009 | Release boolean group | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-010 | Flatten boolean result | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-011 | Nested boolean operations | partial | Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation. |
 | UI-15-012 | Boolean operation with text | planned | reference-verification-pending |
-| UI-15-013 | Boolean operation with vectors | planned | reference-verification-pending |
-| UI-15-014 | Boolean operation with ellipses | planned | reference-verification-pending |
-| UI-15-015 | Boolean operation with rectangles | planned | reference-verification-pending |
-| UI-15-016 | Preserve boolean result fill | planned | reference-verification-pending |
-| UI-15-017 | Preserve boolean result stroke | planned | reference-verification-pending |
-| UI-15-018 | Boolean group bounds | planned | reference-verification-pending |
-| UI-15-019 | Boolean group export | planned | reference-verification-pending |
-| UI-15-020 | Change boolean operation type | planned | reference-verification-pending |
+| UI-15-013 | Boolean operation with vectors | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-014 | Boolean operation with ellipses | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-015 | Boolean operation with rectangles | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-016 | Preserve boolean result fill | partial | Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation. |
+| UI-15-017 | Preserve boolean result stroke | partial | Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation. |
+| UI-15-018 | Boolean group bounds | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-019 | Boolean group export | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
+| UI-15-020 | Change boolean operation type | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
 
 ## Freehand and Figma Draw
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
 | UI-16-001 | Pencil freehand drawing | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-16-002 | Pencil smoothing | planned | reference-verification-pending |
-| UI-16-003 | Pencil path editing | planned | reference-verification-pending |
+| UI-16-002 | Pencil smoothing | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-16-003 | Pencil path editing | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-16-004 | Brush drawing | planned | reference-verification-pending |
 | UI-16-005 | Brush preset picker | planned | reference-verification-pending |
 | UI-16-006 | Vector brush library | planned | reference-verification-pending |
@@ -582,32 +582,32 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | --- | --- | --- | --- |
 | UI-17-001 | Solid fill | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-17-002 | Hex color entry | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-17-003 | RGB color entry | planned | reference-verification-pending |
-| UI-17-004 | HSL color entry | planned | reference-verification-pending |
-| UI-17-005 | HSB color entry | planned | reference-verification-pending |
-| UI-17-006 | Color alpha channel | planned | reference-verification-pending |
+| UI-17-003 | RGB color entry | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-004 | HSL color entry | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-005 | HSB color entry | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-006 | Color alpha channel | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
 | UI-17-007 | Color picker saturation control | planned | reference-verification-pending |
 | UI-17-008 | Color picker hue control | planned | reference-verification-pending |
 | UI-17-009 | Color picker alpha control | planned | reference-verification-pending |
 | UI-17-010 | Eyedropper | planned | reference-verification-pending |
 | UI-17-011 | Sample canvas color | planned | reference-verification-pending |
 | UI-17-012 | Sample screen color | planned | reference-verification-pending |
-| UI-17-013 | Multiple fills per layer | planned | reference-verification-pending |
-| UI-17-014 | Reorder fill stack | planned | reference-verification-pending |
-| UI-17-015 | Toggle fill visibility | planned | reference-verification-pending |
+| UI-17-013 | Multiple fills per layer | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-014 | Reorder fill stack | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-015 | Toggle fill visibility | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
 | UI-17-016 | Remove fill | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-17-017 | Duplicate fill | planned | reference-verification-pending |
-| UI-17-018 | Linear gradient | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-17-019 | Radial gradient | planned | reference-verification-pending |
-| UI-17-020 | Angular gradient | planned | reference-verification-pending |
-| UI-17-021 | Diamond gradient | planned | reference-verification-pending |
-| UI-17-022 | Gradient stop color | planned | reference-verification-pending |
-| UI-17-023 | Gradient stop opacity | planned | Not implemented in this preview. |
-| UI-17-024 | Insert gradient stop | planned | reference-verification-pending |
-| UI-17-025 | Remove gradient stop | planned | reference-verification-pending |
-| UI-17-026 | Gradient stop position | planned | reference-verification-pending |
-| UI-17-027 | Reverse gradient | planned | reference-verification-pending |
-| UI-17-028 | Gradient rotation | planned | reference-verification-pending |
+| UI-17-017 | Duplicate fill | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-018 | Linear gradient | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-019 | Radial gradient | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-020 | Angular gradient | partial | Editable gradient stops/coordinates, saved data and raster SVG patterns; current raster resolution is 256×256, not an unlimited vector gradient. |
+| UI-17-021 | Diamond gradient | partial | Editable gradient stops/coordinates, saved data and raster SVG patterns; current raster resolution is 256×256, not an unlimited vector gradient. |
+| UI-17-022 | Gradient stop color | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-023 | Gradient stop opacity | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-024 | Insert gradient stop | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-025 | Remove gradient stop | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-026 | Gradient stop position | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-027 | Reverse gradient | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
+| UI-17-028 | Gradient rotation | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors. |
 | UI-17-029 | Gradient handles | planned | reference-verification-pending |
 | UI-17-030 | Document color swatches | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-17-031 | Recent colors | planned | reference-verification-pending |
@@ -623,29 +623,29 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | --- | --- | --- | --- |
 | UI-18-001 | Solid stroke | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-18-002 | Stroke color | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-18-003 | Stroke opacity | planned | reference-verification-pending |
+| UI-18-003 | Stroke opacity | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-18-004 | Stroke weight | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-18-005 | Multiple strokes | planned | reference-verification-pending |
+| UI-18-005 | Multiple strokes | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-18-006 | Stroke visibility | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-18-007 | Stroke stack order | planned | reference-verification-pending |
-| UI-18-008 | Stroke align inside | planned | reference-verification-pending |
-| UI-18-009 | Stroke align center | planned | reference-verification-pending |
-| UI-18-010 | Stroke align outside | planned | reference-verification-pending |
+| UI-18-007 | Stroke stack order | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-008 | Stroke align inside | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-009 | Stroke align center | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-010 | Stroke align outside | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-18-011 | Independent edge strokes | planned | reference-verification-pending |
-| UI-18-012 | Stroke join miter | planned | reference-verification-pending |
+| UI-18-012 | Stroke join miter | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-18-013 | Stroke join round | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-18-014 | Stroke join bevel | planned | reference-verification-pending |
-| UI-18-015 | Miter limit | planned | reference-verification-pending |
-| UI-18-016 | Stroke cap butt | planned | reference-verification-pending |
+| UI-18-014 | Stroke join bevel | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-015 | Miter limit | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-016 | Stroke cap butt | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-18-017 | Stroke cap round | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-18-018 | Stroke cap square | planned | reference-verification-pending |
-| UI-18-019 | Dash pattern | planned | reference-verification-pending |
-| UI-18-020 | Dash gap | planned | reference-verification-pending |
-| UI-18-021 | Dash offset | planned | reference-verification-pending |
+| UI-18-018 | Stroke cap square | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-019 | Dash pattern | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-020 | Dash gap | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-021 | Dash offset | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-18-022 | Arrowhead size | planned | reference-verification-pending |
 | UI-18-023 | Arrowhead color inheritance | planned | reference-verification-pending |
-| UI-18-024 | Gradient stroke | planned | reference-verification-pending |
-| UI-18-025 | Image stroke | planned | reference-verification-pending |
+| UI-18-024 | Gradient stroke | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-18-025 | Image stroke | partial | Image paint controls/rendering exist; crop/tile edge cases and real Figma transfer still need visual coverage. |
 | UI-18-026 | Stroke style reuse | planned | reference-verification-pending |
 | UI-18-027 | Outline stroke conversion | planned | reference-verification-pending |
 | UI-18-028 | Stroke scale behavior | planned | reference-verification-pending |
@@ -656,41 +656,41 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-19-001 | Drop shadow | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-19-002 | Inner shadow | planned | reference-verification-pending |
-| UI-19-003 | Layer blur | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-19-001 | Drop shadow | implemented | v0.2: parameterized effect stacks replace fixed preview controls; legacy files migrate through fallback rendering. |
+| UI-19-002 | Inner shadow | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-003 | Layer blur | implemented | v0.2: parameterized effect stacks replace fixed preview controls; legacy files migrate through fallback rendering. |
 | UI-19-004 | Background blur | planned | reference-verification-pending |
-| UI-19-005 | Shadow x offset | planned | reference-verification-pending |
-| UI-19-006 | Shadow y offset | planned | reference-verification-pending |
-| UI-19-007 | Shadow radius | planned | reference-verification-pending |
-| UI-19-008 | Shadow spread | planned | reference-verification-pending |
-| UI-19-009 | Shadow color | planned | reference-verification-pending |
-| UI-19-010 | Shadow opacity | planned | reference-verification-pending |
-| UI-19-011 | Multiple effects | planned | reference-verification-pending |
-| UI-19-012 | Reorder effects | planned | reference-verification-pending |
-| UI-19-013 | Toggle effect visibility | planned | reference-verification-pending |
-| UI-19-014 | Duplicate effect | planned | reference-verification-pending |
-| UI-19-015 | Remove effect | planned | reference-verification-pending |
+| UI-19-005 | Shadow x offset | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-006 | Shadow y offset | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-007 | Shadow radius | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-008 | Shadow spread | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-009 | Shadow color | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-010 | Shadow opacity | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-011 | Multiple effects | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-012 | Reorder effects | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-013 | Toggle effect visibility | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-014 | Duplicate effect | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-015 | Remove effect | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
 | UI-19-016 | Effect styles | planned | reference-verification-pending |
-| UI-19-017 | Normal blend mode | planned | reference-verification-pending |
+| UI-19-017 | Normal blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
 | UI-19-018 | Pass-through blend mode | planned | reference-verification-pending |
-| UI-19-019 | Multiply blend mode | planned | reference-verification-pending |
-| UI-19-020 | Screen blend mode | planned | reference-verification-pending |
-| UI-19-021 | Overlay blend mode | planned | reference-verification-pending |
-| UI-19-022 | Darken blend mode | planned | reference-verification-pending |
-| UI-19-023 | Lighten blend mode | planned | reference-verification-pending |
-| UI-19-024 | Color dodge blend mode | planned | reference-verification-pending |
-| UI-19-025 | Color burn blend mode | planned | reference-verification-pending |
-| UI-19-026 | Hard light blend mode | planned | reference-verification-pending |
-| UI-19-027 | Soft light blend mode | planned | reference-verification-pending |
-| UI-19-028 | Difference blend mode | planned | reference-verification-pending |
-| UI-19-029 | Exclusion blend mode | planned | reference-verification-pending |
-| UI-19-030 | Hue blend mode | planned | reference-verification-pending |
-| UI-19-031 | Saturation blend mode | planned | reference-verification-pending |
-| UI-19-032 | Color blend mode | planned | reference-verification-pending |
-| UI-19-033 | Luminosity blend mode | planned | reference-verification-pending |
+| UI-19-019 | Multiply blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-020 | Screen blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-021 | Overlay blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-022 | Darken blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-023 | Lighten blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-024 | Color dodge blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-025 | Color burn blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-026 | Hard light blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-027 | Soft light blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-028 | Difference blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-029 | Exclusion blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-030 | Hue blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-031 | Saturation blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-032 | Color blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
+| UI-19-033 | Luminosity blend mode | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
 | UI-19-034 | Layer opacity | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-19-035 | Group isolation | planned | Not implemented in this preview. |
+| UI-19-035 | Group isolation | implemented | v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing. |
 | UI-19-036 | Backdrop filter clipping | planned | reference-verification-pending |
 
 ## Images and media
@@ -744,28 +744,28 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-21-004 | Text content inspector | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-005 | Font family selection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-006 | Font family search | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-21-007 | Font style selection | planned | reference-verification-pending |
+| UI-21-007 | Font style selection | partial | Single-style synthetic italic and line spacing justification exist. Real italic assets, mixed ranges, complex-script shaping and paragraph-level reference fidelity remain incomplete. |
 | UI-21-008 | Font weight | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-009 | Font size | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-010 | Font size arithmetic | planned | reference-verification-pending |
 | UI-21-011 | Line height | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-012 | Letter spacing | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-21-013 | Paragraph spacing | planned | reference-verification-pending |
-| UI-21-014 | Paragraph indentation | planned | reference-verification-pending |
-| UI-21-015 | Auto-width text | planned | reference-verification-pending |
-| UI-21-016 | Auto-height text | planned | reference-verification-pending |
-| UI-21-017 | Fixed-size text | planned | reference-verification-pending |
-| UI-21-018 | Text overflow truncation | planned | reference-verification-pending |
-| UI-21-019 | Maximum text lines | planned | reference-verification-pending |
+| UI-21-013 | Paragraph spacing | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-014 | Paragraph indentation | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-015 | Auto-width text | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-016 | Auto-height text | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-017 | Fixed-size text | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-018 | Text overflow truncation | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-019 | Maximum text lines | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
 | UI-21-020 | Text horizontal left | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-021 | Text horizontal center | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-022 | Text horizontal right | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-21-023 | Text justified alignment | planned | reference-verification-pending |
-| UI-21-024 | Text vertical top | planned | reference-verification-pending |
-| UI-21-025 | Text vertical middle | planned | reference-verification-pending |
-| UI-21-026 | Text vertical bottom | planned | reference-verification-pending |
+| UI-21-023 | Text justified alignment | partial | Single-style synthetic italic and line spacing justification exist. Real italic assets, mixed ranges, complex-script shaping and paragraph-level reference fidelity remain incomplete. |
+| UI-21-024 | Text vertical top | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-025 | Text vertical middle | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
+| UI-21-026 | Text vertical bottom | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
 | UI-21-027 | Text fill | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-21-028 | Text stroke | planned | reference-verification-pending |
+| UI-21-028 | Text stroke | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested. |
 | UI-21-029 | Text background | planned | Not implemented in this preview. |
 | UI-21-030 | Text opacity | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-031 | Text rotation | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -779,22 +779,22 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-22-001 | Bold text shortcut | planned | reference-verification-pending |
-| UI-22-002 | Italic text shortcut | planned | reference-verification-pending |
-| UI-22-003 | Underline text | planned | reference-verification-pending |
-| UI-22-004 | Strikethrough text | planned | reference-verification-pending |
-| UI-22-005 | Uppercase transformation | planned | reference-verification-pending |
-| UI-22-006 | Lowercase transformation | planned | reference-verification-pending |
-| UI-22-007 | Title case transformation | planned | reference-verification-pending |
+| UI-22-001 | Bold text shortcut | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-22-002 | Italic text shortcut | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
+| UI-22-003 | Underline text | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-22-004 | Strikethrough text | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-22-005 | Uppercase transformation | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-22-006 | Lowercase transformation | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-22-007 | Title case transformation | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-22-008 | Small caps | planned | reference-verification-pending |
 | UI-22-009 | Superscript | planned | reference-verification-pending |
 | UI-22-010 | Subscript | planned | reference-verification-pending |
-| UI-22-011 | Numbered lists | planned | reference-verification-pending |
-| UI-22-012 | Bulleted lists | planned | reference-verification-pending |
+| UI-22-011 | Numbered lists | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
+| UI-22-012 | Bulleted lists | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
 | UI-22-013 | Nested lists | planned | reference-verification-pending |
-| UI-22-014 | List indentation | planned | reference-verification-pending |
-| UI-22-015 | Text links | planned | reference-verification-pending |
-| UI-22-016 | Link editing | planned | reference-verification-pending |
+| UI-22-014 | List indentation | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
+| UI-22-015 | Text links | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
+| UI-22-016 | Link editing | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-22-017 | OpenType ligatures | planned | reference-verification-pending |
 | UI-22-018 | OpenType alternates | planned | reference-verification-pending |
 | UI-22-019 | Stylistic sets | planned | reference-verification-pending |
@@ -824,36 +824,36 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-23-001 | Horizontal left constraint | planned | reference-verification-pending |
-| UI-23-002 | Horizontal right constraint | planned | reference-verification-pending |
-| UI-23-003 | Horizontal center constraint | planned | reference-verification-pending |
-| UI-23-004 | Horizontal left-right constraint | planned | reference-verification-pending |
-| UI-23-005 | Horizontal scale constraint | planned | reference-verification-pending |
-| UI-23-006 | Vertical top constraint | planned | reference-verification-pending |
-| UI-23-007 | Vertical bottom constraint | planned | reference-verification-pending |
-| UI-23-008 | Vertical center constraint | planned | reference-verification-pending |
-| UI-23-009 | Vertical top-bottom constraint | planned | reference-verification-pending |
-| UI-23-010 | Vertical scale constraint | planned | reference-verification-pending |
-| UI-23-011 | Fixed child width | planned | reference-verification-pending |
-| UI-23-012 | Fixed child height | planned | reference-verification-pending |
-| UI-23-013 | Hug contents width | planned | reference-verification-pending |
-| UI-23-014 | Hug contents height | planned | reference-verification-pending |
-| UI-23-015 | Fill container width | planned | reference-verification-pending |
-| UI-23-016 | Fill container height | planned | reference-verification-pending |
-| UI-23-017 | Minimum width | planned | reference-verification-pending |
-| UI-23-018 | Maximum width | planned | reference-verification-pending |
-| UI-23-019 | Minimum height | planned | reference-verification-pending |
-| UI-23-020 | Maximum height | planned | reference-verification-pending |
+| UI-23-001 | Horizontal left constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-002 | Horizontal right constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-003 | Horizontal center constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-004 | Horizontal left-right constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-005 | Horizontal scale constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-006 | Vertical top constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-007 | Vertical bottom constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-008 | Vertical center constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-009 | Vertical top-bottom constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-010 | Vertical scale constraint | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-011 | Fixed child width | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-012 | Fixed child height | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-013 | Hug contents width | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-014 | Hug contents height | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-015 | Fill container width | partial | Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work. |
+| UI-23-016 | Fill container height | partial | Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work. |
+| UI-23-017 | Minimum width | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-018 | Maximum width | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-019 | Minimum height | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-020 | Maximum height | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
 | UI-23-021 | Aspect ratio in layout | planned | reference-verification-pending |
 | UI-23-022 | Constraint visualization | planned | reference-verification-pending |
-| UI-23-023 | Resize nested constrained frame | planned | reference-verification-pending |
-| UI-23-024 | Ignore auto layout | planned | reference-verification-pending |
-| UI-23-025 | Absolute child position | planned | reference-verification-pending |
+| UI-23-023 | Resize nested constrained frame | partial | Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work. |
+| UI-23-024 | Ignore auto layout | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
+| UI-23-025 | Absolute child position | implemented | v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope. |
 | UI-23-026 | Preserve constraints on reparenting | planned | reference-verification-pending |
 | UI-23-027 | Stretch with layout columns | planned | reference-verification-pending |
 | UI-23-028 | Stretch with layout rows | planned | reference-verification-pending |
 | UI-23-029 | Relative frame positioning | planned | reference-verification-pending |
-| UI-23-030 | Responsive resize preview | planned | reference-verification-pending |
+| UI-23-030 | Responsive resize preview | partial | Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work. |
 
 ## Auto layout fundamentals
 
@@ -866,25 +866,25 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-24-005 | Change layout flow | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-24-006 | Layout gap | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-24-007 | Uniform padding | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-24-008 | Horizontal padding | planned | reference-verification-pending |
-| UI-24-009 | Vertical padding | planned | reference-verification-pending |
-| UI-24-010 | Independent top padding | planned | reference-verification-pending |
-| UI-24-011 | Independent right padding | planned | reference-verification-pending |
-| UI-24-012 | Independent bottom padding | planned | reference-verification-pending |
-| UI-24-013 | Independent left padding | planned | reference-verification-pending |
-| UI-24-014 | Align children top-left | planned | reference-verification-pending |
-| UI-24-015 | Align children top-center | planned | reference-verification-pending |
-| UI-24-016 | Align children top-right | planned | reference-verification-pending |
-| UI-24-017 | Align children middle-left | planned | reference-verification-pending |
-| UI-24-018 | Align children middle-center | planned | reference-verification-pending |
-| UI-24-019 | Align children middle-right | planned | reference-verification-pending |
-| UI-24-020 | Align children bottom-left | planned | reference-verification-pending |
-| UI-24-021 | Align children bottom-center | planned | reference-verification-pending |
-| UI-24-022 | Align children bottom-right | planned | reference-verification-pending |
-| UI-24-023 | Space-between distribution | planned | reference-verification-pending |
-| UI-24-024 | Space-around distribution | planned | reference-verification-pending |
-| UI-24-025 | Space-evenly distribution | planned | reference-verification-pending |
-| UI-24-026 | Auto gap sizing | planned | reference-verification-pending |
+| UI-24-008 | Horizontal padding | partial | Set each edge independently or use uniform padding; no paired horizontal/vertical quick-control yet. |
+| UI-24-009 | Vertical padding | partial | Set each edge independently or use uniform padding; no paired horizontal/vertical quick-control yet. |
+| UI-24-010 | Independent top padding | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-011 | Independent right padding | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-012 | Independent bottom padding | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-013 | Independent left padding | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-014 | Align children top-left | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-015 | Align children top-center | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-016 | Align children top-right | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-017 | Align children middle-left | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-018 | Align children middle-center | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-019 | Align children middle-right | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-020 | Align children bottom-left | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-021 | Align children bottom-center | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-022 | Align children bottom-right | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-023 | Space-between distribution | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-024 | Space-around distribution | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-025 | Space-evenly distribution | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-026 | Auto gap sizing | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
 | UI-24-027 | Reverse stacking order | planned | reference-verification-pending |
 | UI-24-028 | Baseline alignment | planned | reference-verification-pending |
 | UI-24-029 | Stroke included in layout | planned | reference-verification-pending |
@@ -893,8 +893,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-24-032 | Layout resize preview | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-24-033 | Drag reorder layout children | planned | reference-verification-pending |
 | UI-24-034 | Insert child into auto layout | planned | reference-verification-pending |
-| UI-24-035 | Layout overflow clipping | planned | reference-verification-pending |
-| UI-24-036 | Negative layout gap | planned | reference-verification-pending |
+| UI-24-035 | Layout overflow clipping | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
+| UI-24-036 | Negative layout gap | implemented | v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass. |
 
 ## Auto layout grid and wrap
 
@@ -908,8 +908,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-25-006 | Hug grid tracks | planned | reference-verification-pending |
 | UI-25-007 | Minimum grid track size | planned | reference-verification-pending |
 | UI-25-008 | Maximum grid track size | planned | reference-verification-pending |
-| UI-25-009 | Column gap | planned | reference-verification-pending |
-| UI-25-010 | Row gap | planned | reference-verification-pending |
+| UI-25-009 | Column gap | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement. |
+| UI-25-010 | Row gap | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement. |
 | UI-25-011 | Grid cell positioning | planned | reference-verification-pending |
 | UI-25-012 | Grid column span | planned | reference-verification-pending |
 | UI-25-013 | Grid row span | planned | reference-verification-pending |
@@ -917,16 +917,16 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-25-015 | Auto-created grid cells | planned | reference-verification-pending |
 | UI-25-016 | Empty grid cell display | planned | reference-verification-pending |
 | UI-25-017 | Grid item alignment | planned | reference-verification-pending |
-| UI-25-018 | Grid item fill sizing | planned | reference-verification-pending |
+| UI-25-018 | Grid item fill sizing | partial | Fixed-count grid and basic child fill sizing exist; track definitions, spans, row sizing and arbitrary grid alignment remain incomplete. |
 | UI-25-019 | Grid track ordering | planned | reference-verification-pending |
-| UI-25-020 | Nested grid layout | planned | reference-verification-pending |
-| UI-25-021 | Horizontal wrap | planned | reference-verification-pending |
-| UI-25-022 | Vertical wrap | planned | reference-verification-pending |
-| UI-25-023 | Wrap row gap | planned | reference-verification-pending |
-| UI-25-024 | Wrap column gap | planned | reference-verification-pending |
+| UI-25-020 | Nested grid layout | partial | Fixed-count grid and basic child fill sizing exist; track definitions, spans, row sizing and arbitrary grid alignment remain incomplete. |
+| UI-25-021 | Horizontal wrap | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement. |
+| UI-25-022 | Vertical wrap | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement. |
+| UI-25-023 | Wrap row gap | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement. |
+| UI-25-024 | Wrap column gap | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement. |
 | UI-25-025 | Wrap direction | planned | reference-verification-pending |
 | UI-25-026 | Wrap alignment | planned | reference-verification-pending |
-| UI-25-027 | Grid item absolute position | planned | reference-verification-pending |
+| UI-25-027 | Grid item absolute position | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement. |
 | UI-25-028 | Grid layout guide overlay | planned | reference-verification-pending |
 | UI-25-029 | Suggest auto layout | planned | reference-verification-pending |
 | UI-25-030 | Convert stack to grid | planned | reference-verification-pending |
@@ -1436,15 +1436,15 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-39-012 | Preserve basic shapes across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-013 | Preserve editable text across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-014 | Preserve solid fills across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
-| UI-39-015 | Preserve strokes across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
+| UI-39-015 | Preserve strokes across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
 | UI-39-016 | Preserve opacity across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
-| UI-39-017 | Preserve corner radii across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
+| UI-39-017 | Preserve corner radii across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
 | UI-39-018 | Preserve visibility across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-019 | Preserve locks across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-020 | Preserve image assets across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
-| UI-39-021 | Preserve vector paths across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
-| UI-39-022 | Preserve font properties across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
-| UI-39-023 | Preserve layout metadata across bridge | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
+| UI-39-021 | Preserve vector paths across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
+| UI-39-022 | Preserve font properties across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
+| UI-39-023 | Preserve layout metadata across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
 | UI-39-024 | Preserve component identity across bridge | planned | reference-verification-pending |
 | UI-39-025 | Preserve prototype links across bridge | planned | reference-verification-pending |
 | UI-39-026 | Unsupported property report | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
@@ -1577,9 +1577,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-42-022 | Enter object editing | planned | reference-verification-pending |
 | UI-42-023 | Tab next object | planned | reference-verification-pending |
 | UI-42-024 | Shift-Tab previous object | planned | reference-verification-pending |
-| UI-42-025 | Numeric opacity shortcuts | planned | reference-verification-pending |
+| UI-42-025 | Numeric opacity shortcuts | implemented | v0.2: shared 108-command registry drives browser and Mac menus; physical-key modifier matching has tests. ⌘S works with focused inspector controls. This is not full Figma shortcut parity. |
 | UI-42-026 | Tool letter shortcuts | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-42-027 | Menu command shortcuts | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-42-027 | Menu command shortcuts | implemented | v0.2: shared 108-command registry drives browser and Mac menus; physical-key modifier matching has tests. ⌘S works with focused inspector controls. This is not full Figma shortcut parity. |
 | UI-42-028 | Command palette shortcut | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-42-029 | Keyboard zoom shortcuts | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-42-030 | Keyboard presentation shortcuts | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -1952,7 +1952,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-53-010 | Long operation progress | planned | reference-verification-pending |
 | UI-53-011 | Corrupt import reporting | planned | reference-verification-pending |
 | UI-53-012 | Unsupported version reporting | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-53-013 | Document schema migration | planned | reference-verification-pending |
+| UI-53-013 | Document schema migration | implemented | v0.2: validates version 1/2, migrates v1 to v2, rejects unsupported versions; core and bridge mock coverage. |
 | UI-53-014 | Duplicate ID detection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-53-015 | Cycle detection in hierarchy | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-53-016 | Missing parent detection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -2145,8 +2145,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-58-006 | Variables navigation rail entry | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-007 | Toolbelt mode selector | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-008 | Text tool dropdown | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-58-009 | Dedicated Text main menu | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-58-010 | Dedicated Vector main menu | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-58-009 | Dedicated Text main menu | implemented | v0.2: separate browser/native Text and Vector menus, generated from shared commands. Exact menu contents remain incomplete. |
+| UI-58-010 | Dedicated Vector main menu | implemented | v0.2: separate browser/native Text and Vector menus, generated from shared commands. Exact menu contents remain incomplete. |
 | UI-58-011 | File-browser shared files tab | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-012 | File-browser shared folders tab | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-58-013 | File-browser AI prompt area | planned | observed-in-signed-in-Figma-2026-10-29 |

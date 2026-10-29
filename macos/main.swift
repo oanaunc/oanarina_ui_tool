@@ -62,24 +62,25 @@ final class Studio: NSObject, NSApplicationDelegate, WKScriptMessageHandlerWithR
     func add(_ menu:NSMenu,_ title:String,_ id:String,_ key:String="",_ modifiers:NSEvent.ModifierFlags = [.command]) {
         let item=NSMenuItem(title:title,action:#selector(menuAction(_:)),keyEquivalent:key);item.target=self;item.representedObject=id;item.keyEquivalentModifierMask=modifiers;menu.addItem(item)
     }
+    func accelerator(_ raw:String)->(String,NSEvent.ModifierFlags){
+        var modifiers=NSEvent.ModifierFlags();if raw.contains("⌘"){modifiers.insert(.command)};if raw.contains("⌃"){modifiers.insert(.control)};if raw.contains("⌥"){modifiers.insert(.option)};if raw.contains("⇧"){modifiers.insert(.shift)}
+        guard modifiers.contains(.command)||modifiers.contains(.control) else{return ("",[])}
+        var key=raw;for glyph in ["⌘","⌃","⌥","⇧"]{key=key.replacingOccurrences(of:glyph,with:"")};key=key.lowercased();if key=="↵"{key="\r"};if key=="+"{key="="};if key=="−"||key=="–"{key="-"};return(key,modifiers)
+    }
     func makeMenus(){
         let bar=NSMenu();NSApp.mainMenu=bar
         func section(_ title:String)->NSMenu{let item=NSMenuItem(title:title,action:nil,keyEquivalent:"");bar.addItem(item);let menu=NSMenu(title:title);item.submenu=menu;return menu}
-        let application=section("Oanarina UI Tool")
-        add(application,"About Oanarina UI Tool","about");application.addItem(.separator());add(application,"Toggle Light / Dark Appearance","theme");application.addItem(.separator())
-        let hide=NSMenuItem(title:"Hide Oanarina UI Tool",action:#selector(NSApplication.hide(_:)),keyEquivalent:"h");application.addItem(hide)
-        application.addItem(NSMenuItem(title:"Quit Oanarina UI Tool",action:#selector(NSApplication.terminate(_:)),keyEquivalent:"q"))
-        let file=section("File");add(file,"New Design File","new","n");add(file,"Open Project…","open","o");file.addItem(.separator());add(file,"Save","save","s");add(file,"Save As…","save-as","s",[.command,.shift]);add(file,"Place Image or SVG…","import","k",[.command,.shift]);add(file,"Figma Import / Export…","figma");file.addItem(.separator());add(file,"Export…","export","e",[.command,.shift]);add(file,"Save a Named Version…","snapshot");add(file,"Version History","history")
-        let edit=section("Edit");add(edit,"Undo","undo","z");add(edit,"Redo","redo","z",[.command,.shift]);edit.addItem(.separator());add(edit,"Cut","cut","x");add(edit,"Copy","copy","c");add(edit,"Paste","paste","v");add(edit,"Select All","select-all","a");add(edit,"Duplicate","duplicate","d");add(edit,"Delete Selection","delete");add(edit,"Rename Layer…","rename","r")
-        let object=section("Object");add(object,"Group Selection","group","g");add(object,"Ungroup","ungroup","g",[.command,.shift]);add(object,"Frame Selection","frame-selection","g",[.command,.option]);add(object,"Create Component","component","k",[.command,.option]);add(object,"Create Instance","instance");add(object,"Reset Instance","sync");add(object,"Detach Instance","detach");add(object,"Add Auto Layout","auto-layout");object.addItem(.separator());add(object,"Bring to Front","front","]",[.command,.option]);add(object,"Send to Back","back","[",[.command,.option]);add(object,"Toggle Lock","lock","l",[.command,.shift]);add(object,"Toggle Visibility","hide","h",[.command,.shift])
-        let arrange=section("Arrange");for (title,id) in [("Align Left","left"),("Align Horizontal Centers","center"),("Align Right","right"),("Align Top","top"),("Align Vertical Centers","middle"),("Align Bottom","bottom"),("Distribute Horizontally","distribute-x"),("Distribute Vertically","distribute-y")]{add(arrange,title,id)}
-        let view=section("View");add(view,"Actions…","actions","k");add(view,"Zoom In","zoom-in","=");add(view,"Zoom Out","zoom-out","-");add(view,"Zoom to Fit","fit");add(view,"Zoom to Selection","fit-selection");add(view,"Zoom to 100%","zoom-100");view.addItem(.separator());add(view,"Show Rulers","rulers");add(view,"Show Pixel Grid","grid","'");add(view,"Show Outlines","outlines");add(view,"Hide / Show UI","toggle-ui","\\");add(view,"Dev Mode","inspect");add(view,"Font Library…","fonts");add(view,"Comments","comments")
-        let win=section("Window");NSApp.windowsMenu=win;win.addItem(NSMenuItem(title:"Minimize",action:#selector(NSWindow.performMiniaturize(_:)),keyEquivalent:"m"));win.addItem(NSMenuItem(title:"Zoom",action:#selector(NSWindow.performZoom(_:)),keyEquivalent:""));add(win,"Back to Files","home");add(win,"Present Prototype","present","\r",[.command,.option]);let full=NSMenuItem(title:"Enter Full Screen",action:#selector(NSWindow.toggleFullScreen(_:)),keyEquivalent:"f");full.keyEquivalentModifierMask=[.control,.command];win.addItem(full)
-        let help=section("Help");NSApp.helpMenu=help;add(help,"Keyboard Shortcuts","shortcuts");add(help,"Feature Register","roadmap");add(help,"Figma Bridge","figma");add(help,"Browse Google & Installed Fonts","fonts")
+        let application=section("Oanarina UI Tool");add(application,"About Oanarina UI Tool","about");application.addItem(.separator());add(application,"Toggle Light / Dark Appearance","theme");application.addItem(.separator());application.addItem(NSMenuItem(title:"Hide Oanarina UI Tool",action:#selector(NSApplication.hide(_:)),keyEquivalent:"h"));application.addItem(NSMenuItem(title:"Quit Oanarina UI Tool",action:#selector(NSApplication.terminate(_:)),keyEquivalent:"q"))
+        let data=try? Data(contentsOf:resources.appendingPathComponent("commands.json"));let commands=(data.flatMap{try? JSONSerialization.jsonObject(with:$0)}) as? [[String]] ?? []
+        for group in ["File","Edit","View","Object","Text","Arrange","Vector","Page","Prototype","Resources","Help"] {
+            let menu=section(group);if group=="Help"{NSApp.helpMenu=menu}
+            for row in commands where row.count==4&&row[2]==group {let (key,flags)=accelerator(row[3]);add(menu,row[1],row[0],key,flags)}
+        }
+        let win=section("Window");NSApp.windowsMenu=win;win.addItem(NSMenuItem(title:"Minimize",action:#selector(NSWindow.performMiniaturize(_:)),keyEquivalent:"m"));win.addItem(NSMenuItem(title:"Zoom",action:#selector(NSWindow.performZoom(_:)),keyEquivalent:""));let close=NSMenuItem(title:"Close",action:#selector(NSWindow.performClose(_:)),keyEquivalent:"w");win.addItem(close);let full=NSMenuItem(title:"Enter Full Screen",action:#selector(NSWindow.toggleFullScreen(_:)),keyEquivalent:"f");full.keyEquivalentModifierMask=[.control,.command];win.addItem(full);if let help=bar.items.first(where:{$0.title=="Help"}){bar.removeItem(help);bar.addItem(help)}
     }
     func read(_ url:URL)throws->String {
         let info=try url.resourceValues(forKeys:[.fileSizeKey]);guard (info.fileSize ?? 0)<50_000_000 else{throw NSError(domain:"Project exceeds 50 MB",code:1)}
-        let data=try Data(contentsOf:url);guard let text=String(data:data,encoding:.utf8),let doc=try JSONSerialization.jsonObject(with:data) as? [String:Any],doc["format"] as? String == "oanarina-ui",doc["version"] as? Int == 1,let id=doc["id"] as? String else{throw NSError(domain:"Invalid Oanarina project",code:2)}
+        let data=try Data(contentsOf:url);guard let text=String(data:data,encoding:.utf8),let doc=try JSONSerialization.jsonObject(with:data) as? [String:Any],doc["format"] as? String == "oanarina-ui",[1,2].contains(doc["version"] as? Int ?? 0),let id=doc["id"] as? String else{throw NSError(domain:"Invalid Oanarina project",code:2)}
         paths[id]=url;return text
     }
     func openURL(_ url:URL){if !editorReady{pending=url;return};do{let text=try read(url);web.evaluateJavaScript("window.__studioDocument(\(json(text)))",completionHandler:nil)}catch{let alert=NSAlert();alert.messageText="Unable to open project";alert.informativeText=error.localizedDescription;alert.runModal()}}
@@ -100,7 +101,7 @@ final class Studio: NSObject, NSApplicationDelegate, WKScriptMessageHandlerWithR
     func webView(_ webView:WKWebView,didFinish navigation:WKNavigation!){editorReady=true;if let file=pending{pending=nil;openURL(file)}
         if CommandLine.arguments.contains("--smoke-test") {DispatchQueue.main.asyncAfter(deadline:.now()+4){
             self.web.callAsyncJavaScript("const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');return JSON.stringify({title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});",arguments:[:],in:nil,in:.page) { result in
-                switch result {case .success(let value):print(value ?? "NO RESULT");fflush(stdout);NSApp.terminate(nil);case .failure(let error):fputs(error.localizedDescription+"\n",stderr);exit(1)}
+                switch result {case .success(let value):print(value);fflush(stdout);NSApp.terminate(nil);case .failure(let error):fputs(error.localizedDescription+"\n",stderr);exit(1)}
             }
         }}
     }
@@ -109,6 +110,7 @@ final class Studio: NSObject, NSApplicationDelegate, WKScriptMessageHandlerWithR
             if action.navigationType == .other {decisionHandler(.allow)}else{decisionHandler(.cancel)}
         }else{decisionHandler(.cancel)}}
     func webView(_ webView:WKWebView,runJavaScriptAlertPanelWithMessage message:String,initiatedByFrame frame:WKFrameInfo,completionHandler:@escaping()->Void){let alert=NSAlert();alert.messageText=message;alert.beginSheetModal(for:window){_ in completionHandler()}}
+    func webView(_ webView:WKWebView,createWebViewWith configuration:WKWebViewConfiguration,for action:WKNavigationAction,windowFeatures:WKWindowFeatures)->WKWebView?{if let url=action.request.url,["https","http"].contains(url.scheme?.lowercased() ?? ""){NSWorkspace.shared.open(url)};return nil}
     func webView(_ webView:WKWebView,decidePolicyFor response:WKNavigationResponse,decisionHandler:@escaping(WKNavigationResponsePolicy)->Void){decisionHandler(.allow)}
 }
 

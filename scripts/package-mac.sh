@@ -6,7 +6,12 @@ PROFILE="${NOTARY_PROFILE-oanarina-notary}"
 npm test
 ./scripts/build-mac.sh
 APP="build/Oanarina UI Tool.app"
-DMG="release/Oanarina-UI-Tool-0.1.0.dmg"
+VERSION="$(node -p 'JSON.parse(require("fs").readFileSync("package.json","utf8")).version')"
+DMG="release/Oanarina-UI-Tool-$VERSION.dmg"
+if [[ -e "$DMG" ]]; then
+ printf 'Refusing to overwrite existing release: %s\n' "$DMG" >&2
+ exit 1
+fi
 codesign --force --timestamp --options runtime --sign "$IDENTITY" "$APP"
 codesign --verify --deep --strict "$APP"
 notarize(){
@@ -35,5 +40,5 @@ if [[ -n "$PROFILE" ]]; then
  spctl --assess --type execute --verbose=2 "$APP"
  spctl --assess --type open --context context:primary-signature --verbose=2 "$DMG"
 fi
-(cd release && shasum -a 256 Oanarina-UI-Tool-0.1.0.dmg > SHA256SUMS.txt)
+(cd release && shasum -a 256 "Oanarina-UI-Tool-$VERSION.dmg" > "SHA256SUMS-$VERSION.txt")
 ls -lh "$DMG"

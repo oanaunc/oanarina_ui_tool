@@ -6,7 +6,7 @@ const s=()=>useEditor.getState();
 beforeEach(()=>s().newDocument());
 describe('document model',()=>{
  it('round-trips the complete sample without losing metadata',()=>{const d=sampleDocument();expect(parseDocument(JSON.stringify(d))).toEqual(d);});
- it('rejects unsupported binary/project versions',()=>{expect(()=>parseDocument('fig-kiwi')).toThrow();const d=blankDocument();expect(()=>parseDocument(JSON.stringify({...d,version:2}))).toThrow();});
+ it('rejects unsupported binary/project versions',()=>{expect(()=>parseDocument('fig-kiwi')).toThrow();const d=blankDocument();expect(()=>parseDocument(JSON.stringify({...d,version:3}))).toThrow();});
  it('rejects non-finite dimensions, duplicate IDs, missing parents and cyclic hierarchy',()=>{for(const mutate of [(a:any,b:any)=>a.width=null,(a:any,b:any)=>b.id=a.id,(a:any,b:any)=>a.parentId='missing',(a:any,b:any)=>{a.parentId=b.id;b.parentId=a.id;}]){const d=blankDocument(),a=node('frame'),b=node('rectangle');d.pages[0].nodes.push(a,b);mutate(a,b);expect(()=>parseDocument(JSON.stringify(d))).toThrow();}});
  it('rejects remote images and malformed comment payloads',()=>{const d=blankDocument();d.pages[0].nodes.push(node('image',{image:'https://example.com/x.png'}));expect(()=>parseDocument(JSON.stringify(d))).toThrow();d.pages[0].nodes=[];d.pages[0].comments.push({id:'a',text:'x',x:NaN,y:0,resolved:false});expect(()=>parseDocument(JSON.stringify(d))).toThrow();});
  it('walks descendants and inherits visibility and lock',()=>{const a=node('frame',{visible:false,locked:true}),b=node('group',{parentId:a.id}),c=node('rectangle',{parentId:b.id});expect(descendants([a,b,c],[a.id])).toEqual([a.id,b.id,c.id]);expect(effectiveVisible(c,[a,b,c])).toBe(false);expect(isLocked(c,[a,b,c])).toBe(true);});

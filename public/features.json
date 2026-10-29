@@ -2554,10 +2554,10 @@
     "category": "Frames",
     "name": "Independent frame corners",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-09-017",
@@ -2867,7 +2867,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2: nested SVG group opacity composites overlapping children once; exported pixel test."
   },
   {
     "id": "UI-10-018",
@@ -3034,10 +3034,10 @@
     "category": "Basic shapes",
     "name": "Independent rectangle corners",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-11-005",
@@ -3074,30 +3074,30 @@
     "category": "Basic shapes",
     "name": "Ellipse arc start",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-11-009",
     "category": "Basic shapes",
     "name": "Ellipse arc sweep",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-11-010",
     "category": "Basic shapes",
     "name": "Ellipse inner radius",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-11-011",
@@ -3194,10 +3194,10 @@
     "category": "Basic shapes",
     "name": "Polygon point count",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-11-021",
@@ -3224,20 +3224,20 @@
     "category": "Basic shapes",
     "name": "Star point count",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-11-024",
     "category": "Basic shapes",
     "name": "Star inner radius",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-11-025",
@@ -3434,20 +3434,20 @@
     "category": "Transforms and arrangement",
     "name": "Scale stroke with object",
     "priority": "must",
-    "status": "implemented",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "Legacy stroke width/radius scale; advanced stroke stacks and independent corners still require scale-tool propagation."
   },
   {
     "id": "UI-12-015",
     "category": "Transforms and arrangement",
     "name": "Scale corner radius",
     "priority": "must",
-    "status": "implemented",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "Legacy stroke width/radius scale; advanced stroke stacks and independent corners still require scale-tool propagation."
   },
   {
     "id": "UI-12-016",
@@ -3484,20 +3484,20 @@
     "category": "Transforms and arrangement",
     "name": "Flip horizontally",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-12-020",
     "category": "Transforms and arrangement",
     "name": "Flip vertically",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-12-021",
@@ -3604,50 +3604,50 @@
     "category": "Transforms and arrangement",
     "name": "Bring forward one layer",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-12-032",
     "category": "Transforms and arrangement",
     "name": "Send backward one layer",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-12-033",
     "category": "Transforms and arrangement",
     "name": "Tidy up selection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-12-034",
     "category": "Transforms and arrangement",
     "name": "Set equal widths",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-12-035",
     "category": "Transforms and arrangement",
     "name": "Set equal heights",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-12-036",
@@ -4014,70 +4014,70 @@
     "category": "Vector pen and editing",
     "name": "Add cubic curve segment",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-007",
     "category": "Vector pen and editing",
     "name": "Drag bezier handle",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-008",
     "category": "Vector pen and editing",
     "name": "Independent tangent handles",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-009",
     "category": "Vector pen and editing",
     "name": "Mirrored tangent handles",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-010",
     "category": "Vector pen and editing",
     "name": "Aligned tangent handles",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-011",
     "category": "Vector pen and editing",
     "name": "Corner point",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete."
   },
   {
     "id": "UI-14-012",
     "category": "Vector pen and editing",
     "name": "Smooth point",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete."
   },
   {
     "id": "UI-14-013",
@@ -4104,40 +4104,40 @@
     "category": "Vector pen and editing",
     "name": "Insert point on segment",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-016",
     "category": "Vector pen and editing",
     "name": "Remove vector point",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-017",
     "category": "Vector pen and editing",
     "name": "Move vector point",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-018",
     "category": "Vector pen and editing",
     "name": "Multi-select vector points",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-019",
@@ -4184,20 +4184,20 @@
     "category": "Vector pen and editing",
     "name": "Reverse path direction",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-024",
     "category": "Vector pen and editing",
     "name": "Open closed path",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-025",
@@ -4254,20 +4254,20 @@
     "category": "Vector pen and editing",
     "name": "Vector edit mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-031",
     "category": "Vector pen and editing",
     "name": "Exit vector edit mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-032",
@@ -4284,10 +4284,10 @@
     "category": "Vector pen and editing",
     "name": "Flatten vector network",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete."
   },
   {
     "id": "UI-14-034",
@@ -4304,10 +4304,10 @@
     "category": "Vector pen and editing",
     "name": "Simplify vector path",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Cubic pen, anchor/handle editing and persisted curves have browser coverage."
   },
   {
     "id": "UI-14-036",
@@ -4324,110 +4324,110 @@
     "category": "Boolean geometry",
     "name": "Union shapes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-002",
     "category": "Boolean geometry",
     "name": "Subtract shapes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-003",
     "category": "Boolean geometry",
     "name": "Intersect shapes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-004",
     "category": "Boolean geometry",
     "name": "Exclude overlapping shapes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-005",
     "category": "Boolean geometry",
     "name": "Live boolean group",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-006",
     "category": "Boolean geometry",
     "name": "Edit boolean operands",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-007",
     "category": "Boolean geometry",
     "name": "Reorder boolean operands",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-008",
     "category": "Boolean geometry",
     "name": "Toggle operand visibility",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-009",
     "category": "Boolean geometry",
     "name": "Release boolean group",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-010",
     "category": "Boolean geometry",
     "name": "Flatten boolean result",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-011",
     "category": "Boolean geometry",
     "name": "Nested boolean operations",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation."
   },
   {
     "id": "UI-15-012",
@@ -4444,80 +4444,80 @@
     "category": "Boolean geometry",
     "name": "Boolean operation with vectors",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-014",
     "category": "Boolean geometry",
     "name": "Boolean operation with ellipses",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-015",
     "category": "Boolean geometry",
     "name": "Boolean operation with rectangles",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-016",
     "category": "Boolean geometry",
     "name": "Preserve boolean result fill",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation."
   },
   {
     "id": "UI-15-017",
     "category": "Boolean geometry",
     "name": "Preserve boolean result stroke",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation."
   },
   {
     "id": "UI-15-018",
     "category": "Boolean geometry",
     "name": "Boolean group bounds",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-019",
     "category": "Boolean geometry",
     "name": "Boolean group export",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-15-020",
     "category": "Boolean geometry",
     "name": "Change boolean operation type",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks."
   },
   {
     "id": "UI-16-001",
@@ -4534,20 +4534,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Pencil smoothing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-16-003",
     "category": "Freehand and Figma Draw",
     "name": "Pencil path editing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-16-004",
@@ -4904,40 +4904,40 @@
     "category": "Fills and colors",
     "name": "RGB color entry",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-004",
     "category": "Fills and colors",
     "name": "HSL color entry",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-005",
     "category": "Fills and colors",
     "name": "HSB color entry",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-006",
     "category": "Fills and colors",
     "name": "Color alpha channel",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-007",
@@ -5004,30 +5004,30 @@
     "category": "Fills and colors",
     "name": "Multiple fills per layer",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-014",
     "category": "Fills and colors",
     "name": "Reorder fill stack",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-015",
     "category": "Fills and colors",
     "name": "Toggle fill visibility",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-016",
@@ -5044,120 +5044,120 @@
     "category": "Fills and colors",
     "name": "Duplicate fill",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-018",
     "category": "Fills and colors",
     "name": "Linear gradient",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-019",
     "category": "Fills and colors",
     "name": "Radial gradient",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-020",
     "category": "Fills and colors",
     "name": "Angular gradient",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Editable gradient stops/coordinates, saved data and raster SVG patterns; current raster resolution is 256×256, not an unlimited vector gradient."
   },
   {
     "id": "UI-17-021",
     "category": "Fills and colors",
     "name": "Diamond gradient",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Editable gradient stops/coordinates, saved data and raster SVG patterns; current raster resolution is 256×256, not an unlimited vector gradient."
   },
   {
     "id": "UI-17-022",
     "category": "Fills and colors",
     "name": "Gradient stop color",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-023",
     "category": "Fills and colors",
     "name": "Gradient stop opacity",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-024",
     "category": "Fills and colors",
     "name": "Insert gradient stop",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-025",
     "category": "Fills and colors",
     "name": "Remove gradient stop",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-026",
     "category": "Fills and colors",
     "name": "Gradient stop position",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-027",
     "category": "Fills and colors",
     "name": "Reverse gradient",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-028",
     "category": "Fills and colors",
     "name": "Gradient rotation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
   },
   {
     "id": "UI-17-029",
@@ -5264,10 +5264,10 @@
     "category": "Strokes",
     "name": "Stroke opacity",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-004",
@@ -5284,10 +5284,10 @@
     "category": "Strokes",
     "name": "Multiple strokes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-006",
@@ -5304,40 +5304,40 @@
     "category": "Strokes",
     "name": "Stroke stack order",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-008",
     "category": "Strokes",
     "name": "Stroke align inside",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-009",
     "category": "Strokes",
     "name": "Stroke align center",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-010",
     "category": "Strokes",
     "name": "Stroke align outside",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-011",
@@ -5354,10 +5354,10 @@
     "category": "Strokes",
     "name": "Stroke join miter",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-013",
@@ -5374,30 +5374,30 @@
     "category": "Strokes",
     "name": "Stroke join bevel",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-015",
     "category": "Strokes",
     "name": "Miter limit",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-016",
     "category": "Strokes",
     "name": "Stroke cap butt",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-017",
@@ -5414,40 +5414,40 @@
     "category": "Strokes",
     "name": "Stroke cap square",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-019",
     "category": "Strokes",
     "name": "Dash pattern",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-020",
     "category": "Strokes",
     "name": "Dash gap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-021",
     "category": "Strokes",
     "name": "Dash offset",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-022",
@@ -5474,20 +5474,20 @@
     "category": "Strokes",
     "name": "Gradient stroke",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-18-025",
     "category": "Strokes",
     "name": "Image stroke",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Image paint controls/rendering exist; crop/tile edge cases and real Figma transfer still need visual coverage."
   },
   {
     "id": "UI-18-026",
@@ -5547,17 +5547,17 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2: parameterized effect stacks replace fixed preview controls; legacy files migrate through fallback rendering."
   },
   {
     "id": "UI-19-002",
     "category": "Effects and compositing",
     "name": "Inner shadow",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-003",
@@ -5567,7 +5567,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2: parameterized effect stacks replace fixed preview controls; legacy files migrate through fallback rendering."
   },
   {
     "id": "UI-19-004",
@@ -5584,110 +5584,110 @@
     "category": "Effects and compositing",
     "name": "Shadow x offset",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-006",
     "category": "Effects and compositing",
     "name": "Shadow y offset",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-007",
     "category": "Effects and compositing",
     "name": "Shadow radius",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-008",
     "category": "Effects and compositing",
     "name": "Shadow spread",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-009",
     "category": "Effects and compositing",
     "name": "Shadow color",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-010",
     "category": "Effects and compositing",
     "name": "Shadow opacity",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-011",
     "category": "Effects and compositing",
     "name": "Multiple effects",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-012",
     "category": "Effects and compositing",
     "name": "Reorder effects",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-013",
     "category": "Effects and compositing",
     "name": "Toggle effect visibility",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-014",
     "category": "Effects and compositing",
     "name": "Duplicate effect",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-015",
     "category": "Effects and compositing",
     "name": "Remove effect",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-016",
@@ -5704,10 +5704,10 @@
     "category": "Effects and compositing",
     "name": "Normal blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-018",
@@ -5724,150 +5724,150 @@
     "category": "Effects and compositing",
     "name": "Multiply blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-020",
     "category": "Effects and compositing",
     "name": "Screen blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-021",
     "category": "Effects and compositing",
     "name": "Overlay blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-022",
     "category": "Effects and compositing",
     "name": "Darken blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-023",
     "category": "Effects and compositing",
     "name": "Lighten blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-024",
     "category": "Effects and compositing",
     "name": "Color dodge blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-025",
     "category": "Effects and compositing",
     "name": "Color burn blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-026",
     "category": "Effects and compositing",
     "name": "Hard light blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-027",
     "category": "Effects and compositing",
     "name": "Soft light blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-028",
     "category": "Effects and compositing",
     "name": "Difference blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-029",
     "category": "Effects and compositing",
     "name": "Exclusion blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-030",
     "category": "Effects and compositing",
     "name": "Hue blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-031",
     "category": "Effects and compositing",
     "name": "Saturation blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-032",
     "category": "Effects and compositing",
     "name": "Color blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-033",
     "category": "Effects and compositing",
     "name": "Luminosity blend mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-034",
@@ -5884,10 +5884,10 @@
     "category": "Effects and compositing",
     "name": "Group isolation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "v0.2: SVG filter stacks and compositing, editable inspector, undo and validation. Browser tests verify inner/drop shadow pixels and group alpha. Each blend mode still needs broader reference acceptance testing."
   },
   {
     "id": "UI-19-036",
@@ -6324,10 +6324,10 @@
     "category": "Typography",
     "name": "Font style selection",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Single-style synthetic italic and line spacing justification exist. Real italic assets, mixed ranges, complex-script shaping and paragraph-level reference fidelity remain incomplete."
   },
   {
     "id": "UI-21-008",
@@ -6384,70 +6384,70 @@
     "category": "Typography",
     "name": "Paragraph spacing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-014",
     "category": "Typography",
     "name": "Paragraph indentation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-015",
     "category": "Typography",
     "name": "Auto-width text",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-016",
     "category": "Typography",
     "name": "Auto-height text",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-017",
     "category": "Typography",
     "name": "Fixed-size text",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-018",
     "category": "Typography",
     "name": "Text overflow truncation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-019",
     "category": "Typography",
     "name": "Maximum text lines",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-020",
@@ -6484,40 +6484,40 @@
     "category": "Typography",
     "name": "Text justified alignment",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Single-style synthetic italic and line spacing justification exist. Real italic assets, mixed ranges, complex-script shaping and paragraph-level reference fidelity remain incomplete."
   },
   {
     "id": "UI-21-024",
     "category": "Typography",
     "name": "Text vertical top",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-025",
     "category": "Typography",
     "name": "Text vertical middle",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-026",
     "category": "Typography",
     "name": "Text vertical bottom",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-027",
@@ -6534,10 +6534,10 @@
     "category": "Typography",
     "name": "Text stroke",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Canvas text measurement and single-style wrapping/truncation are tested."
   },
   {
     "id": "UI-21-029",
@@ -6624,70 +6624,70 @@
     "category": "Advanced typography",
     "name": "Bold text shortcut",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-002",
     "category": "Advanced typography",
     "name": "Italic text shortcut",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
   },
   {
     "id": "UI-22-003",
     "category": "Advanced typography",
     "name": "Underline text",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-004",
     "category": "Advanced typography",
     "name": "Strikethrough text",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-005",
     "category": "Advanced typography",
     "name": "Uppercase transformation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-006",
     "category": "Advanced typography",
     "name": "Lowercase transformation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-007",
     "category": "Advanced typography",
     "name": "Title case transformation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-008",
@@ -6724,20 +6724,20 @@
     "category": "Advanced typography",
     "name": "Numbered lists",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
   },
   {
     "id": "UI-22-012",
     "category": "Advanced typography",
     "name": "Bulleted lists",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
   },
   {
     "id": "UI-22-013",
@@ -6754,30 +6754,30 @@
     "category": "Advanced typography",
     "name": "List indentation",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
   },
   {
     "id": "UI-22-015",
     "category": "Advanced typography",
     "name": "Text links",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-016",
     "category": "Advanced typography",
     "name": "Link editing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
   },
   {
     "id": "UI-22-017",
@@ -7024,200 +7024,200 @@
     "category": "Constraints and resizing",
     "name": "Horizontal left constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-002",
     "category": "Constraints and resizing",
     "name": "Horizontal right constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-003",
     "category": "Constraints and resizing",
     "name": "Horizontal center constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-004",
     "category": "Constraints and resizing",
     "name": "Horizontal left-right constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-005",
     "category": "Constraints and resizing",
     "name": "Horizontal scale constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-006",
     "category": "Constraints and resizing",
     "name": "Vertical top constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-007",
     "category": "Constraints and resizing",
     "name": "Vertical bottom constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-008",
     "category": "Constraints and resizing",
     "name": "Vertical center constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-009",
     "category": "Constraints and resizing",
     "name": "Vertical top-bottom constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-010",
     "category": "Constraints and resizing",
     "name": "Vertical scale constraint",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-011",
     "category": "Constraints and resizing",
     "name": "Fixed child width",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-012",
     "category": "Constraints and resizing",
     "name": "Fixed child height",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-013",
     "category": "Constraints and resizing",
     "name": "Hug contents width",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-014",
     "category": "Constraints and resizing",
     "name": "Hug contents height",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-015",
     "category": "Constraints and resizing",
     "name": "Fill container width",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
   },
   {
     "id": "UI-23-016",
     "category": "Constraints and resizing",
     "name": "Fill container height",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
   },
   {
     "id": "UI-23-017",
     "category": "Constraints and resizing",
     "name": "Minimum width",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-018",
     "category": "Constraints and resizing",
     "name": "Maximum width",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-019",
     "category": "Constraints and resizing",
     "name": "Minimum height",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-020",
     "category": "Constraints and resizing",
     "name": "Maximum height",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-021",
@@ -7244,30 +7244,30 @@
     "category": "Constraints and resizing",
     "name": "Resize nested constrained frame",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
   },
   {
     "id": "UI-23-024",
     "category": "Constraints and resizing",
     "name": "Ignore auto layout",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-025",
     "category": "Constraints and resizing",
     "name": "Absolute child position",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: sizing/constraint inspector, frame resize solver, schema validation, nested constraints and undo tests. Unrotated rectangular layout is the supported scope."
   },
   {
     "id": "UI-23-026",
@@ -7314,10 +7314,10 @@
     "category": "Constraints and resizing",
     "name": "Responsive resize preview",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
   },
   {
     "id": "UI-24-001",
@@ -7394,190 +7394,190 @@
     "category": "Auto layout fundamentals",
     "name": "Horizontal padding",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Set each edge independently or use uniform padding; no paired horizontal/vertical quick-control yet."
   },
   {
     "id": "UI-24-009",
     "category": "Auto layout fundamentals",
     "name": "Vertical padding",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Set each edge independently or use uniform padding; no paired horizontal/vertical quick-control yet."
   },
   {
     "id": "UI-24-010",
     "category": "Auto layout fundamentals",
     "name": "Independent top padding",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-011",
     "category": "Auto layout fundamentals",
     "name": "Independent right padding",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-012",
     "category": "Auto layout fundamentals",
     "name": "Independent bottom padding",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-013",
     "category": "Auto layout fundamentals",
     "name": "Independent left padding",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-014",
     "category": "Auto layout fundamentals",
     "name": "Align children top-left",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-015",
     "category": "Auto layout fundamentals",
     "name": "Align children top-center",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-016",
     "category": "Auto layout fundamentals",
     "name": "Align children top-right",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-017",
     "category": "Auto layout fundamentals",
     "name": "Align children middle-left",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-018",
     "category": "Auto layout fundamentals",
     "name": "Align children middle-center",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-019",
     "category": "Auto layout fundamentals",
     "name": "Align children middle-right",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-020",
     "category": "Auto layout fundamentals",
     "name": "Align children bottom-left",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-021",
     "category": "Auto layout fundamentals",
     "name": "Align children bottom-center",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-022",
     "category": "Auto layout fundamentals",
     "name": "Align children bottom-right",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-023",
     "category": "Auto layout fundamentals",
     "name": "Space-between distribution",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-024",
     "category": "Auto layout fundamentals",
     "name": "Space-around distribution",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-025",
     "category": "Auto layout fundamentals",
     "name": "Space-evenly distribution",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-026",
     "category": "Auto layout fundamentals",
     "name": "Auto gap sizing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-027",
@@ -7664,20 +7664,20 @@
     "category": "Auto layout fundamentals",
     "name": "Layout overflow clipping",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-24-036",
     "category": "Auto layout fundamentals",
     "name": "Negative layout gap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "v0.2: independent padding, main/cross-axis controls and SVG clipping. Core layout solver tests and inspector browser workflows pass."
   },
   {
     "id": "UI-25-001",
@@ -7764,20 +7764,20 @@
     "category": "Auto layout grid and wrap",
     "name": "Column gap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement."
   },
   {
     "id": "UI-25-010",
     "category": "Auto layout grid and wrap",
     "name": "Row gap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement."
   },
   {
     "id": "UI-25-011",
@@ -7854,10 +7854,10 @@
     "category": "Auto layout grid and wrap",
     "name": "Grid item fill sizing",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "Fixed-count grid and basic child fill sizing exist; track definitions, spans, row sizing and arbitrary grid alignment remain incomplete."
   },
   {
     "id": "UI-25-019",
@@ -7874,50 +7874,50 @@
     "category": "Auto layout grid and wrap",
     "name": "Nested grid layout",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "Fixed-count grid and basic child fill sizing exist; track definitions, spans, row sizing and arbitrary grid alignment remain incomplete."
   },
   {
     "id": "UI-25-021",
     "category": "Auto layout grid and wrap",
     "name": "Horizontal wrap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement."
   },
   {
     "id": "UI-25-022",
     "category": "Auto layout grid and wrap",
     "name": "Vertical wrap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement."
   },
   {
     "id": "UI-25-023",
     "category": "Auto layout grid and wrap",
     "name": "Wrap row gap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement."
   },
   {
     "id": "UI-25-024",
     "category": "Auto layout grid and wrap",
     "name": "Wrap column gap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement."
   },
   {
     "id": "UI-25-025",
@@ -7944,10 +7944,10 @@
     "category": "Auto layout grid and wrap",
     "name": "Grid item absolute position",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. Both wrap directions have solver tests; wrapping supports layer order with start cross-line placement."
   },
   {
     "id": "UI-25-028",
@@ -12347,7 +12347,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md."
+    "notes": "v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports."
   },
   {
     "id": "UI-39-016",
@@ -12367,7 +12367,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md."
+    "notes": "v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports."
   },
   {
     "id": "UI-39-018",
@@ -12407,7 +12407,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md."
+    "notes": "v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports."
   },
   {
     "id": "UI-39-022",
@@ -12417,7 +12417,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md."
+    "notes": "v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports."
   },
   {
     "id": "UI-39-023",
@@ -12427,7 +12427,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md."
+    "notes": "v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports."
   },
   {
     "id": "UI-39-024",
@@ -13604,10 +13604,10 @@
     "category": "Actions and keyboard",
     "name": "Numeric opacity shortcuts",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "v0.2: shared 108-command registry drives browser and Mac menus; physical-key modifier matching has tests. ⌘S works with focused inspector controls. This is not full Figma shortcut parity."
   },
   {
     "id": "UI-42-026",
@@ -13627,7 +13627,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2: shared 108-command registry drives browser and Mac menus; physical-key modifier matching has tests. ⌘S works with focused inspector controls. This is not full Figma shortcut parity."
   },
   {
     "id": "UI-42-028",
@@ -16804,10 +16804,10 @@
     "category": "Performance and reliability",
     "name": "Document schema migration",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: validates version 1/2, migrates v1 to v2, rejects unsupported versions; core and bridge mock coverage."
   },
   {
     "id": "UI-53-014",
@@ -18484,20 +18484,20 @@
     "category": "Live interface verification additions",
     "name": "Dedicated Text main menu",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: separate browser/native Text and Vector menus, generated from shared commands. Exact menu contents remain incomplete."
   },
   {
     "id": "UI-58-010",
     "category": "Live interface verification additions",
     "name": "Dedicated Vector main menu",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2: separate browser/native Text and Vector menus, generated from shared commands. Exact menu contents remain incomplete."
   },
   {
     "id": "UI-58-011",

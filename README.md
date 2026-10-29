@@ -2,7 +2,9 @@
 
 A local-first interface design editor for **Mac**, developed by Oana Rinaldi. The first preview has a working vector canvas, pages, layers, a property inspector, drawing tools, text, basic layout and components, local comments, simple prototype navigation, project files and SVG/PNG/JPEG exports.
 
-**This is a working 0.1.0 preview, not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **1,860 requirements** across 58 categories: 1,830 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
+**Current source: 0.2.0-dev.1; public notarized download: v0.1.0. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **1,860 requirements** across 58 categories: 1,830 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
+
+The development source adds live booleans, cubic curve editing, richer text layout, paint/stroke/effect stacks and responsive auto layout. The register currently records **508 implemented, 111 partial and 1,241 planned** requirements. See the [development validation report](docs/VALIDATION-v0.2-development.md) for evidence and limitations.
 
 ## Run
 
@@ -20,7 +22,7 @@ Node 22.12+ and Xcode Command Line Tools are required to build. The native Mac a
 
 ## Fonts
 
-The included catalog snapshot contains **1,959 Google Fonts families**. Search by name, filter category, sort by popularity or alphabetically, preview custom text, and download families on demand. Downloads are cached in IndexedDB. **24 popular families** are bundled for offline use, with their individual OFL license files. The native Mac font picker also lists installed families. Commercial fonts require an appropriate local license and are not redistributed. Italic styles and importing arbitrary font files remain planned.
+The included catalog snapshot contains **1,959 Google Fonts families**. Search by name, filter category, sort by popularity or alphabetically, preview custom text, and download families on demand. Downloads are cached in IndexedDB. **24 popular families** are bundled for offline use, with their individual OFL license files. The native Mac font picker also lists installed families. Commercial fonts require an appropriate local license and are not redistributed. Text supports synthetic italic; actual italic font assets and importing arbitrary font files remain planned.
 
 ## Figma interchange
 
@@ -28,7 +30,7 @@ Use **File → Figma import / export**. The included [Figma Bridge development p
 
 ## Files and implementation
 
-- `.oui`: versioned JSON documents, including pages, layers, palettes, local comments and available font assets on explicit save.
+- `.oui`: version-two JSON documents (version-one files migrate on load), including pages, layers, palettes, local comments and available font assets on explicit save.
 - Browser recovery and recent files: browser local storage, with quota warnings; save a `.oui` for a durable portable backup. Native autosave uses the same browser recovery store.
 - `src/`: React/TypeScript editor and pure document model.
 - `macos/`: native Mac window, menus, installed-font discovery, atomic file saving and public-resource server. User documents are never served over HTTP.

@@ -1,18 +1,27 @@
+import type {Sizing,Constraint,Distribution} from './layout';
+export {reflow} from './layout';
+import {validateEffect} from './effects';
+import type {Effect} from './effects';
+import {validatePaint} from './paints';
+import type {Paint,StrokeStyle} from './paints';
 export type NodeKind = 'frame'|'section'|'slice'|'rectangle'|'ellipse'|'line'|'arrow'|'polygon'|'star'|'text'|'path'|'image'|'group'|'component'|'instance';
 export type Tool = NodeKind|'move'|'hand'|'scale'|'pen'|'pencil'|'comment';
+export interface VectorPoint {x:number;y:number;in?:{x:number;y:number};out?:{x:number;y:number};mode?:'mirrored'|'aligned'|'independent';}
+export interface VectorContour {points:VectorPoint[];closed:boolean;}
 export interface DesignNode {
   id:string; type:NodeKind; name:string; parentId:string|null;
   x:number; y:number; width:number; height:number; rotation:number;
-  fill:string; stroke:string; strokeWidth:number; opacity:number; radius:number;
+  fill:string; paints?:Paint[]; strokes?:StrokeStyle[]; blendMode?:string; effects?:Effect[]; isolate?:boolean; stroke:string; strokeWidth:number; opacity:number; radius:number;
   visible:boolean; locked:boolean; text:string; fontSize:number; fontFamily:string; fontWeight:number;
-  textAlign:'left'|'center'|'right'; lineHeight:number; letterSpacing:number;
-  path:string; points:{x:number;y:number}[]; image:string; shadow:boolean; blur:number;
+  textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number; letterSpacing:number;
+  path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
+  sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch';wrap?:boolean;
   clip:boolean; componentId:string|null; targetId:string|null; gradient:boolean;
 }
 export interface Comment {id:string; x:number;y:number; text:string; resolved:boolean;}
 export interface Page {id:string;name:string;nodes:DesignNode[];comments:Comment[];}
-export interface DesignDocument {format:'oanarina-ui';version:1;id:string;name:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;fonts?:{family:string;weight:string;data:string}[];}
+export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;fonts?:{family:string;weight:string;data:string}[];}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
 export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
@@ -21,7 +30,7 @@ export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
     visible:true,locked:false,text:'Your text',fontSize:24,fontFamily:'Inter',fontWeight:400,textAlign:'left',lineHeight:1.3,letterSpacing:0,path:'',points:[],image:'',shadow:false,blur:0,
     layout:'none',gap:16,padding:24,columns:3,clip:type==='frame',componentId:null,targetId:null,gradient:false,...props};
 }
-export function blankDocument():DesignDocument {return {format:'oanarina-ui',version:1,id:uid(),name:'Untitled',pages:[{id:uid(),name:'Page 1',nodes:[],comments:[]}],colors:[{name:'Rose',value:'#edb5d3'},{name:'Ink',value:'#282631'},{name:'Lavender',value:'#c8b9ee'},{name:'Sky',value:'#addce2'}],updatedAt:new Date().toISOString()};}
+export function blankDocument():DesignDocument {return {format:'oanarina-ui',version:2,id:uid(),name:'Untitled',pages:[{id:uid(),name:'Page 1',nodes:[],comments:[]}],colors:[{name:'Rose',value:'#edb5d3'},{name:'Ink',value:'#282631'},{name:'Lavender',value:'#c8b9ee'},{name:'Sky',value:'#addce2'}],updatedAt:new Date().toISOString()};}
 export function descendants(nodes:DesignNode[], ids:string[]):string[] {
   const found=new Set(ids);let changed=true;
   while(changed){changed=false;for(const n of nodes)if(n.parentId&&found.has(n.parentId)&&!found.has(n.id)){found.add(n.id);changed=true;}}
@@ -37,22 +46,10 @@ export function effectiveVisible(n:DesignNode,nodes:DesignNode[]):boolean {
   while(current){if(!current.visible||visited.has(current.id))return false;visited.add(current.id);current=nodes.find(a=>a.id===current!.parentId);}return true;
 }
 export function isLocked(n:DesignNode,nodes:DesignNode[]):boolean {let current:DesignNode|undefined=n;const seen=new Set<string>();while(current){if(current.locked||seen.has(current.id))return true;seen.add(current.id);current=nodes.find(a=>a.id===current!.parentId);}return false;}
-export function reflow(nodes:DesignNode[]):void {
-  // Inner containers first, then translate each child's complete subtree together.
-  const arranged=nodes.filter(n=>n.layout!=='none').reverse();
-  for(const p of arranged){let x=p.x+p.padding,y=p.y+p.padding,rowHeight=0;let col=0;
-    for(const n of nodes.filter(n=>n.parentId===p.id&&n.visible)){
-      const dx=x-n.x,dy=y-n.y;for(const c of nodes.filter(c=>descendants(nodes,[n.id]).includes(c.id))){c.x+=dx;c.y+=dy;}
-      if(p.layout==='horizontal')x+=n.width+p.gap;
-      else if(p.layout==='vertical')y+=n.height+p.gap;
-      else {rowHeight=Math.max(rowHeight,n.height);col++;x+=n.width+p.gap;if(col>=p.columns){col=0;x=p.x+p.padding;y+=rowHeight+p.gap;rowHeight=0;}}
-    }
-  }
-}
 export function parseDocument(raw:string):DesignDocument {
   if(raw.length>50_000_000)throw Error('This file exceeds the 50 MB project limit.');
   const d=JSON.parse(raw);
-  if(d.format!=='oanarina-ui'||d.version!==1||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file or a Figma Bridge .oui file. Direct .fig files are not supported yet.');
+  if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file or a Figma Bridge .oui file. Direct .fig files are not supported yet.');
   if(d.pages.length>1000)throw Error('Too many pages.');
   const ids=new Set<string>();
   for(const p of d.pages){if(typeof p.id!=='string'||ids.has(p.id)||typeof p.name!=='string'||!Array.isArray(p.nodes)||!Array.isArray(p.comments)||p.nodes.length>20000)throw Error('Invalid page.');ids.add(p.id);
@@ -62,13 +59,34 @@ export function parseDocument(raw:string):DesignDocument {
       for(const k of ['name','fill','stroke','text','fontFamily','path','image'])if(typeof n[k]!=='string')throw Error('Invalid text property.');
       if(n.image&&!/^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,/.test(n.image))throw Error('Only embedded images are supported.');
       if(!Array.isArray(n.points)||n.points.some((pt:{x:number;y:number})=>!Number.isFinite(pt.x)||!Number.isFinite(pt.y)))throw Error('Invalid path points.');
+      const contours=n.contours;if(contours!==undefined&&(!Array.isArray(contours)||contours.length>1000||contours.some((c:VectorContour)=>!Array.isArray(c.points)||typeof c.closed!=='boolean')))throw Error('Invalid vector contours.');
+      const points=[...n.points,...(contours??[]).flatMap((c:VectorContour)=>c.points)];if(points.length>100000)throw Error('Too many vector points.');
+      for(const pt of points){if(!Number.isFinite(pt.x)||!Number.isFinite(pt.y))throw Error('Invalid vector point.');for(const handle of [pt.in,pt.out])if(handle&&(!Number.isFinite(handle.x)||!Number.isFinite(handle.y)))throw Error('Invalid vector tangent.');}
+      for(const k of ['pathWidth','pathHeight','pointCount','innerRadius','arcStart','arcSweep','arcInner'])if(n[k]!==undefined&&!Number.isFinite(n[k]))throw Error('Invalid shape property.');
+      for(const key of ['paragraphSpacing','paragraphIndent','maxLines'])if(n[key]!==undefined&&(!Number.isFinite(n[key])||n[key]<0))throw Error('Invalid text layout value.');
+      for(const [key,values] of Object.entries({fontStyle:['normal','italic'],textResize:['auto-width','auto-height','fixed'],verticalAlign:['top','middle','bottom'],textOverflow:['visible','ellipsis'],listStyle:['none','bullet','number']}))if(n[key]!==undefined&&!values.includes(n[key]))throw Error('Invalid text setting.');
+      if(n.decorations!==undefined&&(!Array.isArray(n.decorations)||n.decorations.some((v:string)=>!['underline','line-through'].includes(v))))throw Error('Invalid text decoration.');
+      if(n.hyperlink!==undefined&&(typeof n.hyperlink!=='string'||!/^https?:\/\//i.test(n.hyperlink)))throw Error('Invalid text hyperlink.');
+      if(n.paints!==undefined){if(!Array.isArray(n.paints)||n.paints.length>100)throw Error('Invalid paint stack.');n.paints.forEach(validatePaint);}
+      for(const key of ['minWidth','maxWidth','minHeight','maxHeight','gapX','gapY'])if(n[key]!==undefined&&(!Number.isFinite(n[key])||Math.abs(n[key])>1e6||key.startsWith('min')&&n[key]<0||key.startsWith('max')&&n[key]<0))throw Error('Invalid layout dimension.');
+      if(n.minWidth>n.maxWidth||n.minHeight>n.maxHeight)throw Error('Minimum size exceeds maximum.');
+      if(n.paddings!==undefined&&(!Array.isArray(n.paddings)||n.paddings.length!==4||n.paddings.some((v:number)=>!Number.isFinite(v)||v<0||v>1e6)))throw Error('Invalid layout padding.');
+      for(const [key,values] of Object.entries({sizingX:['fixed','hug','fill'],sizingY:['fixed','hug','fill'],constraintX:['start','end','center','stretch','scale'],constraintY:['start','end','center','stretch','scale'],justifyContent:['start','center','end','space-between','space-around','space-evenly'],alignItems:['start','center','end','stretch']}))if(n[key]!==undefined&&!values.includes(n[key]))throw Error('Invalid layout setting.');
+      for(const key of ['wrap','ignoreLayout'])if(n[key]!==undefined&&typeof n[key]!=='boolean')throw Error('Invalid layout flag.');
+      if(n.effects!==undefined){if(!Array.isArray(n.effects)||n.effects.length>100)throw Error('Invalid effect stack.');n.effects.forEach(validateEffect);}
+      if(n.isolate!==undefined&&typeof n.isolate!=='boolean')throw Error('Invalid isolation flag.');
+      if(n.blendMode!==undefined&&!['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity'].includes(n.blendMode))throw Error('Invalid blend mode.');
+      if(n.strokes!==undefined){if(!Array.isArray(n.strokes)||n.strokes.length>100)throw Error('Invalid stroke stack.');for(const stroke of n.strokes){validatePaint(stroke.paint);if(typeof stroke.id!=='string'||typeof stroke.visible!=='boolean'||!Number.isFinite(stroke.miterLimit)||stroke.miterLimit<1||!Number.isFinite(stroke.dashOffset)||!Number.isFinite(stroke.width)||stroke.width<0||!['inside','center','outside'].includes(stroke.align)||!['butt','round','square'].includes(stroke.cap)||!['miter','round','bevel'].includes(stroke.join)||!Array.isArray(stroke.dash)||stroke.dash.some((v:number)=>!Number.isFinite(v)||v<0))throw Error('Invalid stroke style.');}}
+      if(n.booleanOp!==undefined&&!['union','subtract','intersect','exclude'].includes(n.booleanOp))throw Error('Invalid boolean operation.');
+      if(n.corners!==undefined&&(!Array.isArray(n.corners)||n.corners.length!==4||n.corners.some((v:number)=>!Number.isFinite(v)||v<0)))throw Error('Invalid corner radii.');
+
     }
     for(const c of p.comments)if(typeof c.id!=='string'||typeof c.text!=='string'||typeof c.resolved!=='boolean'||!Number.isFinite(c.x)||!Number.isFinite(c.y))throw Error('Invalid comment.');
-    for(const n of p.nodes){if(!(n.parentId===null||typeof n.parentId==='string')||!['none','horizontal','vertical','grid'].includes(n.layout)||!['left','center','right'].includes(n.textAlign))throw Error('Invalid layer settings.');for(const k of ['visible','locked','clip','gradient','shadow'] as const)if(typeof n[k]!=='boolean')throw Error('Invalid layer flag.');
+    for(const n of p.nodes){if(!(n.parentId===null||typeof n.parentId==='string')||!['none','horizontal','vertical','grid'].includes(n.layout)||!['left','center','right','justify'].includes(n.textAlign))throw Error('Invalid layer settings.');for(const k of ['visible','locked','clip','gradient','shadow'] as const)if(typeof n[k]!=='boolean')throw Error('Invalid layer flag.');
       const seen=new Set([n.id]);let id=n.parentId;while(id){if(seen.has(id))throw Error('Cyclic layer hierarchy.');seen.add(id);const parent=p.nodes.find((a:DesignNode)=>a.id===id);if(!parent)throw Error('Missing parent layer.');id=parent.parentId;}}
   }
   if(!Array.isArray(d.colors)||d.colors.some((c:{name:string;value:string})=>typeof c.name!=='string'||!/^#[0-9a-f]{6}$/i.test(c.value)))throw Error('Invalid color styles.');
   if(d.fonts&&(!Array.isArray(d.fonts)||d.fonts.some((f:{family:string;weight:string;data:string})=>typeof f.family!=='string'||!/^\d+(?: \d+)?$/.test(f.weight)||!/^data:font\/(?:ttf|woff2);base64,/.test(f.data))))throw Error('Invalid embedded fonts.');
-  return d as DesignDocument;
+  d.version=2;return d as DesignDocument;
 }
 export const polygonPoints=(n:DesignNode)=>Array.from({length:n.type==='star'?10:6},(_,i)=>{const a=i*Math.PI*2/(n.type==='star'?10:6)-Math.PI/2,r=n.type==='star'&&i%2?0.43:1;return `${n.width/2+Math.cos(a)*n.width/2*r},${n.height/2+Math.sin(a)*n.height/2*r}`;}).join(' ');
