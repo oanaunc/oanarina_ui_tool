@@ -16,3 +16,9 @@ test('browser recovery finishes before editing or autosave can replace the activ
 test('unavailable browser recovery still permits explicit in-memory editing with a warning',async({page})=>{
  await page.addInitScript(()=>{indexedDB.open=(()=>{throw Error('Storage intentionally unavailable');}) as IDBFactory['open'];});await page.goto('/');await expect(page.locator('.toast')).toContainText('Storage intentionally unavailable');await expect(page.getByRole('button',{name:'Open files',exact:true})).toBeVisible();await page.getByRole('button',{name:'New design file',exact:true}).click();await page.getByRole('button',{name:'Rectangle tool',exact:true}).click();await page.mouse.click(450,320);await expect(page.locator('.layer-row')).toHaveCount(1);
 });
+
+test('native commands sent at the ready handshake operate on the hydrated document',async({page})=>{
+ const doc=blankDocument();doc.pages[0].nodes=[node('rectangle',{name:'Handshake artwork'})];
+ await page.addInitScript(raw=>{const w=window as any;let command:(id:string)=>void=()=>{};w.desktop={bootstrap:async()=>({kind:'file',raw}),onCommand:(fn:(id:string)=>void)=>{command=fn;return()=>{};},onDocument:()=>()=>{},fonts:async()=>[],reportDocument:async()=>true,ready:async()=>{command('select-all');return true;}};},JSON.stringify(doc));
+ await page.goto('/');const layer=page.locator('.layer-row');await expect(layer).toHaveCount(1);await expect(layer).toHaveAttribute('aria-selected','true');
+});
