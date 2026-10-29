@@ -144,6 +144,84 @@
     "⌘R"
   ],
   [
+    "select-child",
+    "Select child layers",
+    "Edit",
+    "↵"
+  ],
+  [
+    "select-parent",
+    "Select parent layer",
+    "Edit",
+    "⇧↵"
+  ],
+  [
+    "select-next-sibling",
+    "Select next sibling",
+    "Edit",
+    "Tab"
+  ],
+  [
+    "select-previous-sibling",
+    "Select previous sibling",
+    "Edit",
+    "⇧Tab"
+  ],
+  [
+    "select-same-fill",
+    "Select all with same fill",
+    "Edit",
+    ""
+  ],
+  [
+    "select-same-stroke",
+    "Select all with same stroke",
+    "Edit",
+    ""
+  ],
+  [
+    "select-same-text",
+    "Select all with same text properties",
+    "Edit",
+    ""
+  ],
+  [
+    "select-same-component",
+    "Select all with same component",
+    "Edit",
+    ""
+  ],
+  [
+    "mask",
+    "Use as mask",
+    "Object",
+    "⌃⌘M"
+  ],
+  [
+    "release-mask",
+    "Release mask",
+    "Object",
+    ""
+  ],
+  [
+    "mask-alpha",
+    "Alpha mask",
+    "Object",
+    ""
+  ],
+  [
+    "mask-vector",
+    "Vector mask",
+    "Object",
+    ""
+  ],
+  [
+    "mask-luminance",
+    "Luminance mask",
+    "Object",
+    ""
+  ],
+  [
     "group",
     "Group selection",
     "Object",
@@ -525,7 +603,7 @@
     "edit-vector",
     "Edit vector points",
     "Vector",
-    "↵"
+    ""
   ],
   [
     "vector-smooth",

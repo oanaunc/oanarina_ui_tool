@@ -1,0 +1,1 @@
+.mask-inspector{font-size:10px}.mask-inspector label{display:flex;flex-direction:column;gap:6px;color:var(--muted);margin:8px 0}.mask-inspector .mask-source{font-size:9px;line-height:1.5;overflow-wrap:anywhere}.mask-actions{display:flex;flex-wrap:wrap;gap:5px}.mask-actions button{font-size:9px}.mask-error{color:#ffacc3;font-size:10px}

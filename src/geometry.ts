@@ -32,10 +32,10 @@ export function geometry(n:DesignNode):paper.PathItem {
  if(['text','image','slice'].includes(n.type))throw Error('Convert text to outlines or select vector shapes for this operation.');
  scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();
  if(n.type==='path'){p.scale(n.width/(n.pathWidth||n.width||1),n.height/(n.pathHeight||n.height||1),new scope.Point(0,0));}
- if(n.flipX||n.flipY)p.scale(n.flipX?-1:1,n.flipY?-1:1,new scope.Point(n.width/2,n.height/2));
+ if(n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined)p.scale((n.flipX?-1:1)*(n.motionScaleX??1),(n.flipY?-1:1)*(n.motionScaleY??1),new scope.Point(n.width/2,n.height/2));
  p.translate(new scope.Point(n.x,n.y));if(n.rotation)p.rotate(n.rotation,new scope.Point(n.x+n.width/2,n.y+n.height/2));return p;
 }
-export function pathProperties(p:paper.PathItem):Partial<DesignNode>{const b=p.bounds,x=b.x,y=b.y,width=Math.max(.001,b.width),height=Math.max(.001,b.height);p.translate(new scope.Point(-x,-y));return {type:'path',x,y,width,height,pathWidth:width,pathHeight:height,path:p.pathData,points:[],contours:undefined,closed:undefined,rotation:0,flipX:false,flipY:false};}
+export function pathProperties(p:paper.PathItem):Partial<DesignNode>{const b=p.bounds,x=b.x,y=b.y,width=Math.max(.001,b.width),height=Math.max(.001,b.height);p.translate(new scope.Point(-x,-y));return {type:'path',x,y,width,height,pathWidth:width,pathHeight:height,path:p.pathData,points:[],contours:undefined,closed:undefined,rotation:0,flipX:false,flipY:false,motionScaleX:undefined,motionScaleY:undefined};}
 export function combineGeometry(nodes:DesignNode[],op:'union'|'subtract'|'intersect'|'exclude'){
  if(!nodes.length)throw Error('Select vector shapes.');let result=geometry(nodes[0]);
  for(const n of nodes.slice(1)){const other=geometry(n);const previous=result;result=op==='union'?result.unite(other,{insert:false}):op==='subtract'?result.subtract(other,{insert:false}):op==='intersect'?result.intersect(other,{insert:false}):result.exclude(other,{insert:false});previous.remove();other.remove();}

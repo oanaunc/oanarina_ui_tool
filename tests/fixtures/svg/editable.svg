@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 200 120">
+ <defs>
+  <linearGradient id="brand"><stop offset="0" stop-color="#ee80ab"/><stop offset="1" stop-color="#7c95eb"/></linearGradient>
+  <clipPath id="window"><rect x="5" y="5" width="80" height="40" rx="4"/></clipPath>
+ </defs>
+ <g id="Card" transform="translate(10 10)" opacity="0.8">
+  <rect id="Surface" width="180" height="100" rx="8" fill="url(#brand)"/>
+  <g id="Clipped" clip-path="url(#window)"><circle id="Orb" cx="44" cy="32" r="30" fill="#fff"/></g>
+  <path id="Curve" d="M15 70 C 40 40 60 95 90 65" fill="none" stroke="#302146" stroke-width="2" stroke-linecap="round"/>
+  <text id="Heading" x="16" y="90" font-family="Inter" font-size="12" fill="#302146">A <tspan font-weight="700">local</tspan> story</text>
+ </g>
+</svg>

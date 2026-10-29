@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" onload="globalThis.__svgExecuted=true">
+ <style>@import url('https://example.invalid/style');rect{fill:red}</style>
+ <defs><filter id="blur"><feGaussianBlur stdDeviation="3"/></filter><mask id="m"><rect width="50" height="50"/></mask></defs>
+ <rect id="Editable" width="40" height="30" fill="#abcdef" filter="url(#blur)" mask="url(#m)"/>
+ <image href="https://example.invalid/private.png" width="100" height="100"/>
+ <script>globalThis.__svgExecuted=true</script><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">Do not execute</div></foreignObject>
+</svg>

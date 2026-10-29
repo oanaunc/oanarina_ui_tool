@@ -1864,50 +1864,50 @@
     "category": "Selection",
     "name": "Deep selection through containers",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Parent-default canvas selection, Command deep selection, double-click descent, Enter/Shift-Enter hierarchy and Tab/Shift-Tab siblings with canvas focus."
   },
   {
     "id": "UI-07-008",
     "category": "Selection",
     "name": "Select parent",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Parent-default canvas selection, Command deep selection, double-click descent, Enter/Shift-Enter hierarchy and Tab/Shift-Tab siblings with canvas focus."
   },
   {
     "id": "UI-07-009",
     "category": "Selection",
     "name": "Select child",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Parent-default canvas selection, Command deep selection, double-click descent, Enter/Shift-Enter hierarchy and Tab/Shift-Tab siblings with canvas focus."
   },
   {
     "id": "UI-07-010",
     "category": "Selection",
     "name": "Select next sibling",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Parent-default canvas selection, Command deep selection, double-click descent, Enter/Shift-Enter hierarchy and Tab/Shift-Tab siblings with canvas focus."
   },
   {
     "id": "UI-07-011",
     "category": "Selection",
     "name": "Select previous sibling",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Parent-default canvas selection, Command deep selection, double-click descent, Enter/Shift-Enter hierarchy and Tab/Shift-Tab siblings with canvas focus."
   },
   {
     "id": "UI-07-012",
@@ -1934,40 +1934,40 @@
     "category": "Selection",
     "name": "Select matching fill",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Current-page matching fills/strokes/text/component identity; hidden and inherited-locked nodes excluded. Text matching uses exact base styling and mixed-run intervals."
   },
   {
     "id": "UI-07-015",
     "category": "Selection",
     "name": "Select matching stroke",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Current-page matching fills/strokes/text/component identity; hidden and inherited-locked nodes excluded. Text matching uses exact base styling and mixed-run intervals."
   },
   {
     "id": "UI-07-016",
     "category": "Selection",
     "name": "Select matching text properties",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Current-page matching fills/strokes/text/component identity; hidden and inherited-locked nodes excluded. Text matching uses exact base styling and mixed-run intervals."
   },
   {
     "id": "UI-07-017",
     "category": "Selection",
     "name": "Select matching component",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Current-page matching fills/strokes/text/component identity; hidden and inherited-locked nodes excluded. Text matching uses exact base styling and mixed-run intervals."
   },
   {
     "id": "UI-07-018",
@@ -2004,10 +2004,10 @@
     "category": "Selection",
     "name": "Individual selection outlines",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Individual and hover outlines follow transformed layer bounds. Right-click Select layer lists hit artwork including obscured and locked layers; concealed mask artwork follows SVG hit-testing semantics."
   },
   {
     "id": "UI-07-022",
@@ -2024,10 +2024,10 @@
     "category": "Selection",
     "name": "Hover object outline",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Individual and hover outlines follow transformed layer bounds. Right-click Select layer lists hit artwork including obscured and locked layers; concealed mask artwork follows SVG hit-testing semantics."
   },
   {
     "id": "UI-07-024",
@@ -2074,20 +2074,20 @@
     "category": "Selection",
     "name": "Select behind overlapping layer",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Individual and hover outlines follow transformed layer bounds. Right-click Select layer lists hit artwork including obscured and locked layers; concealed mask artwork follows SVG hit-testing semantics."
   },
   {
     "id": "UI-07-029",
     "category": "Selection",
     "name": "Layer picker at pointer",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Individual and hover outlines follow transformed layer bounds. Right-click Select layer lists hit artwork including obscured and locked layers; concealed mask artwork follows SVG hit-testing semantics."
   },
   {
     "id": "UI-07-030",
@@ -2294,20 +2294,20 @@
     "category": "Layer tree",
     "name": "Reveal selected layer",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Selection reveals and scrolls its ancestor-expanded tree row. Tree uses ARIA selection, arrow navigation, native control activation, contiguous Shift ranges and Command toggles."
   },
   {
     "id": "UI-08-021",
     "category": "Layer tree",
     "name": "Scroll selected layer into view",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Selection reveals and scrolls its ancestor-expanded tree row. Tree uses ARIA selection, arrow navigation, native control activation, contiguous Shift ranges and Command toggles."
   },
   {
     "id": "UI-08-022",
@@ -2324,10 +2324,10 @@
     "category": "Layer tree",
     "name": "Layer tree keyboard navigation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Selection reveals and scrolls its ancestor-expanded tree row. Tree uses ARIA selection, arrow navigation, native control activation, contiguous Shift ranges and Command toggles."
   },
   {
     "id": "UI-08-024",
@@ -2344,10 +2344,10 @@
     "category": "Layer tree",
     "name": "Layer selection range",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Selection reveals and scrolls its ancestor-expanded tree row. Tree uses ARIA selection, arrow navigation, native control activation, contiguous Shift ranges and Command toggles."
   },
   {
     "id": "UI-08-026",
@@ -2844,10 +2844,10 @@
     "category": "Sections groups and slices",
     "name": "Resize group proportionally",
     "priority": "must",
-    "status": "implemented",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "Groups scale their rendered subtree through the existing transform fields. The inspector continues to show intrinsic dimensions; tight child-derived group bounds and full Figma group resize semantics remain incomplete."
   },
   {
     "id": "UI-10-016",
@@ -3307,7 +3307,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. World-coordinate dragging, oriented single-layer handles, ancestor transforms, subtree scaling and scale keyframes are exercised. Genuine affine skew is rejected atomically; scaled intrinsic dimensions remain visible in the inspector."
   },
   {
     "id": "UI-12-002",
@@ -3357,7 +3357,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. World-coordinate dragging, oriented single-layer handles, ancestor transforms, subtree scaling and scale keyframes are exercised. Genuine affine skew is rejected atomically; scaled intrinsic dimensions remain visible in the inspector."
   },
   {
     "id": "UI-12-007",
@@ -3417,7 +3417,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. World-coordinate dragging, oriented single-layer handles, ancestor transforms, subtree scaling and scale keyframes are exercised. Genuine affine skew is rejected atomically; scaled intrinsic dimensions remain visible in the inspector."
   },
   {
     "id": "UI-12-013",
@@ -3427,7 +3427,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. World-coordinate dragging, oriented single-layer handles, ancestor transforms, subtree scaling and scale keyframes are exercised. Genuine affine skew is rejected atomically; scaled intrinsic dimensions remain visible in the inspector."
   },
   {
     "id": "UI-12-014",
@@ -6247,7 +6247,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Reviewed editable SVG layers and sanitized visual fallback are reachable. Full SVG/CSS/filter/mask/clip/typography conformance remains incomplete; see SVG-IMPORT.md."
   },
   {
     "id": "UI-20-006",
@@ -6444,10 +6444,10 @@
     "category": "Images and media",
     "name": "Image masking",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Images participate in alpha/vector/luminance masks, including embedded image transparency and SVG/PNG export."
   },
   {
     "id": "UI-20-026",
@@ -12937,7 +12937,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md."
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. SVG import offers validated editable layers with reduction reports or a sanitized visual asset. Paths, common shapes, groups, transforms, supported text/gradients/use and simple clips work. CSS, filters, arbitrary masks/clip paths and full text/paint semantics remain incomplete."
   },
   {
     "id": "UI-39-030",
@@ -19908,5 +19908,275 @@
     "verification": "reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
     "notes": "Last twenty transaction snapshots support undo in the running server; they are not persisted across restarts."
+  },
+  {
+    "id": "UI-60-001",
+    "category": "Layer masks",
+    "name": "Use layer as mask",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-002",
+    "category": "Layer masks",
+    "name": "Group selected layers into mask object",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-003",
+    "category": "Layer masks",
+    "name": "Alpha mask mode",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-004",
+    "category": "Layer masks",
+    "name": "Vector mask mode",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-005",
+    "category": "Layer masks",
+    "name": "Luminance mask mode",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-006",
+    "category": "Layer masks",
+    "name": "Change mask mode",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-007",
+    "category": "Layer masks",
+    "name": "Release layer mask",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-008",
+    "category": "Layer masks",
+    "name": "Select mask source",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-009",
+    "category": "Layer masks",
+    "name": "Sibling stacking mask scope",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-010",
+    "category": "Layer masks",
+    "name": "Stop mask scope at next mask",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-011",
+    "category": "Layer masks",
+    "name": "Nested mask objects",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-012",
+    "category": "Layer masks",
+    "name": "Use text as mask",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-013",
+    "category": "Layer masks",
+    "name": "Use group as mask",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-014",
+    "category": "Layer masks",
+    "name": "Image transparency masks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-015",
+    "category": "Layer masks",
+    "name": "Gradient transparency masks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-016",
+    "category": "Layer masks",
+    "name": "Stroke region masks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-017",
+    "category": "Layer masks",
+    "name": "Blur feathering masks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-018",
+    "category": "Layer masks",
+    "name": "Independent mask and artwork movement",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-019",
+    "category": "Layer masks",
+    "name": "Independent mask and artwork resizing",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-020",
+    "category": "Layer masks",
+    "name": "Add layers to mask object",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-021",
+    "category": "Layer masks",
+    "name": "Mask source artwork consumption",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-022",
+    "category": "Layer masks",
+    "name": "Mask keyboard shortcut",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-023",
+    "category": "Layer masks",
+    "name": "Mask outlines view",
+    "priority": "must",
+    "status": "planned",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "Mask outlines view, tree mask/target indicators and hover mode previews remain absent."
+  },
+  {
+    "id": "UI-60-024",
+    "category": "Layer masks",
+    "name": "Mask layer and target indicators",
+    "priority": "must",
+    "status": "planned",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "Mask outlines view, tree mask/target indicators and hover mode previews remain absent."
+  },
+  {
+    "id": "UI-60-025",
+    "category": "Layer masks",
+    "name": "Preview mask modes on hover",
+    "priority": "must",
+    "status": "planned",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "Mask outlines view, tree mask/target indicators and hover mode previews remain absent."
+  },
+  {
+    "id": "UI-60-026",
+    "category": "Layer masks",
+    "name": "Preserve masks in SVG export",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-60-027",
+    "category": "Layer masks",
+    "name": "Render masks in raster export",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
   }
 ]

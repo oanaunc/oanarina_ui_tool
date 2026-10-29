@@ -2,9 +2,9 @@
 
 A local-first interface design editor for **Mac**, developed by Oana Rinaldi. The first preview has a working vector canvas, pages, layers, a property inspector, drawing tools, text, basic layout and components, local comments, interactive prototypes, project files and SVG/PNG/JPEG exports.
 
-**Current source: 0.2.0-dev.3; public notarized download: v0.1.0. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **1,991 requirements** across 59 categories: 1,961 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
+**Current source: 0.2.0-dev.4; public notarized download: v0.1.0. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,018 requirements** across 60 categories: 1,988 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
 
-The development source adds live booleans, cubic curve editing, richer text layout, paint/stroke/effect stacks, responsive auto layout, live component instances, variants, local variables/styles, IndexedDB recovery and an editable animation timeline. The register currently records **924 implemented, 158 partial and 909 planned** requirements. See the [development validation report](docs/VALIDATION-v0.2-prototypes-workspaces.md) for evidence and limitations.
+The development source adds live booleans, cubic curve editing, richer text layout, paint/stroke/effect stacks, responsive auto layout, live component instances, variants, local variables/styles, IndexedDB recovery and an editable animation timeline. The register currently records **965 implemented, 159 partial and 894 planned** requirements. See the [development validation report](docs/VALIDATION-v0.2-svg-masks-selection.md) for evidence and limitations.
 
 ## Run
 
@@ -33,7 +33,9 @@ The current source adds [interactive prototypes](docs/PROTOTYPES.md), [rich char
 
 ## Figma interchange
 
-Use **File → Figma import / export**. The included [Figma Bridge development plugin](figma-plugin/README.md) transfers supported editable frames, shapes, text, fills and raster images through `.oui`. It reports many property reductions. SVG provides visual exchange. **Direct binary `.fig` import/export is not implemented.** API mock tests and a synthetic transfer through the connected Figma Plugin API pass. The real Figma desktop plugin UI and full-fidelity round-trip still require validation. Browser login alone does not install a development plugin.
+Use **File → Figma import / export**. The included [Figma Bridge development plugin](figma-plugin/README.md) transfers supported editable frames, shapes, text, fills and raster images through `.oui`. It reports many property reductions. SVG import offers [editable layers with reduction review](docs/SVG-IMPORT.md) or a sanitized visual asset; SVG export provides visual exchange. **Direct binary `.fig` import/export is not implemented.** API mock tests and a synthetic transfer through the connected Figma Plugin API pass. The real Figma desktop plugin UI and full-fidelity round-trip still require validation. Browser login alone does not install a development plugin.
+
+The development editor also includes [alpha/vector/luminance masks](docs/MASKS.md), [layer and keyboard selection](docs/SELECTION.md), and [transformed canvas gestures](docs/CANVAS-TRANSFORMS.md). Mask exports preserve concealment when exporting a selected target. Clipboard duplication, paste and ungroup preserve supported world transforms and remap prototype/component references; genuine skew is rejected atomically.
 
 ## Files and implementation
 

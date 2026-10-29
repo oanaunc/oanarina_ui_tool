@@ -48,3 +48,11 @@ Enable rulers with Shift-R; drag or add/move/remove guides through their control
 [Vector endpoint tools](VECTOR-OPERATIONS.md) join/split contours, heal removed anchors and transform selected point groups. Command-J joins two open sibling layers or selected endpoints; Shift-Command-J smooths the join. Healing remains an approximate curve fit.
 
 **Resources → Free local MCP automation** provides a standalone download and configuration for one saved `.oui` file. Save before automation and reopen afterward; live editor synchronization is not implemented. See [MCP setup](../mcp/README.md).
+
+## Editable SVG, masks and selection
+
+Use File → Place image or SVG, or drop an SVG onto the canvas. Review the editable-layer import and any reductions before applying it. The sanitized visual-asset option retains a single image. Cancel leaves the document unchanged. See [SVG scope](SVG-IMPORT.md).
+
+Select sibling layers and choose Object → Use as mask (Control-Command-M). The backmost selected source masks the following artwork. Change alpha/vector/luminance in the inspector, or select the source and release the mask. Selected exports retain necessary mask sources. See [mask controls](MASKS.md).
+
+Normal canvas clicks select a containing object; Command-click selects deeper artwork. Double-click descends one level. With canvas focus, Enter selects children, Shift-Enter selects parents and Tab/Shift-Tab selects siblings. Right-click Select layer picks overlapping artwork. The layer tree supports Shift ranges, Command toggles and arrow navigation. See [selection](SELECTION.md) and [transformed gestures](CANVAS-TRANSFORMS.md).

@@ -1,6 +1,6 @@
 {
   "name": "oanarina-ui-tool",
-  "version": "0.2.0-dev.3",
+  "version": "0.2.0-dev.4",
   "private": true,
   "description": "A local-first interface design studio for Mac",
   "author": "Oana Rinaldi",
@@ -25,6 +25,7 @@
     "mcp:bundle": "node scripts/bundle-mcp.mjs"
   },
   "dependencies": {
+    "@xmldom/xmldom": "0.9.12",
     "gifenc": "^1.0.3",
     "lucide-react": "^0.577.0",
     "paper": "^0.16.0",

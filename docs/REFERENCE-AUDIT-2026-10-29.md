@@ -7,7 +7,7 @@ No reference document contents, file identifiers, account details or private scr
 ## Surfaces and limits
 
 - Browser editor: the main agent inspected the existing signed-in Figma tab. Generic menu observations below were supplied by that inspection. The independent audit agent's CUA inventory did not expose that browser, so it could not independently repeat those browser reads.
-- Mac desktop: the native Figma helper presented an installation alert asking for the application to be moved to the Applications folder. The editor could not be inspected in that desktop state. This is a desktop inspection limitation, not evidence that the browser and desktop interfaces are identical.
+- Mac desktop: the first attempt reached a helper installation alert. After installation in Applications, repeated computer-control retries listed Figma as running, but the real bundle ID returned “Invalid app,” the application path resolved to the `com.figma.Desktop.dua` launcher, and the inner desktop bundle timed out. The main desktop editor remains inaccessible to this control connection; these failures do not establish desktop/browser equivalence.
 - Official documentation: additional named behaviors were checked against the Figma Help Center pages linked below. Availability may depend on account, seat, plan, platform, browser capabilities and beta rollout. Documentation support is separate from an in-app behavior test.
 - Oanarina MCP: its requirements come from the repository's [MCP guide](../mcp/README.md), rather than a claim that Figma offers an equivalent free server or equivalent tool semantics.
 
@@ -32,6 +32,10 @@ Several of those were already represented: numeric opacity shortcuts (`UI-42-025
 | Shader rendering and controls | [Using shaders](https://help.figma.com/hc/en-us/articles/41175721167767-Find-and-use-shaders) describes procedural fills, stroke use, effects that process existing pixels, stacks, configurable parameters, clipping, version updates, interactive previews and motion keyframes. These are not equivalent to a static bitmap or ordinary gradient. |
 | Shader and plugin generation | [Creating shaders](https://help.figma.com/hc/en-us/articles/41147702210071-Create-shaders-with-the-Figma-agent) and [generating plugins](https://help.figma.com/hc/en-us/articles/43028920030743-Generate-plugins-with-the-Figma-agent) document agent-assisted authoring and iteration. Running an existing classic plugin does not fulfill these requirements. |
 | Agent workflows | [Working with the agent](https://help.figma.com/hc/en-us/articles/37998629035799-Work-with-the-Figma-agent-in-design-files) documents voice input, attachments, library references, simultaneous tasks, chat visibility, undo, a detached desktop chat, skills, MCP connectors, web lookup, design critique and image vectorization. Each remains separate from merely displaying an Agents tab. |
+
+## Additional SVG, mask and selection audit
+
+The new layer-mask category adds 27 independently named behaviors, retaining existing requirement IDs. [Figma masks](https://help.figma.com/hc/en-us/articles/360040450253-Masks) documents alpha/vector/luminance modes, source stacking, nesting and mask interaction. [Layer selection](https://help.figma.com/hc/en-us/articles/360040449873-Select-layers-and-objects) documents parent-default hits, Command deep selection, double-click descent, hierarchy/sibling keys, overlap picking and layer-panel ranges. Implementation tests establish Oanarina behavior; direct desktop reference acceptance remains pending. Editable SVG import is checked against synthetic public SVG fixtures and the rendered output, with a reduction report for unsupported constructs.
 
 ## Free local MCP requirements
 
