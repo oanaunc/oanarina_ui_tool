@@ -1,3 +1,9 @@
+import {validateMotionStyles,validateTimeline} from './motion';
+import type {MotionStyle,Timeline} from './motion';
+import {validateDesignSystems} from './design-systems';
+import type {BindingField,VariableCollection,DesignVariable,DesignStyle,StyleKind} from './design-systems';
+import {validateComponents} from './components-model';
+import type {ComponentMetadata,ComponentSet} from './components-model';
 import type {Sizing,Constraint,Distribution} from './layout';
 export {reflow} from './layout';
 import {validateEffect} from './effects';
@@ -12,16 +18,18 @@ export interface DesignNode {
   id:string; type:NodeKind; name:string; parentId:string|null;
   x:number; y:number; width:number; height:number; rotation:number;
   fill:string; paints?:Paint[]; strokes?:StrokeStyle[]; blendMode?:string; effects?:Effect[]; isolate?:boolean; stroke:string; strokeWidth:number; opacity:number; radius:number;
-  visible:boolean; locked:boolean; text:string; fontSize:number; fontFamily:string; fontWeight:number;
+  exportGhost?:boolean;motionScaleX?:number;motionScaleY?:number;visible:boolean; locked:boolean; text:string; fontSize:number; fontFamily:string; fontWeight:number;
   textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number; letterSpacing:number;
   path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
   sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch';wrap?:boolean;
+  variableBindings?:Partial<Record<BindingField,string>>;variableModes?:Record<string,string>;styleIds?:Partial<Record<StyleKind,string>>;
+  sourceId?:string;instanceRootId?:string;overrideKeys?:string[];componentKey?:string;componentMetadata?:ComponentMetadata;propertyValues?:Record<string,string|boolean>;
   clip:boolean; componentId:string|null; targetId:string|null; gradient:boolean;
 }
 export interface Comment {id:string; x:number;y:number; text:string; resolved:boolean;}
-export interface Page {id:string;name:string;nodes:DesignNode[];comments:Comment[];}
-export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;fonts?:{family:string;weight:string;data:string}[];}
+export interface Page {id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;}
+export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:{family:string;weight:string;data:string}[];}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
 export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
@@ -81,12 +89,13 @@ export function parseDocument(raw:string):DesignDocument {
       if(n.corners!==undefined&&(!Array.isArray(n.corners)||n.corners.length!==4||n.corners.some((v:number)=>!Number.isFinite(v)||v<0)))throw Error('Invalid corner radii.');
 
     }
+    validateTimeline(p.motion);
     for(const c of p.comments)if(typeof c.id!=='string'||typeof c.text!=='string'||typeof c.resolved!=='boolean'||!Number.isFinite(c.x)||!Number.isFinite(c.y))throw Error('Invalid comment.');
     for(const n of p.nodes){if(!(n.parentId===null||typeof n.parentId==='string')||!['none','horizontal','vertical','grid'].includes(n.layout)||!['left','center','right','justify'].includes(n.textAlign))throw Error('Invalid layer settings.');for(const k of ['visible','locked','clip','gradient','shadow'] as const)if(typeof n[k]!=='boolean')throw Error('Invalid layer flag.');
       const seen=new Set([n.id]);let id=n.parentId;while(id){if(seen.has(id))throw Error('Cyclic layer hierarchy.');seen.add(id);const parent=p.nodes.find((a:DesignNode)=>a.id===id);if(!parent)throw Error('Missing parent layer.');id=parent.parentId;}}
   }
   if(!Array.isArray(d.colors)||d.colors.some((c:{name:string;value:string})=>typeof c.name!=='string'||!/^#[0-9a-f]{6}$/i.test(c.value)))throw Error('Invalid color styles.');
   if(d.fonts&&(!Array.isArray(d.fonts)||d.fonts.some((f:{family:string;weight:string;data:string})=>typeof f.family!=='string'||!/^\d+(?: \d+)?$/.test(f.weight)||!/^data:font\/(?:ttf|woff2);base64,/.test(f.data))))throw Error('Invalid embedded fonts.');
-  d.version=2;return d as DesignDocument;
+  validateComponents(d);validateDesignSystems(d);validateMotionStyles(d.motionStyles);d.version=2;return d as DesignDocument;
 }
 export const polygonPoints=(n:DesignNode)=>Array.from({length:n.type==='star'?10:6},(_,i)=>{const a=i*Math.PI*2/(n.type==='star'?10:6)-Math.PI/2,r=n.type==='star'&&i%2?0.43:1;return `${n.width/2+Math.cos(a)*n.width/2*r},${n.height/2+Math.sin(a)*n.height/2*r}`;}).join(' ');

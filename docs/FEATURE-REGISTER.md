@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":508,"planned":1241,"partial":111}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
+Status: {"implemented":642,"planned":1086,"partial":132}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -974,82 +974,82 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-27-002 | Convert frame to component | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-27-003 | Convert group to component | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-27-004 | Main component icon | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-27-005 | Component naming paths | planned | reference-verification-pending |
-| UI-27-006 | Component description | planned | reference-verification-pending |
-| UI-27-007 | Component documentation link | planned | reference-verification-pending |
-| UI-27-008 | Component search tags | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-27-009 | Component preview | planned | reference-verification-pending |
+| UI-27-005 | Component naming paths | partial | Slash names and name/tag search work; a complete folder browser is not implemented. |
+| UI-27-006 | Component description | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-007 | Component documentation link | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-008 | Component search tags | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-009 | Component preview | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
 | UI-27-010 | Main component selection | planned | reference-verification-pending |
-| UI-27-011 | Main component navigation | planned | reference-verification-pending |
+| UI-27-011 | Main component navigation | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
 | UI-27-012 | Component assets panel | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-27-013 | Insert component instance | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-27-014 | Instance component reference | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-27-015 | Detach instance | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-27-016 | Reset instance | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-27-017 | Reset text override | planned | reference-verification-pending |
-| UI-27-018 | Reset fill override | planned | reference-verification-pending |
-| UI-27-019 | Reset visibility override | planned | reference-verification-pending |
-| UI-27-020 | Reset size override | planned | reference-verification-pending |
-| UI-27-021 | Instance text override | planned | reference-verification-pending |
-| UI-27-022 | Instance fill override | planned | reference-verification-pending |
-| UI-27-023 | Instance effect override | planned | reference-verification-pending |
-| UI-27-024 | Instance visibility override | planned | reference-verification-pending |
-| UI-27-025 | Instance image override | planned | reference-verification-pending |
-| UI-27-026 | Nested instance override | planned | reference-verification-pending |
-| UI-27-027 | Preserve overrides when swapping | planned | reference-verification-pending |
-| UI-27-028 | Swap instance | planned | reference-verification-pending |
+| UI-27-013 | Insert component instance | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-014 | Instance component reference | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-015 | Detach instance | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-016 | Reset instance | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-017 | Reset text override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-018 | Reset fill override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-019 | Reset visibility override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-020 | Reset size override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-021 | Instance text override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-022 | Instance fill override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-023 | Instance effect override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-024 | Instance visibility override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-025 | Instance image override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-026 | Nested instance override | partial | Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete. |
+| UI-27-027 | Preserve overrides when swapping | partial | Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete. |
+| UI-27-028 | Swap instance | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
 | UI-27-029 | Preferred swap values | planned | reference-verification-pending |
-| UI-27-030 | Component propagation | planned | reference-verification-pending |
-| UI-27-031 | Component deletion warning | planned | reference-verification-pending |
-| UI-27-032 | Restore missing component | planned | reference-verification-pending |
-| UI-27-033 | Expose nested instance | planned | reference-verification-pending |
+| UI-27-030 | Component propagation | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-031 | Component deletion warning | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-032 | Restore missing component | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-033 | Expose nested instance | partial | Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete. |
 | UI-27-034 | Instance accessibility label | planned | reference-verification-pending |
-| UI-27-035 | Component thumbnail | planned | reference-verification-pending |
-| UI-27-036 | Component organization by folder | planned | reference-verification-pending |
+| UI-27-035 | Component thumbnail | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance. |
+| UI-27-036 | Component organization by folder | partial | Slash names and name/tag search work; a complete folder browser is not implemented. |
 
 ## Variants and properties
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-28-001 | Combine components as variants | planned | reference-verification-pending |
-| UI-28-002 | Create component set | planned | reference-verification-pending |
-| UI-28-003 | Variant property names | planned | reference-verification-pending |
-| UI-28-004 | Variant property values | planned | reference-verification-pending |
-| UI-28-005 | Variant selection control | planned | reference-verification-pending |
-| UI-28-006 | Add variant | planned | reference-verification-pending |
-| UI-28-007 | Duplicate variant | planned | reference-verification-pending |
-| UI-28-008 | Remove variant | planned | reference-verification-pending |
-| UI-28-009 | Rename variant | planned | reference-verification-pending |
-| UI-28-010 | Default variant | planned | reference-verification-pending |
-| UI-28-011 | Variant sorting | planned | reference-verification-pending |
-| UI-28-012 | Variant layout in set | planned | reference-verification-pending |
+| UI-28-001 | Combine components as variants | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-002 | Create component set | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-003 | Variant property names | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-004 | Variant property values | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-005 | Variant selection control | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-006 | Add variant | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-007 | Duplicate variant | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-008 | Remove variant | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-009 | Rename variant | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-010 | Default variant | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-011 | Variant sorting | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-012 | Variant layout in set | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
 | UI-28-013 | Variant description | planned | reference-verification-pending |
-| UI-28-014 | Text component property | planned | reference-verification-pending |
-| UI-28-015 | Boolean component property | planned | reference-verification-pending |
-| UI-28-016 | Instance-swap component property | planned | reference-verification-pending |
-| UI-28-017 | Variant component property | planned | reference-verification-pending |
-| UI-28-018 | Property default value | planned | reference-verification-pending |
-| UI-28-019 | Property description | planned | reference-verification-pending |
-| UI-28-020 | Expose nested property | planned | reference-verification-pending |
-| UI-28-021 | Bind text property | planned | reference-verification-pending |
-| UI-28-022 | Bind visibility property | planned | reference-verification-pending |
-| UI-28-023 | Bind swap property | planned | reference-verification-pending |
+| UI-28-014 | Text component property | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-015 | Boolean component property | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-016 | Instance-swap component property | partial | Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance. |
+| UI-28-017 | Variant component property | partial | Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance. |
+| UI-28-018 | Property default value | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-019 | Property description | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-020 | Expose nested property | partial | Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance. |
+| UI-28-021 | Bind text property | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-022 | Bind visibility property | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
+| UI-28-023 | Bind swap property | partial | Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance. |
 | UI-28-024 | Hide irrelevant properties | planned | reference-verification-pending |
 | UI-28-025 | Property grouping | planned | reference-verification-pending |
 | UI-28-026 | Preferred component instances | planned | reference-verification-pending |
-| UI-28-027 | Multi-select property editing | planned | reference-verification-pending |
-| UI-28-028 | Variant conflict detection | planned | reference-verification-pending |
+| UI-28-027 | Multi-select property editing | partial | Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance. |
+| UI-28-028 | Variant conflict detection | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
 | UI-28-029 | Interactive variant transitions | planned | reference-verification-pending |
-| UI-28-030 | Variant matching on swap | planned | reference-verification-pending |
+| UI-28-030 | Variant matching on swap | partial | Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance. |
 
 ## Libraries and design systems
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-29-001 | Local component library | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-29-002 | Local color styles | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-29-003 | Local text styles | planned | reference-verification-pending |
-| UI-29-004 | Local effect styles | planned | reference-verification-pending |
+| UI-29-001 | Local component library | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
+| UI-29-002 | Local color styles | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
+| UI-29-003 | Local text styles | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
+| UI-29-004 | Local effect styles | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
 | UI-29-005 | Local layout guide styles | planned | reference-verification-pending |
 | UI-29-006 | Publish library | planned | reference-verification-pending |
 | UI-29-007 | Library publish description | planned | reference-verification-pending |
@@ -1072,61 +1072,61 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-29-024 | Move component between libraries | planned | reference-verification-pending |
 | UI-29-025 | Swap library source | planned | reference-verification-pending |
 | UI-29-026 | Missing library indicator | planned | reference-verification-pending |
-| UI-29-027 | Style naming folders | planned | reference-verification-pending |
-| UI-29-028 | Style descriptions | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-29-029 | Detach style | planned | reference-verification-pending |
-| UI-29-030 | Import style | planned | reference-verification-pending |
-| UI-29-031 | Export design tokens | planned | reference-verification-pending |
+| UI-29-027 | Style naming folders | partial | Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete. |
+| UI-29-028 | Style descriptions | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
+| UI-29-029 | Detach style | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
+| UI-29-030 | Import style | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
+| UI-29-031 | Export design tokens | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases. |
 | UI-29-032 | Component documentation page | planned | reference-verification-pending |
 | UI-29-033 | Token usage search | planned | reference-verification-pending |
 | UI-29-034 | Unused asset detection | planned | reference-verification-pending |
-| UI-29-035 | Style conflict resolution | planned | reference-verification-pending |
+| UI-29-035 | Style conflict resolution | partial | Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete. |
 | UI-29-036 | Library change history | planned | reference-verification-pending |
 
 ## Variables and tokens
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-30-001 | Color variables | planned | reference-verification-pending |
-| UI-30-002 | Number variables | planned | reference-verification-pending |
-| UI-30-003 | String variables | planned | reference-verification-pending |
-| UI-30-004 | Boolean variables | planned | reference-verification-pending |
-| UI-30-005 | Create variable collection | planned | reference-verification-pending |
-| UI-30-006 | Rename variable collection | planned | reference-verification-pending |
-| UI-30-007 | Delete variable collection | planned | reference-verification-pending |
-| UI-30-008 | Create variable | planned | reference-verification-pending |
-| UI-30-009 | Rename variable | planned | reference-verification-pending |
-| UI-30-010 | Delete variable | planned | reference-verification-pending |
-| UI-30-011 | Duplicate variable | planned | reference-verification-pending |
-| UI-30-012 | Variable description | planned | reference-verification-pending |
-| UI-30-013 | Variable scopes | planned | reference-verification-pending |
-| UI-30-014 | Variable aliases | planned | reference-verification-pending |
-| UI-30-015 | Alias chain display | planned | reference-verification-pending |
-| UI-30-016 | Alias cycle detection | planned | reference-verification-pending |
-| UI-30-017 | Variable search | planned | reference-verification-pending |
-| UI-30-018 | Variable grouping with slashes | planned | reference-verification-pending |
-| UI-30-019 | Variable modes | planned | reference-verification-pending |
-| UI-30-020 | Create mode | planned | reference-verification-pending |
-| UI-30-021 | Rename mode | planned | reference-verification-pending |
-| UI-30-022 | Delete mode | planned | reference-verification-pending |
-| UI-30-023 | Default mode | planned | reference-verification-pending |
-| UI-30-024 | Per-frame mode | planned | reference-verification-pending |
-| UI-30-025 | Inherit mode from parent | planned | reference-verification-pending |
-| UI-30-026 | Explicit mode override | planned | reference-verification-pending |
-| UI-30-027 | Apply variable to fill | planned | reference-verification-pending |
-| UI-30-028 | Apply variable to stroke | planned | reference-verification-pending |
-| UI-30-029 | Apply variable to radius | planned | reference-verification-pending |
-| UI-30-030 | Apply variable to dimensions | planned | reference-verification-pending |
-| UI-30-031 | Apply variable to gap | planned | reference-verification-pending |
-| UI-30-032 | Apply variable to padding | planned | reference-verification-pending |
-| UI-30-033 | Apply variable to text | planned | reference-verification-pending |
-| UI-30-034 | Apply variable to visibility | planned | reference-verification-pending |
-| UI-30-035 | Variable code syntax | planned | reference-verification-pending |
+| UI-30-001 | Color variables | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-002 | Number variables | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-003 | String variables | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-004 | Boolean variables | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-005 | Create variable collection | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-006 | Rename variable collection | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-007 | Delete variable collection | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-008 | Create variable | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-009 | Rename variable | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-010 | Delete variable | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-011 | Duplicate variable | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-012 | Variable description | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-013 | Variable scopes | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-014 | Variable aliases | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-015 | Alias chain display | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-016 | Alias cycle detection | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-017 | Variable search | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-018 | Variable grouping with slashes | partial | Slash-separated names and substring search work; a hierarchical token-group editor is not present. |
+| UI-30-019 | Variable modes | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-020 | Create mode | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-021 | Rename mode | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-022 | Delete mode | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-023 | Default mode | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-024 | Per-frame mode | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-025 | Inherit mode from parent | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-026 | Explicit mode override | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-027 | Apply variable to fill | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-028 | Apply variable to stroke | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-029 | Apply variable to radius | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-030 | Apply variable to dimensions | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-031 | Apply variable to gap | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-032 | Apply variable to padding | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-033 | Apply variable to text | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-034 | Apply variable to visibility | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-035 | Variable code syntax | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
 | UI-30-036 | Publish variables | planned | reference-verification-pending |
 | UI-30-037 | Remote variables | planned | reference-verification-pending |
-| UI-30-038 | Variable import | planned | reference-verification-pending |
-| UI-30-039 | Variable export | planned | reference-verification-pending |
-| UI-30-040 | Missing variable handling | planned | reference-verification-pending |
+| UI-30-038 | Variable import | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-039 | Variable export | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
+| UI-30-040 | Missing variable handling | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases. |
 
 ## Prototype connections
 
@@ -1392,16 +1392,16 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-38-009 | Undo image placement | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-38-010 | Undo prototype changes | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-38-011 | Undo comment edits | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-38-012 | Autosave project | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-38-013 | Local recovery snapshot | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-38-014 | Recover after crash | planned | reference-verification-pending |
-| UI-38-015 | Named version creation | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-38-016 | Version history list | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-38-012 | Autosave project | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
+| UI-38-013 | Local recovery snapshot | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
+| UI-38-014 | Recover after crash | partial | Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction. |
+| UI-38-015 | Named version creation | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
+| UI-38-016 | Version history list | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
 | UI-38-017 | Version author | planned | reference-verification-pending |
-| UI-38-018 | Version timestamp | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-38-018 | Version timestamp | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
 | UI-38-019 | Version description | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-38-020 | Preview older version | planned | reference-verification-pending |
-| UI-38-021 | Restore older version | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
+| UI-38-021 | Restore older version | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
 | UI-38-022 | Duplicate version as new file | planned | reference-verification-pending |
 | UI-38-023 | Version link | planned | reference-verification-pending |
 | UI-38-024 | Compare versions | planned | reference-verification-pending |
@@ -1413,10 +1413,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-38-030 | Branch archive | planned | reference-verification-pending |
 | UI-38-031 | Branch status | planned | reference-verification-pending |
 | UI-38-032 | Main branch protection | planned | reference-verification-pending |
-| UI-38-033 | Edit history persistence | planned | reference-verification-pending |
-| UI-38-034 | File corruption recovery | planned | reference-verification-pending |
+| UI-38-033 | Edit history persistence | partial | Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction. |
+| UI-38-034 | File corruption recovery | partial | Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction. |
 | UI-38-035 | Backup export | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-38-036 | Storage quota notification | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-38-036 | Storage quota notification | partial | Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction. |
 
 ## Import and Figma interchange
 
@@ -1469,10 +1469,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | --- | --- | --- | --- |
 | UI-40-001 | Save editable project | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-40-002 | Save project as new file | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-40-003 | Export selection as SVG | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-40-004 | Export whole page as SVG | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-40-005 | Export selection as PNG | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-40-006 | Export selection as JPEG | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-40-003 | Export selection as SVG | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers. |
+| UI-40-004 | Export whole page as SVG | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers. |
+| UI-40-005 | Export selection as PNG | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers. |
+| UI-40-006 | Export selection as JPEG | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers. |
 | UI-40-007 | Export PDF | planned | observed-in-signed-in-Figma-2026-10-29 |
 | UI-40-008 | Export transparent PNG | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-40-009 | Export at one-times scale | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -1498,11 +1498,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-40-029 | JPEG quality | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-40-030 | PNG color profile | planned | reference-verification-pending |
 | UI-40-031 | Export hidden layers preference | planned | reference-verification-pending |
-| UI-40-032 | Export overlapping contents option | planned | reference-verification-pending |
+| UI-40-032 | Export overlapping contents option | partial | Visual bounds now include rotated/scaled geometry, strokes and effect padding. Clipping intersections use conservative bounding boxes; text glyph overflow, complex groups and slice-specific options need further work. |
 | UI-40-033 | Copy SVG markup | planned | reference-verification-pending |
 | UI-40-034 | Copy as PNG | planned | reference-verification-pending |
 | UI-40-035 | Export preview | planned | reference-verification-pending |
-| UI-40-036 | Export bounds warning | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-40-036 | Export bounds warning | partial | Visual bounds now include rotated/scaled geometry, strokes and effect padding. Clipping intersections use conservative bounding boxes; text glyph overflow, complex groups and slice-specific options need further work. |
 | UI-40-037 | Export dimensions limit | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-40-038 | Export cancellation | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-40-039 | Export checksum | planned | reference-verification-pending |
@@ -1940,16 +1940,16 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-53-001 | Large document loading | planned | reference-verification-pending |
+| UI-53-001 | Large document loading | partial | A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain. |
 | UI-53-002 | Progressive page loading | planned | reference-verification-pending |
 | UI-53-003 | Viewport culling | planned | reference-verification-pending |
 | UI-53-004 | Large layer tree virtualization | planned | reference-verification-pending |
 | UI-53-005 | Image decode scheduling | planned | reference-verification-pending |
 | UI-53-006 | Font loading status | planned | reference-verification-pending |
 | UI-53-007 | Asset cache management | planned | reference-verification-pending |
-| UI-53-008 | Document write atomicity | planned | reference-verification-pending |
+| UI-53-008 | Document write atomicity | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic. |
 | UI-53-009 | Import cancellation | planned | reference-verification-pending |
-| UI-53-010 | Long operation progress | planned | reference-verification-pending |
+| UI-53-010 | Long operation progress | partial | A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain. |
 | UI-53-011 | Corrupt import reporting | planned | reference-verification-pending |
 | UI-53-012 | Unsupported version reporting | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-53-013 | Document schema migration | implemented | v0.2: validates version 1/2, migrates v1 to v2, rejects unsupported versions; core and bridge mock coverage. |
@@ -1958,18 +1958,18 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-53-016 | Missing parent detection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-53-017 | Invalid numeric value detection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-53-018 | Image size limits | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-53-019 | Export memory limits | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-53-019 | Export memory limits | partial | A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain. |
 | UI-53-020 | Local disk error handling | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-53-021 | Autosave failure reporting | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-53-021 | Autosave failure reporting | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic. |
 | UI-53-022 | Recoverable operation failure | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-53-023 | Renderer crash recovery | planned | reference-verification-pending |
 | UI-53-024 | Safe mode startup | planned | reference-verification-pending |
 | UI-53-025 | Offline resource availability | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-53-026 | Missing asset placeholders | planned | reference-verification-pending |
 | UI-53-027 | Undo history memory bound | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-53-028 | Background save scheduling | planned | reference-verification-pending |
+| UI-53-028 | Background save scheduling | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic. |
 | UI-53-029 | Multi-window file conflict detection | planned | reference-verification-pending |
-| UI-53-030 | Consistent document serialization | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
+| UI-53-030 | Consistent document serialization | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic. |
 
 ## Oanarina improvements after parity
 
@@ -2047,66 +2047,66 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-56-001 | Motion mode switch | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-56-001 | Motion mode switch | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
 | UI-56-002 | Motion inspector tab | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-003 | Keyframe timeline panel | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-004 | Expand timeline | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-005 | Collapse timeline | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-006 | Resize timeline panel | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-007 | Timeline tracks | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-008 | Track names | planned | reference-verification-pending |
-| UI-56-009 | Track expansion | planned | reference-verification-pending |
-| UI-56-010 | Track collapse | planned | reference-verification-pending |
-| UI-56-011 | Track selection | planned | reference-verification-pending |
-| UI-56-012 | Track visibility | planned | reference-verification-pending |
-| UI-56-013 | Current-time control | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-014 | Duration control | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-015 | Timeline time format | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-016 | Timeline loop toggle | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-017 | Play timeline | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-018 | Pause timeline | planned | reference-verification-pending |
-| UI-56-019 | Restart timeline | planned | reference-verification-pending |
-| UI-56-020 | Scrub playhead | planned | reference-verification-pending |
-| UI-56-021 | Timeline zoom in | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-022 | Timeline zoom out | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-56-003 | Keyframe timeline panel | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-004 | Expand timeline | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-005 | Collapse timeline | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-006 | Resize timeline panel | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-007 | Timeline tracks | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-008 | Track names | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-009 | Track expansion | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-010 | Track collapse | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-011 | Track selection | partial | Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation. |
+| UI-56-012 | Track visibility | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-013 | Current-time control | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-014 | Duration control | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-015 | Timeline time format | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-016 | Timeline loop toggle | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-017 | Play timeline | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-018 | Pause timeline | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-019 | Restart timeline | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-020 | Scrub playhead | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-021 | Timeline zoom in | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-022 | Timeline zoom out | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
 | UI-56-023 | Pinch timeline zoom | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-024 | Timeline horizontal scroll | planned | reference-verification-pending |
-| UI-56-025 | Timeline vertical scroll | planned | reference-verification-pending |
+| UI-56-024 | Timeline horizontal scroll | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-025 | Timeline vertical scroll | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
 | UI-56-026 | Space-drag timeline navigation | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-027 | Add keyframe by double click | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-028 | Select keyframe | planned | reference-verification-pending |
-| UI-56-029 | Multi-select keyframes | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-56-027 | Add keyframe by double click | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-028 | Select keyframe | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-029 | Multi-select keyframes | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
 | UI-56-030 | Marquee keyframes | planned | reference-verification-pending |
-| UI-56-031 | Move keyframe | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-032 | Delete keyframe | planned | reference-verification-pending |
-| UI-56-033 | Duplicate keyframe | planned | reference-verification-pending |
-| UI-56-034 | Copy keyframe | planned | reference-verification-pending |
-| UI-56-035 | Paste keyframe | planned | reference-verification-pending |
-| UI-56-036 | Auto-keyframing toggle | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-56-037 | Position animation track | planned | reference-verification-pending |
-| UI-56-038 | Size animation track | planned | reference-verification-pending |
-| UI-56-039 | Rotation animation track | planned | reference-verification-pending |
-| UI-56-040 | Opacity animation track | planned | reference-verification-pending |
-| UI-56-041 | Fill animation track | planned | reference-verification-pending |
-| UI-56-042 | Corner-radius animation track | planned | reference-verification-pending |
-| UI-56-043 | Scale animation track | planned | reference-verification-pending |
-| UI-56-044 | Text animation track | planned | reference-verification-pending |
-| UI-56-045 | Keyframe easing | planned | reference-verification-pending |
-| UI-56-046 | Keyframe bezier editor | planned | reference-verification-pending |
-| UI-56-047 | Animation style creation | planned | reference-verification-pending |
-| UI-56-048 | Animation style application | planned | reference-verification-pending |
-| UI-56-049 | Animation style management | planned | reference-verification-pending |
-| UI-56-050 | Frame animation preview | planned | reference-verification-pending |
+| UI-56-031 | Move keyframe | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-032 | Delete keyframe | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-033 | Duplicate keyframe | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-034 | Copy keyframe | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-035 | Paste keyframe | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-036 | Auto-keyframing toggle | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-037 | Position animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-038 | Size animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-039 | Rotation animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-040 | Opacity animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-041 | Fill animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-042 | Corner-radius animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-043 | Scale animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-044 | Text animation track | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-045 | Keyframe easing | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-046 | Keyframe bezier editor | partial | Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation. |
+| UI-56-047 | Animation style creation | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-048 | Animation style application | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-049 | Animation style management | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-050 | Frame animation preview | partial | Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation. |
 | UI-56-051 | Top-level animated frame detection | planned | reference-verification-pending |
-| UI-56-052 | Export animation MP4 | planned | reference-verification-pending |
-| UI-56-053 | Export animation GIF | planned | reference-verification-pending |
-| UI-56-054 | Export animation WebM | planned | reference-verification-pending |
-| UI-56-055 | Animation frame-rate setting | planned | reference-verification-pending |
-| UI-56-056 | Animation quality setting | planned | reference-verification-pending |
-| UI-56-057 | Animation export duration | planned | reference-verification-pending |
-| UI-56-058 | Animation loop export | planned | reference-verification-pending |
+| UI-56-052 | Export animation MP4 | partial | Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation. |
+| UI-56-053 | Export animation GIF | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-054 | Export animation WebM | partial | Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation. |
+| UI-56-055 | Animation frame-rate setting | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-056 | Animation quality setting | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-057 | Animation export duration | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
+| UI-56-058 | Animation loop export | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
 | UI-56-059 | Motion reduced-motion behavior | planned | reference-verification-pending |
-| UI-56-060 | Animated property reset | planned | reference-verification-pending |
+| UI-56-060 | Animated property reset | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate. |
 
 ## Agents and code workspace
 

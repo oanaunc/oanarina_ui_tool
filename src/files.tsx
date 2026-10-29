@@ -1,7 +1,10 @@
+import {exportSelection,visualBounds} from './transforms';
+import {sampleMotion} from './motion';
+import {insertInstance} from './components-model';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {assetsForFamilies,fontCssForFamilies} from './fonts';
 import {Artwork} from './components/Artwork';
-import {bounds,descendants,effectiveVisible,node,parseDocument} from './model';
+import {node,parseDocument} from './model';
 import type {DesignNode} from './model';
 import {currentPage,useEditor} from './store';
 declare global { interface Window {desktop?:{save:(name:string,data:string,base64?:boolean,saveAs?:boolean)=>Promise<boolean>;open:()=>Promise<string|null>;onCommand:(fn:(id:string)=>void)=>()=>void;fonts?:()=>Promise<string[]>;onDocument:(fn:(raw:string)=>void)=>()=>void;};} }
@@ -14,10 +17,10 @@ export async function saveProject(saveAs=false){try{const s=useEditor.getState()
 export function notifyError(e:unknown){useEditor.getState().set({toast:e instanceof Error?e.message:'Something went wrong.'});}
 export async function openProject(){try{if(window.desktop){const raw=await window.desktop.open();if(raw)useEditor.getState().load(parseDocument(raw));}else pickFile('.oui,.json',async files=>useEditor.getState().load(parseDocument(await files[0].text())));}catch(e){notifyError(e);}}
 export function pickFile(accept:string,fn:(files:File[])=>void|Promise<void>){const input=document.createElement('input');input.type='file';input.accept=accept;input.multiple=accept.includes('image');input.onchange=()=>{if(input.files?.length)Promise.resolve(fn([...input.files])).catch(notifyError);};input.click();}
-export function exportSvg(nodes:DesignNode[]){const b=bounds(nodes.filter(n=>effectiveVisible(n,nodes)));return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width)}" height="${Math.ceil(b.height)}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForFamilies(nodes.filter(n=>n.type==='text').map(n=>n.fontFamily))}</style>${renderToStaticMarkup(<Artwork nodes={nodes}/>)}</svg>`;}
-export function exportNodes(){const s=useEditor.getState(),ns=currentPage().nodes;return s.selection.length?ns.filter(n=>descendants(ns,s.selection).includes(n.id)):ns;}
+export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number}){const b=viewport??visualBounds(nodes);return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width)}" height="${Math.ceil(b.height)}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForFamilies(nodes.filter(n=>n.type==='text').map(n=>n.fontFamily))}</style>${renderToStaticMarkup(<Artwork nodes={nodes}/>)}</svg>`;}
+export function exportNodes(){const s=useEditor.getState(),page=currentPage(),ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;return exportSelection(ns,s.selection);}
 export async function exportArtwork(format:'svg'|'png'|'jpg',scale=1){
- try{const s=useEditor.getState(),ns=exportNodes();if(!ns.length){s.set({toast:'Add a layer before exporting.'});return;}const b=bounds(ns),svg=exportSvg(ns),name=(ns.length===1?ns[0].name:s.doc.name);
+ try{const s=useEditor.getState(),ns=exportNodes();if(!ns.length){s.set({toast:'Add a layer before exporting.'});return;}const b=visualBounds(ns),svg=exportSvg(ns),name=(ns.length===1?ns[0].name:s.doc.name);
  if(format==='svg'){await download(name+'.svg',svg,'image/svg+xml');return;}
  if(b.width*scale>16384||b.height*scale>16384||b.width*b.height*scale*scale>80_000_000)throw Error('Export is too large. Use a smaller scale or select fewer layers.');
  const image=new Image(),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
@@ -38,5 +41,5 @@ export async function importSvg(raw:string,name='Imported SVG'){
  useEditor.getState().add('image',{name,x:120,y:120,width,height,image:data});
 }
 export function cssFor(n:DesignNode){return `/* ${n.name.replaceAll('*/','')} */\n.${n.name.toLowerCase().replace(/[^a-z0-9]/g,'-')} {\n  width: ${n.width}px;\n  height: ${n.height}px;\n  ${n.type==='text'?'color':'background'}: ${n.fill};\n  border-radius: ${n.radius}px;${n.stroke?`\n  border: ${n.strokeWidth}px solid ${n.stroke};`:''}${n.opacity<1?`\n  opacity: ${n.opacity};`:''}${n.type==='text'?`\n  font-family: "${n.fontFamily}";\n  font-size: ${n.fontSize}px;\n  font-weight: ${n.fontWeight};\n  line-height: ${n.lineHeight};\n  letter-spacing: ${n.letterSpacing}px;`:''}${n.layout!=='none'?`\n  display: ${n.layout==='grid'?'grid':'flex'};\n  ${n.layout==='grid'?`grid-template-columns: repeat(${n.columns}, 1fr)`:`flex-direction: ${n.layout==='horizontal'?'row':'column'}`};\n  gap: ${n.gap}px;\n  padding: ${n.padding}px;`:''}\n}`;}
-export function createInstance(id:string){const s=useEditor.getState(),ns=currentPage().nodes,source=ns.find(n=>n.id===id);if(!source)return;const copies=ns.filter(n=>descendants(ns,[id]).includes(n.id)),map=new Map(copies.map(n=>[n.id,crypto.randomUUID()]));const newNodes=copies.map(n=>({...structuredClone(n),id:map.get(n.id)!,parentId:map.get(n.parentId??'')??null,x:n.x+source.width+40,y:n.y,...(n.id===id?{type:'instance' as const,componentId:id,name:source.name+' / instance'}:{})}));s.edit(d=>d.pages.find(p=>p.id===s.pageId)!.nodes.push(...newNodes));s.set({selection:[map.get(id)!]});}
+export function createInstance(id:string){const s=useEditor.getState();let instance='';try{s.edit(d=>{instance=insertInstance(d,s.pageId,id);});s.set({selection:[instance]});}catch(e){notifyError(e);}}
 export const makeNode=node;

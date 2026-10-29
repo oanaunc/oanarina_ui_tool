@@ -162,6 +162,24 @@
     ""
   ],
   [
+    "main-component",
+    "Go to main component",
+    "Object",
+    ""
+  ],
+  [
+    "variants",
+    "Combine as variants",
+    "Object",
+    ""
+  ],
+  [
+    "component-properties",
+    "Component properties…",
+    "Object",
+    ""
+  ],
+  [
     "detach",
     "Detach instance",
     "Object",
@@ -606,6 +624,12 @@
     ""
   ],
   [
+    "motion",
+    "Motion timeline",
+    "View",
+    ""
+  ],
+  [
     "inspect",
     "Inspect / Dev Mode",
     "View",
@@ -624,8 +648,26 @@
     ""
   ],
   [
+    "variables",
+    "Variables and modes…",
+    "Resources",
+    ""
+  ],
+  [
+    "styles",
+    "Local design styles…",
+    "Resources",
+    ""
+  ],
+  [
+    "components",
+    "Components and variants…",
+    "Resources",
+    ""
+  ],
+  [
     "colors",
-    "Color styles",
+    "Color palette",
     "Resources",
     ""
   ],

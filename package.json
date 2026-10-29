@@ -1,6 +1,6 @@
 {
   "name": "oanarina-ui-tool",
-  "version": "0.2.0-dev.1",
+  "version": "0.2.0-dev.2",
   "private": true,
   "description": "A local-first interface design studio for Mac",
   "author": "Oana Rinaldi",
@@ -20,6 +20,7 @@
     "desktop:electron": "npm run build && electron ."
   },
   "dependencies": {
+    "gifenc": "^1.0.3",
     "lucide-react": "^0.577.0",
     "paper": "^0.16.0",
     "react": "^19.3.1",

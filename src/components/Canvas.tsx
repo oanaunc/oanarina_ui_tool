@@ -1,3 +1,4 @@
+import {applyMotionEdits,sampleMotion} from '../motion';
 import {useEffect,useRef,useState} from 'react';
 import {bounds,descendants,effectiveVisible,isLocked,node,uid} from '../model';
 import {contourPath,geometry,insertVectorPoint,pathProperties,vectorOperation} from '../geometry';
@@ -12,7 +13,7 @@ export default function Canvas(){
  const svg=useRef<SVGSVGElement>(null),drag=useRef<Drag|null>(null),space=useRef(false);
  const [preview,setPreview]=useState<DesignNode[]|null>(null),[box,setBox]=useState<ReturnType<typeof bounds>|null>(null),[pen,setPen]=useState<VectorPoint[]>([]);
  const [editText,setEditText]=useState<string|null>(null),[context,setContext]=useState<{x:number;y:number}|null>(null);
- const ns=preview??page.nodes;
+ const ns=preview??(s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes);
  const selected=ns.filter(n=>s.selection.includes(n.id)),b=bounds(selected);
  const world=(e:{clientX:number;clientY:number})=>{const r=svg.current!.getBoundingClientRect();return {x:(e.clientX-r.left-s.pan.x)/s.zoom,y:(e.clientY-r.top-s.pan.y)/s.zoom};};
  const completePen=(closed=false)=>{if(pen.length>1){const b=bounds(pen.map(p=>node('rectangle',{...p,width:0,height:0})));const source=node('path',{...b,fill:closed?'#d8c9f2':'none',points:pen.map(p=>({...p,x:p.x-b.x,y:p.y-b.y})),closed,name:'Vector'});const path=geometry(source);const props=pathProperties(path);path.remove();s.add('path',{...source,...props});}setPen([]);};
@@ -22,7 +23,7 @@ export default function Canvas(){
  const begin=(e:React.PointerEvent,id?:string,handle?:string)=>{
  if(e.button===2)return;e.stopPropagation();if(s.vectorEditId&&id!==s.vectorEditId&&!handle){runCommand('edit-vector');if(id)s.select(id);return;}setContext(null);if(editText)return;const p=world(e);let ids=s.selection;
  if(space.current||s.tool==='hand'||e.button===1){drag.current={kind:'pan',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:[],pan:s.pan};}
- else if(handle){drag.current={kind:'resize',start:p,screen:{x:e.clientX,y:e.clientY},nodes:structuredClone(page.nodes),ids:descendants(page.nodes,s.selection),handle,pan:s.pan};}
+ else if(handle){drag.current={kind:'resize',start:p,screen:{x:e.clientX,y:e.clientY},nodes:structuredClone(ns),ids:descendants(page.nodes,s.selection),handle,pan:s.pan};}
  else if(s.tool==='comment'){s.set({modal:'comment:'+p.x+','+p.y});return;}
  else if(s.tool==='pen'){if(pen.length>2&&Math.hypot(p.x-pen[0].x,p.y-pen[0].y)<7/s.zoom){completePen(true);return;}setPen([...pen,{...p,mode:'mirrored'}]);drag.current={kind:'pen-handle',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:[],pan:s.pan};svg.current!.setPointerCapture(e.pointerId);return;}
  else if(!['move','scale'].includes(s.tool)){
@@ -30,7 +31,7 @@ export default function Canvas(){
  const parent=page.nodes.filter(n=>['frame','section','component'].includes(n.type)&&p.x>=n.x&&p.y>=n.y&&p.x<n.x+n.width&&p.y<n.y+n.height).at(-1);
  const draft=node(type,{x:p.x,y:p.y,width:0,height:0,parentId:parent?.id??null,...(type==='path'?{points:[{x:0,y:0}],fill:'none'}:{})});
  drag.current={kind:s.tool==='pencil'?'pencil':'create',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:[],draft,pan:s.pan};
- } else if(id){const n=page.nodes.find(n=>n.id===id)!;if(isLocked(n,page.nodes))return;if(!s.selection.includes(id)||e.shiftKey){s.select(id,e.shiftKey);ids=useEditor.getState().selection;}drag.current={kind:'move',start:p,screen:{x:e.clientX,y:e.clientY},nodes:structuredClone(page.nodes),ids:descendants(page.nodes,ids),pan:s.pan};}
+ } else if(id){const n=page.nodes.find(n=>n.id===id)!;if(isLocked(n,page.nodes))return;if(!s.selection.includes(id)||e.shiftKey){s.select(id,e.shiftKey);ids=useEditor.getState().selection;}drag.current={kind:'move',start:p,screen:{x:e.clientX,y:e.clientY},nodes:structuredClone(ns),ids:descendants(page.nodes,ids),pan:s.pan};}
  else {if(!e.shiftKey)s.set({selection:[]});drag.current={kind:'marquee',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:s.selection,pan:s.pan};}
  svg.current!.setPointerCapture(e.pointerId);e.stopPropagation();
  };
@@ -54,7 +55,7 @@ export default function Canvas(){
  if(d.kind==='pencil'){const bb=bounds(n.points.map(p=>node('rectangle',{...p,width:0,height:0})));n.x+=bb.x;n.y+=bb.y;n.points=n.points.map(p=>({x:p.x-bb.x,y:p.y-bb.y}));n.width=bb.width;n.height=bb.height;}
  if(d.kind==='pencil'&&n.points.length>2)Object.assign(n,vectorOperation(n,'simplify'));
  s.edit(doc=>doc.pages.find(p=>p.id===s.pageId)!.nodes.push(n));s.set({selection:[n.id],tool:'move'});if(n.type==='text')setEditText(n.id);
- }else if(preview&&['move','resize','vector'].includes(d.kind)){s.edit(doc=>{doc.pages.find(p=>p.id===s.pageId)!.nodes=preview;});}
+ }else if(preview&&['move','resize','vector'].includes(d.kind)){s.edit(doc=>{const page=doc.pages.find(p=>p.id===s.pageId)!;if(s.motionOpen&&['move','resize'].includes(d.kind))applyMotionEdits(page,d.nodes,preview,s.selection,s.motionTime,s.autoKey);else page.nodes=preview;});}
  setPreview(null);setBox(null);
  };
  const beginPoint=(e:React.PointerEvent,key:string,part:'anchor'|'in'|'out')=>{e.stopPropagation();const source=page.nodes.find(n=>n.id===s.vectorEditId);if(!source||isLocked(source,page.nodes))return;const keys=part==='anchor'?(e.shiftKey?(s.vectorSelection.includes(key)?s.vectorSelection.filter(k=>k!==key):[...s.vectorSelection,key]):s.vectorSelection.includes(key)?s.vectorSelection:[key]):[key];s.set({vectorSelection:keys});drag.current={kind:'vector',start:world(e),screen:{x:e.clientX,y:e.clientY},nodes:structuredClone(page.nodes),ids:[source.id],pointKeys:keys,vectorPart:part,pan:s.pan};svg.current!.setPointerCapture(e.pointerId);};

@@ -8324,50 +8324,50 @@
     "category": "Components",
     "name": "Component naming paths",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Slash names and name/tag search work; a complete folder browser is not implemented."
   },
   {
     "id": "UI-27-006",
     "category": "Components",
     "name": "Component description",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-007",
     "category": "Components",
     "name": "Component documentation link",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-008",
     "category": "Components",
     "name": "Component search tags",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-009",
     "category": "Components",
     "name": "Component preview",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-010",
@@ -8384,10 +8384,10 @@
     "category": "Components",
     "name": "Main component navigation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-012",
@@ -8404,160 +8404,160 @@
     "category": "Components",
     "name": "Insert component instance",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-014",
     "category": "Components",
     "name": "Instance component reference",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-015",
     "category": "Components",
     "name": "Detach instance",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-016",
     "category": "Components",
     "name": "Reset instance",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-017",
     "category": "Components",
     "name": "Reset text override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-018",
     "category": "Components",
     "name": "Reset fill override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-019",
     "category": "Components",
     "name": "Reset visibility override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-020",
     "category": "Components",
     "name": "Reset size override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-021",
     "category": "Components",
     "name": "Instance text override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-022",
     "category": "Components",
     "name": "Instance fill override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-023",
     "category": "Components",
     "name": "Instance effect override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-024",
     "category": "Components",
     "name": "Instance visibility override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-025",
     "category": "Components",
     "name": "Instance image override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-026",
     "category": "Components",
     "name": "Nested instance override",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete."
   },
   {
     "id": "UI-27-027",
     "category": "Components",
     "name": "Preserve overrides when swapping",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete."
   },
   {
     "id": "UI-27-028",
     "category": "Components",
     "name": "Swap instance",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-029",
@@ -8574,40 +8574,40 @@
     "category": "Components",
     "name": "Component propagation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-031",
     "category": "Components",
     "name": "Component deletion warning",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-032",
     "category": "Components",
     "name": "Restore missing component",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-033",
     "category": "Components",
     "name": "Expose nested instance",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete."
   },
   {
     "id": "UI-27-034",
@@ -8624,140 +8624,140 @@
     "category": "Components",
     "name": "Component thumbnail",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Cross-page sources and source-node identity are supported; missing sources retain their appearance."
   },
   {
     "id": "UI-27-036",
     "category": "Components",
     "name": "Component organization by folder",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Slash names and name/tag search work; a complete folder browser is not implemented."
   },
   {
     "id": "UI-28-001",
     "category": "Variants and properties",
     "name": "Combine components as variants",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-002",
     "category": "Variants and properties",
     "name": "Create component set",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-003",
     "category": "Variants and properties",
     "name": "Variant property names",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-004",
     "category": "Variants and properties",
     "name": "Variant property values",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-005",
     "category": "Variants and properties",
     "name": "Variant selection control",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-006",
     "category": "Variants and properties",
     "name": "Add variant",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-007",
     "category": "Variants and properties",
     "name": "Duplicate variant",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-008",
     "category": "Variants and properties",
     "name": "Remove variant",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-009",
     "category": "Variants and properties",
     "name": "Rename variant",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-010",
     "category": "Variants and properties",
     "name": "Default variant",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-011",
     "category": "Variants and properties",
     "name": "Variant sorting",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-012",
     "category": "Variants and properties",
     "name": "Variant layout in set",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-013",
@@ -8774,100 +8774,100 @@
     "category": "Variants and properties",
     "name": "Text component property",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-015",
     "category": "Variants and properties",
     "name": "Boolean component property",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-016",
     "category": "Variants and properties",
     "name": "Instance-swap component property",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
   },
   {
     "id": "UI-28-017",
     "category": "Variants and properties",
     "name": "Variant component property",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
   },
   {
     "id": "UI-28-018",
     "category": "Variants and properties",
     "name": "Property default value",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-019",
     "category": "Variants and properties",
     "name": "Property description",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-020",
     "category": "Variants and properties",
     "name": "Expose nested property",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
   },
   {
     "id": "UI-28-021",
     "category": "Variants and properties",
     "name": "Bind text property",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-022",
     "category": "Variants and properties",
     "name": "Bind visibility property",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-023",
     "category": "Variants and properties",
     "name": "Bind swap property",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
   },
   {
     "id": "UI-28-024",
@@ -8904,20 +8904,20 @@
     "category": "Variants and properties",
     "name": "Multi-select property editing",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
   },
   {
     "id": "UI-28-028",
     "category": "Variants and properties",
     "name": "Variant conflict detection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings."
   },
   {
     "id": "UI-28-029",
@@ -8934,20 +8934,20 @@
     "category": "Variants and properties",
     "name": "Variant matching on swap",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
   },
   {
     "id": "UI-29-001",
     "category": "Libraries and design systems",
     "name": "Local component library",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-002",
@@ -8957,27 +8957,27 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-003",
     "category": "Libraries and design systems",
     "name": "Local text styles",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-004",
     "category": "Libraries and design systems",
     "name": "Local effect styles",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-005",
@@ -9204,10 +9204,10 @@
     "category": "Libraries and design systems",
     "name": "Style naming folders",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete."
   },
   {
     "id": "UI-29-028",
@@ -9217,37 +9217,37 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-029",
     "category": "Libraries and design systems",
     "name": "Detach style",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-030",
     "category": "Libraries and design systems",
     "name": "Import style",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-031",
     "category": "Libraries and design systems",
     "name": "Export design tokens",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
   },
   {
     "id": "UI-29-032",
@@ -9284,10 +9284,10 @@
     "category": "Libraries and design systems",
     "name": "Style conflict resolution",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete."
   },
   {
     "id": "UI-29-036",
@@ -9304,350 +9304,350 @@
     "category": "Variables and tokens",
     "name": "Color variables",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-002",
     "category": "Variables and tokens",
     "name": "Number variables",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-003",
     "category": "Variables and tokens",
     "name": "String variables",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-004",
     "category": "Variables and tokens",
     "name": "Boolean variables",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-005",
     "category": "Variables and tokens",
     "name": "Create variable collection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-006",
     "category": "Variables and tokens",
     "name": "Rename variable collection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-007",
     "category": "Variables and tokens",
     "name": "Delete variable collection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-008",
     "category": "Variables and tokens",
     "name": "Create variable",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-009",
     "category": "Variables and tokens",
     "name": "Rename variable",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-010",
     "category": "Variables and tokens",
     "name": "Delete variable",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-011",
     "category": "Variables and tokens",
     "name": "Duplicate variable",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-012",
     "category": "Variables and tokens",
     "name": "Variable description",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-013",
     "category": "Variables and tokens",
     "name": "Variable scopes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-014",
     "category": "Variables and tokens",
     "name": "Variable aliases",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-015",
     "category": "Variables and tokens",
     "name": "Alias chain display",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-016",
     "category": "Variables and tokens",
     "name": "Alias cycle detection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-017",
     "category": "Variables and tokens",
     "name": "Variable search",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-018",
     "category": "Variables and tokens",
     "name": "Variable grouping with slashes",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Slash-separated names and substring search work; a hierarchical token-group editor is not present."
   },
   {
     "id": "UI-30-019",
     "category": "Variables and tokens",
     "name": "Variable modes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-020",
     "category": "Variables and tokens",
     "name": "Create mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-021",
     "category": "Variables and tokens",
     "name": "Rename mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-022",
     "category": "Variables and tokens",
     "name": "Delete mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-023",
     "category": "Variables and tokens",
     "name": "Default mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-024",
     "category": "Variables and tokens",
     "name": "Per-frame mode",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-025",
     "category": "Variables and tokens",
     "name": "Inherit mode from parent",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-026",
     "category": "Variables and tokens",
     "name": "Explicit mode override",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-027",
     "category": "Variables and tokens",
     "name": "Apply variable to fill",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-028",
     "category": "Variables and tokens",
     "name": "Apply variable to stroke",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-029",
     "category": "Variables and tokens",
     "name": "Apply variable to radius",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-030",
     "category": "Variables and tokens",
     "name": "Apply variable to dimensions",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-031",
     "category": "Variables and tokens",
     "name": "Apply variable to gap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-032",
     "category": "Variables and tokens",
     "name": "Apply variable to padding",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-033",
     "category": "Variables and tokens",
     "name": "Apply variable to text",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-034",
     "category": "Variables and tokens",
     "name": "Apply variable to visibility",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-035",
     "category": "Variables and tokens",
     "name": "Variable code syntax",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-036",
@@ -9674,30 +9674,30 @@
     "category": "Variables and tokens",
     "name": "Variable import",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-039",
     "category": "Variables and tokens",
     "name": "Variable export",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-30-040",
     "category": "Variables and tokens",
     "name": "Missing variable handling",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Aliases are type checked and possible dependency cycles rejected. Missing bindings retain the last literal value; deletions materialize dependent aliases."
   },
   {
     "id": "UI-31-001",
@@ -11957,7 +11957,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota."
   },
   {
     "id": "UI-38-013",
@@ -11967,17 +11967,17 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota."
   },
   {
     "id": "UI-38-014",
     "category": "History and recovery",
     "name": "Recover after crash",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
   },
   {
     "id": "UI-38-015",
@@ -11987,7 +11987,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota."
   },
   {
     "id": "UI-38-016",
@@ -11997,7 +11997,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota."
   },
   {
     "id": "UI-38-017",
@@ -12017,7 +12017,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota."
   },
   {
     "id": "UI-38-019",
@@ -12044,10 +12044,10 @@
     "category": "History and recovery",
     "name": "Restore older version",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota."
   },
   {
     "id": "UI-38-022",
@@ -12164,20 +12164,20 @@
     "category": "History and recovery",
     "name": "Edit history persistence",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
   },
   {
     "id": "UI-38-034",
     "category": "History and recovery",
     "name": "File corruption recovery",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
   },
   {
     "id": "UI-38-035",
@@ -12194,10 +12194,10 @@
     "category": "History and recovery",
     "name": "Storage quota notification",
     "priority": "must",
-    "status": "implemented",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
   },
   {
     "id": "UI-39-001",
@@ -12627,7 +12627,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers."
   },
   {
     "id": "UI-40-004",
@@ -12637,7 +12637,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers."
   },
   {
     "id": "UI-40-005",
@@ -12647,7 +12647,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers."
   },
   {
     "id": "UI-40-006",
@@ -12657,7 +12657,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Transformed visual bounds include strokes/effect padding; selected exports preserve ancestor transforms/clips with non-rendering wrappers."
   },
   {
     "id": "UI-40-007",
@@ -12914,10 +12914,10 @@
     "category": "Export and delivery",
     "name": "Export overlapping contents option",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Visual bounds now include rotated/scaled geometry, strokes and effect padding. Clipping intersections use conservative bounding boxes; text glyph overflow, complex groups and slice-specific options need further work."
   },
   {
     "id": "UI-40-033",
@@ -12954,10 +12954,10 @@
     "category": "Export and delivery",
     "name": "Export bounds warning",
     "priority": "must",
-    "status": "implemented",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "Visual bounds now include rotated/scaled geometry, strokes and effect padding. Clipping intersections use conservative bounding boxes; text glyph overflow, complex groups and slice-specific options need further work."
   },
   {
     "id": "UI-40-037",
@@ -16684,10 +16684,10 @@
     "category": "Performance and reliability",
     "name": "Large document loading",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain."
   },
   {
     "id": "UI-53-002",
@@ -16754,10 +16754,10 @@
     "category": "Performance and reliability",
     "name": "Document write atomicity",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic."
   },
   {
     "id": "UI-53-009",
@@ -16774,10 +16774,10 @@
     "category": "Performance and reliability",
     "name": "Long operation progress",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain."
   },
   {
     "id": "UI-53-011",
@@ -16864,10 +16864,10 @@
     "category": "Performance and reliability",
     "name": "Export memory limits",
     "priority": "must",
-    "status": "implemented",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain."
   },
   {
     "id": "UI-53-020",
@@ -16887,7 +16887,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic."
   },
   {
     "id": "UI-53-022",
@@ -16954,10 +16954,10 @@
     "category": "Performance and reliability",
     "name": "Background save scheduling",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic."
   },
   {
     "id": "UI-53-029",
@@ -16977,7 +16977,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Recovery writes document and active reference in one IndexedDB transaction. Explicit native saves remain atomic."
   },
   {
     "id": "UI-54-001",
@@ -17604,10 +17604,10 @@
     "category": "Motion workspace and timeline",
     "name": "Motion mode switch",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-002",
@@ -17624,200 +17624,200 @@
     "category": "Motion workspace and timeline",
     "name": "Keyframe timeline panel",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-004",
     "category": "Motion workspace and timeline",
     "name": "Expand timeline",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-005",
     "category": "Motion workspace and timeline",
     "name": "Collapse timeline",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-006",
     "category": "Motion workspace and timeline",
     "name": "Resize timeline panel",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-007",
     "category": "Motion workspace and timeline",
     "name": "Timeline tracks",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-008",
     "category": "Motion workspace and timeline",
     "name": "Track names",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-009",
     "category": "Motion workspace and timeline",
     "name": "Track expansion",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-010",
     "category": "Motion workspace and timeline",
     "name": "Track collapse",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-011",
     "category": "Motion workspace and timeline",
     "name": "Track selection",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
   },
   {
     "id": "UI-56-012",
     "category": "Motion workspace and timeline",
     "name": "Track visibility",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-013",
     "category": "Motion workspace and timeline",
     "name": "Current-time control",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-014",
     "category": "Motion workspace and timeline",
     "name": "Duration control",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-015",
     "category": "Motion workspace and timeline",
     "name": "Timeline time format",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-016",
     "category": "Motion workspace and timeline",
     "name": "Timeline loop toggle",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-017",
     "category": "Motion workspace and timeline",
     "name": "Play timeline",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-018",
     "category": "Motion workspace and timeline",
     "name": "Pause timeline",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-019",
     "category": "Motion workspace and timeline",
     "name": "Restart timeline",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-020",
     "category": "Motion workspace and timeline",
     "name": "Scrub playhead",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-021",
     "category": "Motion workspace and timeline",
     "name": "Timeline zoom in",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-022",
     "category": "Motion workspace and timeline",
     "name": "Timeline zoom out",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-023",
@@ -17834,20 +17834,20 @@
     "category": "Motion workspace and timeline",
     "name": "Timeline horizontal scroll",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-025",
     "category": "Motion workspace and timeline",
     "name": "Timeline vertical scroll",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-026",
@@ -17864,30 +17864,30 @@
     "category": "Motion workspace and timeline",
     "name": "Add keyframe by double click",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-028",
     "category": "Motion workspace and timeline",
     "name": "Select keyframe",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-029",
     "category": "Motion workspace and timeline",
     "name": "Multi-select keyframes",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-030",
@@ -17904,200 +17904,200 @@
     "category": "Motion workspace and timeline",
     "name": "Move keyframe",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-032",
     "category": "Motion workspace and timeline",
     "name": "Delete keyframe",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-033",
     "category": "Motion workspace and timeline",
     "name": "Duplicate keyframe",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-034",
     "category": "Motion workspace and timeline",
     "name": "Copy keyframe",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-035",
     "category": "Motion workspace and timeline",
     "name": "Paste keyframe",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-036",
     "category": "Motion workspace and timeline",
     "name": "Auto-keyframing toggle",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "observed-in-signed-in-Figma-2026-10-29",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-037",
     "category": "Motion workspace and timeline",
     "name": "Position animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-038",
     "category": "Motion workspace and timeline",
     "name": "Size animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-039",
     "category": "Motion workspace and timeline",
     "name": "Rotation animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-040",
     "category": "Motion workspace and timeline",
     "name": "Opacity animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-041",
     "category": "Motion workspace and timeline",
     "name": "Fill animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-042",
     "category": "Motion workspace and timeline",
     "name": "Corner-radius animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-043",
     "category": "Motion workspace and timeline",
     "name": "Scale animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-044",
     "category": "Motion workspace and timeline",
     "name": "Text animation track",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-045",
     "category": "Motion workspace and timeline",
     "name": "Keyframe easing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-046",
     "category": "Motion workspace and timeline",
     "name": "Keyframe bezier editor",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
   },
   {
     "id": "UI-56-047",
     "category": "Motion workspace and timeline",
     "name": "Animation style creation",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-048",
     "category": "Motion workspace and timeline",
     "name": "Animation style application",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-049",
     "category": "Motion workspace and timeline",
     "name": "Animation style management",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-050",
     "category": "Motion workspace and timeline",
     "name": "Frame animation preview",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
   },
   {
     "id": "UI-56-051",
@@ -18114,70 +18114,70 @@
     "category": "Motion workspace and timeline",
     "name": "Export animation MP4",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
   },
   {
     "id": "UI-56-053",
     "category": "Motion workspace and timeline",
     "name": "Export animation GIF",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-054",
     "category": "Motion workspace and timeline",
     "name": "Export animation WebM",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
   },
   {
     "id": "UI-56-055",
     "category": "Motion workspace and timeline",
     "name": "Animation frame-rate setting",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-056",
     "category": "Motion workspace and timeline",
     "name": "Animation quality setting",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-057",
     "category": "Motion workspace and timeline",
     "name": "Animation export duration",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-058",
     "category": "Motion workspace and timeline",
     "name": "Animation loop export",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-56-059",
@@ -18194,10 +18194,10 @@
     "category": "Motion workspace and timeline",
     "name": "Animated property reset",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Real sampled artwork, cubic-bezier/standard/spring easing and text holds. GIF frame structure and browser decoding are tested. Canvas move/resize and inspector autokeys keep base artwork separate."
   },
   {
     "id": "UI-57-001",

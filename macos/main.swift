@@ -89,7 +89,7 @@ final class Studio: NSObject, NSApplicationDelegate, WKScriptMessageHandlerWithR
         if type=="fonts"{replyHandler(NSFontManager.shared.availableFontFamilies.sorted(),nil);return}
         if type=="open"{let panel=NSOpenPanel();panel.allowedContentTypes=[UTType(filenameExtension:"oui") ?? .json,.json];panel.allowsMultipleSelection=false;panel.canChooseDirectories=false;panel.beginSheetModal(for:window){response in guard response == .OK,let url=panel.url else{replyHandler(NSNull(),nil);return};do{replyHandler(try self.read(url),nil)}catch{replyHandler(nil,error.localizedDescription)}};return}
         guard type=="save",let raw=body["data"] as? String,raw.utf8.count<150_000_000,let name=body["name"] as? String else{replyHandler(nil,"Invalid export");return}
-        let safe=(name as NSString).lastPathComponent,ext=(safe as NSString).pathExtension.lowercased();guard ["oui","png","jpg","svg","json"].contains(ext) else{replyHandler(nil,"Unsupported format");return}
+        let safe=(name as NSString).lastPathComponent,ext=(safe as NSString).pathExtension.lowercased();guard ["oui","png","jpg","svg","json","gif","webm","mp4"].contains(ext) else{replyHandler(nil,"Unsupported format");return}
         let bytes:Data? = body["base64"] as? Bool == true ? Data(base64Encoded:raw) : raw.data(using:.utf8)
         guard let bytes else{replyHandler(nil,"Invalid file data");return}
         var projectId:String?
@@ -100,7 +100,7 @@ final class Studio: NSObject, NSApplicationDelegate, WKScriptMessageHandlerWithR
     }
     func webView(_ webView:WKWebView,didFinish navigation:WKNavigation!){editorReady=true;if let file=pending{pending=nil;openURL(file)}
         if CommandLine.arguments.contains("--smoke-test") {DispatchQueue.main.asyncAfter(deadline:.now()+4){
-            self.web.callAsyncJavaScript("const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');return JSON.stringify({title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});",arguments:[:],in:nil,in:.page) { result in
+            self.web.callAsyncJavaScript("const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');const videoMp4=typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/mp4');const videoWebM=typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/webm');return JSON.stringify({videoMp4,videoWebM,canvasCapture:typeof HTMLCanvasElement.prototype.captureStream==='function',title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});",arguments:[:],in:nil,in:.page) { result in
                 switch result {case .success(let value):print(value);fflush(stdout);NSApp.terminate(nil);case .failure(let error):fputs(error.localizedDescription+"\n",stderr);exit(1)}
             }
         }}
