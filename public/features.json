@@ -9390,6 +9390,36 @@
     "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
   },
   {
+    "id": "UI-28-031",
+    "category": "Variants and properties",
+    "name": "Component slot definition",
+    "priority": "must",
+    "status": "planned",
+    "verification": "official-docs-verified-2026-10-29; implementation-planned",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Figma SLOT properties and editable/resettable instance slot content are documented in the public Plugin API. This workflow is not implemented in Forma or its editable bridge."
+  },
+  {
+    "id": "UI-28-032",
+    "category": "Variants and properties",
+    "name": "Editable instance slot content",
+    "priority": "must",
+    "status": "planned",
+    "verification": "official-docs-verified-2026-10-29; implementation-planned",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Figma SLOT properties and editable/resettable instance slot content are documented in the public Plugin API. This workflow is not implemented in Forma or its editable bridge."
+  },
+  {
+    "id": "UI-28-033",
+    "category": "Variants and properties",
+    "name": "Reset instance slot content",
+    "priority": "must",
+    "status": "planned",
+    "verification": "official-docs-verified-2026-10-29; implementation-planned",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Figma SLOT properties and editable/resettable instance slot content are documented in the public Plugin API. This workflow is not implemented in Forma or its editable bridge."
+  },
+  {
     "id": "UI-29-001",
     "category": "Libraries and design systems",
     "name": "Local component library",
@@ -12884,10 +12914,10 @@
     "category": "Import and Figma interchange",
     "name": "Preserve component identity across bridge",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "v0.2.0-dev.7: dependency-aware selected/page exports, explicit source correspondence, real createInstance import path, supported overrides, variant sets and single-target scalar/swap controls. Strict live-inheritance API-contract mocks and editor workflows validate the supported subset. Nested structural swaps, unsupported overrides and root bindings detach with reports; multi-target properties/slots/library identity are reduced. Actual desktop component round-trip acceptance remains unverified; connected API quota blocked that attempt. See figma-plugin/README.md and docs/VALIDATION-v0.2-component-bridge.md."
   },
   {
     "id": "UI-39-025",

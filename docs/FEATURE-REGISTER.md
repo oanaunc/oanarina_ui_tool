@@ -1,10 +1,10 @@
 # Oanarina UI Tool — feature register
 
-2018 individually named requirements. 1988 required baseline items; 30 later Oanarina improvements.
+2021 individually named requirements. 1991 required baseline items; 30 later Oanarina improvements.
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1042,"partial":161,"planned":815}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
+Status: {"implemented":1042,"partial":162,"planned":817}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -1086,6 +1086,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-28-028 | Variant conflict detection | implemented | v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Sets have named axes, default insertion, grid arrangement and conflict warnings. |
 | UI-28-029 | Interactive variant transitions | planned | reference-verification-pending |
 | UI-28-030 | Variant matching on swap | partial | Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance. |
+| UI-28-031 | Component slot definition | planned | Figma SLOT properties and editable/resettable instance slot content are documented in the public Plugin API. This workflow is not implemented in Forma or its editable bridge. |
+| UI-28-032 | Editable instance slot content | planned | Figma SLOT properties and editable/resettable instance slot content are documented in the public Plugin API. This workflow is not implemented in Forma or its editable bridge. |
+| UI-28-033 | Reset instance slot content | planned | Figma SLOT properties and editable/resettable instance slot content are documented in the public Plugin API. This workflow is not implemented in Forma or its editable bridge. |
 
 ## Libraries and design systems
 
@@ -1490,7 +1493,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-39-021 | Preserve vector paths across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
 | UI-39-022 | Preserve font properties across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
 | UI-39-023 | Preserve layout metadata across bridge | partial | v0.2: expanded conversion and API mock tests for cubic contours, paint stacks, supported effects, text metadata and layout. No real desktop round-trip yet; rotations, custom gradient transforms, mixed stroke geometry, component linkage and advanced properties have losses/reports. |
-| UI-39-024 | Preserve component identity across bridge | planned | reference-verification-pending |
+| UI-39-024 | Preserve component identity across bridge | partial | v0.2.0-dev.7: dependency-aware selected/page exports, explicit source correspondence, real createInstance import path, supported overrides, variant sets and single-target scalar/swap controls. Strict live-inheritance API-contract mocks and editor workflows validate the supported subset. Nested structural swaps, unsupported overrides and root bindings detach with reports; multi-target properties/slots/library identity are reduced. Actual desktop component round-trip acceptance remains unverified; connected API quota blocked that attempt. See figma-plugin/README.md and docs/VALIDATION-v0.2-component-bridge.md. |
 | UI-39-025 | Preserve prototype links across bridge | partial | Supported mouse/delay navigation, overlays, URL/back/scroll actions and standard/cubic transitions transfer through the bridge. Variable/condition/variant behavior and many input triggers are omitted with reports. Real connected API fixture passed; desktop plugin UI round trip remains unverified. |
 | UI-39-026 | Unsupported property report | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-027 | Missing font report | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
