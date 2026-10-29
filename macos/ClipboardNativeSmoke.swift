@@ -1,5 +1,6 @@
 import AppKit
 import WebKit
+import ImageIO
 
 /** Actual two-WKWebView acceptance; uses a private NSPasteboard, never the user's clipboard. */
 extension Studio {
@@ -85,8 +86,42 @@ extension Studio {
                         self.clipboardWait(destination,"document.querySelector('[role=dialog]') && document.body.textContent.includes('Import editable layers')"){
                             self.check(true,"external SVG reaches validated import review")
                             self.smokeJS(destination,"[...document.querySelectorAll('button')].find(b=>b.textContent==='Cancel SVG import').click();return true;"){_ in
-                                self.smokeFinishing=true;for document in Array(self.documents){document.closeApproved()};self.nodePasteboard.releaseGlobally();if let directory=self.smokeDirectory{try? FileManager.default.removeItem(at:directory)}
-                                print(self.json(["nativeClipboard":true,"checks":self.smokeChecks,"count":self.smokeChecks.count]));fflush(stdout);self.smokeTerminate()
+                                self.clipboardRasterTests(destination)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    func clipboardRasterFixture(_ tiff:Bool=false)->Data {
+        let context=CGContext(data:nil,width:3,height:2,bitsPerComponent:8,bytesPerRow:12,space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue)!
+        context.setFillColor(CGColor(red:0.8,green:0.2,blue:0.4,alpha:0.5));context.fill(CGRect(x:0,y:0,width:3,height:2))
+        let output=NSMutableData(),destination=CGImageDestinationCreateWithData(output,(tiff ? "public.tiff":"public.png") as CFString,1,nil)!
+        CGImageDestinationAddImage(destination,context.makeImage()!,[kCGImagePropertyOrientation:tiff ? 6:1] as CFDictionary);if !CGImageDestinationFinalize(destination){smokeFail("raster fixture")};return output as Data
+    }
+    func clipboardRasterTests(_ destination:DocumentWindow){
+        let image=NSPasteboardItem();image.setData(clipboardRasterFixture(),forType:.png);image.setString("Do not paste this fallback",forType:.string);nodePasteboard.clearContents();nodePasteboard.writeObjects([image]);destination.command("paste")
+        clipboardWait(destination,"document.querySelectorAll('.layer-row').length===2 && document.body.textContent.includes('Pasted image')"){
+            self.check(true,"native PNG takes precedence over text and creates an editable image")
+            self.smokeJS(destination,"return await window.__studioSave();"){value in
+                self.check(value as? Bool==true,"raster paste saves through native write")
+                do{let data=try ProjectFileSafety.readBounded(destination.session.file!),doc=try JSONSerialization.jsonObject(with:data) as! [String:Any],pages=doc["pages"] as! [[String:Any]],nodes=pages.flatMap{$0["nodes"] as! [[String:Any]]},image=nodes.first{$0["type"] as? String=="image"}!
+                    self.check(image["width"] as? Int==3 && image["height"] as? Int==2 && (image["image"] as? String)?.hasPrefix("data:image/png;base64,")==true,"saved PNG keeps dimensions and embedded pixels")
+                }catch{self.smokeFail(error.localizedDescription)}
+                self.smokeJS(destination,"window.__studioCommand('undo');return true;"){_ in
+                    self.clipboardWait(destination,"document.querySelectorAll('.layer-row').length===1"){
+                        self.check(true,"native raster paste is one undoable edit")
+                        let tiff=NSPasteboardItem();tiff.setData(self.clipboardRasterFixture(true),forType:.tiff);self.nodePasteboard.clearContents();self.nodePasteboard.writeObjects([tiff]);destination.command("paste")
+                        self.clipboardWait(destination,"document.querySelectorAll('.layer-row').length===2"){
+                            self.smokeJS(destination,"return [...document.querySelectorAll('input')].find(e=>e.getAttribute('aria-label')==='W')?.value==='2' && [...document.querySelectorAll('input')].find(e=>e.getAttribute('aria-label')==='H')?.value==='3';"){value in
+                                self.check(value as? Bool==true,"native TIFF first frame reaches editor with corrected orientation")
+                                let before=destination.state?.revision,bad=NSPasteboardItem();bad.setData(Data("invalid PNG".utf8),forType:.png);bad.setString("Must not fall back",forType:.string);self.nodePasteboard.clearContents();self.nodePasteboard.writeObjects([bad]);destination.command("paste")
+                                self.clipboardWait(destination,"document.body.textContent.includes('Clipboard image is invalid')"){
+                                    self.check(destination.state?.revision==before,"invalid native raster preserves document without text fallback")
+                                    self.smokeFinishing=true;for document in Array(self.documents){document.closeApproved()};self.nodePasteboard.releaseGlobally();if let directory=self.smokeDirectory{try? FileManager.default.removeItem(at:directory)}
+                                    print(self.json(["nativeClipboard":true,"checks":self.smokeChecks,"count":self.smokeChecks.count]));fflush(stdout);self.smokeTerminate()
+                                }
                             }
                         }
                     }
