@@ -119,6 +119,38 @@ extension Studio {
                                 let before=destination.state?.revision,bad=NSPasteboardItem();bad.setData(Data("invalid PNG".utf8),forType:.png);bad.setString("Must not fall back",forType:.string);self.nodePasteboard.clearContents();self.nodePasteboard.writeObjects([bad]);destination.command("paste")
                                 self.clipboardWait(destination,"document.body.textContent.includes('Clipboard image is invalid')"){
                                     self.check(destination.state?.revision==before,"invalid native raster preserves document without text fallback")
+                                    self.clipboardPngCopyTests(destination)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    func clipboardPngCopyTests(_ document:DocumentWindow){
+        let revision=document.state?.revision
+        smokeJS(document,"document.querySelector('svg.canvas').focus();return true;"){_ in
+            document.command("copy-as-png")
+            self.clipboardWait(document,"document.body.textContent.includes('Selection copied as PNG to the Mac clipboard.')"){
+                guard let item=self.nodePasteboard.pasteboardItems?.first,let data=item.data(forType:.png),let source=CGImageSourceCreateWithData(data as CFData,nil),let image=CGImageSourceCreateImageAtIndex(source,0,nil) else{self.smokeFail("Copy as PNG produces decodable public.png")}
+                self.check(image.width==4 && image.height==6,"native Copy as PNG uses actual 2x pixel dimensions")
+                self.check(item.types == [.png],"native Copy as PNG publishes only PNG without stale representations")
+                let color=NSBitmapImageRep(cgImage:image).colorAt(x:2,y:3)!.usingColorSpace(.deviceRGB)!
+                self.check(abs(color.alphaComponent-0.5)<0.04,"native Copy as PNG preserves rendered alpha")
+                self.check(document.state?.revision==revision,"native Copy as PNG does not edit document state")
+                let command=NSApp.mainMenu?.items.first(where:{$0.title=="Edit"})?.submenu?.items.first(where:{$0.representedObject as? String=="copy-as-png"})
+                self.check(command?.keyEquivalent=="c" && command?.keyEquivalentModifierMask==[.command,.shift],"native Edit menu exposes Shift Command C")
+                let count=self.nodePasteboard.changeCount
+                self.smokeJS(document,"try{await window.desktop.clipboardWrite({png:'data:image/png;base64,AAAA'});return false}catch{return true}"){value in
+                    self.check(value as? Bool==true && self.nodePasteboard.changeCount==count,"PNG write grant is single-use and replay preserves pasteboard")
+                    document.command("paste")
+                    self.clipboardWait(document,"document.querySelectorAll('.layer-row').length===3"){
+                        self.smokeJS(document,"return [...document.querySelectorAll('input')].find(e=>e.getAttribute('aria-label')==='W')?.value==='4' && [...document.querySelectorAll('input')].find(e=>e.getAttribute('aria-label')==='H')?.value==='6';"){value in
+                            self.check(value as? Bool==true,"copied PNG pastes as an editable native image")
+                            self.smokeJS(document,"window.__studioCommand('undo');return true;"){_ in
+                                self.clipboardWait(document,"document.querySelectorAll('.layer-row').length===2"){
+                                    self.check(true,"copied PNG paste has one undo without a Copy history entry")
                                     self.smokeFinishing=true;for document in Array(self.documents){document.closeApproved()};self.nodePasteboard.releaseGlobally();if let directory=self.smokeDirectory{try? FileManager.default.removeItem(at:directory)}
                                     print(self.json(["nativeClipboard":true,"checks":self.smokeChecks,"count":self.smokeChecks.count]));fflush(stdout);self.smokeTerminate()
                                 }

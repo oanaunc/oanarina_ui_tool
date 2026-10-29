@@ -1,15 +1,31 @@
 import {assertClipboardCutSafe,CLIPBOARD_LIMIT,makeDesignClipboard,parseDesignClipboard,pasteDesignClipboard} from './clipboard-transfer';
-import {exportSvg,importSvg,notifyError} from './files';
+import {exportNodes,exportSvg,importSvg,notifyError} from './files';
 import {assetsForUsage,projectFontUsage,registerFonts} from './fonts';
 import {blankDocument,node,parseDocument} from './model';
 import {drawingDefaults} from './preferences';
 import {useEditor} from './store';
 import {readClipboardRaster} from './raster-clipboard';
+import {pngClipboardDimensions,renderClipboardPng} from './png-clipboard';
+import {visualBounds} from './transforms';
 
 export interface NativeClipboardRead {kind:'nodes'|'svg'|'image'|'text'|'empty';data?:string;}
 let localCopy:{raw:string;document:ReturnType<typeof useEditor.getState>['doc']}|undefined;
+let pngGeneration=0;
+/** Read-only raster copy; a stale task must never consume a newer copy grant. */
+export async function copyEditorSelectionAsPng(){
+ const generation=++pngGeneration,before=useEditor.getState(),doc=before.doc,pageId=before.pageId,selection=before.selection.join('\0'),time=before.motionTime,motion=before.motionOpen;
+ if(!before.selection.length){before.set({toast:'Select artwork to copy as PNG.'});return false;}
+ if(typeof window==='undefined'||!window.desktop?.clipboardWrite){before.set({toast:'Copy as PNG is available in the Mac app. Use PNG export in the browser.'});return false;}
+ const nodes=exportNodes();if(!nodes.length)throw Error('Select artwork to copy as PNG.');
+ const bounds=visualBounds(nodes),size=pngClipboardDimensions(bounds.width,bounds.height),svg=exportSvg(nodes);
+ const png=await renderClipboardPng(svg,size),current=useEditor.getState();
+ if(generation!==pngGeneration||current.doc!==doc||current.pageId!==pageId||current.selection.join('\0')!==selection||current.motionOpen!==motion||current.motionTime!==time){current.set({toast:'PNG copy cancelled because the project, selection or animation changed. Copy again.'});return false;}
+ const written=await window.desktop.clipboardWrite({png});
+ useEditor.getState().set({toast:written?'Selection copied as PNG to the Mac clipboard.':'The Mac clipboard was not updated.'});return written;
+}
 /** Invoked only by an explicit Copy/Cut command. A failed system write never cuts. */
 export async function copyEditorSelection(cut=false,onCut?:()=>void){
+ pngGeneration++;
  const before=useEditor.getState(),doc=before.doc,pageId=before.pageId,selection=before.selection.join('\0');
  if(!before.selection.length)return false;
  if(typeof window==='undefined'||!window.desktop?.clipboardWrite){before.copy();if(cut)(onCut??before.remove)();return true;}
@@ -23,6 +39,7 @@ export async function copyEditorSelection(cut=false,onCut?:()=>void){
 }
 /** Reads once on explicit Paste. A changed document cancels the pending transfer. */
 export async function pasteEditorClipboard(parentId?:string,isCurrentTarget:()=>boolean=()=>true){
+ pngGeneration++;
  const initial=useEditor.getState();if(typeof window==='undefined'||!window.desktop?.clipboardRead){initial.paste(parentId);return;}
  const content=await window.desktop.clipboardRead(),current=useEditor.getState();if(current.doc!==initial.doc||current.pageId!==initial.pageId||!isCurrentTarget())throw Error('The project changed while reading the clipboard. Paste again.');
  if(content.kind==='empty'){current.set({toast:'The Mac clipboard has no supported layers, SVG, image or text.'});return;}

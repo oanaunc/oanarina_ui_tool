@@ -26,6 +26,15 @@ enum NodePasteboard {
         var count=0;for page in pages{guard let layers=page["nodes"] as? [[String:Any]] else{throw NSError(domain:"Invalid clipboard layers.",code:2)};count+=layers.count;guard count<=20000 else{throw NSError(domain:"Clipboard exceeds 20,000 layers.",code:3)}}
     }
     static func write(_ representations:[String:Any],to pasteboard:NSPasteboard = .general)throws->Bool {
+        if Set(representations.keys)==Set(["png"]) {
+            let prefix="data:image/png;base64,"
+            guard let raw=representations["png"] as? String,raw.utf8.count<=limit,raw.hasPrefix(prefix),let bytes=Data(base64Encoded:String(raw.dropFirst(prefix.count))) else{throw NSError(domain:"Invalid or oversized clipboard PNG.",code:10)}
+            // Reuse the bounded ImageIO decode/orientation/PNG validation path.
+            let normalized=try raster(bytes,type:.png)
+            guard normalized.utf8.count<=limit,let data=Data(base64Encoded:String(normalized.dropFirst(prefix.count))) else{throw NSError(domain:"Clipboard PNG exceeds the 20 MB encoded limit.",code:11)}
+            let item=NSPasteboardItem();guard item.setData(data,forType:.png) else{throw NSError(domain:"Unable to prepare clipboard PNG.",code:12)}
+            pasteboard.clearContents();return pasteboard.writeObjects([item])
+        }
         guard Set(representations.keys)==Set(["nodes","svg","text"]),let raw=representations["nodes"] as? String,let drawing=representations["svg"] as? String,let text=representations["text"] as? String else{throw NSError(domain:"Unsupported clipboard representations.",code:4)}
         guard raw.utf8.count+drawing.utf8.count+text.utf8.count<=limit else{throw NSError(domain:"Copy fewer layers: clipboard representations exceed 20 MB.",code:5)}
         let data=Data(raw.utf8),svgData=Data(drawing.utf8),textData=Data(text.utf8)
