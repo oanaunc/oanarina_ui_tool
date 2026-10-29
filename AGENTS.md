@@ -1,0 +1,14 @@
+# Project instructions
+
+- Oanarina UI Tool is an independent interface design app targeting complete Figma parity over multiple implementation stages. Do not describe a preview or the feature register as a finished clone.
+- Prioritize Mac. `macos/` is the shipping AppKit/WKWebView shell; `src/` is the shared React/TypeScript editor; `electron/` is experimental groundwork for Windows. Keep the document model usable in headless tests.
+- Work against `public/features.json` and `docs/FEATURE-REGISTER.md`. Individually named behaviors have separate implementation and reference-verification statuses. Mark implemented only when a real reachable path exists, with undo/persistence where applicable and appropriate validation. Document limits as partial; absent behavior remains planned. Do not inflate counts with artificial state permutations.
+- Generate the register with `npm run inventory`. `scripts/record-preview-status.mjs` records the original v0.1 baseline; do not rerun it indiscriminately over later feature progress.
+- Preserve .oui version compatibility. Add migrations if a required breaking schema change occurs. Imported input must be validated before document mutation.
+- Figma interchange uses SVG plus `figma-plugin/`. Do not claim direct binary .fig compatibility until implemented and tested. API mock checks are not a real Figma desktop plugin round trip. Do not publish user Figma files, IDs or private screenshots as reference artifacts.
+- Fonts: full catalog snapshot in `public/font-catalog.json`, 24 offline open-license families and per-family licenses. Commercial fonts are usable if installed/licensed; never bundle proprietary font files without redistribution rights.
+- Run `npm test`, `npm run build`, relevant browser interaction checks, and native build/smoke checks for changes affecting those paths. Avoid repeating unchanged checks unless a new failure or concern justifies it.
+- Native app resources bind only to 127.0.0.1:51981. Never serve user project files, expose arbitrary filesystem paths to the renderer, or broaden native IPC permissions.
+- Companion website: `/Users/oanarinaldi/Desktop/oanarina_website`, product `ui-tool.html`, guide `ui-tool-guide.html`, privacy `ui-tool-privacy.html`. Preserve its existing header/menu, breadcrumb, footer and navigation pattern. Advertise only working behaviors and state preview/bridge limitations. Preserve unrelated user changes.
+- `scripts/package-mac.sh` builds universal binaries and uses the existing Developer ID/keychain notarization profile. Only label downloads notarized after Accepted results, stapling and Gatekeeper validation. Keep signing credentials out of source and output.
+- User requested source pushes to `https://github.com/oanaunc/oanarina_ui_tool.git` and the companion website repository. HTTPS may require a per-command SSH URL rewrite in this environment; never embed credentials.
