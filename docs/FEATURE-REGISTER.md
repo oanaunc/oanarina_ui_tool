@@ -1,10 +1,10 @@
 # Oanarina UI Tool — feature register
 
-2021 individually named requirements. 1991 required baseline items; 30 later Oanarina improvements.
+2022 individually named requirements. 1992 required baseline items; 30 later Oanarina improvements.
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1042,"partial":162,"planned":817}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
+Status: {"implemented":1045,"partial":164,"planned":813}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -56,9 +56,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-02-007 | Middle-button panning | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-02-008 | Spacebar hand navigation | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-02-009 | Context menus | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-02-010 | System clipboard text | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
+| UI-02-010 | System clipboard text | partial | v0.2.0-dev.8: native focused text fields retain macOS editing; explicit external plain-text canvas paste creates an editable layer up to 100,000 characters. Rich cross-app text semantics and complete reference behavior remain partial. docs/NATIVE-CLIPBOARD.md. |
 | UI-02-011 | System clipboard images | planned | Not implemented in this preview. |
-| UI-02-012 | Clipboard SVG markup | planned | reference-verification-pending |
+| UI-02-012 | Clipboard SVG markup | partial | v0.2.0-dev.8: native public.svg-image outgoing representation and explicit incoming design-canvas SVG import review. SVG received only as ordinary text remains text; slide/container SVG paste is refused. Unsupported SVG semantics have reviewed reductions. No private Figma editable clipboard. docs/NATIVE-CLIPBOARD.md. |
 | UI-02-013 | Drag files from Finder | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-02-014 | Drag assets to Finder | planned | reference-verification-pending |
 | UI-02-015 | Quick Look previews | planned | reference-verification-pending |
@@ -77,6 +77,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-02-028 | Offline startup | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-02-029 | App update checking | planned | reference-verification-pending |
 | UI-02-030 | Update release notes | planned | reference-verification-pending |
+| UI-02-031 | Editable design clipboard between Mac windows | implemented | v0.2.0-dev.8: explicit native Copy/Cut/Paste transfers validated editable Forma layers between document windows with remapped definitions, used embeddable fonts, source context, one-step Undo and portable saving. Native two-WKWebView/private-pasteboard acceptance passed. 20 MB/20k-layer limits, referenced-main Cut refusal and supported closure limits: docs/NATIVE-CLIPBOARD.md. No private Figma clipboard claim. |
 
 ## Home and file browser
 
@@ -161,14 +162,14 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-05-007 | Page keyboard navigation | planned | reference-verification-pending |
 | UI-05-008 | Per-page canvas position | planned | reference-verification-pending |
 | UI-05-009 | Per-page zoom level | planned | reference-verification-pending |
-| UI-05-010 | Page background color | planned | reference-verification-pending |
+| UI-05-010 | Page background color | implemented | v0.2.0-dev.8: per-page canvas color, opacity, visibility, theme reset, inherited new pages, undo and portable saves; artwork/prototype exports stay separate. Bridge single-solid page background mock transfer tested, actual Figma desktop acceptance pending. Theme fallback differs from reference creation-time defaults. docs/CANVAS-BACKGROUND.md. |
 | UI-05-011 | Page thumbnail | planned | reference-verification-pending |
 | UI-05-012 | Page comments | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-05-013 | Search page names | planned | reference-verification-pending |
 | UI-05-014 | Page context menu | planned | reference-verification-pending |
 | UI-05-015 | Copy page link | planned | reference-verification-pending |
 | UI-05-016 | Move layers between pages | planned | reference-verification-pending |
-| UI-05-017 | Paste layers on another page | planned | reference-verification-pending |
+| UI-05-017 | Paste layers on another page | implemented | v0.2.0-dev.8: native same-session Copy → Add page → Paste retains main/style/variable links only with an exact local copy receipt and history identity; actual UI/save/undo regression. Foreign/restarted windows get independent validated definitions. docs/NATIVE-CLIPBOARD.md. |
 | UI-05-018 | Page-level export | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-05-019 | Page loading on demand | planned | reference-verification-pending |
 | UI-05-020 | Page section organization | planned | reference-verification-pending |
@@ -2063,7 +2064,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-54-008 | Named local snapshots | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-54-009 | No-account editing workflow | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-54-010 | Design health report | planned | reference-verification-pending |
-| UI-54-011 | Accessibility contrast audit | planned | reference-verification-pending |
+| UI-54-011 | Accessibility contrast audit | partial | v0.2.0-dev.8: reachable explicit WCAG color-pair calculator, alpha compositing, unrounded AA/AAA thresholds and selected solid-paint extraction. No automatic canvas/document audit, background sampling or complex paint/effect/rich-text analysis. docs/CONTRAST.md. |
 | UI-54-012 | Missing font audit | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Family audit includes character-range font families. |
 | UI-54-013 | Unused style audit | planned | reference-verification-pending |
 | UI-54-014 | Detached instance audit | planned | reference-verification-pending |

@@ -70,3 +70,9 @@ Command-K searches actions and tools. Use category filters, arrows/Home/End and 
 ## Grid, local library and Mac windows
 
 See [responsive grid tracks and cells](GRID-LAYOUT.md), [local file organization](LOCAL-FILES.md), and [Mac document windows](MAC-WINDOWS.md) for the new workflows, save/close safeguards and practical limits.
+
+## Canvas backgrounds and color contrast
+
+Deselect all layers to edit **Page → Canvas color**, hex, opacity and visibility. New pages inherit the current background. **Use theme background** clears its override. Changes support Undo and portable saves, and do not recolor exported artwork. See [page backgrounds](CANVAS-BACKGROUND.md) for compositing and interchange limits.
+
+Expand **Color contrast checker** near the inspector's bottom to check foreground/background colors and foreground opacity. Results include AA/AAA thresholds for normal and large text. **Use selected paint** copies one visible solid paint into the calculator without changing the design. This checks an explicit color pair; automatic document/background analysis remains unfinished. See [contrast checking](CONTRAST.md).

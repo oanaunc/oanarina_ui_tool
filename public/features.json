@@ -397,7 +397,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "v0.2.0-dev.8: native focused text fields retain macOS editing; explicit external plain-text canvas paste creates an editable layer up to 100,000 characters. Rich cross-app text semantics and complete reference behavior remain partial. docs/NATIVE-CLIPBOARD.md."
   },
   {
     "id": "UI-02-011",
@@ -414,10 +414,10 @@
     "category": "Mac system integration",
     "name": "Clipboard SVG markup",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.8: native public.svg-image outgoing representation and explicit incoming design-canvas SVG import review. SVG received only as ordinary text remains text; slide/container SVG paste is refused. Unsupported SVG semantics have reviewed reductions. No private Figma editable clipboard. docs/NATIVE-CLIPBOARD.md."
   },
   {
     "id": "UI-02-013",
@@ -598,6 +598,16 @@
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
     "notes": ""
+  },
+  {
+    "id": "UI-02-031",
+    "category": "Mac system integration",
+    "name": "Editable design clipboard between Mac windows",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "v0.2.0-dev.8: explicit native Copy/Cut/Paste transfers validated editable Forma layers between document windows with remapped definitions, used embeddable fonts, source context, one-step Undo and portable saving. Native two-WKWebView/private-pasteboard acceptance passed. 20 MB/20k-layer limits, referenced-main Cut refusal and supported closure limits: docs/NATIVE-CLIPBOARD.md. No private Figma clipboard claim."
   },
   {
     "id": "UI-03-001",
@@ -1294,10 +1304,10 @@
     "category": "Pages and document structure",
     "name": "Page background color",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; documentation-checked; in-app-reference-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.8: per-page canvas color, opacity, visibility, theme reset, inherited new pages, undo and portable saves; artwork/prototype exports stay separate. Bridge single-solid page background mock transfer tested, actual Figma desktop acceptance pending. Theme fallback differs from reference creation-time defaults. docs/CANVAS-BACKGROUND.md."
   },
   {
     "id": "UI-05-011",
@@ -1364,10 +1374,10 @@
     "category": "Pages and document structure",
     "name": "Paste layers on another page",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.8: native same-session Copy → Add page → Paste retains main/style/variable links only with an exact local copy receipt and history identity; actual UI/save/undo regression. Foreign/restarted windows get independent validated definitions. docs/NATIVE-CLIPBOARD.md."
   },
   {
     "id": "UI-05-018",
@@ -17864,10 +17874,10 @@
     "category": "Oanarina improvements after parity",
     "name": "Accessibility contrast audit",
     "priority": "after-parity",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": null,
-    "notes": ""
+    "notes": "v0.2.0-dev.8: reachable explicit WCAG color-pair calculator, alpha compositing, unrounded AA/AAA thresholds and selected solid-paint extraction. No automatic canvas/document audit, background sampling or complex paint/effect/rich-text analysis. docs/CONTRAST.md."
   },
   {
     "id": "UI-54-012",

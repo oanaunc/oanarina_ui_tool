@@ -1,10 +1,10 @@
 # Forma by Oanarina
 
-A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Forma includes a vector canvas, pages, layers, editable typography, responsive layout, local components and variables, prototypes, whiteboards, slides, animation, saved project files and local automation. It is free and open source.
+A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Forma includes a vector canvas, pages, layers, editable typography, responsive layout, local components and variables, prototypes, whiteboards, slides, animation, saved project files and local automation. It is free, and the application code is MIT licensed.
 
-**Current source: 0.2.0-dev.7; notarized Mac preview: 0.2.0-dev.7. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,021 requirements** across 60 categories: 1,991 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
+**Current source: 0.2.0-dev.8; notarized Mac preview: 0.2.0-dev.8. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
 
-The development source adds live booleans, cubic curve editing, richer text layout, paint/stroke/effect stacks, responsive auto layout, live component instances, variants, local variables/styles, IndexedDB recovery and an editable animation timeline. The register currently records **1,042 implemented, 162 partial and 817 planned** requirements. See the [development validation report](docs/VALIDATION-v0.2-component-bridge.md) for evidence and limitations.
+The development source adds live booleans, cubic curve editing, richer text layout, paint/stroke/effect stacks, responsive auto layout, live component instances, variants, local variables/styles, IndexedDB recovery and an editable animation timeline. The register currently records **1,045 implemented, 164 partial and 813 planned** requirements. See the [development validation report](docs/VALIDATION-v0.2-native-clipboard.md) for evidence and limitations.
 
 ## Run
 
@@ -40,6 +40,8 @@ The development editor also includes [alpha/vector/luminance masks](docs/MASKS.m
 [Preferences](docs/PREFERENCES.md) persist drawing defaults and navigation settings. [Layer organization](docs/LAYER-TREE.md) supports drag/reparent, filtering and previewed batch renaming. The current source adds parent-axis alignment, continuous rotation handles, per-layer aspect locks, Option center resizing, and a [keyboard action palette](docs/ACTIONS.md) with tools, categories and recent commands.
 
 The current development build also adds [responsive grid tracks and spans](docs/GRID-LAYOUT.md), [local file folders, archive and Trash](docs/LOCAL-FILES.md), and [independent Mac document windows](docs/MAC-WINDOWS.md) with guarded save/close and recovery.
+
+The native app now has [editable Copy/Cut/Paste between Mac windows](docs/NATIVE-CLIPBOARD.md), including validated component/style/variable/font dependencies, source context and one-step Undo. Referenced-main Cut is refused before writing; other transfer limits remain explicit. Deselect layers for [saved page canvas backgrounds](docs/CANVAS-BACKGROUND.md), or expand the inspector’s [color contrast checker](docs/CONTRAST.md) for an explicit color-pair AA/AAA check. This is not an automatic accessibility audit.
 
 ## Files and implementation
 

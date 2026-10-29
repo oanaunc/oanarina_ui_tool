@@ -12,6 +12,8 @@ test('the downloadable bridge archive contains the current component transfer im
  expect(packaged).toBe(await fs.readFile('figma-plugin/code.js','utf8'));
  const guide=execFileSync('/usr/bin/unzip',['-p',path,'figma-plugin/README.md'],{encoding:'utf8'});
  expect(guide).toContain('are not real Figma component acceptance');
+ expect(guide).toContain('https://www.oanarinaldi.com/ui-tool-guide.html#canvas-backgrounds');
+ expect(guide).not.toContain('https://github.com/oanaunc/oanarina_ui_tool');
 });
 
 test('a mock-API exported instance opens through the bridge UI, survives source edits, override reset and portable saving',async({page})=>{
