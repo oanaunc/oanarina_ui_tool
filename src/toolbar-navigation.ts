@@ -1,0 +1,2 @@
+/** Roving focus never activates a tool and accepts only unmodified navigation keys. */
+export function toolbarFocusIndex(key:string,index:number,count:number,axis:'horizontal'|'vertical'){if(!Number.isInteger(index)||index<0||!Number.isInteger(count)||count<1||index>=count)return null;if(key==='Home')return 0;if(key==='End')return count-1;const before=axis==='horizontal'?'ArrowLeft':'ArrowUp',after=axis==='horizontal'?'ArrowRight':'ArrowDown';return key===before?(index+count-1)%count:key===after?(index+1)%count:null;}
