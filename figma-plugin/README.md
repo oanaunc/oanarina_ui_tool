@@ -46,3 +46,12 @@ Auto-layout painting order, stroke participation, wrap line direction/alignment 
 Grid track definitions (up to 4096 per axis), row minimums, cell assignments, spans and alignment receive per-field validation before editable import creates pages. Native grid metadata is explicitly omitted: transferred children retain saved positions in a free-positioned container. Reordering in Forma is retained in `.oui` and its SVG/raster geometry, but editable Bridge import does not retain native grid editing semantics. Source API-mock checks are not a real desktop round trip; existing download archives require a later build to receive this change.
 
 Forma embedded MP4/WebM video layers transfer as their saved raster poster only. Video source bytes, playback, loop/audio/start-time and prototype autoplay settings are omitted with a report. Video metadata and bounded embedded source/poster fields are validated before page creation; this is source/API-contract validation, not a real desktop codec or Figma video round trip.
+
+Local component-library snapshots are Forma-only files. The Bridge validates
+optional publication/dependency metadata, then reports its omission. Cached
+editable component definitions transfer as local Figma components; local library
+identity, update ownership, version history and review state do not transfer.
+Style and variable definition/link transfer remains subject to the existing
+Bridge materialization limitation. This source behavior is covered by API mocks;
+it is not evidence of a real Figma desktop plugin round trip. Download archives
+remain unchanged under the source-only build freeze.

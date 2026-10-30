@@ -30,7 +30,7 @@ function hasSplitMindMap(doc:DesignDocument,ids:Set<string>){const board=doc.whi
 
 /** Pure, validated page copy. Internal layer references follow the copy; external
  * references and shared library identities stay within the original document. */
-export function duplicateDocumentPage(input:DesignDocument,pageId:string):{document:DesignDocument;pageId:string}{
+export function duplicateDocumentPage(input:DesignDocument,pageId:string): {document:DesignDocument;pageId:string;notice?:string}{
  const doc=sourceDraft(input),source=findPage(doc,pageId);
  if(doc.pages.length>=1000)throw Error('A project can contain up to 1,000 pages.');
  if(doc.slides?.pageId===pageId)throw Error('A presentation deck page cannot be duplicated here. Duplicate individual slides in the presentation workspace.');
@@ -66,7 +66,8 @@ export function duplicateDocumentPage(input:DesignDocument,pageId:string):{docum
  doc.pages.splice(doc.pages.indexOf(source)+1,0,page);
  const sets=remapCopiedComponentSets(doc.componentSets??[],map);if(sets.length)(doc.componentSets??=[]).push(...sets);
  const records=copyWhiteboardSelection(doc,source.id,source.nodes.map(n=>n.id)).records;pasteWhiteboardSelection(doc,page.id,records,map);
- return {document:validated(doc),pageId:page.id};
+ const copiedLibraryDefinition=input.componentLibraries?.some(l=>Object.values(l.maps.node).some(id=>ids.has(id)));
+ return {document:validated(doc),pageId:page.id,...(copiedLibraryDefinition?{notice:'Library definitions on the copied page are local copies. Publication and update ownership remain with the original definitions.'}:{})};
 }
 
 /** Destination index is the page's final zero-based position. */

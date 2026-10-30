@@ -191,7 +191,104 @@ function validateBridgeStrokeDefinitions(d){
 function validateResponsiveGuideBindings(value){if(value===undefined)return;if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!['x','y'].includes(k)))throw Error('Invalid responsive layout guide bindings.');for(const b of Object.values(value))if(!b||typeof b!=='object'||Array.isArray(b)||Object.keys(b).some(k=>!['ownerId','guideId','start','span'].includes(k))||['ownerId','guideId'].some(k=>typeof b[k]!=='string'||!b[k]||b[k].length>1000)||!Number.isInteger(b.start)||!Number.isInteger(b.span)||b.start<1||b.span<1||b.start+b.span-1>1000)throw Error('Invalid responsive layout guide binding.');}
 function validateBridgeRotationOrigin(value){if(value===undefined)return;if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!['x','y'].includes(k))||!['x','y'].every(k=>typeof value[k]==='number'&&Number.isFinite(value[k])&&Math.abs(value[k])<=10))throw Error('Invalid custom rotation origin.');}
 function validateBridgeCornerSmoothing(n){if(n.cornerSmoothing!==undefined&&(!Number.isFinite(n.cornerSmoothing)||n.cornerSmoothing<0||n.cornerSmoothing>1||!['rectangle','frame','component','instance','image','section'].includes(n.type)||n.booleanOp))throw Error('Invalid or unsupported box corner smoothing.');}
+// Local snapshot provenance is validated before being explicitly omitted.
+const LIBRARY_LIMITS = { bytes: 20000000, nodes: 20000, assets: 512, libraries: 8, history: 50, maps: 30000, baseline: 12000000, sourceNodes: 100000, depth: 128 };
+const controls = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/;
+function libraryText(value, max, label) { if (typeof value !== 'string' || value.length > max || controls.test(value))
+    throw Error('Invalid library ' + label + '.'); }
+function libraryId(value) { libraryText(value, 512, 'identifier'); if (!value.trim())
+    throw Error('Missing library identifier.'); }
+function validateLibraryVersion(v) { if (!v || typeof v !== 'object' || Array.isArray(v))
+    throw Error('Invalid library version.'); const a = v; libraryId(a.snapshotId); libraryText(a.name, 200, 'name'); libraryText(a.description, 4000, 'description'); libraryText(a.publishedAt, 64, 'publication date'); if (!Number.isSafeInteger(a.version) || a.version < 1 || a.version > 1e9 || typeof a.publishedAt !== 'string' || !Number.isFinite(Date.parse(a.publishedAt)))
+    throw Error('Invalid library version details.'); }
+function versions(value) { if (!Array.isArray(value) || value.length > 50)
+    throw Error('Library history supports at most 50 entries.'); const seen = new Set(); for (const v of value) {
+    validateLibraryVersion(v);
+    if (seen.has(v.snapshotId))
+        throw Error('Duplicate library history entry.');
+    seen.add(v.snapshotId);
+} }
+function validateLibraryMetadata(d) {
+    if (d.libraryPublication !== undefined) {
+        const p = d.libraryPublication;
+        if (!p || typeof p !== 'object' || Array.isArray(p))
+            throw Error('Invalid library publication.');
+        libraryId(p.id);
+        versions(p.history);
+    }
+    if (d.componentLibraries === undefined)
+        return;
+    if (!Array.isArray(d.componentLibraries) || d.componentLibraries.length > 8)
+        throw Error('A file supports up to eight local library dependencies.');
+    let bytes = 0, maps = 0;
+    const ids = new Set(), owned = new Map();
+    for (const l of d.componentLibraries) {
+        if (!l || typeof l !== 'object' || Array.isArray(l))
+            throw Error('Invalid local library dependency.');
+        for (const id of [l.id, l.sourceDocumentId, l.pageId])
+            libraryId(id);
+        if (ids.has(l.id))
+            throw Error('Duplicate local library dependency.');
+        ids.add(l.id);
+        libraryText(l.name, 200, 'name');
+        if (typeof l.enabled !== 'boolean' || !Array.isArray(l.ignored) || l.ignored.length > 50 || new Set(l.ignored).size !== l.ignored.length)
+            throw Error('Invalid library availability.');
+        l.ignored.forEach(libraryId);
+        versions(l.history);
+        if (!Array.isArray(l.assets) || l.assets.length > 512)
+            throw Error('A local library supports up to 512 asset groups.');
+        const keys = new Set();
+        for (const a of l.assets) {
+            libraryId(a.key);
+            libraryId(a.sourceId);
+            libraryText(a.name, 1000, 'asset name');
+            if (keys.has(a.key) || !['component', 'set', 'style', 'collection', 'guide'].includes(a.kind) || a.missing !== undefined && typeof a.missing !== 'boolean')
+                throw Error('Invalid installed library asset.');
+            keys.add(a.key);
+            validateLibraryVersion(a.version);
+            if (typeof a.sourceFingerprint !== 'string' || !/^[a-f0-9]{64}$/.test(a.sourceFingerprint))
+                throw Error('Invalid library asset fingerprint.');
+            if (typeof a.baseline !== 'string' || (bytes += a.baseline.length) > LIBRARY_LIMITS.baseline)
+                throw Error('Local library edit baselines exceed the 12 MB limit.');
+            let baseline;
+            try {
+                baseline = JSON.parse(a.baseline);
+            }
+            catch {
+                throw Error('Invalid library edit baseline JSON.');
+            }
+            if (baseline !== null) {
+                if (!baseline || typeof baseline !== 'object' || Array.isArray(baseline))
+                    throw Error('Invalid library edit baseline shape.');
+                if (['component', 'set'].includes(a.kind)) {
+                    const b = baseline;
+                    libraryId(b.pageId);
+                    if (!Array.isArray(b.nodes) || b.nodes.length > 20000 || !Array.isArray(b.sets) || b.sets.length > 1000 || b.nodes.some(n => !n || typeof n !== 'object' || Array.isArray(n) || typeof n.id !== 'string' || !Number.isFinite(n.x) || !Number.isFinite(n.y)))
+                        throw Error('Invalid library component baseline.');
+                }
+            }
+        }
+        if (!l.maps || typeof l.maps !== 'object' || Array.isArray(l.maps))
+            throw Error('Invalid library reference maps.');
+        for (const kind of ['node', 'set', 'style', 'collection', 'variable', 'mode', 'guide', 'property']) {
+            const map = l.maps[kind];
+            if (!map || typeof map !== 'object' || Array.isArray(map))
+                throw Error('Invalid library reference map.');
+            const used = owned.get(kind) ?? new Set();
+            for (const [source, target] of Object.entries(map)) {
+                libraryId(source);
+                libraryId(target);
+                if (++maps > 30000 || used.has(target))
+                    throw Error('Library maps exceed their limit or claim the same local asset twice.');
+                used.add(target);
+            }
+            owned.set(kind, used);
+        }
+    }
+}
+
 function validate(d){
+ validateLibraryMetadata(d);
  if(!d||d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||d.pages.length>1000)throw Error('Choose an Oanarina .oui project.');
  validateBridgeStrokeDefinitions(d);
  if(d.pages.reduce((count,p)=>count+(Array.isArray(p?.nodes)?p.nodes.length:0),0)>20000)throw Error('Transfer is limited to 20,000 total layers.');
@@ -346,7 +443,7 @@ function bridgeLayoutMetadata(d,report){const omitted=new Set();for(const page o
  if(n.wrapDirection!==undefined){if(!['forward','reverse'].includes(n.wrapDirection))throw Error('Invalid wrap line direction.');omitted.add('Wrap line direction preferences');}
  if(n.wrapAlign!==undefined){if(!['start','center','end','stretch','space-between','space-around','space-evenly'].includes(n.wrapAlign))throw Error('Invalid wrap line alignment.');omitted.add('Wrap line alignment preferences');}
  }for(const label of omitted)report.push(label+' are retained in the Forma file and omitted from editable Figma transfer; native Figma auto layout may arrange transferred children differently.');}
-async function importDocument(d){validate(d);const index=bridgeComponentsIndex(d),report=[],created=[],originalPage=figma.currentPage;bridgeComponentWorkflowMetadata(d,report);bridgeLayoutMetadata(d,report);if(d.variables?.length||d.styles?.length)report.push('Variables and style links are materialized as literal values; editable definitions are not transferred.');if(d.pages.some(p=>p.motion?.tracks?.length))report.push('Motion timelines are not transferred; import uses the saved base artwork.');const fonts=await figma.listAvailableFontsAsync();
+async function importDocument(d){validate(d);const index=bridgeComponentsIndex(d),report=[],created=[],originalPage=figma.currentPage;bridgeComponentWorkflowMetadata(d,report);if(d.libraryPublication||d.componentLibraries?.length)report.push('Local library publication, cached snapshot provenance and update-review state are omitted; editable cached components transfer as local Figma definitions. Style and variable links follow the separate Bridge limitation.');bridgeLayoutMetadata(d,report);if(d.variables?.length||d.styles?.length)report.push('Variables and style links are materialized as literal values; editable definitions are not transferred.');if(d.pages.some(p=>p.motion?.tracks?.length))report.push('Motion timelines are not transferred; import uses the saved base artwork.');const fonts=await figma.listAvailableFontsAsync();
  // Validate before mutation. On failure, remove every newly created page to avoid half-imported files.
  try{const map=new Map(),source=index.nodes,parentIds=new Set([...source.values()].map(n=>n.parentId)),pageMap=new Map(),linkedNodeIds=new Set(),linkedRoots=[];
  for(const p of d.pages){const page=figma.createPage();page.name=p.name;created.push(page);if(p.background)page.backgrounds=[{...paint(p.background.color),opacity:p.background.opacity,visible:p.background.visible}];await figma.setCurrentPageAsync(page);pageMap.set(p.id,page);}

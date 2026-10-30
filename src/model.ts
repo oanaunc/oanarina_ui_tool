@@ -1,3 +1,4 @@
+import type {ComponentLibrary,LibraryPublication} from './local-library-metadata';
 import {validateDocumentSurfaces} from './surface-paint';
 import {validateStrokeStack} from './paints';
 import type {ArrowheadStyle} from './arrowheads';
@@ -57,7 +58,7 @@ export interface DesignNode {rotationOrigin?:{x:number;y:number};cornerSmoothing
 }
 export interface Comment {id:string; x:number;y:number; text:string; resolved:boolean;}
 export interface Page {background?:{color:string;opacity:number;visible:boolean};id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;flows?:PrototypeFlow[];prototypeSettings?:PrototypeSettings;guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
-export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides';whiteboard?:WhiteboardData;slides?:SlideDeck;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
+export interface DesignDocument {libraryPublication?:LibraryPublication;componentLibraries?:ComponentLibrary[];format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides';whiteboard?:WhiteboardData;slides?:SlideDeck;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
 export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
