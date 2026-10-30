@@ -1,6 +1,7 @@
 import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
 import {validateDocumentAnnotations} from './layer-annotations';
+import {validateDocumentStrokeScaling} from './stroke-scaling';
 import {validateDocumentDevelopmentStatuses} from './development-status';
 import {validateLibraryMetadata} from './local-library-metadata';
 import {validateDocumentCover} from './document-cover';
@@ -25,6 +26,7 @@ export function validateDocumentMetadata(document:{fileCover?:unknown;descriptio
  validateDocumentCommentThreads(document);
  validateLibraryMetadata(document);
  validateDocumentAnnotations(document);
+ validateDocumentStrokeScaling(document);
  validateDocumentDevelopmentStatuses(document);
  validateDocumentCover(document);
  validateDocumentDeveloperResources(document);
