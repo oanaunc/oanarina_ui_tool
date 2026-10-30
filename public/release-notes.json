@@ -5,13 +5,17 @@
     {
       "version": "0.2.0-dev.9",
       "channel": "development",
-      "title": "Pages, image clipboard and remembered views",
+      "title": "Pages, local layouts and image clipboard",
       "notes": [
         "Duplicate, reorder and search pages with contextual and keyboard actions; shared component links stay intact and unsafe deletion is refused.",
         "Remember each Design/Whiteboard page's pan and zoom locally, and preview its static artwork on hover or keyboard focus.",
         "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. The new Copy as PNG source creates a transparent 2× selection snapshot.",
         "Follow system light/dark appearance, or retain an explicit interface theme.",
-        "Saved-file MCP adds atomic page duplication and reordering. Browser startup waits for recovery before editing or autosave."
+        "Saved-file MCP adds atomic page duplication and reordering. Browser startup waits for recovery before editing or autosave.",
+        "Move supported complete layer trees between pages with stable identities and live component links; unsafe contextual cases are refused.",
+        "Add a plain-text project description through File information, with Undo and saved-file MCP metadata reads.",
+        "Collapse and resize layers/properties sidebars with pointer or keyboard controls; local layout stays outside project files.",
+        "Browse bundled release notes from Help, with development/preview labels and public download checksums."
       ],
       "limits": [
         "This is development source. The next Mac installer is pending final native window acceptance, signing and notarization.",

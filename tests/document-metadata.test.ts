@@ -23,4 +23,9 @@ describe('optional portable document description',()=>{
  it('creates one editor Undo edit and empty/no-op submissions preserve timestamp/history',()=>{
   const s=()=>useEditor.getState();s().load(blankDocument());const before=s().doc,original={id:before.id,description:before.description};s().edit(d=>{applyDocumentDescription(d,'About this file',original);});expect(s().doc.description).toBe('About this file');expect(s().past).toHaveLength(1);const saved=s().doc;s().edit(d=>{applyDocumentDescription(d,'About this file');});expect(s().doc).toBe(saved);expect(s().past).toHaveLength(1);s().undo();expect(s().doc).toBe(before);s().redo();expect(s().doc.description).toBe('About this file');s().edit(d=>{applyDocumentDescription(d,'');});expect(s().doc).not.toHaveProperty('description');s().undo();expect(s().doc.description).toBe('About this file');
  });
+ it('rejects invalid descriptions from arbitrary editor drafts before history or timestamp commit',()=>{
+  const s=()=>useEditor.getState();s().load(blankDocument());const before=s().doc,past=s().past,future=s().future;
+  for(const value of [null,42,'x'.repeat(10001),'bad\u0085text']){expect(()=>s().edit(d=>{(d as any).description=value;})).toThrow(/description/);expect(s().doc).toBe(before);expect(s().past).toBe(past);expect(s().future).toBe(future);}
+  s().edit(d=>{d.description='A valid editor draft';});expect(s().past).toHaveLength(1);s().undo();expect(s().doc).toBe(before);
+ });
 });

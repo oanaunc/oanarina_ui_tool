@@ -92,3 +92,14 @@ In the native Mac app, Command–V can paste PNG or TIFF image data from another
 The development source also adds **Edit → Copy as PNG**, **Shift Command C**, for a transparent 2× snapshot of selected artwork. It uses the same pixel limits and does not add an Undo entry. Browser use points to file export. Browser/Windows system image clipboard remains unfinished; the new Mac PNG-copy path still requires final native window acceptance before release. See [Copy as PNG scope](COPY-AS-PNG.md).
 
 Saved-file MCP adds `duplicate_page` and `reorder_page` inside `apply_operations`. Reorder uses the final zero-based page position; duplicate returns its new page ID. Both share the editor's page-reference guards. Read the latest revision before writing, then reopen the saved file in Forma. See [MCP examples and limits](../mcp/README.md#page-operations).
+
+
+## File details, sidebar layout and moving artwork
+
+Open **File → File information…** to view the current project's actual facts and edit a plain-text description. Save description commits one Undo step; Cancel discards the draft. Clear then Save removes it. Description text stays in .oui saves and local recovery; the Figma Bridge does not transfer it. See [file information](FILE-INFORMATION.md).
+
+Use the sidebars' Hide/Show buttons or View actions to collapse/restore them. Drag the separators, or focus one and use arrows (Shift for larger steps), Home and End. Escape cancels an unfinished pointer resize. Desired widths are remembered locally and temporarily clamped when the window shrinks; Reset sidebar layout restores responsive defaults. The compact properties overlay keeps its existing top-bar control. See [sidebar layout](SIDEBAR-LAYOUT.md).
+
+Select supported artwork, then choose **Object → Move to page…**, the layer context action, or Actions. Search/select a different page and confirm the move. The original layer identities and supported live links move together, with one document Undo. Unsafe split connections, unsupported inherited context and presentation deck pages are refused with instructions. Canvas guides, comments and page settings stay on the source page. Read [move limits](MOVE-LAYERS.md) before moving complex components or animation.
+
+**Help → Release notes** shows the version's bundled history, development/preview labels and verified-preview download information. A development source entry has no installer link. This history is a snapshot; it does not silently update the app. See [release history](RELEASE-NOTES.md).

@@ -4,7 +4,7 @@ A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Fo
 
 **Current source: 0.2.0-dev.9; released notarized Mac preview: 0.2.0-dev.8. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
 
-The development source adds live booleans, cubic curve editing, richer text layout, paint/stroke/effect stacks, responsive auto layout, live component instances, variants, local variables/styles, IndexedDB recovery and an editable animation timeline. The register currently records **1,055 implemented, 167 partial and 800 planned** requirements. See the [development validation report](docs/VALIDATION-v0.2-pages-raster.md) for evidence and limitations.
+The development source adds live booleans, cubic curve editing, richer text layout, paint/stroke/effect stacks, responsive auto layout, live component instances, variants, local variables/styles, IndexedDB recovery and an editable animation timeline. The register currently records **1,059 implemented, 168 partial and 795 planned** requirements. See the [development validation report](docs/VALIDATION-v0.2-pages-raster.md) for evidence and limitations.
 
 ## Run
 
@@ -42,6 +42,8 @@ The development editor also includes [alpha/vector/luminance masks](docs/MASKS.m
 The current development build also adds [responsive grid tracks and spans](docs/GRID-LAYOUT.md), [local file folders, archive and Trash](docs/LOCAL-FILES.md), and [independent Mac document windows](docs/MAC-WINDOWS.md) with guarded save/close and recovery.
 
 The development source adds [page duplication, ordering, name filtering and keyboard actions](docs/PAGES.md), with guarded deletion and typed reference remapping, [remembered page views](docs/PAGE-VIEWPORTS.md) and [on-demand artwork previews](docs/PAGE-THUMBNAILS.md). Preferences includes [Follow system appearance](docs/PREFERENCES.md#appearance). Native [PNG/TIFF paste](docs/RASTER-CLIPBOARD.md) inserts embedded image layers, including inside an active slide, with size checks, Undo and save. The source also adds native [Copy as PNG](docs/COPY-AS-PNG.md), pending final Mac window acceptance. The free local MCP server also supports the same guarded page duplication, reordering and deletion in atomic saved-file batches.
+
+The current source also adds [guarded moves between pages](docs/MOVE-LAYERS.md), [file descriptions and information](docs/FILE-INFORMATION.md), [collapsible/resizable sidebars](docs/SIDEBAR-LAYOUT.md) and [bundled release notes](docs/RELEASE-NOTES.md). Supported moves preserve identity and live links; unsupported contextual cases are refused before editing.
 
 The native app now has [editable Copy/Cut/Paste between Mac windows](docs/NATIVE-CLIPBOARD.md), including validated component/style/variable/font dependencies, source context and one-step Undo. Referenced-main Cut is refused before writing; other transfer limits remain explicit. Deselect layers for [saved page canvas backgrounds](docs/CANVAS-BACKGROUND.md), or expand the inspector’s [color contrast checker](docs/CONTRAST.md) for an explicit color-pair AA/AAA check. This is not an automatic accessibility audit.
 

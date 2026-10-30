@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1055,"partial":167,"planned":800}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
+Status: {"implemented":1059,"partial":168,"planned":795}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -129,8 +129,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-04-009 | Toolbar tool groups | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-04-010 | Tool dropdown menus | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-04-011 | Tooltips with shortcuts | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-04-012 | Sidebar collapse | planned | reference-verification-pending |
-| UI-04-013 | Sidebar resize | planned | reference-verification-pending |
+| UI-04-012 | Sidebar collapse | implemented | v0.2.0-dev.9: Design/Whiteboard layers/properties sidebars collapse to reachable restore rails. View/Actions toggles and reset share fixed local actions; mobile uses the existing properties overlay. UI hide, Home/Slides, focus and saved-project boundaries have browser coverage. docs/SIDEBAR-LAYOUT.md. |
+| UI-04-013 | Sidebar resize | implemented | v0.2.0-dev.9: Pointer and accessible separator keyboard resizing, bounded local desired widths, viewport clamping and responsive reset. Escape/pointercancel/blur/context changes cancel previews without a write; narrow-window active edge remains stable. Layout stays outside document/history/camera; blocked storage is explicit. docs/SIDEBAR-LAYOUT.md. |
 | UI-04-014 | Hide all editor UI | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-04-015 | Design mode tab | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-04-016 | Prototype mode tab | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -168,7 +168,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-05-013 | Search page names | implemented | v0.2.0-dev.9: Accessible case-insensitive page-name filtering with clear/no-results controls; visible-match keyboard navigation and canonical drag/menu ordering preserve hidden pages. Filtering does not mutate document/history; rename-away focus and document-change reset have actual browser coverage. docs/PAGES.md. |
 | UI-05-014 | Page context menu | implemented | v0.2.0-dev.9: Right-click, visible Page actions control or Shift-F10 opens rename/duplicate/reorder/delete actions. Focus restoration, inline refusal, keyboard handling and modal boundaries have actual browser coverage. docs/PAGES.md. |
 | UI-05-015 | Copy page link | planned | reference-verification-pending |
-| UI-05-016 | Move layers between pages | planned | reference-verification-pending |
+| UI-05-016 | Move layers between pages | partial | v0.2.0-dev.9: Object/Actions/layer-context Move to page transfers supported complete layer trees with stable IDs, world geometry, live component inheritance and owned flows/compatible motion. Validated after derivation before one Undo/save. Unsafe inherited appearance, split graph/prototype/mask, transform, timeline and deck cases refuse atomically; canvas guides/comments/page settings stay source. docs/MOVE-LAYERS.md. |
 | UI-05-017 | Paste layers on another page | implemented | v0.2.0-dev.8: native same-session Copy → Add page → Paste retains main/style/variable links only with an exact local copy receipt and history identity; actual UI/save/undo regression. Foreign/restarted windows get independent validated definitions. docs/NATIVE-CLIPBOARD.md. |
 | UI-05-018 | Page-level export | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-05-019 | Page loading on demand | planned | reference-verification-pending |
@@ -179,7 +179,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-05-024 | Document color profile | planned | reference-verification-pending |
 | UI-05-025 | sRGB document profile | planned | reference-verification-pending |
 | UI-05-026 | Display P3 document profile | planned | reference-verification-pending |
-| UI-05-027 | File description | planned | reference-verification-pending |
+| UI-05-027 | File description | implemented | v0.2.0-dev.9: File information edits an optional 10,000-unit plain-text .oui description through explicit Save/Cancel/Clear, one Undo and stale guards. Legacy/CRLF/no-op, actual saved open/recovery/snapshot restore and MCP metadata/redaction have coverage; global editor drafts validate before commit. Description is not mapped through Figma Bridge. docs/FILE-INFORMATION.md. |
 | UI-05-028 | File cover selection | planned | reference-verification-pending |
 | UI-05-029 | File-level library metadata | planned | reference-verification-pending |
 | UI-05-030 | File naming from title | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -1841,7 +1841,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-47-026 | First-run canvas tour | planned | reference-verification-pending |
 | UI-47-027 | Tool contextual help | planned | reference-verification-pending |
 | UI-47-028 | Help center links | planned | reference-verification-pending |
-| UI-47-029 | Release notes panel | planned | reference-verification-pending |
+| UI-47-029 | Release notes panel | implemented | v0.2.0-dev.9: Help/Actions opens bounded bundled release history, app-version marker, source/preview distinction, scope notes and validated public preview download/checksum. Development entries have no installer link; error/Retry/focus and unchanged selection/tool/project/history tested. Snapshot history, not live update discovery/native updater. docs/RELEASE-NOTES.md. |
 | UI-47-030 | Feedback submission | planned | reference-verification-pending |
 
 ## FigJam whiteboarding

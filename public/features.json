@@ -1024,20 +1024,20 @@
     "category": "Navigation and editor shell",
     "name": "Sidebar collapse",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.9: Design/Whiteboard layers/properties sidebars collapse to reachable restore rails. View/Actions toggles and reset share fixed local actions; mobile uses the existing properties overlay. UI hide, Home/Slides, focus and saved-project boundaries have browser coverage. docs/SIDEBAR-LAYOUT.md."
   },
   {
     "id": "UI-04-013",
     "category": "Navigation and editor shell",
     "name": "Sidebar resize",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.9: Pointer and accessible separator keyboard resizing, bounded local desired widths, viewport clamping and responsive reset. Escape/pointercancel/blur/context changes cancel previews without a write; narrow-window active edge remains stable. Layout stays outside document/history/camera; blocked storage is explicit. docs/SIDEBAR-LAYOUT.md."
   },
   {
     "id": "UI-04-014",
@@ -1364,10 +1364,10 @@
     "category": "Pages and document structure",
     "name": "Move layers between pages",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.9: Object/Actions/layer-context Move to page transfers supported complete layer trees with stable IDs, world geometry, live component inheritance and owned flows/compatible motion. Validated after derivation before one Undo/save. Unsafe inherited appearance, split graph/prototype/mask, transform, timeline and deck cases refuse atomically; canvas guides/comments/page settings stay source. docs/MOVE-LAYERS.md."
   },
   {
     "id": "UI-05-017",
@@ -1474,10 +1474,10 @@
     "category": "Pages and document structure",
     "name": "File description",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "v0.2.0-dev.9: File information edits an optional 10,000-unit plain-text .oui description through explicit Save/Cancel/Clear, one Undo and stale guards. Legacy/CRLF/no-op, actual saved open/recovery/snapshot restore and MCP metadata/redaction have coverage; global editor drafts validate before commit. Description is not mapped through Figma Bridge. docs/FILE-INFORMATION.md."
   },
   {
     "id": "UI-05-028",
@@ -15994,10 +15994,10 @@
     "category": "Community and resources",
     "name": "Release notes panel",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "v0.2.0-dev.9: Help/Actions opens bounded bundled release history, app-version marker, source/preview distinction, scope notes and validated public preview download/checksum. Development entries have no installer link; error/Retry/focus and unchanged selection/tool/project/history tested. Snapshot history, not live update discovery/native updater. docs/RELEASE-NOTES.md."
   },
   {
     "id": "UI-47-030",

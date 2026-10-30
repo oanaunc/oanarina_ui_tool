@@ -138,6 +138,12 @@
     ""
   ],
   [
+    "file-info",
+    "File information…",
+    "File",
+    ""
+  ],
+  [
     "import",
     "Place image or SVG…",
     "File",
@@ -297,6 +303,12 @@
     "select-same-component",
     "Select all with same component",
     "Edit",
+    ""
+  ],
+  [
+    "move-to-page",
+    "Move to page…",
+    "Object",
     ""
   ],
   [
@@ -566,6 +578,24 @@
   [
     "theme",
     "Toggle light / dark theme",
+    "View",
+    ""
+  ],
+  [
+    "toggle-left-sidebar",
+    "Show / hide layers sidebar",
+    "View",
+    ""
+  ],
+  [
+    "toggle-right-sidebar",
+    "Show / hide properties sidebar",
+    "View",
+    ""
+  ],
+  [
+    "reset-sidebar-layout",
+    "Reset sidebar layout",
     "View",
     ""
   ],
@@ -952,6 +982,12 @@
     "Keyboard shortcuts",
     "Help",
     "⌃⇧?"
+  ],
+  [
+    "release-notes",
+    "Release notes",
+    "Help",
+    ""
   ],
   [
     "about",

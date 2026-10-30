@@ -1,6 +1,6 @@
 # v0.2.0-dev.9 validation — pages, raster clipboard and recovery
 
-Date: 2026-10-30. Product: Forma. Development source checkpoint; final release validation is underway. The register contains **2,022 requirements: 1,055 implemented, 167 partial and 800 planned**. This is not complete Figma parity. The machine-readable [feature register](../public/features.json) and [implementation limits](IMPLEMENTATION.md) remain authoritative.
+Date: 2026-10-30. Product: Forma. Development source checkpoint; final release validation is underway. The register contains **2,022 requirements: 1,059 implemented, 168 partial and 795 planned**. This is not complete Figma parity. The machine-readable [feature register](../public/features.json) and [implementation limits](IMPLEMENTATION.md) remain authoritative.
 
 ## Source scope
 
@@ -18,11 +18,21 @@ Saved-file MCP adds duplicate/reorder operations and shared guarded page deletio
 
 Browser startup waits for recovery before presenting editable controls, accepting keyboard edits or scheduling/flushing autosave. Controlled delayed IndexedDB tests reproduced the lost-inspector-draft and initial-sample recovery races, including forced hidden/pagehide events; regressions cover both. Storage-unavailable startup permits in-memory editing with a warning. Native ready-handshake commands become eligible after model hydration and document acknowledgment, before a potentially synchronous `desktop.ready` command callback.
 
+## Additional integrated workflows
+
+File information adds a plain multiline optional description, explicit Save/Cancel/Clear, real read-only project facts, a 10,000-unit limit and one-step Undo. Older documents remain compatible. Imported line endings and whitespace remain byte-identical until an explicit edit; restoring an older snapshot removes a newer optional description. Validation runs after derived state reconciliation and before timestamps/history change. MCP inspection and asset-omitted reads preserve a validated top-level description, including literal text beginning `data:image`; nested asset-shaped values retain the existing redaction rules. The outside-repository bundled-server test verifies the actual packaged behavior. See [file information](FILE-INFORMATION.md).
+
+The new Move to page workflow transfers supported complete layer trees while preserving IDs, world geometry, paint order and shared definitions. It validates both the cloned candidate and the actual derived store result. Independent review caught interleaved flat-array paint order and unnecessary root-instance transform overrides; regressions now verify ordering and later live component rotation/flip/scale inheritance. Unsafe partial structures, incompatible page timelines and split references are refused. This requirement remains partial. See [move scope](MOVE-LAYERS.md).
+
+Device-local sidebar controls collapse and resize both editor sidebars without changing the document, history or camera. Pointer and keyboard controls retain a minimum canvas width and responsive layouts; requested widths survive temporary viewport constraints. Review caught a narrow-viewport allocation that moved the grabbed edge backward; the allocator and pointer/keyboard regressions now cover that case. See [sidebar scope](SIDEBAR-LAYOUT.md).
+
+Help and Actions expose bounded bundled release history, with the current source marked development and the existing dev.8 installer accurately identified. It is not a native updater. Generic dialog Escape now stops propagation before closing, preserving the canvas selection/tool and discarding unsaved description drafts. An independently reproduced Actions test setup race also now waits for the hydrated canvas before sending its shortcut. See [release history](RELEASE-NOTES.md).
+
 ## Evidence and acceptance boundaries
 
 The isolated implementations passed core/build checks and independent targeted review before integration. Actual browser flows include page context/keyboard/drag operations, saved/reopened references, PNG/TIFF input, active-slide containment and decoding deliberately held across a page change. Four independently reproduced page-reference bugs were fixed and regressed: split component sets, inherited interactions, implicit swap defaults and split mind maps.
 
-The final integrated checkpoint passes **571 core tests across 54 files**, **221 production browser tests across 53 files**, **two development-module repository tests**, and **37 MCP tests plus its TypeScript check**. The standalone bundled MCP server also passes its outside-repository/no-dependency-folder test. The full universal AppKit/WKWebView build succeeds for arm64 and x86_64; strict ad-hoc signature verification and bundled archive comparisons pass. This is a development build, not a notarized dev.9 release.
+The earlier source checkpoint `a241a6b` passed **571 core tests across 54 files**, **221 production browser tests across 53 files**, **two development-module repository tests**, and **37 MCP tests plus its TypeScript check**. The additional integrated workflows pass **602 core tests across 58 files**, **two development-module repository tests** and **39 MCP tests plus its TypeScript check**; **240 production browser tests across 57 files pass** in 6.1 minutes. Independent final integration review also passes 29 targeted core checks, 25 source browser checks and five additional dialog-Escape/selection checks. The standalone bundled MCP server also passes its outside-repository/no-dependency-folder test. The full universal AppKit/WKWebView build succeeds for arm64 and x86_64; strict ad-hoc signature verification and bundled archive comparisons pass. This is a development build, not a notarized dev.9 release.
 
 A combined core run exposed unnecessary camera-map sorting/rebuilding during every update and timed out its 1,000-view eviction case. Trimming now runs only when each independent map exceeds its bound; serialization still sorts by timestamp. The full core run passes without increasing timeouts, and the final ten camera checks include protection of a refreshed old record during the next eviction.
 
@@ -46,7 +56,7 @@ The public [Forma page](https://www.oanarinaldi.com/forma.html) uses the shared 
 
 ## Remaining scope
 
-Page links, page sections, moving layers between pages and broader suite requirements remain unfinished. Duplicate does not clone the single active presentation deck; use its slide controls. Whiteboard timer/voting stays document-wide and existing votes remain on original nodes. Raster clipboard supports PNG/TIFF data only, first frame, without source metadata or file promises; no browser/Windows system-image or private Figma editable clipboard is claimed.
+Page links, page sections and broader suite requirements remain unfinished. Moving layers between pages is partial with the explicit refusals described above. Duplicate does not clone the single active presentation deck; use its slide controls. Whiteboard timer/voting stays document-wide and existing votes remain on original nodes. Raster clipboard supports PNG/TIFF data only, first frame, without source metadata or file promises; no browser/Windows system-image or private Figma editable clipboard is claimed.
 
 Actual Figma desktop component/background round trips, binary `.fig`, cloud collaboration, complete suite parity, full VoiceOver/localization/large-document performance acceptance and Windows release remain unfinished.
 
@@ -54,9 +64,9 @@ Actual Figma desktop component/background round trips, binary `.fig`, cloud coll
 
 These are local, unpublished dev.9 build inputs/results, not public installer hashes:
 
-- Universal native executable: SHA-256 `b9831620c34b035d5457d36353925dbd830a152917ff549e08ea340c9ec1736a`.
-- Packaged renderer `index-V4sn5D6S.js`: SHA-256 `b1579001b90b57bc2aa6ce45764a1b8df67fc3fb27732b4395e452c78db1b740`.
+- Universal native executable: SHA-256 `1e1f8874987177b48d2e3735db38c8556e6ef3c5f770e7c035684e20ef8cdedb`.
+- Packaged renderer `index-CSyfaZJG.js`: SHA-256 `741b99ea02f8677e8e9cde7a6537a2de52c3bd97d5aab16db82407d9cf9ccb79`.
 - Figma bridge ZIP: 28,708 bytes; SHA-256 `1fec8bfc42d64aec03128a392a42500ffe7027a7ce04043b6b1847359d6bc1d1`.
-- Standalone MCP ZIP: 474,228 bytes; SHA-256 `2d8831a90279661d3cbd34d041105218fafe3843419ac4be90b5c7dc4eac8558`.
+- Standalone MCP ZIP: 474,462 bytes; SHA-256 `78646c11df4cd2f7f01ba30fb8e327906287c7344bfbe734853a66efd3e6f326`.
 
-App-bundled ZIPs match these source build inputs. The bundle retains `com.oanarinaldi.uitool`, short version 0.2.0 and build 10. Main local evidence is in `build/test-core-integrated-dev9.log`, `build/test-production-integrated-dev9-final.log`, `build/test-development-integrated-dev9.log`, `build/test-mcp-integrated-dev9.log`, `build/test-mcp-bundle-final-dev9.log` and `build/build-mac-integrated-dev9.log`. Native UI release gates and a new final signed/notarized artifact are still required.
+App-bundled ZIPs match these source build inputs. The bundle retains `com.oanarinaldi.uitool`, short version 0.2.0 and build 10. Latest local evidence is in `build/test-core-integrated-dev9-workflows.log`, `build/test-production-dev9-workflows.log`, `build/test-development-dev9-workflows.log`, `build/test-mcp-dev9-workflows.log`, `build/check-mcp-dev9-workflows.log`, `build/build-mac-dev9-workflows.log` and `build/dev9-workflows-artifacts.json`. The earlier checkpoint logs remain available separately. Native UI release gates and a new final signed/notarized artifact are still required.
