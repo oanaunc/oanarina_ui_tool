@@ -35,7 +35,7 @@ import type {Effect} from './effects';
 import {validatePaint} from './paints';
 import type {Paint,StrokeStyle} from './paints';
 export type NodeKind = 'frame'|'section'|'slice'|'rectangle'|'ellipse'|'line'|'arrow'|'polygon'|'star'|'text'|'path'|'image'|'group'|'component'|'instance';
-export type Tool = NodeKind|'move'|'hand'|'scale'|'pen'|'pencil'|'comment';
+export type Tool = NodeKind|'move'|'hand'|'scale'|'pen'|'pencil'|'brush'|'comment';
 export interface VectorPoint {x:number;y:number;in?:{x:number;y:number};out?:{x:number;y:number};mode?:'mirrored'|'aligned'|'independent';widthScale?:number;}
 export interface VectorContour {points:VectorPoint[];closed:boolean;}
 export interface DesignNode {rotationOrigin?:{x:number;y:number};cornerSmoothing?:number;
