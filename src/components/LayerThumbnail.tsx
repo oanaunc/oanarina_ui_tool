@@ -11,6 +11,7 @@ import './layer-thumbnail.css';
 
 type Request={id:string;row:HTMLElement;kind:'hover'|'focus'};
 export default function LayerThumbnail({tree,page,doc,blocked,resetKey}:{tree:RefObject<HTMLDivElement|null>;page:Page;doc:DesignDocument;blocked:boolean;resetKey:string}){
+ const theme=useEditor(s=>s.theme);
  const tooltipId=useId(),timer=useRef<ReturnType<typeof setTimeout>|null>(null),request=useRef<Request|null>(null),[preview,setPreview]=useState<(Request&{anchor:{left:number;right:number;top:number}})|null>(null),index=useMemo(()=>layerPreviewIndex(page.nodes),[page.nodes]);
  useEffect(()=>{
   const root=tree.current;if(!root)return;
@@ -30,5 +31,5 @@ export default function LayerThumbnail({tree,page,doc,blocked,resetKey}:{tree:Re
  const art=useMemo(()=>{if(!preview)return null;try{const g=layerPreviewGeometry(index,preview.id),svg=exportSvg(g.nodes,g.viewport,false,{transform:g.transform});if(svg.length>16_000_000)throw Error('This artwork is too large for a thumbnail. Use Export.');return {src:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)};}catch(error){return {error:error instanceof Error?error.message:'Preview is unavailable. Use Export.'};}},[index,preview]);
  const live=useEditor.getState(),target=preview&&index.byId.get(preview.id);
  if(!preview||!target||!art||blocked||live.doc!==doc||live.pageId!==page.id||live.modal||live.motionOpen||live.home||live.uiHidden)return null;
- return createPortal(<div className="page-thumbnail layer-thumbnail" id={tooltipId} role="tooltip" style={thumbnailPlacement(preview.anchor,{width:window.innerWidth,height:window.innerHeight})} data-preview-layer={target.id}><div className="page-thumbnail-caption"><strong>{target.name}</strong><span>Static layer artwork · Escape closes preview</span></div><div className="page-thumbnail-art" aria-hidden="true">{art.src?<img alt="" src={art.src}/>:<span>{art.error}</span>}</div></div>,document.body);
+ return createPortal(<div className={'page-thumbnail layer-thumbnail theme-'+theme} id={tooltipId} role="tooltip" style={thumbnailPlacement(preview.anchor,{width:window.innerWidth,height:window.innerHeight})} data-preview-layer={target.id}><div className="page-thumbnail-caption"><strong>{target.name}</strong><span>Static layer artwork · Escape closes preview</span></div><div className="page-thumbnail-art" aria-hidden="true">{art.src?<img alt="" src={art.src}/>:<span>{art.error}</span>}</div></div>,document.body);
 }
