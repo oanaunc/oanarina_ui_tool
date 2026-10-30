@@ -1,0 +1,6 @@
+import {captureColorContext,sameColorContext} from './color-edit-context';
+import {useEditor} from './store';
+import {isLocked} from './model';
+export function fontActionAllowed(){const s=useEditor.getState();return s.mode==='design'&&!s.motionOpen&&!s.home&&!s.uiHidden&&(s.modal===null||s.modal==='fonts')&&s.doc.workspace!=='slides';}
+/** Capture before any await; invalidation is permanent, including away-and-back changes. */
+export function captureFontAction(){const s=useEditor.getState(),origin=captureColorContext(s);if(!fontActionAllowed())throw Error('Use fonts in Design with Motion closed and no other dialog open.');let valid=true;const stop=useEditor.subscribe(current=>{if(!sameColorContext(origin,current)||!fontActionAllowed())valid=false;});return {origin,check(){const live=useEditor.getState();if(!valid||!sameColorContext(origin,live)||!fontActionAllowed())throw Error('The font action context changed. Review the current document and retry.');return live;},selectedText(){const live=this.check(),nodes=live.doc.pages.find(p=>p.id===live.pageId)!.nodes,ids=nodes.filter(n=>n.type==='text'&&live.selection.includes(n.id)&&!isLocked(n,nodes)).map(n=>n.id);if(!ids.length)throw Error('Select unlocked text layers to apply a font.');return ids;},dispose(){valid=false;stop();}};}
