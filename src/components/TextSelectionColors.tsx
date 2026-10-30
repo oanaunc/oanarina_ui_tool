@@ -1,0 +1,9 @@
+import {useMemo} from 'react';
+import type {DesignNode} from '../model';
+import {textSelectionColors} from '../text-selection-colors';
+import './text-selection-colors.css';
+
+export default function TextSelectionColors({n,start,end}:{n:DesignNode;start:number;end:number}){
+ const summary=useMemo(()=>textSelectionColors(n,start,end),[n,start,end]);
+ return <section className="text-selection-colors" aria-label="Selection fill colors"><h4>Selection fill colors</h4>{summary.caret?<p>Select characters to inspect their fill colors.</p>:<><p role="status">{summary.total>1?'Mixed character fills':summary.rows[0]?.kind==='layer'?'Characters use layer fills':'One character color'}</p><div className="text-selection-color-rows" tabIndex={summary.total>6?0:undefined} aria-label="Selected character fill styles">{summary.rows.map(row=><div className="text-selection-color-row" key={row.kind+row.color}>{row.kind==='override'?<><span className="text-selection-swatch" aria-hidden="true"><i style={{background:row.color==='none'?'transparent':row.color}}/></span><span>{row.color==='none'?'No character fill':row.color}</span><small>Character override</small></>:<><span className="text-selection-swatch text-selection-layer-swatch" aria-hidden="true">↳</span><span>Layer fills</span><small>{summary.fills.length?summary.fills.map(p=>p.type==='solid'?`${p.color} · ${Math.round(p.opacity*100)}%`:`${p.type[0].toUpperCase()+p.type.slice(1)} · ${Math.round(p.opacity*100)}%`).join(', '):'No visible fills'}</small></>}</div>)}</div>{summary.total>summary.rows.length&&<p>Showing {summary.rows.length} of {summary.total} fill styles.</p>}<p>Character overrides are stored colors; layer fills may include gradients, images or several paints. Layer opacity, strokes, effects and masks can change the displayed result.{!summary.fills.length?' No visible layer fills; the rows describe stored character styles.':''}</p></>}</section>;
+}
