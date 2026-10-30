@@ -1,4 +1,5 @@
 import {rotateNodeAroundOrigin} from './rotation-origin';
+import {openRepeat} from './repeat-view';
 import {useMaskView} from './mask-view';
 import {openStrokeOutline} from './vector-stroke-outline-actions';
 import {openVectorSeparation} from './vector-separation-actions';
@@ -27,6 +28,7 @@ import {createInstance,download,exportArtwork,importImages,notifyError,serialize
 import {descendants,effectiveVisible,isLocked,node} from './model';
 import type {DesignNode,Tool} from './model';
 export const commands=[
+ ['linear-repeat','Linear repeat…','Object',''],['radial-repeat','Radial repeat…','Object',''],
  ['vector-separate','Separate vector regions…','Vector',''],
  ['vector-outline-stroke','Outline vector stroke…','Vector',''],
  ['slice-manager','Slices and exports…','File',''],['toggle-slices','Show / hide slices','View',''],
@@ -55,6 +57,7 @@ export function runCommand(id:string,event?:Event){if(event&&['copy','cut','past
  case 'vector-offset':openVectorOffset();break;
  case 'vector-outline-stroke':openStrokeOutline();break;
  case 'vector-separate':openVectorSeparation();break;
+ case 'linear-repeat':openRepeat('linear');break;case 'radial-repeat':openRepeat('radial');break;
  case 'repeat-shape-tool':if(s.home||s.modal||s.doc.workspace==='slides')throw Error('Open the Design or Whiteboard canvas to repeat a shape tool.');s.set(repeatShapeState(s.lastShapeTool));break;
  case 'new-slides':s.load(createSlideDocument());break;case 'new-whiteboard':s.load(createWhiteboardDocument());break;case 'new':s.newDocument();break;case 'sample':s.newDocument(true);break;case 'open':void openProject();break;case 'save':void saveProject();break;case 'save-as':void saveProject(true);break;
  case 'slice-manager':if(s.home||s.doc.workspace==='slides')throw Error('Open a Design or Whiteboard page to manage slices.');s.set({modal:'slices'});break;

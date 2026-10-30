@@ -1,6 +1,7 @@
 import {vectorSnapIndex,snapVectorPoint} from '../vector-snapping';
 import type {VectorSnapIndex,VectorSnapHit} from '../vector-snapping';
 import RotationOriginOverlay from './RotationOriginOverlay';
+import {useRepeatView,sameRepeatContext} from '../repeat-view';
 import {fontFamilyStack} from '../font-fallback';
 import MultiVectorOverlay from './MultiVectorEditor';
 import {useMultiVector} from '../multi-vector';
@@ -62,7 +63,8 @@ export default function Canvas(){
  useLayoutEffect(()=>{if(crop.context||gradient.context||cut.context||eraser.context||lasso.context||multi.context){drag.current=null;setPreview(null);setBox(null);setSnapLines([]);setPen([]);setContinuation(null);setEditText(null);setContext(null);}},[crop.context,gradient.context,cut.context,eraser.context,lasso.context,multi.context]);
  useEffect(()=>{const cancel=()=>{drag.current=null;setPreview(null);setBox(null);setSnapLines([]);setPen([]);setContinuation(null);};const m=useMultiVector.subscribe(v=>{if(v.context)cancel();}),a=useVectorEraser.subscribe(v=>{if(v.context)cancel();}),b=useVectorLasso.subscribe(v=>{if(v.context)cancel();});return()=>{m();a();b();};},[]);
  const displayNodes=useMemo(()=>s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,[page.nodes,page.motion,s.motionOpen,s.motionTime]);
- const ns=preview??displayNodes;
+ const repeat=useRepeatView(),repeatNodes=repeat.context&&sameRepeatContext(repeat.context)?repeat.plan?.nodes:undefined;
+ const ns=repeatNodes??preview??displayNodes;
  const selectionIndex=useMemo(()=>boxSelectionIndex(displayNodes),[displayNodes]);
  const selected=canvasSelectionRoots(ns,s.selection),b=canvasSelectionBounds(ns,s.selection),selectionLocked=selected.some(n=>isLocked(n,ns));
  const world=(e:{clientX:number;clientY:number})=>{const r=svg.current!.getBoundingClientRect();return {x:(e.clientX-r.left-s.pan.x)/s.zoom,y:(e.clientY-r.top-s.pan.y)/s.zoom};};
@@ -77,6 +79,7 @@ export default function Canvas(){
  const continuationPoint=(n:DesignNode,nodes:DesignNode[],position:{x:number;y:number})=>{const p=canvasPointInNode(n,nodes,position);return {x:p.x*(n.pathWidth||n.width||1)/(n.width||1),y:p.y*(n.pathHeight||n.height||1)/(n.height||1)};};
  useEffect(()=>{const el=svg.current;if(!el)return;const wheel=(e:WheelEvent)=>{e.preventDefault();const st=useEditor.getState(),preferences=getPreferences();if(e.metaKey||e.ctrlKey||preferences.wheelZoom){const r=el.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,z=Math.min(8,Math.max(.05,st.zoom*Math.exp(-e.deltaY*.01*preferences.zoomSensitivity*(preferences.invertZoom?-1:1))));st.set({zoom:z,pan:{x:x-(x-st.pan.x)*z/st.zoom,y:y-(y-st.pan.y)*z/st.zoom}});}else st.set({pan:{x:st.pan.x-e.deltaX,y:st.pan.y-e.deltaY}});};el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[]);
  const begin=(e:React.PointerEvent,id?:string,handle?:string,direct=false)=>{
+ if(useEditor.getState().modal==='repeat-layers')return;
  if(e.button===2&&!prefs.rightButtonPan)return;e.stopPropagation();svg.current?.focus({preventScroll:true});if(id&&!direct&&!handle&&['move','scale'].includes(s.tool)&&!s.vectorEditId)id=resolveCanvasTarget(page.nodes,id,s.selection,{deep:e.metaKey});if(s.vectorEditId&&id&&id!==s.vectorEditId&&!handle&&!space.current&&s.tool!=='hand'&&e.button!==1&&!(e.button===2&&prefs.rightButtonPan)){const target=page.nodes.find(n=>n.id===id);setContinuation(null);runCommand('edit-vector');if(target){s.select(id);if(!s.motionOpen&&!isLocked(target,page.nodes)&&!target.instanceRootId&&!target.booleanOp&&!page.nodes.some(n=>n.parentId===target.id)&&['rectangle','ellipse','polygon','star','path','line','arrow'].includes(target.type))runCommand('edit-vector');}return;}setContext(null);if(editText)return;if(s.motionPlaying&&!space.current&&s.tool!=='hand'&&e.button!==1&&e.button!==2)s.set({motionPlaying:false,motionTime:s.motionTime});const p=world(e);let ids=s.selection;
  if(space.current||s.tool==='hand'||e.button===1||e.button===2&&prefs.rightButtonPan){drag.current={docId:s.doc.id,pageId:s.pageId,sourceNodes:page.nodes,context:captureGesture(),kind:'pan',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:[],pan:s.pan};}
  else if(s.vectorEditId&&!handle&&['move','scale'].includes(s.tool)){
