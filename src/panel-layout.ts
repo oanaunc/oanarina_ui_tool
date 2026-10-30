@@ -27,8 +27,15 @@ export function resolvePanelLayout(layout:PanelLayout,viewportWidth:number){
  let left=layout.left.collapsed?PANEL_RAIL:layout.left.width??defaults.left,right=layout.right.collapsed?PANEL_RAIL:layout.right.width??defaults.right;
  if(compact){left=layout.left.collapsed?PANEL_RAIL:Math.min(left,Math.max(80,width-160));return{left,right:Math.max(80,Math.min(240,width-16)),compact,leftMax:PANEL_LIMITS.left.max,rightMax:PANEL_LIMITS.right.max};}
  const available=Math.max(0,width-MIN_CANVAS-2*PANEL_SEPARATOR),leftMin=layout.left.collapsed?PANEL_RAIL:PANEL_LIMITS.left.min,rightMin=layout.right.collapsed?PANEL_RAIL:PANEL_LIMITS.right.min;
- const excess=Math.max(0,left+right-available),slack=(left-leftMin)+(right-rightMin);
- if(excess>0&&slack>0){const fraction=Math.min(1,excess/slack);left-=fraction*(left-leftMin);right-=fraction*(right-rightMin);}
+ let excess=Math.max(0,left+right-available);
+ // Honor the narrower requested panel first. Re-proportioning both sides on
+ // every drag update makes a newly chosen width jump backwards when the
+ // opposite panel still has a larger, temporarily clamped desired width.
+ if(excess>0){
+  if(left===right){const slack=(left-leftMin)+(right-rightMin),fraction=slack?Math.min(1,excess/slack):0;left-=fraction*(left-leftMin);right-=fraction*(right-rightMin);}
+  else if(left>right){const take=Math.min(excess,left-leftMin);left-=take;excess-=take;right-=Math.min(excess,right-rightMin);}
+  else{const take=Math.min(excess,right-rightMin);right-=take;excess-=take;left-=Math.min(excess,left-leftMin);}
+ }
  left=Math.round(left);right=Math.min(Math.round(right),Math.floor(available-left));
  return{left,right,compact,leftMax:Math.max(PANEL_LIMITS.left.min,Math.min(PANEL_LIMITS.left.max,Math.floor(available-right))),rightMax:Math.max(PANEL_LIMITS.right.min,Math.min(PANEL_LIMITS.right.max,Math.floor(available-left)))};
 }

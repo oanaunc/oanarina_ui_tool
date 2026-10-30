@@ -23,4 +23,13 @@ describe('device-local sidebar layout',()=>{
   data.set(PANEL_LAYOUT_KEY,'corrupt');expect(readPanelLayout().warning).toContain('could not be read');
   vi.stubGlobal('localStorage',{getItem(){throw Error('Denied');},setItem(){throw Error('Denied');}});expect(readPanelLayout().layout).toEqual(defaultPanelLayout());expect(writePanelLayout(layout)).toContain('could not be saved');
  });
+ it('honors a selected effective width without reversing its direction when the opposite desired width is clamped',()=>{
+  const layout=defaultPanelLayout();layout.left.width=480;layout.right.width=480;const initial=resolvePanelLayout(layout,730);
+  layout.left.width=initial.left-20;const reduced=resolvePanelLayout(layout,730);expect(reduced.left).toBe(initial.left-20);expect(reduced.right).toBeGreaterThan(initial.right);expect(layout.right.width).toBe(480);
+  layout.left.width-=8;expect(resolvePanelLayout(layout,730).left).toBe(reduced.left-8);
+  layout.right.width=reduced.right-30;expect(resolvePanelLayout(layout,730).right).toBe(reduced.right-30);
+  for(const viewport of [701,730,800,1000])for(const left of [160,200,251,300,400,480])for(const right of [200,232,300,400,480])for(const side of ['left','right'] as const)for(const delta of [-8,8]){
+   const original=defaultPanelLayout();original.left.width=left;original.right.width=right;const current=resolvePanelLayout(original,viewport),min=side==='left'?160:200,max=side==='left'?current.leftMax:current.rightMax,target=Math.min(max,Math.max(min,current[side]+delta));original[side].width=target;expect(resolvePanelLayout(original,viewport)[side],JSON.stringify({viewport,left,right,side,delta,target})).toBe(target);
+  }
+ });
 });
