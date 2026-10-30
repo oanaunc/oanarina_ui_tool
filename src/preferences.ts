@@ -7,7 +7,7 @@ export interface EditorPreferences {
  exportHiddenLayers:boolean;defaultExportFormat:'svg'|'png'|'jpg';colorPickerFormat:'HEX'|'RGB'|'HSL'|'HSB';duplicateNaming:'preserve'|'copy'|'increment';keyboardZoomSelection:boolean;controlClickContextMenu:boolean;numberKeyOpacity:boolean;smartTextSubstitution:boolean;
  smallNudge:number;largeNudge:number;rotationSnapIncrement:number;
  showFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;
- keepDrawingTool:boolean;hoverHighlight:boolean;showSelectionDimensions:boolean;
+ keepDrawingTool:boolean;hoverHighlight:boolean;parentHoverOutline:boolean;showSelectionDimensions:boolean;
  wheelZoom:boolean;zoomSensitivity:number;invertZoom:boolean;rightButtonPan:boolean;
  defaultFrameFill:string;defaultShapeFill:string;defaultShapeStrokeEnabled:boolean;
  defaultStrokeColor:string;defaultStrokeWidth:number;defaultTextFill:string;
@@ -19,7 +19,7 @@ export const defaultPreferences:Readonly<EditorPreferences>=Object.freeze({
  uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,exportHiddenLayers:false,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,smartTextSubstitution:false,
  smallNudge:1,largeNudge:10,rotationSnapIncrement:15,
  showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,
- keepDrawingTool:false,hoverHighlight:true,showSelectionDimensions:true,
+ keepDrawingTool:false,hoverHighlight:true,parentHoverOutline:false,showSelectionDimensions:true,
  wheelZoom:false,zoomSensitivity:1,invertZoom:false,rightButtonPan:false,
  defaultFrameFill:'#ffffff',defaultShapeFill:'#d8c9f2',defaultShapeStrokeEnabled:false,
  defaultStrokeColor:'#2b2935',defaultStrokeWidth:2,defaultTextFill:'#202027',
@@ -50,7 +50,7 @@ export function validatePreferences(value:unknown):EditorPreferences {
 let cached:Readonly<EditorPreferences>|undefined,lastRaw:string|null|undefined;
 const listeners=new Set<()=>void>();
 function rawPreferences(){try{return typeof localStorage==='undefined'?null:localStorage.getItem(PREFERENCES_KEY);}catch{return null;}}
-function decode(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,exportHiddenLayers:false,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,smartTextSubstitution:false,showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false},...data.values}));}catch{return defaultPreferences;}}
+function decode(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{parentHoverOutline:false,uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,exportHiddenLayers:false,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,smartTextSubstitution:false,showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false},...data.values}));}catch{return defaultPreferences;}}
 export function getPreferences():Readonly<EditorPreferences>{const raw=rawPreferences();if(!cached||raw!==lastRaw){lastRaw=raw;cached=decode(raw);}return cached;}
 function emit(){for(const listener of [...listeners])listener();}
 /** Re-read local storage, including changes made by another app window. */
