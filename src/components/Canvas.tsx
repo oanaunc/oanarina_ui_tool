@@ -1,4 +1,6 @@
 import {fontFamilyStack} from '../font-fallback';
+import VectorCutOverlay from './VectorCutOverlay';
+import {useVectorCut} from '../vector-cut';
 import CanvasNames from './CanvasNames';
 import CanvasGradientOverlay from './CanvasGradientOverlay';
 import {useCanvasGradient} from '../canvas-gradient';
@@ -41,13 +43,13 @@ const captureGesture=():GestureContext=>{const s=useEditor.getState();return {mo
 type DrawingPointer=Pick<React.PointerEvent,'clientX'|'clientY'|'shiftKey'|'altKey'|'metaKey'|'ctrlKey'>;
 interface Drag {precision?:PrecisionPointer;precisionFine?:boolean;pointerApplied?:{x:number;y:number};rotationApplied?:number;rotationLabel?:string;lastPointer?:DrawingPointer;pointerId?:number;context:GestureContext;rotationDelta?:number;lastRotatePoint?:{x:number;y:number};docId:string;pageId:string;sourceNodes:DesignNode[];kind:'move'|'create'|'pan'|'marquee'|'resize'|'rotate'|'pencil'|'vector'|'pen-handle'|'vector-marquee'|'vector-continue';start:{x:number;y:number};screen:{x:number;y:number};nodes:DesignNode[];ids:string[];draft?:DesignNode;result?:DesignNode[];handle?:string;pointKeys?:string[];vectorPart?:'anchor'|'in'|'out';pan:{x:number;y:number};}
 export default function Canvas(){
- const gradient=useCanvasGradient(),crop=useCanvasImageCrop(),s=useEditor(),prefs=usePreferences(),page=s.doc.pages.find(p=>p.id===s.pageId)!;
+ const cut=useVectorCut(),gradient=useCanvasGradient(),crop=useCanvasImageCrop(),s=useEditor(),prefs=usePreferences(),page=s.doc.pages.find(p=>p.id===s.pageId)!;
  const svg=useRef<SVGSVGElement>(null),drag=useRef<Drag|null>(null),space=useRef(false),updatePointer=useRef<((event:DrawingPointer)=>void)|null>(null);
  const [preview,setPreview]=useState<DesignNode[]|null>(null),[box,setBox]=useState<ReturnType<typeof bounds>|null>(null),[pen,setPen]=useState<VectorPoint[]>([]);
  const [snapLines,setSnapLines]=useState<GuideLine[]>([]),[hoveredId,setHoveredId]=useState<string|undefined>(),[hoverOutlineId,setHoverOutlineId]=useState<string|undefined>(),[measuring,setMeasuring]=useState(false);
  const [continuation,setContinuation]=useState<{id:string;key:string;sourceNodes:DesignNode[]}|null>(null);
  const [editText,setEditText]=useState<string|null>(null),[context,setContext]=useState<{x:number;y:number;layerIds:string[]}|null>(null);
- useLayoutEffect(()=>{if(crop.context||gradient.context){drag.current=null;setPreview(null);setBox(null);setSnapLines([]);setPen([]);setContinuation(null);setEditText(null);setContext(null);}},[crop.context,gradient.context]);
+ useLayoutEffect(()=>{if(crop.context||gradient.context||cut.context){drag.current=null;setPreview(null);setBox(null);setSnapLines([]);setPen([]);setContinuation(null);setEditText(null);setContext(null);}},[crop.context,gradient.context,cut.context]);
  const displayNodes=useMemo(()=>s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,[page.nodes,page.motion,s.motionOpen,s.motionTime]);
  const ns=preview??displayNodes;
  const selectionIndex=useMemo(()=>boxSelectionIndex(displayNodes),[displayNodes]);
@@ -146,7 +148,7 @@ export default function Canvas(){
  <VectorBendOverlay nodes={ns} onPreview={setPreview}/><CanvasImageCropOverlay onPreview={setPreview}/><CanvasGradientOverlay onPreview={setPreview}/>
  {vector?.contours&&<g>
  {vector.contours.flatMap((contour,ci)=>contour.points.map((p,pi)=>{const key=ci+':'+pi,active=s.vectorSelection.includes(key),r=3/s.zoom,anchor=canvasPathPoint(vector,ns,p);return <g key={key}>{active&&(['in','out'] as const).map(part=>{const h=p[part];if(!h||Math.hypot(h.x,h.y)<=.01)return null;const handle=canvasPathPoint(vector,ns,{x:p.x+h.x,y:p.y+h.y});return <g key={part}><line x1={anchor.x} y1={anchor.y} x2={handle.x} y2={handle.y} stroke="#bba0ed" strokeWidth={1/s.zoom}/><circle data-vector-handle={key+':'+part} cx={handle.x} cy={handle.y} r={r} fill="#aaa0ba" stroke="#2d233b" strokeWidth={1/s.zoom} onPointerDown={e=>beginPoint(e,key,part)}/></g>;})}<rect data-vector-key={key} role="button" aria-label={'Vector point '+key} x={anchor.x-r} y={anchor.y-r} width={r*2} height={r*2} fill={active?'#ba97ed':'#f4eefb'} stroke="#9d73cd" strokeWidth={1/s.zoom} onPointerDown={e=>beginPoint(e,key,'anchor')}/></g>;}))}</g>}
- {box&&<g data-pointer-selection-mode={drag.current?.kind==='marquee'?(drag.current.lastPointer?.altKey?'intersect':'contain'):'points'} pointerEvents="none"><rect {...box} fill="#bb9df320" stroke="#bfa4f4" strokeWidth={1/s.zoom} strokeDasharray={drag.current?.kind==='marquee'&&drag.current.lastPointer?.altKey?`${5/s.zoom} ${3/s.zoom}`:undefined}/>{drag.current?.kind==='marquee'&&<text x={box.x} y={box.y-8/s.zoom} fontSize={11/s.zoom} fill="#cbb7f0">{querySelectionBox(selectionIndex,box,drag.current.lastPointer?.altKey?'intersect':'contain').length} {drag.current.lastPointer?.altKey?'touching':'contained'} layers</text>}</g>}
+ <VectorCutOverlay/>{box&&<g data-pointer-selection-mode={drag.current?.kind==='marquee'?(drag.current.lastPointer?.altKey?'intersect':'contain'):'points'} pointerEvents="none"><rect {...box} fill="#bb9df320" stroke="#bfa4f4" strokeWidth={1/s.zoom} strokeDasharray={drag.current?.kind==='marquee'&&drag.current.lastPointer?.altKey?`${5/s.zoom} ${3/s.zoom}`:undefined}/>{drag.current?.kind==='marquee'&&<text x={box.x} y={box.y-8/s.zoom} fontSize={11/s.zoom} fill="#cbb7f0">{querySelectionBox(selectionIndex,box,drag.current.lastPointer?.altKey?'intersect':'contain').length} {drag.current.lastPointer?.altKey?'touching':'contained'} layers</text>}</g>}
  {page.comments.filter(c=>!c.resolved).map((c,i)=><g key={c.id} transform={`translate(${c.x} ${c.y})`} onPointerDown={e=>{e.stopPropagation();s.set({modal:'comments'});}} style={{cursor:'pointer'}}><circle r={13/s.zoom} fill="#e7b5d1"/><text textAnchor="middle" y={4/s.zoom} fontSize={11/s.zoom} fill="#28212c">{i+1}</text></g>)}
  </g></svg>
  {s.doc.workspace==='whiteboard'&&<WhiteboardWorkspace/>}

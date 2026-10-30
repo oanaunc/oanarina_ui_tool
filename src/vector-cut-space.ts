@@ -1,0 +1,5 @@
+import type {DesignNode} from './model';
+import {identity,multiply,nodeMatrix,inverseMatrix} from './transforms';
+import type {Matrix} from './transforms';
+/** Build one complete path-to-world map; callers reuse it for every control and hit. */
+export function vectorCutMatrix(n:DesignNode,nodes:DesignNode[],lookup=new Map(nodes.map(n=>[n.id,n]))):Matrix{const lineage:DesignNode[]=[],seen=new Set<string>();let current:DesignNode|undefined=n;while(current){if(seen.has(current.id)||lineage.length>64)throw Error('Cut needs an acyclic hierarchy with at most 64 ancestors.');seen.add(current.id);lineage.unshift(current);if(current.parentId&&!lookup.has(current.parentId))throw Error('The vector owner is missing.');current=lookup.get(current.parentId??'');}let matrix:Matrix=identity;for(let i=0;i<lineage.length;i++)matrix=multiply(matrix,nodeMatrix(lineage[i],lineage[i-1]));const sx=n.width/(n.pathWidth||n.width||1),sy=n.height/(n.pathHeight||n.height||1),result=multiply(matrix,[sx,0,0,sy,0,0]);if(result.some(v=>!Number.isFinite(v)))throw Error('The cut transform is not finite.');inverseMatrix(result);return result;}
