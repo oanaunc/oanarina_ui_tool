@@ -1,3 +1,4 @@
+import {validateStrokeStack} from './paints';
 import type {ArrowheadStyle} from './arrowheads';
 import type {EmbeddedVideo} from './media';
 import type {TextOutline} from './text-outline';
@@ -114,7 +115,7 @@ export function parseDocument(raw:string):DesignDocument {
       for(const k of ['aspectLocked','flipX','flipY','exportGhost'])if(n[k]!==undefined&&typeof n[k]!=='boolean')throw Error('Invalid rendering flag.');for(const k of ['motionScaleX','motionScaleY'])if(n[k]!==undefined&&(!Number.isFinite(n[k])||n[k]<0||n[k]>10000))throw Error('Invalid render scale.');
       if(n.isolate!==undefined&&typeof n.isolate!=='boolean')throw Error('Invalid isolation flag.');
       if(n.blendMode!==undefined&&!['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity'].includes(n.blendMode))throw Error('Invalid blend mode.');
-      if(n.strokes!==undefined){if(!Array.isArray(n.strokes)||n.strokes.length>100)throw Error('Invalid stroke stack.');for(const stroke of n.strokes){validatePaint(stroke.paint);if(typeof stroke.id!=='string'||typeof stroke.visible!=='boolean'||!Number.isFinite(stroke.miterLimit)||stroke.miterLimit<1||!Number.isFinite(stroke.dashOffset)||!Number.isFinite(stroke.width)||stroke.width<0||!['inside','center','outside'].includes(stroke.align)||!['butt','round','square'].includes(stroke.cap)||!['miter','round','bevel'].includes(stroke.join)||!Array.isArray(stroke.dash)||stroke.dash.some((v:number)=>!Number.isFinite(v)||v<0))throw Error('Invalid stroke style.');}}
+      validateStrokeStack(n.strokes);
       if(n.booleanOp!==undefined&&!['union','subtract','intersect','exclude'].includes(n.booleanOp))throw Error('Invalid boolean operation.');
       if(n.corners!==undefined&&(!Array.isArray(n.corners)||n.corners.length!==4||n.corners.some((v:number)=>!Number.isFinite(v)||v<0)))throw Error('Invalid corner radii.');
 

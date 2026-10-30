@@ -14,7 +14,7 @@ export function assignSelectedStyle(d:DesignDocument,pageId:string,ids:readonly 
 }
 export function bindSelectedVariable(d:DesignDocument,pageId:string,ids:readonly string[],field:BindingField,id:string){
  if(!Object.hasOwn(bindingTypes,field))throw Error('Choose a supported variable property.');const variable=d.variables?.find(v=>v.id===id);if(id&&(!variable||variable.type!==bindingTypes[field]||variable.scopes.length&&!variable.scopes.includes(field)))throw Error('Choose a compatible scoped variable.');
- return assignment(d,pageId,ids,n=>{const bindings={...n.variableBindings};if(id)bindings[field]=id;else delete bindings[field];let changed=setMap(n,'variableBindings',bindings);if(id){const styles={...n.styleIds};for(const kind of ['paint','text','effect']as const)if(styleFields[kind].includes(field))delete styles[kind];changed=setMap(n,'styleIds',styles)||changed;}return changed;},n=>field!=='text'||n.type==='text');
+ return assignment(d,pageId,ids,n=>{const bindings={...n.variableBindings};if(id)bindings[field]=id;else delete bindings[field];let changed=setMap(n,'variableBindings',bindings);if(id){const styles={...n.styleIds};for(const kind of ['paint','text','effect','stroke']as const)if(styleFields[kind].includes(field))delete styles[kind];changed=setMap(n,'styleIds',styles)||changed;}return changed;},n=>field!=='text'||n.type==='text');
 }
 export function setSelectedVariableMode(d:DesignDocument,pageId:string,ids:readonly string[],collectionId:string,modeId:string){
  const c=d.variableCollections?.find(c=>c.id===collectionId);if(!c||modeId&&!c.modes.some(m=>m.id===modeId))throw Error('Choose an existing collection mode.');

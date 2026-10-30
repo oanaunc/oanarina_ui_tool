@@ -2,7 +2,7 @@ import type {DesignDocument,DesignNode} from './model';
 import {effectiveVisible} from './model';
 import {parseExpression} from './prototype';
 import type {PrototypeAction} from './prototype';
-export const assetKinds=['variable','collection','paint-style','text-style','effect-style','guide-style','component'] as const;
+export const assetKinds=['variable','collection','paint-style','text-style','effect-style','stroke-style','guide-style','component'] as const;
 export type AssetKind=typeof assetKinds[number];
 export type AssetStatus='referenced'|'unreferenced'|'uncertain'|'missing';
 export interface AssetRecord {key:string;id:string;kind:AssetKind;name:string;description:string;folder:string[];defined:boolean;references:number;status:AssetStatus;pageId?:string;nodeId?:string;}
