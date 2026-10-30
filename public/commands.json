@@ -1,5 +1,11 @@
 [
   [
+    "selection-box",
+    "Select layers in box…",
+    "Edit",
+    "⌥⌘B"
+  ],
+  [
     "document-outline",
     "Document outline…",
     "View",

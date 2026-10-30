@@ -1864,10 +1864,10 @@
     "category": "Selection",
     "name": "Select intersecting objects",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Option during an empty-canvas marquee switches live containment to inclusive intersection of transformed world layout bounds; Shift adds the initial selection. Modifier changes update the preview/count without pointer movement. Hidden/inherited locks are excluded; Motion uses sampled displayed geometry. AABB layout matches do not use painted pixels, masks, clipping, strokes or effects. Pointer cancellation/context guards and unchanged saves are tested. See docs/SELECTION-BOXES.md. Native/reference acceptance remains pending."
   },
   {
     "id": "UI-07-007",
@@ -2044,10 +2044,10 @@
     "category": "Selection",
     "name": "Parent hover outline",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: optional local parent-hover outline follows the immediately containing layer through transformed ancestry, respects hover preference and inherited visibility/locks, and clears on canvas exit/context changes. Off by default; legacy preference migration retains custom settings. No saved artwork/history changes. See docs/SELECTION-BOXES.md. Native/reference acceptance remains pending."
   },
   {
     "id": "UI-07-025",
@@ -2074,10 +2074,10 @@
     "category": "Selection",
     "name": "Keyboard box selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Edit/action search/Option Command B opens an accessible numerical page-space box with touching/contained matching and replace/add/subtract operations, live canvas preview/count, focus trap, Escape/cancel and stale-context refusal. Selection is ephemeral with no undo/document mutation. Numeric bounds are limited to ±1,000,000; Motion/vector editing must be closed. See docs/SELECTION-BOXES.md. Native/reference acceptance remains pending."
   },
   {
     "id": "UI-07-028",
@@ -4274,10 +4274,10 @@
     "category": "Vector pen and editing",
     "name": "Bend tool",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: reachable Bend segments mode in point editing drags straight/cubic segments or midpoint handles, including closing segments, through parent/path transforms. Fixed anchors and existing node bounds remain; two independent tangent handles use bounded least-squares displacement with grabbed t clamped to .08–.92. Control provides finer movement; guarded preview/commit/cancel, one Undo, save/reopen and exported outward-curve pixels are tested. ±1,000,000 path/grab limits; Motion/managed/locked/collapsed paths refused. Artwork exports conservatively include control hulls. See docs/VECTOR-BEND.md. Native/reference acceptance remains pending."
   },
   {
     "id": "UI-14-026",
@@ -6854,10 +6854,10 @@
     "category": "Typography",
     "name": "Text background",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "Unreleased source: optional solid six-digit-color rectangle behind the entire text-layer bounds, with real shared rendering/export, transforms, opacity, clipping/effects and alpha/vector/luminance masks. Validated additive .oui metadata, Undo/save, styles, component inheritance/overrides, node clipboard, CSS inspection and source MCP support. Editable Figma Bridge explicitly reports omission; SVG preserves appearance. No per-range/per-line background, padding or background paint stack. See docs/TEXT-SETTINGS-WORKFLOWS.md. Reference/desktop round-trip acceptance remains pending."
   },
   {
     "id": "UI-21-030",
@@ -7334,10 +7334,10 @@
     "category": "Advanced typography",
     "name": "Smart quotation and symbol substitution",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: opt-in device-local smart English quotes/apostrophes and finite symbol substitutions (..., --, (c), (r), (tm)) while typing one ASCII character in Rich text. Real Unicode edits retain token-first styles, later ranges and paragraphs, synchronous caret and one session Undo/save. Paste/import/bulk replacement/IME preserve literal source; stale editing contexts discard drafts. Ordinary Typography textarea/system-wide/locale-specific replacement are outside this behavior. See docs/TEXT-SETTINGS-WORKFLOWS.md. Native/reference acceptance remains pending."
   },
   {
     "id": "UI-22-042",
@@ -7464,10 +7464,10 @@
     "category": "Advanced typography",
     "name": "Type settings tabs",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: functional All/Characters/Paragraphs/OpenType/Text information tabs organize existing working range, paragraph, leading, axes/features, description/background and local smart-punctuation controls. Roving Left/Right/Home/End keyboard focus, tab/tabpanel semantics, retained text selection and field blur commits are tested. UI-only organization creates no project/history data. See docs/TEXT-SETTINGS-WORKFLOWS.md. Exact Figma settings layout/reference acceptance remains pending."
   },
   {
     "id": "UI-22-055",
@@ -7734,10 +7734,10 @@
     "category": "Constraints and resizing",
     "name": "Preserve constraints on reparenting",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source: shared hierarchy moves retain all five X/Y constraint modes and world pose; constraint derivation now checks previous parent ownership before applying a resize delta to newly reparented children. Later new-parent resizing uses the retained modes. Actual tree/root/context/group workflows, one Undo/save and atomic MCP reparent+destination-resize regression are tested. Unsupported newly required skew is refused; Motion/mode/stale tree drag guards preserve source ownership. See docs/FRAME-RELATIVE-POSITIONING.md. Native/reference acceptance remains pending."
   },
   {
     "id": "UI-23-027",
@@ -7764,10 +7764,10 @@
     "category": "Constraints and resizing",
     "name": "Relative frame positioning",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source: dedicated Frame X/Y controls express the selected layer layout origin before its own rotation in the nearest frame/component/instance axes, through transformed intervening groups. Guarded atomic descendant translation, post-derivation validation, one Undo/save/reopen and stale drafts are tested. Limits: 1024 ancestors, ±1,000,000 coordinates; singular/managed/flow/derived/protected workspace cases refuse. Responsive guide bindings remain separate unfinished requirements. See docs/FRAME-RELATIVE-POSITIONING.md. Native/reference acceptance remains pending."
   },
   {
     "id": "UI-23-030",
