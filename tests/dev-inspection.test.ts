@@ -28,3 +28,5 @@ it('refuses oversized reports explicitly so narrowing search can produce a copya
 it('warns that per-paragraph/list metadata requires more than a single CSS rule',()=>{const n=node('text',{listStyle:'bullet',paragraphIndent:10});expect(inspectCss(n).warnings.join(' ')).toContain('paragraph/list overrides');});
 
 it('warns when integrated paragraph styles or marker defaults cannot be represented by one CSS rule',()=>{for(const patch of [{paragraphStyles:[{start:0,textAlign:'right' as const}]},{listIndent:24},{markerGap:8},{listItemSpacing:12},{listHanging:true}]){const n=node('text',{text:'A\nB',...patch});expect(inspectCss(n).warnings.join(' ')).toContain('paragraph/list overrides');}});
+
+it('converts integrated fixed-pixel leading into the selected inspection length unit',()=>{const n=node('text',{fontSize:20,lineHeight:2,lineHeightPx:40}),css=inspectCss(n,{...o,unit:'rem',rootSize:20});expect(css.code).toContain('line-height: 2rem;');expect(n.lineHeightPx).toBe(40);expect(inspectCss({...n,lineHeightPx:undefined},{...o,unit:'rem',rootSize:20}).code).toContain('line-height: 2;');});

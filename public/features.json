@@ -3954,10 +3954,10 @@
     "category": "Snapping and measurement",
     "name": "Show rotation while rotating",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Transient canvas rotation feedback shows the actual snapped angle and signed change (or selection world-angle delta), including accumulated turns. Preview chrome is excluded from saves/exports; cancellation and browser checks pass. See docs/POINTER-PRECISION.md."
   },
   {
     "id": "UI-13-025",
@@ -3974,10 +3974,10 @@
     "category": "Snapping and measurement",
     "name": "Fine pointer adjustment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Control during move/resize/rotation/vector-anchor/handle dragging integrates 10x finer deltas, anchors fine entry to displayed snapped geometry, bypasses snapping and retains hierarchy/Motion/Undo. Re-enabling ordinary snapping may quantize. Native pointer acceptance and reference checks pending. See docs/POINTER-PRECISION.md."
   },
   {
     "id": "UI-13-027",
@@ -7274,10 +7274,10 @@
     "category": "Advanced typography",
     "name": "Emoji input",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Local searchable 81-entry starter emoji catalog inserts Unicode into rich text with selection, Undo/save and context guards. Platform fonts supply glyphs. Full Unicode catalog, skin-tone/flag controls and native OS picker integration remain unfinished. See docs/TEXT-INPUT-WORKFLOWS.md."
   },
   {
     "id": "UI-22-036",
@@ -7324,10 +7324,10 @@
     "category": "Advanced typography",
     "name": "Text accessibility description",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Guarded plain text accessibility descriptions with validation, Undo/save, component/MCP paths, SVG desc and interactive canvas/prototype accessible description. Hidden mask definitions are not exposed as named graphics. Native assistive-technology acceptance pending. See docs/TEXT-INPUT-WORKFLOWS.md."
   },
   {
     "id": "UI-22-041",
@@ -7344,10 +7344,10 @@
     "category": "Advanced typography",
     "name": "Emoji colon-code completion",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Local colon-code suggestions and explicit Enter/Tab/click acceptance work in the rich text editor, preserving formatting and source text; IME and stale contexts are guarded. The starter code catalog does not cover the full emoji namespace. See docs/TEXT-INPUT-WORKFLOWS.md."
   },
   {
     "id": "UI-22-043",
@@ -7474,10 +7474,10 @@
     "category": "Advanced typography",
     "name": "Line-height unit conversion",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Multiplier, percentage and real fixed-pixel leading controls, shared line layout/paragraph overrides, styled clipboard, local styles/components, SVG, source MCP and Bridge PIXELS metadata. Relative fallback is a last-conversion snapshot; exact font metrics/reference checks pending. See docs/TEXT-INPUT-WORKFLOWS.md."
   },
   {
     "id": "UI-23-001",
@@ -8784,10 +8784,10 @@
     "category": "Components",
     "name": "Component naming paths",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slash names and name/tag search work; a complete folder browser is not implemented."
+    "notes": "Exact slash-segment local naming paths, guarded path rename/move with Undo/save, and atomic set/container rename. Legacy oversized names remain readable with limits. See docs/COMPONENT-ASSETS-BROWSER.md."
   },
   {
     "id": "UI-27-006",
@@ -8854,10 +8854,10 @@
     "category": "Components",
     "name": "Component assets panel",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Local component browser spans pages, sets/variants, folders, text/tag/page filters, bounded explicit previews, linked root insertion and source navigation. Index/preview budgets are visible; no cloud libraries. See docs/COMPONENT-ASSETS-BROWSER.md."
   },
   {
     "id": "UI-27-013",
@@ -9094,10 +9094,10 @@
     "category": "Components",
     "name": "Component organization by folder",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slash names and name/tag search work; a complete folder browser is not implemented."
+    "notes": "Folder children/breadcrumbs, exact current-folder browsing and descendant search organize local component naming paths without changing canvas parents. Lists/variants paginate and mutations validate context/locks. See docs/COMPONENT-ASSETS-BROWSER.md."
   },
   {
     "id": "UI-28-001",
@@ -20174,10 +20174,10 @@
     "category": "Layer masks",
     "name": "Mask outlines view",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
-    "notes": "Dedicated mask outlines view and hover mode previews remain absent. Layer-tree mask/target indicators are implemented separately. docs/MASKS.md."
+    "notes": "Dedicated mask geometry outlines distinguish sources/source children/targets/context, retain transforms/clips/hidden state and show concealed geometry. Opacity/effects are bypassed; this does not trace raster alpha or luminance contours. Ephemeral state never exports/saves. See docs/MASK-VIEWS.md."
   },
   {
     "id": "UI-60-024",
@@ -20194,10 +20194,10 @@
     "category": "Layer masks",
     "name": "Preview mask modes on hover",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
-    "notes": "Dedicated mask outlines view and hover mode previews remain absent. Layer-tree mask/target indicators are implemented separately. docs/MASKS.md."
+    "notes": "Hover or focus previews actual Alpha/Vector/Luminance canvas rendering through an immutable mode substitution. Saves/history/exports retain the committed mode; stale contexts and Escape cancel previews. Direct source/sibling controls; native/reference checks pending. See docs/MASK-VIEWS.md."
   },
   {
     "id": "UI-60-026",

@@ -540,6 +540,12 @@
     ""
   ],
   [
+    "mask-outlines",
+    "Mask outlines view",
+    "View",
+    ""
+  ],
+  [
     "canvas-scrollbars",
     "Show canvas scrollbars",
     "View",
