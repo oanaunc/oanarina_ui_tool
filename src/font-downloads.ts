@@ -1,0 +1,36 @@
+/** Headless limits and scheduling for local font acquisition. No document state is stored here. */
+export interface FontFamily {family:string;category:string;subsets:string[];weights:number[];italicWeights?:number[];axes:{tag:string;min:number;max:number;defaultValue?:number}[];popularity:number;designers:string[];bundled:boolean;}
+export const FONT_CATALOG_BYTES=4_000_000, FONT_FAMILY_BYTES=64_000_000, FONT_FAMILY_FILES=256;
+function text(v:unknown,max:number){return typeof v==='string'&&!!v.trim()&&v.length<=max&&!/[\x00-\x1f<>]/.test(v);}
+export function validateFontCatalog(value:unknown):FontFamily[]{
+ const data=value as {families?:unknown};if(!data||typeof data!=='object'||!Array.isArray(data.families)||!data.families.length||data.families.length>5000)throw Error('Invalid installed font catalog.');
+ if(new TextEncoder().encode(JSON.stringify(value)).byteLength>FONT_CATALOG_BYTES)throw Error('The installed font catalog exceeds 4 MB.');
+ const seen=new Set<string>();for(const raw of data.families){const f=raw as FontFamily;if(!f||typeof f!=='object'||!text(f.family,150)||seen.has(f.family)||!text(f.category,64)||typeof f.bundled!=='boolean'||!Number.isFinite(f.popularity)||f.popularity<0)throw Error('Invalid or duplicate catalog family.');seen.add(f.family);
+ for(const [list,max,len] of [[f.subsets,100,80],[f.designers,100,200]] as const)if(!Array.isArray(list)||list.length>max||list.some(v=>!text(v,len)))throw Error('Invalid catalog family labels.');
+ for(const list of [f.weights,f.italicWeights??[]])if(!Array.isArray(list)||list.length>100||new Set(list).size!==list.length||list.some(w=>!Number.isInteger(w)||w<1||w>1000))throw Error('Invalid catalog font weights.');
+ if(!Array.isArray(f.axes)||f.axes.length>32||new Set(f.axes.map(a=>a?.tag)).size!==f.axes.length||f.axes.some(a=>!a||typeof a.tag!=='string'||!/^[A-Za-z0-9]{4}$/.test(a.tag)||!Number.isFinite(a.min)||!Number.isFinite(a.max)||a.min>a.max||Math.abs(a.min)>1e6||Math.abs(a.max)>1e6||a.tag==='wght'&&(a.min<1||a.max>1000)||a.defaultValue!==undefined&&(!Number.isFinite(a.defaultValue)||a.defaultValue<a.min||a.defaultValue>a.max)))throw Error('Invalid catalog font axes.');
+ }
+ return structuredClone(data.families) as FontFamily[];
+}
+/** Refresh shares an outstanding request and keeps the last good snapshot if reload fails. */
+export function createFontCatalogLoader(read:()=>Promise<unknown>){let value:FontFamily[]|undefined,pending:Promise<FontFamily[]>|undefined;return {get(refresh=false):Promise<FontFamily[]>{if(pending)return pending;if(value&&!refresh)return Promise.resolve(value);pending=Promise.resolve().then(read).then(validateFontCatalog).then(next=>value=next).finally(()=>pending=undefined);return pending;}};}
+export type FontDownloadState='queued'|'active'|'ready'|'failed'|'canceled';
+export interface FontDownloadEntry {id:number;family:string;state:FontDownloadState;message?:string;cancelable?:boolean;}
+export function fontAbort(){return new DOMException('Font download canceled. Already registered faces remain usable.','AbortError');}
+export function checkFontAbort(signal:AbortSignal){if(signal.aborted)throw fontAbort();}
+export function createFontDownloadQueue(worker:(family:string,signal:AbortSignal,seal:()=>void)=>Promise<void>,concurrency=3,queueLimit=64){
+ if(!Number.isInteger(concurrency)||concurrency<1||concurrency>8||!Number.isInteger(queueLimit)||queueLimit<1||queueLimit>1000)throw Error('Invalid font queue limits.');
+ type Job={entry:FontDownloadEntry;controller:AbortController;promise:Promise<void>;resolve:()=>void;reject:(e:unknown)=>void};const jobs=new Map<string,Job>(),listeners=new Set<()=>void>();let serial=0,active=0,snapshot:FontDownloadEntry[]=[];
+ const emit=()=>{snapshot=[...snapshot];for(const fn of listeners)fn();};
+ const update=(job:Job,state:FontDownloadState,message?:string)=>{job.entry={...job.entry,state,...(message?{message}:{})};snapshot=snapshot.map(e=>e.id===job.entry.id?job.entry:e);emit();};
+ const prune=()=>{const finished=snapshot.filter(e=>!['active','queued'].includes(e.state)).slice(-40),ids=new Set(finished.map(e=>e.id));snapshot=snapshot.filter(e=>['active','queued'].includes(e.state)||ids.has(e.id));};
+ const pump=()=>{for(const job of jobs.values()){if(active>=concurrency)break;if(job.entry.state!=='queued')continue;active++;update(job,'active');void Promise.resolve().then(()=>{checkFontAbort(job.controller.signal);return worker(job.entry.family,job.controller.signal,()=>{checkFontAbort(job.controller.signal);job.entry={...job.entry,cancelable:false};snapshot=snapshot.map(e=>e.id===job.entry.id?job.entry:e);emit();});}).then(()=>{checkFontAbort(job.controller.signal);update(job,'ready');job.resolve();},error=>{update(job,job.controller.signal.aborted?'canceled':'failed',job.controller.signal.aborted?fontAbort().message:error instanceof Error?error.message:String(error));job.reject(job.controller.signal.aborted?fontAbort():error);}).catch(error=>{update(job,'canceled',fontAbort().message);job.reject(error);}).finally(()=>{active--;jobs.delete(job.entry.family);prune();emit();pump();});}};
+ return {subscribe(fn:()=>void){listeners.add(fn);return()=>{listeners.delete(fn);};},getSnapshot:()=>snapshot,has:(family:string)=>jobs.has(family),enqueue(family:string){if(!text(family,150))return Promise.reject(Error('Invalid font family.'));const current=jobs.get(family);if(current)return current.promise;if([...jobs.values()].filter(j=>j.entry.state==='queued').length>=queueLimit)return Promise.reject(Error('Font queue is full. Wait for a download or cancel a queued family.'));let resolve!:()=>void,reject!:(e:unknown)=>void;const promise=new Promise<void>((a,b)=>{resolve=a;reject=b;}),job:Job={entry:{id:++serial,family,state:'queued',cancelable:true},controller:new AbortController(),promise,resolve,reject};jobs.set(family,job);snapshot=[...snapshot,job.entry];emit();pump();return promise;},cancel(family:string){const job=jobs.get(family);if(!job||job.entry.cancelable===false)return;job.controller.abort();if(job.entry.state==='queued'){update(job,'canceled',fontAbort().message);jobs.delete(family);job.reject(fontAbort());prune();emit();pump();}}};
+}
+/** Read actual streamed bodies within a byte cap, instead of trusting Content-Length. */
+export async function boundedFontResponse(response:Response,limit:number,signal?:AbortSignal):Promise<ArrayBuffer>{
+ if(!response.ok)throw Error('Font download failed. Check your internet connection.');const chunks:Uint8Array[]=[];let size=0;
+ if(response.body){const reader=response.body.getReader();try{while(true){if(signal)checkFontAbort(signal);const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>limit)throw Error('Font response exceeds its byte limit.');chunks.push(value);}}catch(error){await reader.cancel().catch(()=>{});throw error;}finally{reader.releaseLock();}}
+ else {const bytes=new Uint8Array(await response.arrayBuffer());size=bytes.length;if(size>limit)throw Error('Font response exceeds its byte limit.');chunks.push(bytes);}
+ if(signal)checkFontAbort(signal);const out=new Uint8Array(size);let offset=0;for(const chunk of chunks){out.set(chunk,offset);offset+=chunk.length;}return out.buffer;
+}

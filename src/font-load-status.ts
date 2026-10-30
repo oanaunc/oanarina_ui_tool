@@ -1,7 +1,7 @@
 import {create} from 'zustand';
 export type FontLoadSource='catalog'|'lookup'|'cache'|'bundled'|'google'|'embedded'|'imported';
 export type FontLoadPhase='checking'|'downloading'|'registering';
-export type FontLoadResult='ready'|'failed'|'unavailable'|'superseded';
+export type FontLoadResult='ready'|'failed'|'unavailable'|'superseded'|'canceled';
 export interface FontLoadEntry {id:number;family:string;source:FontLoadSource;phase:FontLoadPhase;result?:FontLoadResult;message?:string;}
 export const FONT_LOAD_HISTORY_LIMIT=40;
 let serial=0;
