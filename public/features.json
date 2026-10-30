@@ -2655,9 +2655,9 @@
     "name": "Resize frame to fit content",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Single-frame inspector fits free-layout frames to direct-child rectangular bounds, including hidden layers; preserves descendant world geometry, size and original constraint fields with one Undo/save. Stroke/effect padding and overflowing grandchildren are excluded. Managed/motion/generated/auto-layout contexts or invalid composed geometry are refused atomically. Core and production browser tests; docs/FRAME-WORKFLOWS.md. Reference verification pending."
+    "notes": "Unreleased source: single-frame inspector offers explicit direct-child or all-descendant geometry bounds, including hidden/clipped nested overflow. Direct-child remains default; every descendant world transform/size and direct constraint metadata is preserved through shared derivation, Undo/save/reopen. Cached bounded hierarchy, live selector/context proof and final frame/content signatures reject stale/controllers atomically. Partial: layer rectangles, without paint-tight stroke/effect/occlusion fitting; all-descendant mask/liveBoolean/slice roles refuse. 2,000 subtree layers/20,000 page layers/1,024 ancestors. docs/FRAME-WORKFLOWS.md; core and browser checks. Native/reference verification pending."
   },
   {
     "id": "UI-09-026",
@@ -6327,7 +6327,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Interactive inspector crop preview supports pan/scale and one undoable commit with cancellation; a full on-canvas crop overlay and perspective engine remain unfinished Evidence and limits: docs/IMAGE-EDITING.md. Exact Figma reference verification remains pending."
+    "notes": "Unreleased source: existing inspector crop plus actual on-canvas image-fill pan/scale, transformed source-box handles, keyboard control and explicit Exit/help. Full shared canvas scene retains masks/clips/adjustments; draft stays unsaved until one release edit with Undo/save/reopen. Stale contexts, pointer cancellation, blur and Escape discard drafts; no-op limits preserve history/style links. Linked component instances update on release, as disclosed. Partial: supported full-box shapes/containers and complete ellipses in Fill/Crop mode; arbitrary text/path/partial-arc boxes, image strokes, Fit/Tile/Stretch canvas editing and perspective remain excluded. docs/CANVAS-IMAGE-CROP.md; docs/IMAGE-EDITING.md; core/browser pixel checks. Native/reference verification pending."
   },
   {
     "id": "UI-20-013",
@@ -7374,10 +7374,10 @@
     "category": "Advanced typography",
     "name": "Hanging quotation marks",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: optional layer/paragraph hangingQuotes controls measure quotation advances outside LTR physical left/right body edges, with body wrapping/auto-width, shared SVG/mask/export bounds, source/range preservation, style/component/clipboard/MCP validation and Undo/save/reopen. Partial: literal ASCII/curly/guillemet paragraph edges; lists, centered/justified text, RTL/bidi, interior tabs and ellipsis tails retain normal placement. Conservative ink bounds and font/fallback limits; editable Bridge reports omitted optical offsets, SVG retains displayed geometry. docs/HANGING-QUOTATION-MARKS.md; core/browser pixels, malformed metadata/retained-context/MCP checks. Native/reference verification pending."
   },
   {
     "id": "UI-22-046",
