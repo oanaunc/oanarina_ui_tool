@@ -15,7 +15,7 @@ function editableFrame(nodes:DesignNode[],id:string,doc?:DesignDocument){
  return frame;
 }
 function checkedSize(n:DesignNode,width:number,height:number){if(!Number.isFinite(width)||!Number.isFinite(height)||width<1||height<1||width>1e6||height>1e6||width<(n.minWidth??0)||width>(n.maxWidth??1e6)||height<(n.minHeight??0)||height>(n.maxHeight??1e6))throw Error('The resulting frame size conflicts with its size limits.');}
-function finiteFitGeometry(width:number,height:number,matrix:Matrix){if(![width,height,...matrix].every(Number.isFinite))throw Error('This frame hierarchy has nonfinite world geometry. Reduce its nested scales before fitting.');}
+function finiteFitGeometry(width:number,height:number,matrix:Matrix){if(![width,height,...matrix].every(Number.isFinite)||[[0,0],[width,0],[width,height],[0,height]].some(([x,y])=>{const p=point(matrix,x,y);return !Number.isFinite(p.x)||!Number.isFinite(p.y);}))throw Error('This frame hierarchy has nonfinite world geometry. Reduce its nested scales before fitting.');}
 /** Direct visible unlocked children, in front-to-back layer order. Nested descendants are not included. */
 export function frameContentsSelection(nodes:DesignNode[],id:string){const frame=nodes.find(n=>n.id===id);if(!frame||frame.type!=='frame')throw Error('Select one frame.');return nodes.filter(n=>n.parentId===id&&effectiveVisible(n,nodes)&&!isLocked(n,nodes)).reverse().map(n=>n.id);}
 

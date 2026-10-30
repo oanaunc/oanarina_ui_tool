@@ -23,3 +23,5 @@ Fit remains **partial**: it supports ordinary free-layout frames, not auto-layou
 Isolated branch validation: full `npm test` passed 662 tests in 66 files; `npm run build` passed; all four new browser checks passed against the production build. Native build/smoke and feature-register reconciliation belong to integration of this source batch, not a claim of an already shipped Mac release.
 
 Independent-review follow-up: finite source and candidate dimensions/matrix entries are checked explicitly before tolerance comparisons, including the fitted frame. Thirteen frame core tests now pass, including a valid .oui hierarchy with 82 nested scales that overflows only after world-transform composition and an atomic refused store transaction. TypeScript compilation also passes for this follow-up.
+
+The finite check also covers all four transformed layer corners: finite matrix entries alone do not guarantee that a large rectangle has finite world bounds. A 77-level synthetic hierarchy with finite world coefficients near 1e308 and a large final rectangle now refuses atomically. All 14 frame core tests and TypeScript compilation pass after this boundary regression.
