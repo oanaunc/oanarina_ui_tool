@@ -1,0 +1,5 @@
+/** Integrate world-coordinate pointer deltas so changing precision never rescales prior travel. */
+export interface PrecisionPointer {raw:{x:number;y:number};value:{x:number;y:number};}
+export function precisionPointer(start:{x:number;y:number}):PrecisionPointer{if(![start.x,start.y].every(Number.isFinite))throw Error('Invalid pointer coordinates.');return {raw:{...start},value:{...start}};}
+export function advancePrecisionPointer(state:PrecisionPointer,raw:{x:number;y:number},fine:boolean):PrecisionPointer{if(![raw.x,raw.y,state.raw.x,state.raw.y,state.value.x,state.value.y].every(Number.isFinite))throw Error('Invalid pointer coordinates.');const factor=fine?.1:1;return {raw:{...raw},value:{x:state.value.x+(raw.x-state.raw.x)*factor,y:state.value.y+(raw.y-state.raw.y)*factor}};}
+export function rotationFeedback(angle:number|undefined,delta:number){if(!Number.isFinite(delta)||angle!==undefined&&!Number.isFinite(angle))throw Error('Invalid rotation feedback.');const number=(n:number)=>String(Number(n.toFixed(2))),change=(delta>0?'+':'')+number(delta)+'°';return angle===undefined?'Rotation change '+change:'Rotation '+number(angle)+'° · Change '+change;}
