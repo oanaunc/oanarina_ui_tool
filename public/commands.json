@@ -516,6 +516,18 @@
     ""
   ],
   [
+    "canvas-scrollbars",
+    "Show canvas scrollbars",
+    "View",
+    ""
+  ],
+  [
+    "overview-minimap",
+    "Show overview minimap",
+    "View",
+    ""
+  ],
+  [
     "previous-viewport",
     "Previous viewport",
     "View",

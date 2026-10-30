@@ -4,7 +4,7 @@ import type {DesignNode,NodeKind} from './model';
 /** User preferences are local to this app/browser origin and never serialized in .oui. */
 export interface EditorPreferences {
  smallNudge:number;largeNudge:number;rotationSnapIncrement:number;
- showFrameNames:boolean;showSectionNames:boolean;
+ showFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;
  keepDrawingTool:boolean;hoverHighlight:boolean;showSelectionDimensions:boolean;
  wheelZoom:boolean;zoomSensitivity:number;invertZoom:boolean;rightButtonPan:boolean;
  defaultFrameFill:string;defaultShapeFill:string;defaultShapeStrokeEnabled:boolean;
@@ -15,7 +15,7 @@ export interface EditorPreferences {
 export const PREFERENCES_KEY='oui-preferences';
 export const defaultPreferences:Readonly<EditorPreferences>=Object.freeze({
  smallNudge:1,largeNudge:10,rotationSnapIncrement:15,
- showFrameNames:true,showSectionNames:true,
+ showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,
  keepDrawingTool:false,hoverHighlight:true,showSelectionDimensions:true,
  wheelZoom:false,zoomSensitivity:1,invertZoom:false,rightButtonPan:false,
  defaultFrameFill:'#ffffff',defaultShapeFill:'#d8c9f2',defaultShapeStrokeEnabled:false,
@@ -43,7 +43,7 @@ export function validatePreferences(value:unknown):EditorPreferences {
 let cached:Readonly<EditorPreferences>|undefined,lastRaw:string|null|undefined;
 const listeners=new Set<()=>void>();
 function rawPreferences(){try{return typeof localStorage==='undefined'?null:localStorage.getItem(PREFERENCES_KEY);}catch{return null;}}
-function decode(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{showFrameNames:true,showSectionNames:true},...data.values}));}catch{return defaultPreferences;}}
+function decode(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false},...data.values}));}catch{return defaultPreferences;}}
 export function getPreferences():Readonly<EditorPreferences>{const raw=rawPreferences();if(!cached||raw!==lastRaw){lastRaw=raw;cached=decode(raw);}return cached;}
 function emit(){for(const listener of [...listeners])listener();}
 /** Re-read local storage, including changes made by another app window. */

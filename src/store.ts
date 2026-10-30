@@ -1,7 +1,7 @@
 import {validateDocumentMetadata} from './document-metadata';
 import {moveDocumentLayers} from './move-layers';
 import {constrainAspectPatch} from './transform-controls';
-import {defaultPageCamera,PageViewportCache} from './page-viewports';
+import {defaultPageCamera,PageViewportCache,validPageCamera} from './page-viewports';
 import {CanvasNavigation} from './canvas-navigation';
 import {canvasSelectionBounds} from './canvas-geometry';
 import {duplicateDocumentPage,reorderDocumentPage,removeDocumentPage} from './pages';
@@ -33,7 +33,7 @@ import {updateTextMetrics} from './text-layout';
 import {sampleDocument} from './sample';
 const clone=<T,>(a:T):T=>structuredClone(a);
 interface EditorState {
- doc:DesignDocument;pageId:string;selection:string[];tool:Tool;zoom:number;pan:{x:number;y:number};viewportRestored:boolean;previousViewport:boolean;nextViewport:boolean;
+ doc:DesignDocument;pageId:string;selection:string[];tool:Tool;zoom:number;pan:{x:number;y:number};viewportRestored:boolean;previousViewport:boolean;nextViewport:boolean;cameraGesture:number|null;
  past:DesignDocument[];future:DesignDocument[];clipboard:DesignNode[];clipboardWhiteboard?:WhiteboardClipboard;clipboardOrigin?:{x:number;y:number};clipboardWorld?:Record<string,Matrix>;clipboardSwapProperties?:Record<string,string[]>;clipboardComponentSets?:ComponentSet[];clipboardSlideRoles?:Record<string,SlideRole>;savedAt:string;toast:string;
  motionOpen:boolean;motionTime:number;motionPlaying:boolean;autoKey:boolean;recoveryAt:string;fontRevision:number;grid:boolean;snap:boolean;outlines:boolean;rulers:boolean;uiHidden:boolean;mode:'design'|'prototype'|'inspect';
  vectorEditId:string|null;vectorSelection:string[];modal:string|null;leftTab:'layers'|'assets';home:boolean;search:string;theme:'dark'|'light';
@@ -43,26 +43,35 @@ interface EditorState {
  add:(type:NodeKind,props?:Partial<DesignNode>)=>string;remove:()=>void;duplicate:()=>void;copy:()=>void;paste:(parentId?:string,preserveParents?:boolean)=>void;
  group:(type?:NodeKind)=>void;ungroup:()=>void;align:(dir:string,reference?:ArrangeReference)=>void;order:(dir:string)=>void;
  refreshFonts:()=>void;newDocument:(sample?:boolean)=>void;load:(d:DesignDocument)=>void;addPage:()=>void;deletePage:(id?:string)=>void;selectPage:(id:string)=>void;duplicatePage:(id?:string)=>void;reorderPage:(id:string,index:number)=>void;moveSelectionToPage:(id:string)=>void;
+ beginCameraGesture:()=>number;updateCameraGesture:(token:number,camera:{zoom:number;pan:{x:number;y:number}})=>boolean;finishCameraGesture:(token:number,cancel?:boolean)=>boolean;
  setCamera:(camera:{zoom?:number;pan?:{x:number;y:number}})=>void;navigateViewport:(direction:-1|1)=>void;findSelection:()=>void;
  select:(id:string,extend?:boolean)=>void;fit:(selected?:boolean)=>void;move:(dx:number,dy:number)=>void;
 }
 let timer:ReturnType<typeof setTimeout>;
 export const useEditor=create<EditorState>((commit,get)=>{
  const navigation=new CanvasNavigation();
+ let cameraGeneration=0,activeCameraGesture:{token:number;doc:DesignDocument;pageId:string;camera:{zoom:number;pan:{x:number;y:number}}}|undefined;
  const viewports=new PageViewportCache();let viewportTracking=false,detachViewports:(()=>void)|undefined;
  const loadPage=(d:DesignDocument)=>{if(d.workspace==='slides'&&d.slides)return d.slides.pageId;const id=viewports.lastPage(d.id);return d.pages.some(p=>p.id===id)?id!:d.pages[0].id;};
  const set=(update:Partial<EditorState>|((state:EditorState)=>Partial<EditorState>),restore=false,discrete=false,replay=false)=>{
-  const before=get(),delta=typeof update==='function'?update(before):{...update},next={...before,...delta};
+  const before=get(),delta=typeof update==='function'?update(before):{...update};let next={...before,...delta},historyBefore=before,cancelledCamera=false;
   if(!next.doc.pages.some(p=>p.id===next.pageId)){next.pageId=loadPage(next.doc);delta.pageId=next.pageId;}
   const changedPage=next.doc.id!==before.doc.id||next.pageId!==before.pageId;
+  if(activeCameraGesture&&!replay&&(restore||changedPage||discrete&&('zoom' in delta||'pan' in delta)||next.doc!==before.doc||next.zoom!==before.zoom||next.pan.x!==before.pan.x||next.pan.y!==before.pan.y||next.motionOpen!==before.motionOpen||next.motionTime!==before.motionTime||next.modal!==before.modal||next.home!==before.home||next.uiHidden!==before.uiHidden)){
+   const gesture=activeCameraGesture;activeCameraGesture=undefined;delta.cameraGesture=null;
+   if(viewportTracking&&gesture.doc.workspace!=='slides')viewports.rememberCamera(gesture.doc.id,gesture.pageId,gesture.camera);
+   const explicitCamera=next.zoom!==before.zoom||next.pan.x!==before.pan.x||next.pan.y!==before.pan.y;
+   if(!restore&&!changedPage&&!explicitCamera){Object.assign(delta,gesture.camera);next={...before,...delta};cancelledCamera=true;}
+   else if(explicitCamera)historyBefore={...before,...gesture.camera};
+  }
   if(restore||changedPage){const camera=next.doc.workspace==='slides'?undefined:viewports.camera(next.doc.id,next.pageId);Object.assign(delta,camera??defaultPageCamera(),{viewportRestored:!!camera});if(viewportTracking&&!restore&&next.doc.workspace!=='slides')viewports.rememberPage(next.doc.id,next.pageId);}
   else if(viewportTracking&&next.doc.workspace!=='slides'&&(next.zoom!==before.zoom||next.pan.x!==before.pan.x||next.pan.y!==before.pan.y))viewports.rememberCamera(next.doc.id,next.pageId,{zoom:next.zoom,pan:next.pan});
   if(restore||changedPage){navigation.reset({...next,...delta});Object.assign(delta,{previousViewport:false,nextViewport:false});}
-  else if(next.zoom!==before.zoom||next.pan.x!==before.pan.x||next.pan.y!==before.pan.y){if(!replay)navigation.record(before,next,Date.now(),discrete);Object.assign(delta,{previousViewport:navigation.previous,nextViewport:navigation.next});}
+  else if(next.zoom!==before.zoom||next.pan.x!==before.pan.x||next.pan.y!==before.pan.y){if(!replay&&!cancelledCamera)navigation.record(historyBefore,next,Date.now(),discrete);Object.assign(delta,{previousViewport:navigation.previous,nextViewport:navigation.next});}
   commit(delta);
  };
  const doc=sampleDocument();
- return {doc,pageId:doc.pages[0].id,selection:[],tool:'move',zoom:.7,pan:{x:12,y:16},viewportRestored:false,previousViewport:false,nextViewport:false,past:[],future:[],clipboard:[],savedAt:'',toast:'',motionOpen:false,motionTime:0,motionPlaying:false,autoKey:false,recoveryAt:'',fontRevision:0,grid:false,snap:true,outlines:false,rulers:false,uiHidden:false,mode:'design',vectorEditId:null,vectorSelection:[],modal:null,leftTab:'layers',home:false,search:'',theme:'dark',
+ return {doc,pageId:doc.pages[0].id,selection:[],tool:'move',zoom:.7,pan:{x:12,y:16},viewportRestored:false,previousViewport:false,nextViewport:false,cameraGesture:null,past:[],future:[],clipboard:[],savedAt:'',toast:'',motionOpen:false,motionTime:0,motionPlaying:false,autoKey:false,recoveryAt:'',fontRevision:0,grid:false,snap:true,outlines:false,rulers:false,uiHidden:false,mode:'design',vectorEditId:null,vectorSelection:[],modal:null,leftTab:'layers',home:false,search:'',theme:'dark',
  enablePageViewports:()=>{if(viewportTracking)return;viewportTracking=true;if(typeof window!=='undefined')detachViewports=viewports.attach(window);},
  disablePageViewports:()=>{viewportTracking=false;detachViewports?.();detachViewports=undefined;viewports.flush();},
  set:(p)=>{set(p);if(p.toast){clearTimeout(timer);timer=setTimeout(()=>set({toast:''}),4000);}},
@@ -91,8 +100,11 @@ export const useEditor=create<EditorState>((commit,get)=>{
  duplicatePage:(id=get().pageId)=>{const s=get(),result=duplicateDocumentPage(s.doc,id),camera=id===s.pageId?{zoom:s.zoom,pan:s.pan}:viewports.camera(s.doc.id,id)??defaultPageCamera();s.edit(d=>Object.assign(d,result.document));if(viewportTracking&&s.doc.workspace!=='slides')viewports.rememberCamera(s.doc.id,result.pageId,camera);get().selectPage(result.pageId);},
  reorderPage:(id,index)=>{const s=get(),doc=reorderDocumentPage(s.doc,id,index);if(doc!==s.doc)s.edit(d=>Object.assign(d,doc));},
  deletePage:(id=get().pageId)=>{const s=get();if(s.doc.pages.length<=1)return;const index=s.doc.pages.findIndex(p=>p.id===id),doc=removeDocumentPage(s.doc,id);s.edit(d=>Object.assign(d,doc));get().selectPage(id===s.pageId?doc.pages[Math.min(index,doc.pages.length-1)].id:s.pageId);},
+ beginCameraGesture:()=>{if(activeCameraGesture)get().finishCameraGesture(activeCameraGesture.token,true);const s=get(),token=++cameraGeneration;activeCameraGesture={token,doc:s.doc,pageId:s.pageId,camera:{zoom:s.zoom,pan:{...s.pan}}};commit({cameraGesture:token});return token;},
+ updateCameraGesture:(token,camera)=>{const s=get(),gesture=activeCameraGesture;if(!gesture||gesture.token!==token||gesture.doc!==s.doc||gesture.pageId!==s.pageId||!validPageCamera(camera))return false;set(camera,false,false,true);return true;},
+ finishCameraGesture:(token,cancel=false)=>{const gesture=activeCameraGesture,s=get();if(!gesture||gesture.token!==token||gesture.doc!==s.doc||gesture.pageId!==s.pageId)return false;activeCameraGesture=undefined;if(cancel)set({...gesture.camera,cameraGesture:null},false,false,true);else{navigation.record(gesture.camera,s,Date.now(),true);commit({cameraGesture:null,previousViewport:navigation.previous,nextViewport:navigation.next});}return true;},
  setCamera:(camera)=>set(camera,false,true),
- navigateViewport:(direction)=>{const camera=navigation.move(direction);if(camera)set({...camera,previousViewport:navigation.previous,nextViewport:navigation.next},false,false,true);},
+ navigateViewport:(direction)=>{if(activeCameraGesture)get().finishCameraGesture(activeCameraGesture.token,true);const camera=navigation.move(direction);if(camera)set({...camera,previousViewport:navigation.previous,nextViewport:navigation.next},false,false,true);},
  findSelection:()=>{const s=get(),page=s.doc.pages.find(p=>p.id===s.pageId)!,ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,ids=s.selection.filter(id=>{const n=ns.find(n=>n.id===id);return n&&effectiveVisible(n,ns);});if(!ids.length)throw Error('Select a visible layer to find on the canvas.');const b=canvasSelectionBounds(ns,ids),el=typeof document==='undefined'?null:document.querySelector('[data-canvas]'),w=el?.clientWidth??1000,h=el?.clientHeight??750,z=Math.max(.05,Math.min(s.zoom,Math.max(80,w-80)/Math.max(1,b.width),Math.max(80,h-100)/Math.max(1,b.height)));set({zoom:z,pan:{x:w/2-(b.x+b.width/2)*z,y:h/2-(b.y+b.height/2)*z}},false,true);},
  select:(id,extend=false)=>set(s=>({selection:extend?s.selection.includes(id)?s.selection.filter(a=>a!==id):[...s.selection,id]:[id]})),
  fit:(selected=false)=>{const s=get(),ns=s.doc.pages.find(p=>p.id===s.pageId)!.nodes.filter(n=>n.visible&&(!selected||s.selection.includes(n.id))),b=bounds(ns);const el=document.querySelector('[data-canvas]'),w=el?.clientWidth??1000,h=el?.clientHeight??750,z=Math.max(.05,Math.min(Math.max(80,w-60)/(b.width||1),Math.max(80,h-120)/(b.height||1),2));set({zoom:z,pan:{x:(w-b.width*z)/2-b.x*z,y:(h-b.height*z)/2-b.y*z-20}},false,true);},
