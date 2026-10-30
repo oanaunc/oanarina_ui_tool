@@ -1,0 +1,35 @@
+# Signed vector offsets
+
+Unreleased source workflow for UI-14-039 and UI-14-040. It does not establish complete Figma parity, exact cubic offsets, a native desktop reference round trip or a packaged release.
+
+## Reachable workflow
+
+Select one leaf vector and choose **Vector → Offset vector path…**, use the action search, or choose the same control while editing its points. Enter a signed distance and choose the join treatment. Two actual local SVG image documents show the original and proposed artwork at a shared viewport/scale. Their masks, gradients and filters have isolated definition namespaces because they are separate image documents; they cannot overwrite Canvas definitions.
+
+**Apply vector offset** replaces the selected layer geometry in one transaction. Its identity, parent, appearance, mask metadata and other saved properties remain; Undo/Redo and `.oui` v1/v2 parsing preserve the result. No new model fields or dependencies are introduced. Cancel, Escape or invalidating context discards the proposal, with no document/history change. The previews are not inserted into saves or exports. Ordinary SVG/PNG/JPG exports use the resulting saved path through the shared renderer.
+
+## Geometry and units
+
+- For closed contours, positive distance expands the filled region and shrinks holes. Negative distance contracts the region and expands holes. A hole can disappear; a narrow bridge can split into islands. A negative distance that removes the entire shape is refused rather than deleting the layer.
+- Open contours remain open parallel paths. Positive distance uses the normal `(dy, -dx)` of travel: a left-to-right horizontal line moves upward. Negative uses the other side. The endpoints shift with their adjoining edge and are not extended with stroke caps. An inside offset that reverses a short edge, or an offset that crosses/overlaps itself, is refused.
+- Distance uses the source layer's **parent coordinate units**. The layer's own rotation, reflection, path scale and motion-scale fields are baked into normalized output geometry. Ancestor transforms remain, so a nonuniformly scaled parent can make the displayed world-space distance nonuniform. This matches the document's parent-space geometry operations rather than promising a constant screen-pixel offset.
+- Source cubic curves are adaptively flattened using a control-hull deviation tolerance of **0.25 parent units**, with a strict point budget checked while subdividing. Closed offsets build a boundary buffer from segment rectangles and corner geometry, then use Paper Boolean union/subtraction and winding normalization. Original even-odd or nonzero hole semantics are retained in canonical nonzero output. This is a bounded approximate curve offset, not an exact analytic parallel cubic.
+- **Round** uses circular corner buffers/outer arcs represented by cubic curves. **Square · miter, limit 4** produces sharp intersections up to four times the absolute distance, then a bevel fallback. That option is a mitered join, **not a verified true square/clipped-square join algorithm**. UI-14-041 remains partial. Round and miter behavior have actual geometry and pixel coverage; exact Figma corner/reference behavior remains pending.
+
+Self-crossing, overlapping/touching contours, mixed open/closed compounds, duplicate/reversing/degenerate geometry, and live boolean results are refused before document mutation. Concave simple regions, disjoint islands and nested holes are supported through Boolean buffer cleanup; unresolved or touching output contours are refused. Stroke thickness, dash/cap geometry, arrowhead outlines, effect expansion and stroke outlining are separate operations. Offset geometry can change how relative gradient/image fills map to the new bounds, as with other normalized geometry operations.
+
+## Preview, guards and limits
+
+Preview retains the available source appearance, ancestor transforms/clips and sibling mask context. Selecting a mask source also includes its affected following siblings, so expanding the mask shows the affected artwork rather than an empty mask-only export. SVG image previews are fixed to 600 × 360 pixels; they use the same renderer as export. They inherit its font/image/mask/export-fidelity limitations and remain entirely local. No external user image or project is uploaded.
+
+Visible unlocked leaf paths, rectangles, ellipses, polygons, stars, lines and arrows are accepted. Hidden/inherited-locked targets, managed instance children, containers, Motion, non-Design mode and Slides are refused. Captured document/page/selection, target/tool/vector-edit state, camera, modal, Home/UI visibility and workspace mode must remain current. Window blur or hidden-document visibility expires the proposal. Apply recomputes validated geometry and rejects any component/layout derivation that overwrites it, atomically. Layout-managed geometry may need to be detached from layout rules before offsetting.
+
+Bounds: signed distance −10,000…10,000, minimum magnitude 0.001; at most 32 contours and 512 input points; source path-data length 200,000; adaptive flattening stops before exceeding 512 total points; output at most 4,096 points and 32 contours; all supported projected geometry and output controls within ±1,000,000. Preview context is capped at 2,000 layers and a selected mask source at 500 affected sibling roots. Large/complex shapes must be simplified or offset separately. These are explicit limits, not an assertion that arbitrary imported Figma paths are supported.
+
+## Validation and register recommendation
+
+- **1,179 core tests across 105 files**, including 31 offset-specific cases for signed bounds/area, round/miter corners and long-miter bevel fallback, winding/holes, concavity/island splitting, transformed parent-space geometry, curved/open paths, edge reversal and unsupported topology, bounded flattening, Undo/Redo, old/new parse, stale/protected/derived-context refusal and isolated source/mask previews.
+- **23 actual Chromium interactions pass**: 13 new offset cases plus 10 existing vector workflow regressions. They exercise menu/point-tool entry, focus, live real previews, saved-file immutability, one-step Undo/Redo and recovery reload, signed distances, holes, round/miter and exported SVG pixels, transformed geometry, open endpoints, gradient definition isolation, selected mask source/ancestor clip pixels, cancellation/context invalidation and invalid-input refusal.
+- Editor TypeScript and MCP source TypeScript validation pass. Native WKWebView and Figma reference acceptance are unverified with builds frozen. No native IPC, release/package/archive, version, website or central feature register changes are part of this commit.
+
+UI-14-039 and UI-14-040: **implemented for the bounded, approximate workflows above**, with reference verification pending. UI-14-041: **partial** because round and mitered sharp joins exist while true square join parity remains absent. UI-14-034 stroke outlining remains unchanged/planned.

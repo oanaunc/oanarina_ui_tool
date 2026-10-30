@@ -1,4 +1,5 @@
 import {useMaskView} from './mask-view';
+import {openVectorOffset} from './vector-offset-actions';
 import {openAssetUsage} from './asset-usage-entry';
 import {repeatShapeState} from './shape-drawing';
 
@@ -24,6 +25,7 @@ import {descendants,effectiveVisible,isLocked,node} from './model';
 import type {DesignNode,Tool} from './model';
 export const commands=[
  ['slice-manager','Slices and exports…','File',''],['toggle-slices','Show / hide slices','View',''],
+ ['vector-offset','Offset vector path…','Vector',''],
  ['selection-box','Select layers in box…','Edit','⌥⌘B'],['document-outline','Document outline…','View','⌥⌘L'],['keyboard-insert','Insert layer with keyboard…','Object','⌥⌘N'],
  ['repeat-shape-tool','Repeat last shape tool','Tools','⌥R'],
  ['tool-move','Move tool','Tools','V'],['tool-frame','Frame tool','Tools','F'],['tool-section','Section tool','Tools','⇧S'],['tool-slice','Slice tool','Tools','S'],['tool-rectangle','Rectangle tool','Tools','R'],['tool-ellipse','Ellipse tool','Tools','O'],['tool-line','Line tool','Tools','L'],['tool-arrow','Arrow tool','Tools','⇧L'],['tool-polygon','Polygon tool','Tools',''],['tool-star','Star tool','Tools',''],['tool-pen','Pen tool','Tools','P'],['tool-pencil','Pencil tool','Tools','⇧P'],['tool-text','Text tool','Tools','T'],['tool-hand','Hand tool','Tools','H'],['tool-scale','Scale tool','Tools','K'],['tool-comment','Comment tool','Tools','C'],
@@ -45,6 +47,7 @@ export const commands=[
 ] as const;
 export function runCommand(id:string,event?:Event){if(event&&['copy','cut','paste','copy-as-png'].includes(id))window.desktop?.beginClipboard?.(event,id);if(typeof window!=='undefined'&&window.desktop?.newWindow&&['new','new-slides','new-whiteboard','sample'].includes(id)){void window.desktop.newWindow(id).catch(notifyError);return;}if(commands.some(c=>c[0]===id))recordAction(id);if(['open','save','save-as'].includes(id)&&typeof document!=='undefined')(document.activeElement as HTMLElement|null)?.blur();const s=useEditor.getState(),ns=currentPage().nodes,sel=ns.filter(n=>s.selection.includes(n.id));
  try{if((id==='edit-vector'&&!s.vectorEditId)||id.startsWith('vector-')){if(s.motionOpen){const target=s.vectorEditId?ns.find(n=>n.id===s.vectorEditId):sel.length===1?sel[0]:undefined;if(id!=='edit-vector'||target?.type!=='path'||!Array.isArray(target.contours))throw Error('Close Motion before changing vector topology or converting geometry.');}const targets=ns.filter(n=>n.id===s.vectorEditId||s.selection.includes(n.id));if(targets.some(n=>isLocked(n,ns)))throw Error('Unlock the vector layer and its ancestors before editing geometry.');if(targets.some(n=>n.instanceRootId))throw Error('Detach the instance before editing vector geometry.');}if(id.startsWith('tool-')&&commands.some(c=>c[0]===id&&c[2]==='Tools')){s.set({tool:id.slice(5) as Tool});return;}if(s.doc.workspace==='slides'&&['paste','duplicate','delete','cut','import'].includes(id)){window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:id}));return;}switch(id){
+ case 'vector-offset':openVectorOffset();break;
  case 'repeat-shape-tool':if(s.home||s.modal||s.doc.workspace==='slides')throw Error('Open the Design or Whiteboard canvas to repeat a shape tool.');s.set(repeatShapeState(s.lastShapeTool));break;
  case 'new-slides':s.load(createSlideDocument());break;case 'new-whiteboard':s.load(createWhiteboardDocument());break;case 'new':s.newDocument();break;case 'sample':s.newDocument(true);break;case 'open':void openProject();break;case 'save':void saveProject();break;case 'save-as':void saveProject(true);break;
  case 'slice-manager':if(s.home||s.doc.workspace==='slides')throw Error('Open a Design or Whiteboard page to manage slices.');s.set({modal:'slices'});break;

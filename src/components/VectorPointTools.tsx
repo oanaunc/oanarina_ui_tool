@@ -15,6 +15,7 @@ export default function VectorPointTools({n}:{n:DesignNode}){
  return <div className="vector-point-tools"><p className="inspector-note">{s.vectorSelection.length} selected points</p>{disabled&&<p className="inspector-note">Inspector geometry controls require an unlocked layer outside instances with Motion closed.{s.motionOpen&&!isLocked(n,ns)&&!n.instanceRootId&&' Canvas anchor and handle dragging changes the base contours at the current motion time.'}</p>}
  <fieldset disabled={disabled} style={{border:0,padding:0,margin:0}}>
  <VectorBendControls n={n}/>
+ <button className="outline-button" onClick={()=>runCommand('vector-offset')}>Offset vector path…</button>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-join')}>Join</button><button className="outline-button" onClick={()=>runCommand('vector-smooth-join')}>Smooth join</button></div>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-split')}>Split at points</button><button className="outline-button" onClick={()=>runCommand('vector-heal')}>Delete and heal</button></div>
  <button className="outline-button" onClick={()=>apply(()=>closeVectorContours(n,s.vectorSelection))}>Close selected contours</button>

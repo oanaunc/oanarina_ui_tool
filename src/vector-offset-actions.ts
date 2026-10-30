@@ -1,0 +1,13 @@
+import {useEditor} from './store';
+import {captureColorContext,sameColorContext} from './color-edit-context';
+import type {ColorEditContext} from './color-edit-context';
+import {effectiveVisible,isLocked} from './model';
+import {offsetVectorPath} from './vector-offset';
+import type {OffsetJoin} from './vector-offset';
+
+export interface OffsetContext {editor:ColorEditContext;id:string;tool:string;vectorEditId:string|null;zoom:number;pan:{x:number;y:number};}
+function offsetTarget(){const s=useEditor.getState(),nodes=s.doc.pages.find(p=>p.id===s.pageId)!.nodes,n=nodes.find(n=>n.id===s.selection[0]);if(s.home||s.uiHidden||s.mode!=='design'||s.motionOpen||s.doc.workspace==='slides'||s.selection.length!==1||!n||n.instanceRootId||n.booleanOp||isLocked(n,nodes)||!effectiveVisible(n,nodes)||nodes.some(child=>child.parentId===n.id)||!['path','rectangle','ellipse','polygon','star','line','arrow'].includes(n.type)||s.vectorEditId&&s.vectorEditId!==n.id)throw Error('Select one visible, unlocked leaf vector outside instances, with Motion closed in Design mode.');return n;}
+export function openVectorOffset(){const s=useEditor.getState();offsetTarget();if(s.modal&&s.modal!=='actions')throw Error('Close the current dialog before offsetting a vector.');s.set({modal:'vector-offset'});}
+export function captureOffsetContext():OffsetContext{const s=useEditor.getState(),n=offsetTarget();if(s.modal!=='vector-offset')throw Error('Open the Offset vector path dialog again.');return {editor:captureColorContext(s),id:n.id,tool:s.tool,vectorEditId:s.vectorEditId,zoom:s.zoom,pan:{...s.pan}};}
+export function sameOffsetContext(context:OffsetContext){const s=useEditor.getState();return sameColorContext(context.editor,s)&&s.tool===context.tool&&s.vectorEditId===context.vectorEditId&&s.zoom===context.zoom&&s.pan.x===context.pan.x&&s.pan.y===context.pan.y;}
+export function commitVectorOffset(context:OffsetContext,amount:number,join:OffsetJoin){if(!sameOffsetContext(context))throw Error('The offset target changed. Close this dialog and start again.');const source=offsetTarget(),patch=offsetVectorPath(source,amount,join),s=useEditor.getState(),keys=Object.keys(patch) as (keyof typeof patch)[],snapshot=(n:typeof source)=>JSON.stringify(Object.fromEntries(keys.map(k=>[k,n[k]]))),expected=snapshot({...source,...patch});s.edit(doc=>{const n=doc.pages.find(p=>p.id===context.editor.pageId)?.nodes.find(n=>n.id===context.id);if(!n)throw Error('The offset target is no longer available.');Object.assign(n,patch);},doc=>{const n=doc.pages.find(p=>p.id===context.editor.pageId)?.nodes.find(n=>n.id===context.id);if(!n||snapshot(n)!==expected)throw Error('Component or layout rules control this geometry. Edit the source or detach it first.');});}
