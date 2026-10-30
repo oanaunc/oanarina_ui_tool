@@ -1,14 +1,14 @@
-import {useState} from 'react';
 import {ArrowDown,ArrowUp,Copy,Eye,EyeOff,Plus,X} from 'lucide-react';
-import {colorString,parseColor} from '../colors';
-import type {ColorMode} from '../colors';
+import {parseColor} from '../colors';
+import ColorPicker from './ColorPicker';
+import {sameColorContext} from '../color-edit-context';
 import {createPaint,createStroke,fillsFor,strokesFor} from '../paints';
 import type {Paint,StrokeStyle} from '../paints';
 import type {DesignNode} from '../model';
 import {useEditor} from '../store';
 import {ImagePaintControls} from './ImagePaintControls';
 function NumberControl({label,value,min,max,step=1,onChange}:{label:string;value:number;min?:number;max?:number;step?:number;onChange:(v:number)=>void}){return <label className="number-field"><span>{label}</span><input key={value} aria-label={label} type="number" min={min} max={max} step={step} defaultValue={Math.round(value*100)/100} onBlur={e=>{let v=Number(e.target.value);if(!Number.isFinite(v))return;if(min!==undefined)v=Math.max(min,v);if(max!==undefined)v=Math.min(max,v);if(v!==value)onChange(v);}} onKeyDown={e=>{if(e.key==='Enter')e.currentTarget.blur();}}/></label>;}
-function ColorControl({color,opacity,onChange,prefix}:{color:string;opacity:number;onChange:(c:string,a?:number)=>void;prefix:string}){const [mode,setMode]=useState<ColorMode>('HEX');return <><div className="paint-color-row"><input type="color" aria-label={prefix+' color'} value={color} onChange={e=>onChange(e.target.value)}/><input aria-label={prefix+' color value'} key={color+mode} defaultValue={colorString(color,mode)} onBlur={e=>{const p=parseColor(e.target.value,mode);if(p)onChange(p.color,p.alpha);}}/><select aria-label={prefix+' color format'} value={mode} onChange={e=>setMode(e.target.value as ColorMode)}>{['HEX','RGB','HSL','HSB'].map(mode=><option key={mode}>{mode}</option>)}</select></div><NumberControl label={prefix+' alpha %'} value={opacity*100} min={0} max={100} onChange={a=>onChange(color,a/100)}/></>;}
+function ColorControl({color,opacity,onChange,prefix}:{color:string;opacity:number;onChange:(c:string,a?:number)=>void;prefix:string}){const s=useEditor();const change=(c:string,a?:number)=>{const current=useEditor.getState();if(!sameColorContext(current,s))throw Error('The color target changed. Choose it again.');onChange(c,a);};return <><ColorPicker key={JSON.stringify([s.doc.id,s.pageId,s.selection,prefix,s.motionOpen,s.motionTime,s.home,s.mode,s.modal,s.uiHidden])} prefix={prefix} color={color} opacity={opacity} onChange={change}/><NumberControl label={prefix+' alpha %'} value={opacity*100} min={0} max={100} onChange={a=>change(color,a/100)}/></>;}
 function PaintControls({paint:p,onChange,prefix,n}:{paint:Paint;onChange:(patch:Partial<Paint>)=>void;prefix:string;n:DesignNode}){
  return <><select aria-label={prefix+' type'} value={p.type} onChange={e=>onChange({type:e.target.value as Paint['type']})}>{[['solid','Solid'],['linear','Linear gradient'],['radial','Radial gradient'],['angular','Angular gradient'],['diamond','Diamond gradient'],['image','Image']].map(([v,name])=><option key={v} value={v}>{name}</option>)}</select>
  {p.type==='solid'?<ColorControl prefix={prefix} color={p.color} opacity={p.opacity} onChange={(color,alpha)=>onChange({color,...(alpha!==undefined?{opacity:alpha}:{})})}/>:<>{p.type!=='image'&&<NumberControl label={prefix+' opacity %'} value={p.opacity*100} min={0} max={100} onChange={value=>onChange({opacity:value/100})}/>}
