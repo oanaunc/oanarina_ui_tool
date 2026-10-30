@@ -1,6 +1,6 @@
 # Balanced and pretty text wrapping
 
-This source increment adds model-backed Normal, Balance and Pretty modes. It does not claim exact Figma or browser CSS algorithm parity. It creates no build, native release, generated archive, version, website or central register output.
+This source increment adds model-backed Normal, Balance and Pretty modes. It does not claim exact Figma or browser CSS algorithm parity. It creates no build, native release, generated archive, version or website update.
 
 ## Controls and document semantics
 
@@ -34,4 +34,6 @@ SVG records the chosen source-run line spans, so its appearance does not depend 
 
 Core checks compare measured line raggedness, final-word orphans, distinct Balance/Pretty plans, unchanged line count/source, default/emergency fallback, measurement and paragraph budgets, RTL/list/ellipsis integration, rich source ranges, paragraph inheritance/clipboard rebasing, atomic validation/history, actual generated component propagation/style reset, outline invalidation and Bridge refusal/omission. MCP checks cover persistence, atomic refusal and Undo. Browser fixtures find a real Arial width that demonstrates both improvements; checks assert actual SVG line geometry, source/ranges, HTML clipboard metadata, Undo/reopening, RTL marker gutters/exported pixels, truncation, fallback and inherited locks/Motion. Existing direction, paragraphs, emoji, accessibility, line-height, smart punctuation, tabs and background checks remain relevant regressions.
 
-UI22-044 now has real reachable Normal/Balance/Pretty behavior for the bounded supported cases above. Recommend implementation status with these explicit limits and reference verification pending; it is not a full-Figma-parity claim or an exact CSS algorithm implementation.
+UI22-044 now has real reachable Normal/Balance/Pretty behavior for the bounded supported cases above. Implementation status records these explicit limits, with reference verification pending; it is not a full-Figma-parity claim or an exact CSS algorithm implementation.
+
+Final combined evidence is recorded in [the integrated validation report](UNRELEASED-PREVIEWS-LAYOUT-WRAPPING.md).

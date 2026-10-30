@@ -37,8 +37,8 @@ The rectangle path generator previously emitted zero-radius SVG `A0` arc command
 
 ## Validation
 
-Final source checks: **72 targeted core tests** across outline, offset and geometry, editor TypeScript, and **32 actual Chromium interactions** (19 new outline cases plus 13 offset regressions) pass. The broad core suite before the narrow corner-path repair passed **1,246 tests across 109 files**; final full integration validation remains with the parent integration workflow.
+Final source checks: **72 targeted core tests** across outline, offset and geometry, editor TypeScript, and **32 actual Chromium interactions** (19 new outline cases plus 13 offset regressions) pass. Final integrated checks pass **1,277 core tests across 112 files, 668 browser interactions, 54 source MCP checks and editor/MCP TypeScript**; see [the integrated report](UNRELEASED-PREVIEWS-LAYOUT-WRAPPING.md).
 
 Coverage includes cap/join/alignment bounds and area, miter fallback, holes and outside masking, signed/odd dashes and seam merging, own/ancestor affine mapping, bounded curves, supported fill/opacity, refusal/work limits, bindings, one-step Undo/Redo and old/new parse. Browser checks compare real original/result SVG pixels for all three caps/joins/alignments, signed dash phase and a closed dashed path under reflected nonuniform own and ancestor transforms. They also verify point-tool/menu reachability, preview-save immutability, identity/opacity, persisted reload, stale/cancelled contexts and unsupported-fill refusal.
 
-No build, native package, release/archive, version, website, README, central register update or push is included. Native WKWebView and Figma reference verification remain pending. UI-14-034 must remain **partial** until the unsupported paint/stroke/fill/topology cases are implemented and tested.
+This is source implementation; frozen app/bundled downloads, native packages, release archives, version and website remain unchanged. Native WKWebView and Figma reference verification remain pending. UI-14-034 must remain **partial** until the unsupported paint/stroke/fill/topology cases are implemented and tested.

@@ -26,4 +26,4 @@ Core checks cover exact row inference, unequal stack gaps, center alignment, ran
 
 Actual browser checks use reachable inspector controls to verify read-only previews, settings and wireframe boxes, applying and saving, Undo/Redo/reopen, actual Canvas geometry for the corrected stack, group paint/path/clipping preservation, explicit root ordering, native context cancellation, Motion refusal and actionable locked/ambiguous-content errors. TypeScript validation emits no files.
 
-No build, bundle, native app package, archive, version, website, central feature-register update or push is included. Native/reference verification remains outside this source-only change under the user's build freeze.
+This is source implementation; no build, bundle, native app package, archive, version or website update is generated. See [the integrated validation report](UNRELEASED-PREVIEWS-LAYOUT-WRAPPING.md). Native/reference verification remains outside this source-only change under the user's build freeze.
