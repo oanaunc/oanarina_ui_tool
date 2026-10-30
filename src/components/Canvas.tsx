@@ -1,3 +1,5 @@
+import CommentPins from './CommentPins';
+import {beginComment} from '../comment-context';
 import {captureShortcutPan,sameShortcutPan,advanceShortcutPan,finishShortcutPan} from '../shortcut-pan';
 import type {ShortcutPanReceipt} from '../shortcut-pan';
 import {recordShortcutUse} from '../shortcut-usage';
@@ -51,7 +53,7 @@ import type {GuideLine} from '../guides';
 import {GuideRulers,LayoutGuideOverlay,CanvasGuideOverlay,SnapOverlay,MeasurementOverlay} from './LayoutGuides';
 import {applyMotionEdits,sampleMotion} from '../motion';
 import {useEffect,useLayoutEffect,useRef,useState} from 'react';
-import {bounds,descendants,effectiveVisible,isLocked,node,uid} from '../model';
+import {bounds,descendants,effectiveVisible,isLocked,node} from '../model';
 import {contourPath,geometry,insertVectorPoint,pathProperties,vectorOperation} from '../geometry';
 import {runCommand} from '../commands';
 import type {DesignNode,NodeKind,VectorPoint} from '../model';
@@ -99,7 +101,7 @@ export default function Canvas(){
  else {drag.current={docId:s.doc.id,pageId:s.pageId,sourceNodes:page.nodes,context:captureGesture(),kind:'vector-marquee',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:[source.id],pointKeys:e.shiftKey?s.vectorSelection:[],pan:s.pan};if(!e.shiftKey)s.set({vectorSelection:[]});}
  }
  else if(handle){if(selectionLocked)return;drag.current={docId:s.doc.id,pageId:s.pageId,sourceNodes:page.nodes,context:captureGesture(),kind:handle==='rotate'?'rotate':'resize',start:p,screen:{x:e.clientX,y:e.clientY},nodes:structuredClone(ns),ids:descendants(page.nodes,s.selection),handle,pan:s.pan};}
- else if(s.tool==='comment'){s.set({modal:'comment:'+p.x+','+p.y});return;}
+ else if(s.tool==='comment'){e.preventDefault();try{beginComment(p.x,p.y,id);}catch(e){s.set({toast:e instanceof Error?e.message:String(e)});}return;}
  else if(s.tool==='pen'){if(pen.length>2&&Math.hypot(p.x-pen[0].x,p.y-pen[0].y)<7/s.zoom){completePen(true);return;}setPen([...pen,{...p,mode:'mirrored'}]);drag.current={docId:s.doc.id,pageId:s.pageId,sourceNodes:page.nodes,context:captureGesture(),kind:'pen-handle',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:[],pan:s.pan};svg.current!.setPointerCapture(e.pointerId);return;}
  else if(!['move','scale'].includes(s.tool)){
  const type:NodeKind=s.tool==='pencil'?'path':s.tool as NodeKind,creationNodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;
@@ -175,7 +177,7 @@ export default function Canvas(){
  {vector?.contours&&<g>
  {vector.contours.flatMap((contour,ci)=>contour.points.map((p,pi)=>{const key=ci+':'+pi,active=s.vectorSelection.includes(key),r=3/s.zoom,anchor=canvasPathPoint(vector,ns,p);return <g key={key}>{active&&(['in','out'] as const).map(part=>{const h=p[part];if(!h||Math.hypot(h.x,h.y)<=.01)return null;const handle=canvasPathPoint(vector,ns,{x:p.x+h.x,y:p.y+h.y});return <g key={part}><line x1={anchor.x} y1={anchor.y} x2={handle.x} y2={handle.y} stroke="#bba0ed" strokeWidth={1/s.zoom}/><circle data-vector-handle={key+':'+part} cx={handle.x} cy={handle.y} r={r} fill="#aaa0ba" stroke="#2d233b" strokeWidth={1/s.zoom} onPointerDown={e=>beginPoint(e,key,part)}/></g>;})}<rect data-vector-key={key} role="button" aria-label={'Vector point '+key} x={anchor.x-r} y={anchor.y-r} width={r*2} height={r*2} fill={active?'#ba97ed':'#f4eefb'} stroke="#9d73cd" strokeWidth={1/s.zoom} onPointerDown={e=>beginPoint(e,key,'anchor')}/></g>;}))}</g>}
  <BrushCanvasOverlay onPreview={setPreview}/><RotationOriginOverlay/><VectorCutOverlay/><VectorEraserOverlay onPreview={setPreview}/><VectorLassoOverlay/><MultiVectorOverlay onPreview={setPreview}/><VariableWidthOverlay onPreview={setPreview}/>{box&&<g data-pointer-selection-mode={drag.current?.kind==='marquee'?(drag.current.lastPointer?.altKey?'intersect':'contain'):'points'} pointerEvents="none"><rect {...box} fill="#bb9df320" stroke="#bfa4f4" strokeWidth={1/s.zoom} strokeDasharray={drag.current?.kind==='marquee'&&drag.current.lastPointer?.altKey?`${5/s.zoom} ${3/s.zoom}`:undefined}/>{drag.current?.kind==='marquee'&&<text x={box.x} y={box.y-8/s.zoom} fontSize={11/s.zoom} fill="#cbb7f0">{querySelectionBox(selectionIndex,box,drag.current.lastPointer?.altKey?'intersect':'contain').length} {drag.current.lastPointer?.altKey?'touching':'contained'} layers</text>}</g>}
- {page.comments.filter(c=>!c.resolved).map((c,i)=><g key={c.id} transform={`translate(${c.x} ${c.y})`} onPointerDown={e=>{e.stopPropagation();s.set({modal:'comments'});}} style={{cursor:'pointer'}}><circle r={13/s.zoom} fill="#e7b5d1"/><text textAnchor="middle" y={4/s.zoom} fontSize={11/s.zoom} fill="#28212c">{i+1}</text></g>)}
+ {<CommentPins comments={page.comments} nodes={displayNodes} pageId={page.id} zoom={s.zoom}/>}
  </g></svg><BrushControls/>
  {s.doc.workspace==='whiteboard'&&<WhiteboardWorkspace/>}
  {textNode&&<textarea aria-label="Edit text" dir={textNode.textDirection??'auto'} autoFocus className="canvas-text-editor" style={{unicodeBidi:!textNode.textDirection||textNode.textDirection==='auto'?'plaintext':'isolate',left:s.pan.x,top:s.pan.y,width:Math.max(40,textNode.width),height:Math.max(32,textNode.height+20),fontSize:textNode.fontSize,fontFamily:fontFamilyStack(textNode),transformOrigin:'0 0',transform:`matrix(${textMatrix![0]*s.zoom},${textMatrix![1]*s.zoom},${textMatrix![2]*s.zoom},${textMatrix![3]*s.zoom},${textMatrix![4]*s.zoom},${textMatrix![5]*s.zoom})`}} defaultValue={textNode.text} onBlur={e=>{s.patch([textNode.id],{text:e.target.value});setEditText(null);}} onKeyDown={e=>{if(e.key==='Escape')e.currentTarget.blur();e.stopPropagation();}}/>}
@@ -187,4 +189,3 @@ export default function Canvas(){
  <button className="help-fab" title="Help and keyboard shortcuts" onClick={()=>s.set({modal:'shortcuts'})}>?</button>
  </div>;
 }
-export function addComment(text:string,x:number,y:number){const s=useEditor.getState();s.edit(d=>d.pages.find(p=>p.id===s.pageId)!.comments.push({id:uid(),x,y,text,resolved:false}));}

@@ -1,0 +1,13 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {Client} from '@modelcontextprotocol/client';
+import {StdioClientTransport} from '@modelcontextprotocol/client/stdio';
+const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const data=(result:any)=>{assert.notEqual(result.isError,true,JSON.stringify(result));return JSON.parse(result.content[0].text);};
+test('source stdio default document read contains authorized local threads, artwork SVG omits them, and invalid replacements never write',async()=>{
+ const directory=await fs.mkdtemp(path.join(os.tmpdir(),'forma-comments-wire-')),file=path.join(directory,'comments.oui'),transport=new StdioClientTransport({command:process.execPath,args:[path.join(root,'node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'tsconfig.json'),path.join(root,'server.ts'),'--project',file,'--create'],stderr:'pipe'}),client=new Client({name:'forma-local-comments-test',version:'1.0.0'});let errors='';transport.stderr?.on('data',c=>errors+=String(c));try{await client.connect(transport);const before=data(await client.callTool({name:'read_document',arguments:{includeAssets:true}})),page=before.document.pages[0];page.comments=[{id:'thread',x:40,y:55,text:'Private original review',resolved:false,author:'Local reviewer',createdAt:'2026-10-31T12:30:00.000Z',replies:[{id:'reply',text:'Private answer',author:'Second local editor',createdAt:'2026-10-31T13:00:00.000Z'}]}];const saved=data(await client.callTool({name:'replace_document',arguments:{revision:before.revision,document:before.document}})),read=data(await client.callTool({name:'read_document',arguments:{}}));assert.equal(read.assetsOmitted,true);assert.deepEqual(read.document.pages[0].comments,page.comments);const svg=data(await client.callTool({name:'export_svg',arguments:{pageId:page.id}}));assert.ok(!JSON.stringify(svg).includes('Private original review'));assert.ok(!JSON.stringify(svg).includes('Local reviewer'));const disk=await fs.readFile(file,'utf8'),bad=structuredClone(read.document);bad.pages[0].comments[0].replies[0].author='Bad\u0000Author';const rejected=await client.callTool({name:'replace_document',arguments:{revision:saved.revision,document:bad}});assert.equal(rejected.isError,true);assert.equal(await fs.readFile(file,'utf8'),disk);await client.callTool({name:'undo_transaction',arguments:{revision:saved.revision}});assert.deepEqual(JSON.parse(await fs.readFile(file,'utf8')).pages[0].comments,[]);assert.equal(errors,'');}finally{await client.close();await transport.close();await fs.rm(directory,{recursive:true,force:true});}
+});

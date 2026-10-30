@@ -33,7 +33,7 @@ import {useEditor} from '../store';
 import {exportBridge} from '../commands';
 import {cancelSvgImport,getSvgImportRequest,exportArtwork,notifyError,openProject} from '../files';
 import FontLibrary from './FontLibrary';
-import {addComment} from './Canvas';
+import LocalCommentsDialog from './LocalCommentsDialog';
 interface Feature {id:string;name:string;category:string;status:string;priority:string;notes:string;}
 export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(''),[value,setValue]=useState(''),[features,setFeatures]=useState<Feature[]>([]),[category,setCategory]=useState('All'),[filter,setFilter]=useState('All'),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false),[format,setFormat]=useState<'svg'|'png'|'jpg'>(()=>getPreferences().defaultExportFormat);
  const page=s.doc.pages.find(p=>p.id===s.pageId)!,n=page.nodes.find(n=>s.selection.includes(n.id)),modal=s.modal;
@@ -41,6 +41,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{setQuery('');setCategory('All');setFilter('All');setValue(modal==='rename-file'?s.doc.name:modal==='rename-page'?page.name:modal==='rename'?n?.name??'':modal==='text-link'?n?.hyperlink??'':'');if(modal==='roadmap')fetch('./features.json').then(r=>r.json()).then(setFeatures).catch(notifyError);},[modal]);
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
+ if(modal==='comments'||modal.startsWith('comment:'))return <LocalCommentsDialog key={s.doc.id+':'+modal}/>;
  const close=()=>{if(modal==='fig-import-report')clearFigImportReport();if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
  if(modal==='text-search')return <TextSearch key={s.doc.id}/>;
  if(modal==='move-to-page')return <MoveLayersDialog/>;
@@ -84,9 +85,6 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  {modal==='export'&&<ExportDialog format={format} setFormat={setFormat} scale={scale} setScale={setScale} includeGuides={includeGuides} setIncludeGuides={setIncludeGuides}/>}
  {modal==='shortcuts'&&<ShortcutHelp/>}
  {modal==='snapshot'&&<SaveVersion/>}
-
- {modal.startsWith('comment:')&&<form onSubmit={e=>{e.preventDefault();if(value.trim()){const [x,y]=modal.slice(8).split(',').map(Number);addComment(value.trim(),x,y);close();}}}><textarea autoFocus aria-label="Comment text" placeholder="Add a thought, a question, a little feedback…" value={value} onChange={e=>setValue(e.target.value)}/><button className="primary-button" type="submit">Post local comment</button></form>}
- {modal==='comments'&&<>{!page.comments.length&&<p className="dialog-description">No comments yet. Press C, then click the canvas to leave a note.</p>}{page.comments.map(c=><div className={'comment-card '+(c.resolved?'resolved':'')} key={c.id}><div className="avatar">O</div><div><strong>You · local note</strong><p>{c.text}</p><button className="text-button" onClick={()=>s.edit(d=>{d.pages.find(p=>p.id===s.pageId)!.comments.find(a=>a.id===c.id)!.resolved=!c.resolved;})}>{c.resolved?'Reopen':'Resolve'}</button></div><button title="Delete comment" onClick={()=>s.edit(d=>{const p=d.pages.find(p=>p.id===s.pageId)!;p.comments=p.comments.filter(a=>a.id!==c.id);})}><X size={14}/></button></div>)}</>}
  {modal==='colors'&&<><p className="dialog-description">A shared palette for this document. Apply a color from the inspector.</p>{s.doc.colors.map((c,i)=><div className="palette-row" key={i}><input aria-label={c.name+' color'} type="color" value={c.value} onChange={e=>s.edit(d=>{d.colors[i].value=e.target.value;})}/><input aria-label={c.name+' name'} defaultValue={c.name} onBlur={e=>{if(e.target.value)s.edit(d=>{d.colors[i].name=e.target.value;});}}/><code>{c.value}</code><button title="Remove color" onClick={()=>s.edit(d=>{d.colors.splice(i,1);})}><X size={13}/></button></div>)}<button className="outline-button" onClick={()=>s.edit(d=>d.colors.push({name:'New color',value:'#c8b9ee'}))}>Add color</button></>}
  {modal==='about'&&<div className="about"><img src="./app-icon-v2.png" width="76" height="76" alt="Forma icon"/><h3>A little space for big ideas.</h3><p>Forma · {APP_VERSION} preview<br/>Created by Oana Rinaldi</p><p className="dialog-description">An independent, local-first design editor for Mac. Figma parity is a long-term implementation target. This preview is not a complete Figma replacement and is not affiliated with Figma.</p><button className="outline-button" onClick={()=>s.set({modal:'roadmap'})}>Explore all {FEATURE_COUNT.toLocaleString()} requirements <ChevronRight size={14}/></button></div>}
  </div></div></div>;

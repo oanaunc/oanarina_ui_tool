@@ -55,3 +55,5 @@ Style and variable definition/link transfer remains subject to the existing
 Bridge materialization limitation. This source behavior is covered by API mocks;
 it is not evidence of a real Figma desktop plugin round trip. Download archives
 remain unchanged under the source-only build freeze.
+
+File-local comment threads (including text, local authors, timestamps, replies and anchors) are validated before import and omitted from editable Figma transfer. The generic omission report contains no private thread text or identity. Keep the original `.oui` file for comments. This source behavior is covered by API mocks; native Figma round-trip acceptance remains separate.

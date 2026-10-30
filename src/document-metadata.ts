@@ -1,3 +1,4 @@
+import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
 import {validateDocumentDevelopmentStatuses} from './development-status';
 import {validateLibraryMetadata} from './local-library-metadata';
@@ -20,6 +21,7 @@ import {validateDocumentExportSettings} from './frame-export-settings';
 export const DOCUMENT_DESCRIPTION_LIMIT=10_000;
 const forbiddenControls=/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/;
 export function validateDocumentMetadata(document:{fileCover?:unknown;description?:unknown;pages?:unknown;componentSets?:unknown;styles?:unknown;libraryPublication?:unknown;componentLibraries?:unknown}){
+ validateDocumentCommentThreads(document);
  validateLibraryMetadata(document);
  validateDocumentDevelopmentStatuses(document);
  validateDocumentCover(document);

@@ -60,7 +60,7 @@ export function duplicateDocumentPage(input:DesignDocument,pageId:string): {docu
   }
  }
  for(const copy of page.nodes)for(const binding of Object.values(copy.layoutGuideBindings??{}))binding.guideId=guideCopies.get(binding.ownerId+'\0'+binding.guideId)??binding.guideId;
- page.comments=source.comments.map(c=>({...clone(c),id:fresh()}));
+ page.comments=source.comments.map(c=>({...clone(c),id:fresh(),...(c.replies?{replies:c.replies.map(r=>({...clone(r),id:fresh()}))}:{}),...(c.anchor?{anchor:{...c.anchor,nodeId:map.get(c.anchor.nodeId)??c.anchor.nodeId}}:{})}));
  if(source.guides)page.guides=source.guides.map(g=>({...clone(g),id:fresh()}));
  if(source.flows)page.flows=source.flows.map(f=>({...clone(f),id:fresh(),frameId:map.get(f.frameId)??f.frameId}));
  if(source.motion)page.motion={...clone(source.motion),tracks:source.motion.tracks.map(t=>({...clone(t),id:fresh(),nodeId:map.get(t.nodeId)??t.nodeId,keyframes:t.keyframes.map(k=>({...clone(k),id:fresh()}))}))};
