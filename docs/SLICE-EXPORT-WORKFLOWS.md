@@ -16,7 +16,7 @@ The slice polygon/visibility indexes cache inherited transforms and visibility i
 
 ## Guards and limits
 
-Delayed numeric/suffix fields in the shared export editor capture document, page, selection, mode, modal, Motion/time, home and UI context on focus. Changed contexts discard drafts even when a replacement uses the same IDs and displayed values. Motion and read-only modes disable profile changes; existing export settings remain usable for snapshots. Active exports use immutable prepared jobs and abort when the editor context changes or the task is cancelled.
+Delayed numeric/suffix fields in the shared export editor capture document, page, selection, mode, modal, Motion/time, home and UI context on focus. Changed contexts discard drafts even when a replacement uses the same IDs and displayed values. Immediate name/visibility actions also recheck the live context, including Home/UI visibility and selection changes that arrive before React rerenders. Motion and read-only modes disable profile changes; existing export settings remain usable for snapshots. Active exports use immutable prepared jobs and abort when the editor context changes or the task is cancelled.
 
 The existing limits apply: at most 20 profiles per layer, 200 assets and 100 MB per export batch, raster edges up to 16,384 pixels and 80 million pixels, and at most 256 ancestor levels for export. SVG retains its supported editable/appearance options. A slice is a crop region; it does not isolate just one selected object, add file-system directories from slashes in names, or provide binary `.fig` output. Font/image/video/poster and SVG-fidelity limitations remain those of the shared renderer. Native save-panel/WKWebView and exact Figma behavior acceptance remain pending.
 
