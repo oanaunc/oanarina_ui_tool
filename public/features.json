@@ -1755,9 +1755,9 @@
     "name": "Toggle frame names",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Independent persistent View/Actions checkbox controls existing top-level frame/component labels without changing artwork. Nested container labels are not implemented. tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending."
+    "notes": "Unreleased source: existing persistent View/Actions toggles now include eligible nested frame/main-component names. Cached world geometry, measured screen-sized labels, readable nested backplates and exact-container selection/drag preserve document/Undo semantics. Sampled Motion labels are read-only; paint editing blocks name gestures. Partial: full container/label containment required; masks, managed/slice/Boolean roles and unsupported clips are suppressed; no collision/occlusion solver. Up to 500 labels/2000 candidates/64 clip ancestors; names bounded. docs/CANVAS-NAVIGATION.md; tests/canvas-names.test.ts; tests/e2e/canvas-names.spec.ts. Native/reference acceptance pending."
   },
   {
     "id": "UI-06-026",
@@ -1765,9 +1765,9 @@
     "name": "Toggle section names",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Independent persistent View/Actions checkbox controls existing top-level section labels without changing artwork. Nested section labels are not implemented. tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending."
+    "notes": "Unreleased source: existing persistent View/Actions toggles now include eligible nested section names. Cached world geometry, measured screen-sized labels, readable nested backplates and exact-container selection/drag preserve document/Undo semantics. Sampled Motion labels are read-only; paint editing blocks name gestures. Partial: full container/label containment required; masks, managed/slice/Boolean roles and unsupported clips are suppressed; no collision/occlusion solver. Up to 500 labels/2000 candidates/64 clip ancestors; names bounded. docs/CANVAS-NAVIGATION.md; tests/canvas-names.test.ts; tests/e2e/canvas-names.spec.ts. Native/reference acceptance pending."
   },
   {
     "id": "UI-06-027",
@@ -4444,10 +4444,10 @@
     "category": "Vector pen and editing",
     "name": "Vector cut tool",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: real point-editing scissors with pointer or numeric interior-segment cuts. Exact de Casteljau splitting opens closed contours or splits open contours while preserving source ID, local path basis, affine pose, style, Undo and saved reopening. Cached bounded hierarchy/control geometry, ownership/context/session/capture guards, 125% UI and actual raster checks. Partial: supported centered solid stroke contours only; no filled-region knife, general network, multilayer/intersection batch or anchor cuts. docs/VECTOR-CUT.md. Native/reference acceptance pending."
   },
   {
     "id": "UI-14-043",
@@ -5384,10 +5384,10 @@
     "category": "Fills and colors",
     "name": "Gradient handles",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: actual canvas linear free endpoints, line translation and stop positions; radial center/radius/stops; guarded whole-scene preview, keyboard handles, no-op style preservation, one Undo/save/reopen. Optional paired normalized linearStart/linearEnd preserve legacy angle defaults and validate through nodes/styles/clipboard/MCP/Bridge before mutation. Shared SVG/export/swatch coordinates, compatible Bridge transform mock roundtrip and explicit approximation/CSS omissions. Partial: supported full-box linear/radial fills only; no angular/diamond/stroke/arbitrary paint boxes or skew radial handles. docs/CANVAS-GRADIENT-HANDLES.md; core and real browser pixel/transform/session tests. Real Figma/native acceptance pending."
   },
   {
     "id": "UI-17-030",
@@ -5594,10 +5594,10 @@
     "category": "Strokes",
     "name": "Independent edge strokes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: independent Top/Right/Bottom/Left widths on square-box strokes, with common paint, alignment, single alpha ring, original-box gradient/image coordinates, asymmetric bounds/masks/filter extents, Undo/save/styles/components/clipboard and source MCP validation. Optional nested edgeWidths remains .oui v1/v2 compatible; unsupported combinations and editable Bridge refuse before mutation. Partial: no rounded/dashed/non-box/per-edge paints or outline; stroke-in-layout uses conservative maximum. docs/INDEPENDENT-EDGE-STROKES.md; focused core/actual raster and context checks. Native/reference acceptance pending."
   },
   {
     "id": "UI-18-012",
@@ -7097,7 +7097,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports liga/clig/dlig ligature tags in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-018",
@@ -7107,7 +7107,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports font-specific alternate feature tags and numeric alternate indices in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-019",
@@ -7117,7 +7117,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports ss01–ss20 stylistic-set tags in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-020",
@@ -7127,7 +7127,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports numeric variable font axes in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-021",
@@ -7137,7 +7137,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports the opsz variable-font axis in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-022",
@@ -7147,7 +7147,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports the tnum tabular-numeral tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-023",
@@ -7157,7 +7157,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports the pnum proportional-numeral tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-024",
@@ -7167,7 +7167,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports the frac fraction tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-025",
@@ -7177,17 +7177,17 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete."
+    "notes": "Unreleased source supports the kern kerning tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
   },
   {
     "id": "UI-22-026",
     "category": "Advanced typography",
     "name": "Text selection color display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: live selected-character fill summary distinguishes exact Artwork layer-stack inheritance from explicit hex/alpha/none overrides, normalizes equivalent literal colors, labels mixed settings and keeps native opaque RGB picker semantics explicit. Read-only logical range/draft inspection; safe surrogate ranges; 128 displayed rows with full distinct count; caret asks for a selection. Tracks real formatting, Undo/save/reopen without added metadata/history. Layer paints, opacity and effects are described separately; no composited screen-color claim. docs/TEXT-SELECTION-COLORS.md; 7 focused core and 4 browser checks plus integrated validation. Native/reference acceptance pending."
   },
   {
     "id": "UI-22-027",
@@ -7304,10 +7304,10 @@
     "category": "Advanced typography",
     "name": "Multilingual font fallback",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: explicit ordered layer/range fallback family lists share safe SVG/inline/Canvas/DOM measurement, wrapping, optical metrics, text masks, CSS and eligible font embedding/export. Validated optional node/run/style fields preserve .oui v1/v2, Undo/components/clipboard/source MCP and missing-field metadata; Bridge reports omission. Actual Unicode-restricted mixed Greek/Cyrillic font, pixel/width, reorder and legacy-save checks. Partial: browser glyph selection without automatic script/coverage detection; available fonts/embedding permissions, headless estimates, native shaping/AT/Figma acceptance remain limits. docs/MULTILINGUAL-FONT-FALLBACK.md."
   },
   {
     "id": "UI-22-039",
@@ -7354,10 +7354,10 @@
     "category": "Advanced typography",
     "name": "Text vertical trim",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: optional layer textVerticalTrim none/cap-height aligns outer text body to a measured browser H cap reference and last baseline. Shared wrap/auto-size/alignment/ellipsis/SVG/mask/export behavior preserves source and baseline intervals, Undo/styles/components/clipboard/MCP/Bridge validation. Inspector reports active/unsupported/estimated states; unsupported geometry exactly retains ordinary behavior. Partial: 64 plain first-line font styles; complex axes/features/smallcaps/raised runs fall back; headless uses explicit 0.7em estimate. Ink bounds conservative; editable CSS/Bridge report omission. docs/TEXT-VERTICAL-TRIM.md; core and actual font/pixel/context checks. Native/reference acceptance pending."
   },
   {
     "id": "UI-22-044",
