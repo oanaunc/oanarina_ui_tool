@@ -23,3 +23,5 @@
 .component-property-group{min-width:0;margin:12px 0;padding:0 10px 6px;border:1px solid var(--line);border-radius:8px}.component-property-group>legend{padding:0 5px;color:var(--muted);font-size:10px}
 
 .component-manager-fields{border:0;padding:0;margin:0;min-width:0}.component-manager-fields:disabled{opacity:.65}
+
+.layout-controls{border:0;padding:0;margin:0;min-width:0}.layout-controls:disabled{opacity:.65}

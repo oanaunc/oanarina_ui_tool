@@ -2,6 +2,8 @@
 
 A free local MCP server for the saved `.oui` document you select explicitly. It uses stdio, runs without an account/API key, and opens no network listener. There is no usage charge or subscription in this server. AI hosts and models are separate products with their own terms.
 
+Auto-layout operations accept validated `layoutStacking`, `layoutIncludeStroke`, `wrapDirection`, `wrapAlign` and optional preserved `layoutAspectRatio` metadata. Layout uses the same aspect/fill, padding, stroke and wrap solver as the editor. Malformed values reject the entire transaction before the selected project is written. This does not change the server's project/file authorization boundary.
+
 ## Standalone download
 
 Current development Mac app users can download `oanarina-mcp.zip` from the app’s MCP help, unzip it, and launch `node /absolute/path/server.mjs --project /absolute/path/Design.oui` with Node.js 22 or newer. All runtime code and licenses are included; no npm installation is needed for that download. No live editor synchronization is claimed.
