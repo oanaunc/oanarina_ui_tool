@@ -27,3 +27,5 @@ New `tests/motion-scroll.test.ts` checks origin conversion/targeting, fixed sour
 
 
 Final checks: full core **1,557 / 130 files**, editor TypeScript and source MCP TypeScript pass; **58 source MCP tests** pass. **44 focused real browser checks** pass across Motion scrolling (11 new), Motion presentation/tracks, Motion, Dev inspection and ordinary prototype regression suites. The final cache-retention cleanup is followed by the same 44-browser/TypeScript validation before commit. No build, native, release or archive command ran.
+
+Progressive filter subtree regions and variable-width stroke envelopes participate in scroll extents. A topmost fixed/sticky root inside an ancestor progressive blur is explicitly refused before preview opens: scroll compensation can otherwise stretch that filter beyond its bounded region. A positioned root’s own blur and unrelated filtered siblings remain supported. Adjusted scenes validate again before reaching Artwork; this guard does not silently replace the effect.
