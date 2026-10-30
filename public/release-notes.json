@@ -15,7 +15,10 @@
         "Move supported complete layer trees between pages with stable identities and live component links; unsafe contextual cases are refused.",
         "Add a plain-text project description through File information, with Undo and saved-file MCP metadata reads.",
         "Collapse and resize layers/properties sidebars with pointer or keyboard controls; local layout stays outside project files.",
-        "Browse bundled release notes from Help, with development/preview labels and public download checksums."
+        "Browse bundled release notes from Help, with development/preview labels and public download checksums.",
+        "Open registered local file actions from the document-title menu, with keyboard navigation and focus return.",
+        "Follow system reduced-motion preferences for editor chrome, with a local override; deliberate authored animation and exports retain their settings.",
+        "Identify mask sources, modes and nearest affected artwork in the layer tree with bounded accessible descriptions."
       ],
       "limits": [
         "This is development source. The next Mac installer is pending final native window acceptance, signing and notarization.",

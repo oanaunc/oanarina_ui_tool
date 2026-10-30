@@ -103,3 +103,11 @@ Use the sidebars' Hide/Show buttons or View actions to collapse/restore them. Dr
 Select supported artwork, then choose **Object → Move to page…**, the layer context action, or Actions. Search/select a different page and confirm the move. The original layer identities and supported live links move together, with one document Undo. Unsafe split connections, unsupported inherited context and presentation deck pages are refused with instructions. Canvas guides, comments and page settings stay on the source page. Read [move limits](MOVE-LAYERS.md) before moving complex components or animation.
 
 **Help → Release notes** shows the version's bundled history, development/preview labels and verified-preview download information. A development source entry has no installer link. This history is a snapshot; it does not silently update the app. See [release history](RELEASE-NOTES.md).
+
+## Title actions, mask indicators and interface motion
+
+Open the document title in the top bar for local file actions. Arrow Up/Down opens at either end; use arrows, Home/End or prefix typing inside it, Enter/Space to run an action, and Escape to return to the title. Save/Open/rename/history/export retain their existing behavior. See [title menu](DOCUMENT-TITLE-MENU.md).
+
+Layer rows show α/V/L for Alpha/Vector/Luminance mask sources and a dotted-circle marker for masked targets. Hover for the nearest source and mode; accessible row descriptions also distinguish inherited ancestor coverage. Long source display names are shortened in repeated indicators without changing full saved names. See [mask scope](MASKS.md).
+
+File → Preferences → Interface motion offers Follow system, Reduce and Allow, saved on this device. Reset resumes the system choice. This is a scoped chrome policy; the current interface is mostly immediate and the setting does not stop intentional document playback or alter exports. See [motion scope](INTERFACE-MOTION.md).
