@@ -2374,40 +2374,40 @@
     "category": "Layer tree",
     "name": "Show exportable layers",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Unreleased source: Section titles, direct visible/unlocked contents, local readiness metadata, and combined exportable/ready/prototype layer filters are reachable with persistence/Undo where applicable Evidence and limits: docs/SECTION-WORKFLOWS.md; tests/section-workflows.test.ts; tests/e2e/section-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-08-028",
     "category": "Layer tree",
     "name": "Show ready-for-development layers",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Unreleased source: Section titles, direct visible/unlocked contents, local readiness metadata, and combined exportable/ready/prototype layer filters are reachable with persistence/Undo where applicable Evidence and limits: docs/SECTION-WORKFLOWS.md; tests/section-workflows.test.ts; tests/e2e/section-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-08-029",
     "category": "Layer tree",
     "name": "Show prototype-linked layers",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Unreleased source: Section titles, direct visible/unlocked contents, local readiness metadata, and combined exportable/ready/prototype layer filters are reachable with persistence/Undo where applicable Evidence and limits: docs/SECTION-WORKFLOWS.md; tests/section-workflows.test.ts; tests/e2e/section-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-08-030",
     "category": "Layer tree",
     "name": "Show layers with comments",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Unreleased source: Filter by spatial comment pins intersecting geometry, including resolved pins. Durable layer-attached comments remain unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-09-001",
@@ -2684,10 +2684,10 @@
     "category": "Frames",
     "name": "Frame-level export settings",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Saved per-frame SVG/PNG/JPG profiles expose 1x–4x scale, filename suffix, frame/artwork bounds and guides through inspector/Export dialog, with validation, Undo and .oui persistence. Exports snapshot before asynchronous work; SVG dimensions and PNG/JPG pixels tested. PDF, advanced settings and batch execution absent. docs/FRAME-DELIVERY.md; reference verification pending."
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-09-029",
@@ -2744,10 +2744,10 @@
     "category": "Sections groups and slices",
     "name": "Section title",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Section titles, direct visible/unlocked contents, local readiness metadata, and combined exportable/ready/prototype layer filters are reachable with persistence/Undo where applicable Evidence and limits: docs/SECTION-WORKFLOWS.md; tests/section-workflows.test.ts; tests/e2e/section-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-10-005",
@@ -2774,40 +2774,40 @@
     "category": "Sections groups and slices",
     "name": "Nest sections",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Explicit section nesting preserves world geometry and refuses cycles/locks/managed/animated/auto-layout conflicts. Full animated/auto-layout nesting parity remains unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-10-008",
     "category": "Sections groups and slices",
     "name": "Select section contents",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Section titles, direct visible/unlocked contents, local readiness metadata, and combined exportable/ready/prototype layer filters are reachable with persistence/Undo where applicable Evidence and limits: docs/SECTION-WORKFLOWS.md; tests/section-workflows.test.ts; tests/e2e/section-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-10-009",
     "category": "Sections groups and slices",
     "name": "Section ready-for-development status",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Section titles, direct visible/unlocked contents, local readiness metadata, and combined exportable/ready/prototype layer filters are reachable with persistence/Undo where applicable Evidence and limits: docs/SECTION-WORKFLOWS.md; tests/section-workflows.test.ts; tests/e2e/section-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-10-010",
     "category": "Sections groups and slices",
     "name": "Section link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Copy/open a current-file section token works across pages; OS deep links, hosted links and cross-file resolution remain unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-10-011",
@@ -2884,20 +2884,20 @@
     "category": "Sections groups and slices",
     "name": "Group blend mode",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Sixteen rendered group blend modes and explicit isolation are usable; Figma pass-through compositing remains unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-10-019",
     "category": "Sections groups and slices",
     "name": "Group bounds from children",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Explicit guarded fit-to-children is undoable and preserves transforms; automatic tight bounds recomputation remains unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-10-020",
@@ -3134,20 +3134,20 @@
     "category": "Basic shapes",
     "name": "Line angle",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-11-014",
     "category": "Basic shapes",
     "name": "Line endpoint positioning",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-11-015",
@@ -3164,30 +3164,30 @@
     "category": "Basic shapes",
     "name": "Arrowhead at start",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-11-017",
     "category": "Basic shapes",
     "name": "Arrowhead at end",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-11-018",
     "category": "Basic shapes",
     "name": "Arrowhead style",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-11-019",
@@ -3214,10 +3214,10 @@
     "category": "Basic shapes",
     "name": "Polygon corner radius",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-11-022",
@@ -3254,10 +3254,10 @@
     "category": "Basic shapes",
     "name": "Star corner radius",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-11-026",
@@ -3684,20 +3684,20 @@
     "category": "Transforms and arrangement",
     "name": "Scrub numeric property fields",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Shared numeric inspector labels scrub by pointer with Shift fast/Option precision speeds, local value preview and one release commit. Cancel/lock/target guards include typed and arrow-key drafts. Specialized numeric controls retain their own editors; live artwork scrubbing is not claimed Evidence and limits: docs/NUMERIC-SCRUBBING.md; tests/numeric-scrub.test.ts; tests/e2e/numeric-scrub.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-12-039",
     "category": "Transforms and arrangement",
     "name": "Adjust numeric scrubbing speed",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Shared numeric inspector labels scrub by pointer with Shift fast/Option precision speeds, local value preview and one release commit. Cancel/lock/target guards include typed and arrow-key drafts. Specialized numeric controls retain their own editors; live artwork scrubbing is not claimed Evidence and limits: docs/NUMERIC-SCRUBBING.md; tests/numeric-scrub.test.ts; tests/e2e/numeric-scrub.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-12-040",
@@ -4054,20 +4054,20 @@
     "category": "Vector pen and editing",
     "name": "Close vector path",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-004",
     "category": "Vector pen and editing",
     "name": "Continue open vector path",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-005",
@@ -4134,40 +4134,40 @@
     "category": "Vector pen and editing",
     "name": "Corner point",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete."
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-012",
     "category": "Vector pen and editing",
     "name": "Smooth point",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete."
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-013",
     "category": "Vector pen and editing",
     "name": "Convert segment to curve",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-014",
     "category": "Vector pen and editing",
     "name": "Convert segment to line",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-015",
@@ -4214,20 +4214,20 @@
     "category": "Vector pen and editing",
     "name": "Marquee vector points",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-020",
     "category": "Vector pen and editing",
     "name": "Vector point coordinates",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-021",
@@ -4314,10 +4314,10 @@
     "category": "Vector pen and editing",
     "name": "Vector winding rule",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-030",
@@ -4344,10 +4344,10 @@
     "category": "Vector pen and editing",
     "name": "Round vector corners",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Circular fillets for straight vector corners work; general curved-corner rounding remains unfinished Evidence and limits: docs/VECTOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-033",
@@ -4384,10 +4384,10 @@
     "category": "Vector pen and editing",
     "name": "Paste SVG path data",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-14-037",
@@ -4504,10 +4504,10 @@
     "category": "Vector pen and editing",
     "name": "Switch vector layer while editing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable path endpoint continuation/closing, corner/smooth and segment controls, transformed point marquee/coordinates, winding, validated SVG path replacement and layer switching. Undo/save and interrupted-gesture validation Evidence and limits: docs/VECTOR-WORKFLOWS.md; tests/vector-workflows.test.ts; tests/e2e/vector-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-15-001",
@@ -5164,60 +5164,60 @@
     "category": "Fills and colors",
     "name": "Color picker saturation control",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-008",
     "category": "Fills and colors",
     "name": "Color picker hue control",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-009",
     "category": "Fills and colors",
     "name": "Color picker alpha control",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-010",
     "category": "Fills and colors",
     "name": "Eyedropper",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Artwork canvas sampling works. Screen sampling is conditional on the browser EyeDropper API with abort/stale-result protection; the shipping Mac WKWebView has no native screen sampler Evidence and limits: docs/COLOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-011",
     "category": "Fills and colors",
     "name": "Sample canvas color",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-012",
     "category": "Fills and colors",
     "name": "Sample screen color",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Artwork canvas sampling works. Screen sampling is conditional on the browser EyeDropper API with abort/stale-result protection; the shipping Mac WKWebView has no native screen sampler Evidence and limits: docs/COLOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-013",
@@ -5404,60 +5404,60 @@
     "category": "Fills and colors",
     "name": "Recent colors",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-032",
     "category": "Fills and colors",
     "name": "Color style assignment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Real local paint/effect-style and scoped color-variable assignment; independent selected-layer maps, lock skipping, competing-channel detachment, collection modes, validated creation, Undo/save/recovery and managed-overwrite refusal Evidence and limits: docs/DESIGN-SYSTEM-ASSIGNMENTS.md; tests/design-system-actions.test.ts; tests/e2e/design-system-actions.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-033",
     "category": "Fills and colors",
     "name": "Color variable assignment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Real local paint/effect-style and scoped color-variable assignment; independent selected-layer maps, lock skipping, competing-channel detachment, collection modes, validated creation, Undo/save/recovery and managed-overwrite refusal Evidence and limits: docs/DESIGN-SYSTEM-ASSIGNMENTS.md; tests/design-system-actions.test.ts; tests/e2e/design-system-actions.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-034",
     "category": "Fills and colors",
     "name": "Mixed fill selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Selection colors reports differing RGB values across selected trees and supports replacement. Full mixed paint-stack summaries/editing remain unfinished Evidence and limits: docs/COLOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-035",
     "category": "Fills and colors",
     "name": "Selection colors panel",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-036",
     "category": "Fills and colors",
     "name": "Replace selection color",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-17-037",
@@ -5704,20 +5704,20 @@
     "category": "Strokes",
     "name": "Arrowhead size",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-18-023",
     "category": "Strokes",
     "name": "Arrowhead color inheritance",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-18-024",
@@ -5954,10 +5954,10 @@
     "category": "Effects and compositing",
     "name": "Effect styles",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Real local paint/effect-style and scoped color-variable assignment; independent selected-layer maps, lock skipping, competing-channel detachment, collection modes, validated creation, Undo/save/recovery and managed-overwrite refusal Evidence and limits: docs/DESIGN-SYSTEM-ASSIGNMENTS.md; tests/design-system-actions.test.ts; tests/e2e/design-system-actions.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-19-017",
@@ -6284,170 +6284,170 @@
     "category": "Images and media",
     "name": "Image fill mode fill",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-009",
     "category": "Images and media",
     "name": "Image fill mode fit",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-010",
     "category": "Images and media",
     "name": "Image crop mode",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-011",
     "category": "Images and media",
     "name": "Image tile mode",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-012",
     "category": "Images and media",
     "name": "Interactive image crop",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Interactive inspector crop preview supports pan/scale and one undoable commit with cancellation; a full on-canvas crop overlay and perspective engine remain unfinished Evidence and limits: docs/IMAGE-EDITING.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-013",
     "category": "Images and media",
     "name": "Image scale",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-014",
     "category": "Images and media",
     "name": "Image rotation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-015",
     "category": "Images and media",
     "name": "Replace image",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-016",
     "category": "Images and media",
     "name": "Reset image transform",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-017",
     "category": "Images and media",
     "name": "Image exposure",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-018",
     "category": "Images and media",
     "name": "Image contrast",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-019",
     "category": "Images and media",
     "name": "Image saturation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-020",
     "category": "Images and media",
     "name": "Image temperature",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-021",
     "category": "Images and media",
     "name": "Image tint",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-022",
     "category": "Images and media",
     "name": "Image highlights",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-023",
     "category": "Images and media",
     "name": "Image shadows",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-024",
     "category": "Images and media",
     "name": "Image opacity",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-025",
@@ -6464,30 +6464,30 @@
     "category": "Images and media",
     "name": "Copy image as PNG",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-027",
     "category": "Images and media",
     "name": "Export original image",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-028",
     "category": "Images and media",
     "name": "Image file size display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable image inspector, shared artwork/export rendering, validated source replacement, transform/reset, tone adjustments, opacity, original delivery and size; Undo/save and delayed-context checks. PNG copy reuses the existing trusted Mac API with browser contract/pixel checks; no new native release was built Evidence and limits: docs/IMAGE-EDITING.md; tests/image-paint.test.ts; tests/e2e/image-editing.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-20-029",
@@ -7694,10 +7694,10 @@
     "category": "Constraints and resizing",
     "name": "Constraint visualization",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source: View-only canvas guides visualize positional constraint pins in parent axes with ancestor transforms. Flowing auto-layout children are excluded. No document edits or export overlays Evidence and limits: docs/CONSTRAINT-GUIDES.md; tests/constraint-guides.test.ts; tests/e2e/constraint-guides.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-23-023",
@@ -8834,10 +8834,10 @@
     "category": "Components",
     "name": "Main component selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable nearest-main navigation across Design/Whiteboard pages, exposed swap preferred values, per-instance accessible SVG label override, independent variant descriptions and one-level property groups. Lock/cycle guards, atomic metadata validation, copy dependency closure, fresh identity remapping, reset, Undo/save and real artwork swaps are validated; Figma transfer reports new metadata as omitted Evidence and limits: docs/COMPONENT-WORKFLOWS.md; tests/component-workflows.test.ts; tests/e2e/component-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-27-011",
@@ -9024,10 +9024,10 @@
     "category": "Components",
     "name": "Preferred swap values",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable nearest-main navigation across Design/Whiteboard pages, exposed swap preferred values, per-instance accessible SVG label override, independent variant descriptions and one-level property groups. Lock/cycle guards, atomic metadata validation, copy dependency closure, fresh identity remapping, reset, Undo/save and real artwork swaps are validated; Figma transfer reports new metadata as omitted Evidence and limits: docs/COMPONENT-WORKFLOWS.md; tests/component-workflows.test.ts; tests/e2e/component-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-27-030",
@@ -9074,10 +9074,10 @@
     "category": "Components",
     "name": "Instance accessibility label",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable nearest-main navigation across Design/Whiteboard pages, exposed swap preferred values, per-instance accessible SVG label override, independent variant descriptions and one-level property groups. Lock/cycle guards, atomic metadata validation, copy dependency closure, fresh identity remapping, reset, Undo/save and real artwork swaps are validated; Figma transfer reports new metadata as omitted Evidence and limits: docs/COMPONENT-WORKFLOWS.md; tests/component-workflows.test.ts; tests/e2e/component-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-27-035",
@@ -9224,10 +9224,10 @@
     "category": "Variants and properties",
     "name": "Variant description",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable nearest-main navigation across Design/Whiteboard pages, exposed swap preferred values, per-instance accessible SVG label override, independent variant descriptions and one-level property groups. Lock/cycle guards, atomic metadata validation, copy dependency closure, fresh identity remapping, reset, Undo/save and real artwork swaps are validated; Figma transfer reports new metadata as omitted Evidence and limits: docs/COMPONENT-WORKFLOWS.md; tests/component-workflows.test.ts; tests/e2e/component-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-28-014",
@@ -9344,20 +9344,20 @@
     "category": "Variants and properties",
     "name": "Property grouping",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable nearest-main navigation across Design/Whiteboard pages, exposed swap preferred values, per-instance accessible SVG label override, independent variant descriptions and one-level property groups. Lock/cycle guards, atomic metadata validation, copy dependency closure, fresh identity remapping, reset, Undo/save and real artwork swaps are validated; Figma transfer reports new metadata as omitted Evidence and limits: docs/COMPONENT-WORKFLOWS.md; tests/component-workflows.test.ts; tests/e2e/component-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-28-026",
     "category": "Variants and properties",
     "name": "Preferred component instances",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Local main components suggest other available mains for whole-instance swaps. Stale suggestions remain visibly unavailable; clipboard closure prevents destination-only references. Remote libraries and exact preferred-nested-instance semantics remain unfinished or reference-unverified Evidence and limits: docs/COMPONENT-WORKFLOWS.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-28-027",
@@ -13214,100 +13214,100 @@
     "category": "Export and delivery",
     "name": "Custom export scale",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-014",
     "category": "Export and delivery",
     "name": "Export width constraint",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-015",
     "category": "Export and delivery",
     "name": "Export height constraint",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-016",
     "category": "Export and delivery",
     "name": "Export suffix",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-017",
     "category": "Export and delivery",
     "name": "Multiple export settings",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-018",
     "category": "Export and delivery",
     "name": "Per-layer export presets",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-019",
     "category": "Export and delivery",
     "name": "Batch export",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-020",
     "category": "Export and delivery",
     "name": "Export selected slices",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-021",
     "category": "Export and delivery",
     "name": "Export selected frames",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-022",
     "category": "Export and delivery",
     "name": "Export filename sanitization",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-023",
@@ -13377,7 +13377,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "Unreleased source: JPEG quality 10 to 100 percent changes encoded output and preview, persists per profile and leaves PNG/SVG delivery independent. Default remains 95 percent; pixel/compression and Undo checks use browser canvas Evidence and limits: docs/EXPORT-DELIVERY.md; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-030",
@@ -13434,10 +13434,10 @@
     "category": "Export and delivery",
     "name": "Export preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-036",
@@ -13447,7 +13447,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Visual bounds now include rotated/scaled geometry, strokes and effect padding. Clipping intersections use conservative bounding boxes; text glyph overflow, complex groups and slice-specific options need further work."
+    "notes": "Unreleased source: Export explicitly reports hidden targets, collapsed transforms, excessive raster allocations and broken visible embedded images. Supported transformed paint bounds include strokes/effects; complex clip/mask intersections and text glyph overflow remain conservative Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-037",
@@ -13474,20 +13474,20 @@
     "category": "Export and delivery",
     "name": "Export checksum",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable saved SVG/PNG/JPG profiles on layers, frames, slices, instance roots and managed children, with custom scale/width/height, suffixes, previews and selected/configured asset batches. ZIP assets carry byte counts and independently verified SHA-256 checksums; bounded Unicode filenames resolve collisions. Optional v1/v2 metadata, independent instance overrides, reset, Undo/save, immutable rendering and cancellation are validated. PDF and native folder synchronization are separate unfinished requirements Evidence and limits: docs/EXPORT-DELIVERY.md; tests/export-delivery.test.ts; tests/e2e/export-delivery.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-40-040",
     "category": "Export and delivery",
     "name": "Export assets folder",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Batch delivery produces a downloadable ZIP containing assets/ plus a checksum manifest. Choosing, writing or synchronizing an arbitrary native output folder remains unfinished Evidence and limits: docs/EXPORT-DELIVERY.md. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-41-001",
@@ -14864,20 +14864,20 @@
     "category": "Preferences and document settings",
     "name": "UI scale preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Interface surfaces scale independently of SVG/playback coordinates; sidebar drag and popup placement tested at 125 percent, including nested color sampling. New source has not been built/tested in native WKWebView under the user requested build freeze Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/e2e/workflow-preferences.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-005",
     "category": "Preferences and document settings",
     "name": "Font preview preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-006",
@@ -14944,10 +14944,10 @@
     "category": "Preferences and document settings",
     "name": "Autosave interval",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-013",
@@ -14964,10 +14964,10 @@
     "category": "Preferences and document settings",
     "name": "Recent file limit",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-015",
@@ -14994,20 +14994,20 @@
     "category": "Preferences and document settings",
     "name": "Default export format",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-018",
     "category": "Preferences and document settings",
     "name": "Color picker format preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-019",
@@ -15154,10 +15154,10 @@
     "category": "Preferences and document settings",
     "name": "Rename duplicate layers preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-034",
@@ -15204,10 +15204,10 @@
     "category": "Preferences and document settings",
     "name": "Keyboard zoom targets selection preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-039",
@@ -15224,20 +15224,20 @@
     "category": "Preferences and document settings",
     "name": "Control-click context menu preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-041",
     "category": "Preferences and document settings",
     "name": "Number-key opacity preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
   },
   {
     "id": "UI-45-042",

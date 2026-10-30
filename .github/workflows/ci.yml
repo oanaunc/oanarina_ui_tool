@@ -25,7 +25,7 @@ jobs:
       - run: npx tsc --noEmit
       - run: npm run mcp:check
       # Source validation does not regenerate the frozen release archives.
-      - run: node mcp/node_modules/tsx/dist/cli.mjs --tsconfig mcp/tsconfig.json --test --test-skip-pattern='standalone bundled server' mcp/tests/*.test.ts
+      - run: node scripts/test-mcp-source.mjs
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test --grep-invert 'the downloadable bridge archive contains the current component transfer implementation'
       - uses: actions/upload-artifact@v4
