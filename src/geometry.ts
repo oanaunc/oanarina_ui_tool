@@ -6,7 +6,7 @@ const scope=new paper.PaperScope();scope.setup(new scope.Size(1,1));
 const number=(v:number)=>Math.round(v*100000)/100000;
 export function cornerPath(w:number,h:number,radii:number[]){
  const max=Math.min(w,h)/2,[tl,tr,br,bl]=radii.map(r=>Math.max(0,Math.min(max,r)));
- return `M${tl} 0H${w-tr}A${tr} ${tr} 0 0 1 ${w} ${tr}V${h-br}A${br} ${br} 0 0 1 ${w-br} ${h}H${bl}A${bl} ${bl} 0 0 1 0 ${h-bl}V${tl}A${tl} ${tl} 0 0 1 ${tl} 0Z`;
+ return `M${tl} 0H${w-tr}${tr?`A${tr} ${tr} 0 0 1 ${w} ${tr}`:''}V${h-br}${br?`A${br} ${br} 0 0 1 ${w-br} ${h}`:''}H${bl}${bl?`A${bl} ${bl} 0 0 1 0 ${h-bl}`:''}${tl?`V${tl}A${tl} ${tl} 0 0 1 ${tl} 0`:''}Z`;
 }
 export function ellipsePath(n:DesignNode){
  const rx=n.width/2,ry=n.height/2,start=(n.arcStart??0)*Math.PI/180,sweep=Math.max(-360,Math.min(360,n.arcSweep??360)),inner=Math.max(0,Math.min(.999,n.arcInner??0)),direction=sweep>=0?1:0;

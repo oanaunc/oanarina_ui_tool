@@ -16,6 +16,7 @@ export default function VectorPointTools({n}:{n:DesignNode}){
  <fieldset disabled={disabled} style={{border:0,padding:0,margin:0}}>
  <VectorBendControls n={n}/>
  <button className="outline-button" onClick={()=>runCommand('vector-offset')}>Offset vector path…</button>
+ <button className="outline-button" onClick={()=>runCommand('vector-outline-stroke')}>Outline vector stroke…</button>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-join')}>Join</button><button className="outline-button" onClick={()=>runCommand('vector-smooth-join')}>Smooth join</button></div>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-split')}>Split at points</button><button className="outline-button" onClick={()=>runCommand('vector-heal')}>Delete and heal</button></div>
  <button className="outline-button" onClick={()=>apply(()=>closeVectorContours(n,s.vectorSelection))}>Close selected contours</button>
