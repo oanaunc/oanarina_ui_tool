@@ -2934,50 +2934,50 @@
     "category": "Sections groups and slices",
     "name": "Slice export settings",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Slices and exports manager exposes per-slice persisted profiles: SVG/PNG/JPG, suffix, scale/constrained dimensions, format options, real previews, single/multiple-profile downloads and visible-slice batch ZIP. Shared validated profiles use Undo/save, component checks and guarded delayed inputs. Explicit empty lists exclude an asset; 20-profile/200-asset/100MB limits apply. docs/SLICE-EXPORT-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-10-024",
     "category": "Sections groups and slices",
     "name": "Slice export naming",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Manager renames slices with an explicit guarded Save/Enter action and edits per-profile filename suffixes. Real downloaded names use portable bounded sanitization and collision suffixes. Names/profile data persist with Undo/.oui reopening. Manager name editing is bounded to 512 characters while longer legacy names remain intact. docs/SLICE-EXPORT-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-10-025",
     "category": "Sections groups and slices",
     "name": "Toggle slice visibility",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: View, Preferences and slice manager toggle local canvas-only outlines/labels; border/label targets leave interior artwork clickable. Separate saved slice layer visibility updates outlines/visible batch eligibility with Undo. Hidden/inherited visibility and affine/Motion geometry apply; global toggle leaves artwork/history/exports unchanged and migrates older preferences. docs/SLICE-EXPORT-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-10-026",
     "category": "Sections groups and slices",
     "name": "Export overlapping slices",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Visible current-page slices export independently in a ZIP through each crop inverse affine transform. Tests decode actual overlapping, reflected/nonuniform transformed PNG crops at different scales. All overlapping artwork keeps mask/clip context; slices and their imported subtrees never paint or orphan export nodes. Snapshot exports preserve saved artwork. docs/SLICE-EXPORT-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-10-027",
     "category": "Sections groups and slices",
     "name": "Select slice through panel",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Dedicated bounded/searchable slice list supports arrow/Home/End navigation across 50-entry pages, explicit inspection of hidden/locked regions, and Select slice on canvas with returned focus. Existing Layers selection remains. Manager is page-local, with 4096-character name-prefix search; full names remain saved. docs/SLICE-EXPORT-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-10-028",
@@ -2994,20 +2994,20 @@
     "category": "Sections groups and slices",
     "name": "Slice export scale",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Per-slice saved export scale 0.01×–64× and aspect-preserving fixed pixel width/height use the shared profile pipeline. Browser tests verify actual PNG dimensions/pixels and scaled SVG dimensions, Undo/save and stale-input refusal. Raster edges 16384px/80M pixels; bounds remain the slice rectangle. docs/SLICE-EXPORT-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-10-030",
     "category": "Sections groups and slices",
     "name": "Slice SVG export",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Slice SVG profiles download actual fixed-region cropped artwork in slice-local axes, with supported text/appearance, layer-ID and presentation options. Real scaled SVG filenames/dimensions, no slice-overlay paint and immutable source are tested. Uses existing renderer/fonts/media limitations; no binary .fig export. docs/SLICE-EXPORT-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-11-001",
@@ -4414,30 +4414,30 @@
     "category": "Vector pen and editing",
     "name": "Offset vector path",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable Vector menu/point-tool offset dialog previews original/proposed real SVG snapshots with isolated definitions and ancestor masks/clips. Closed contours expand/contract including holes/concavity; open paths shift to a signed parallel path. One guarded Undo/save/reopen transaction. Approximate cubic flattening tolerance 0.25 parent units, 32 contours/512 input or flattened points/4096 output points; mixed open/closed, crossing/touching/reversed/collapsed geometry refuses atomically. docs/VECTOR-OFFSET.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-14-040",
     "category": "Vector pen and editing",
     "name": "Offset distance control",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Signed numerical offset distance controls real geometry and previews; positive/negative semantics and parent units are stated. Finite nonzero magnitude 0.001–10000 is validated; stale document/page/selection/mode/Motion/camera/blur contexts refuse Apply. Actual exported pixels and one-history persistence are tested. This offsets paths rather than stroke width. docs/VECTOR-OFFSET.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-14-041",
     "category": "Vector pen and editing",
     "name": "Offset square or round joins",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Round joins and explicitly sharp/miter joins with 4× miter limit/bevel fallback work in signed offsets and real previews/exports. A true square-join algorithm and exact Figma join equivalence remain unfinished; the Square label explicitly says miter. Geometry tolerance/topology/size limits apply. docs/VECTOR-OFFSET.md."
   },
   {
     "id": "UI-14-042",
@@ -7284,20 +7284,20 @@
     "category": "Advanced typography",
     "name": "Bidirectional text",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Mixed RTL/LTR scripts and rich spans use browser bidi/shaping within each rendered line, with full-paragraph first-strong Auto direction, actual glyph-order/Arabic joining/color pixels, logical source preservation, validation and persistence. Per-line SVG isolates do not retain arbitrary embedding or weak/neutral context across soft wraps; headless first-strong direction is a finite Unicode approximation. Full bidi paragraph-engine parity remains unfinished. docs/TEXT-DIRECTION-WORKFLOWS.md."
   },
   {
     "id": "UI-22-037",
     "category": "Advanced typography",
     "name": "Right-to-left paragraphs",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Layer and paragraph Auto/LTR/RTL controls preserve logical UTF-16 source and rich/paragraph overrides through Undo/save, clipboard, styles/components and source MCP. Shared layout/rendering mirrors RTL paragraph/list insets, places decimal/bullet markers, honors physical alignment and trailing ellipsis; actual Hebrew/Latin/numeric/Arabic joining pixels are tested. Inline/rich text editing uses layer direction; native textareas do not style individual paragraph overrides separately. Broader cross-wrap bidi remains partial. docs/TEXT-DIRECTION-WORKFLOWS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-22-038",
@@ -7744,20 +7744,20 @@
     "category": "Constraints and resizing",
     "name": "Stretch with layout columns",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source: Durable optional x-axis binding names direct frame/component/instance owner, column guide ID and 1-based cell span. Shared derivation tracks owner size and guide/style edits, with guarded bind/detach controls, descendant constraints, Undo/save, copy/page/component/clipboard remapping and source MCP. Fixed/absolute Design children only; incompatible hug/aspect/auto-text suspends, hard min/max clamps, missing/retyped/out-of-range guide or changed owner detaches at last geometry. docs/RESPONSIVE-GUIDE-BINDINGS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-23-028",
     "category": "Constraints and resizing",
     "name": "Stretch with layout rows",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source: Durable optional y-axis row-guide owner/ID/cell span follows real owner height and guide/style edits in shared reflow. Bind/detach, Undo/save, nested constrained descendants and reference remapping are tested including actual rendered size. Same direct-parent fixed/absolute Design scope and suspension/clamp/detach rules as columns; arbitrary nested-track relations remain unfinished. docs/RESPONSIVE-GUIDE-BINDINGS.md. Native/exact-reference acceptance remains pending."
   },
   {
     "id": "UI-23-029",
@@ -8675,9 +8675,9 @@
     "name": "Layout guide constraints",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040450513-Create-layout-guides",
-    "notes": "Guide geometry participates in snapping; child constraints to individual grid tracks are not implemented."
+    "notes": "Guide snapping plus real durable direct-parent column/row span bindings are implemented: shared reflow, guide/style/owner lifecycles, guarded controls, copy/component/clipboard remapping, Undo/save and source MCP. Bound axes reserve constraint channels; CSS/Dev output explicitly contains saved geometry only and redacts raw binding IDs. Arbitrary nested/rotated track relationships, alignment/offset-pin variants and generated responsive CSS remain unfinished. docs/RESPONSIVE-GUIDE-BINDINGS.md."
   },
   {
     "id": "UI-26-025",

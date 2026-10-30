@@ -1,5 +1,23 @@
 [
   [
+    "slice-manager",
+    "Slices and exports…",
+    "File",
+    ""
+  ],
+  [
+    "toggle-slices",
+    "Show / hide slices",
+    "View",
+    ""
+  ],
+  [
+    "vector-offset",
+    "Offset vector path…",
+    "Vector",
+    ""
+  ],
+  [
     "selection-box",
     "Select layers in box…",
     "Edit",
