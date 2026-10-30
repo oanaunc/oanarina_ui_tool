@@ -1,5 +1,7 @@
 # v0.2.0-dev.9 validation — pages, raster clipboard and recovery
 
+Final October 30 addendum: the unlocked final dev.9 artifact subsequently passed all 255 production browser checks in one uninterrupted run, all 29 native clipboard checks, all 37 native lifecycle checks and the standard native smoke. App and DMG notarization were Accepted, both were stapled, and Gatekeeper accepted the artifacts. The exact accepted artifact is preserved locally under `build/dev9-accepted-before-fig/`; it was held from publication while dev.10 adds local `.fig` import. Earlier failed/interrupted attempts below remain historical evidence. See [dev.10 validation](VALIDATION-v0.2-fig-import.md) for the current release work.
+
 Date: 2026-10-30. Product: Forma. Development source checkpoint; final release acceptance remains pending. The register contains **2,022 requirements: 1,062 implemented, 168 partial and 792 planned**. This is not complete Figma parity. The machine-readable [feature register](../public/features.json) and [implementation limits](IMPLEMENTATION.md) remain authoritative.
 
 ## Source scope

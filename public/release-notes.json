@@ -14,7 +14,7 @@
         "Cancel obsolete imports before they can replace current edits or the active recovery identity."
       ],
       "limits": [
-        "This is a preview candidate. Installer metadata and checksums are published on the Forma website only after release validation.",
+        "This is a development preview. Current installer metadata and checksums are published on the Forma website.",
         "Binary .fig import supports a documented subset of Design files. Live component linkage, native rich annotation editing, complete prototype/layout semantics and full visual parity are not promised.",
         "Binary .fig export and substantial Figma suite parity remain unfinished."
       ]
