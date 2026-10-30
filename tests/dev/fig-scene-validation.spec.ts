@@ -9,3 +9,38 @@ test('actual raster validation rejects a corrupt image used only by a stroke wit
 test('canceled raster validation rejects before allocating an image or mutating the current project',async({page})=>{
  await page.goto('/');await expect(page.locator('.app')).toBeVisible();const result=await page.evaluate(async()=>{const {validateFigSceneRasters}=await import('/src/fig-scene.ts'),{blankDocument,node}=await import('/src/model.ts'),{createPaint}=await import('/src/paints.ts'),{useEditor}=await import('/src/store.ts');const before=useEditor.getState(),doc=blankDocument(),paint=createPaint('#000000','image');Object.assign(paint,{image:'data:image/png;base64,iVBORw0KGgo=',imageWidth:1,imageHeight:1});doc.pages[0].nodes=[node('rectangle',{paints:[paint]})];const controller=new AbortController();controller.abort();const Original=window.Image;let allocated=0,error='';try{window.Image=class{constructor(){allocated++;}} as typeof Image;await validateFigSceneRasters(doc,controller.signal);}catch(e){error=(e as Error).name;}finally{window.Image=Original;}return {error,allocated,unchanged:before.doc===useEditor.getState().doc};});expect(result).toEqual({error:'AbortError',allocated:0,unchanged:true});
 });
+for(const scenario of ['over-budget','exact-budget-with-reuse','inconsistent-reuse'] as const){
+ test(`raster aggregate preflight: ${scenario}`,async({page})=>{
+  await page.goto('/');await expect(page.locator('.app')).toBeVisible();
+  const result=await page.evaluate(async(scenario)=>{
+   const {validateFigSceneRasters}=await import('/src/fig-scene.ts'),{blankDocument,node}=await import('/src/model.ts'),{createPaint,createStroke}=await import('/src/paints.ts'),{useEditor}=await import('/src/store.ts');
+   const before=useEditor.getState(),doc=blankDocument();
+   // Small fake payloads declare large dimensions; no large bitmap is ever decoded.
+   const raster=(id:number,width=4000,height=4000)=>{
+    const paint=createPaint('#000000','image');
+    Object.assign(paint,{image:'data:image/png;base64,'+btoa(`raster-${id}`),imageWidth:width,imageHeight:height});
+    return paint;
+   };
+   const count=scenario==='over-budget'?5:4;
+   for(let i=0;i<count;i++){
+    const paint=raster(i),stroke=createStroke();stroke.paint=paint;
+    doc.pages[0].nodes.push(node('rectangle',i%2?{paints:[],strokes:[stroke]}:{paints:[paint],strokes:[]}));
+   }
+   if(scenario==='exact-budget-with-reuse')for(let i=0;i<10;i++)doc.pages[0].nodes.push(node('rectangle',{paints:[raster(0)]}));
+   if(scenario==='inconsistent-reuse')doc.pages[0].nodes.push(node('rectangle',{paints:[raster(0,2000,8000)]}));
+   const Original=window.Image;let allocated=0,error='';
+   try{
+    window.Image=class{
+     naturalWidth=4000;naturalHeight=4000;onload:(()=>void)|null=null;onerror:(()=>void)|null=null;
+     constructor(){allocated++;}
+     set src(_value:string){this.onload?.();}
+    } as unknown as typeof Image;
+    await validateFigSceneRasters(doc);
+   }catch(e){error=(e as Error).message;}finally{window.Image=Original;}
+   const after=useEditor.getState();return {allocated,error,unchanged:before.doc===after.doc,past:before.past.length===after.past.length};
+  },scenario);
+  expect(result).toMatchObject({unchanged:true,past:true});
+  if(scenario==='exact-budget-with-reuse')expect(result).toMatchObject({allocated:4,error:''});
+  else{expect(result.allocated).toBe(0);expect(result.error).toMatch(scenario==='over-budget'?/64 million unique-pixel budget/:/dimensions are inconsistent/);}
+ });
+}
