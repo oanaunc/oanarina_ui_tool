@@ -1,3 +1,4 @@
+import type {TextOutline} from './text-outline';
 import {validateDocumentMetadata} from './document-metadata';
 import {validateGrids} from './grid';
 import type {GridTrack,GridAlignment} from './grid';
@@ -36,7 +37,7 @@ export interface DesignNode {
   x:number; y:number; width:number; height:number; rotation:number;
   fill:string; paints?:Paint[]; strokes?:StrokeStyle[]; blendMode?:string; effects?:Effect[]; isolate?:boolean; stroke:string; strokeWidth:number; opacity:number; radius:number;
   aspectLocked?:boolean;mask?:LayerMask;exportGhost?:boolean;motionScaleX?:number;motionScaleY?:number;visible:boolean; locked:boolean; text:string; fontSize:number; fontFamily:string; fontWeight:number;
-  textRuns?:TextRun[];fontAxes?:Record<string,number>;fontFeatures?:Record<string,number>;underline?:UnderlineStyle;
+  textOutline?:TextOutline;textRuns?:TextRun[];fontAxes?:Record<string,number>;fontFeatures?:Record<string,number>;underline?:UnderlineStyle;
   textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number; letterSpacing:number;
   path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
