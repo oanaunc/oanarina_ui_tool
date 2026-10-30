@@ -1,3 +1,5 @@
+import VersionHistory from './VersionHistory';
+import SaveVersion from './SaveVersion';
 import DocumentCoverDialog from './DocumentCoverDialog';
 import ShortcutHelp from './ShortcutHelp';
 import RepeatLayersDialog from './RepeatLayersDialog';
@@ -22,23 +24,18 @@ import SvgImportReview from './SvgImportReview';
 import McpSetup from './McpSetup';
 import ExportDialog from './ExportDialog';
 import PrototypePresentation from './PrototypePresentation';
-import {listSnapshots,saveSnapshot} from '../repository';
-import type {Snapshot} from '../repository';
 import DesignSystemsEditor from './DesignSystemsEditor';
 import ComponentManager from './ComponentEditor';
 import {useEffect,useState} from 'react';
-import {Check,ChevronRight,Download,ExternalLink,X,Clock,FileJson,Layers} from 'lucide-react';
+import {ChevronRight,Download,ExternalLink,X,FileJson,Layers} from 'lucide-react';
 import {FEATURE_COUNT,APP_VERSION} from '../feature-meta';
 import {useEditor} from '../store';
-import {parseDocument} from '../model';
 import {exportBridge} from '../commands';
 import {cancelSvgImport,getSvgImportRequest,exportArtwork,notifyError,openProject} from '../files';
 import FontLibrary from './FontLibrary';
 import {addComment} from './Canvas';
 interface Feature {id:string;name:string;category:string;status:string;priority:string;notes:string;}
 export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(''),[value,setValue]=useState(''),[features,setFeatures]=useState<Feature[]>([]),[category,setCategory]=useState('All'),[filter,setFilter]=useState('All'),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false),[format,setFormat]=useState<'svg'|'png'|'jpg'>(()=>getPreferences().defaultExportFormat);
- const [versions,setVersions]=useState<Snapshot[]>([]);
- useEffect(()=>{if(s.modal==='history')listSnapshots(s.doc.id).then(setVersions).catch(notifyError);},[s.modal,s.doc.id]);
  const page=s.doc.pages.find(p=>p.id===s.pageId)!,n=page.nodes.find(n=>s.selection.includes(n.id)),modal=s.modal;
  useEffect(()=>{const report=getFigImportReport();if(report&&(modal!=='fig-import-report'||report.document.id!==s.doc.id))clearFigImportReport();const request=getSvgImportRequest();if(request&&(modal!=='svg-import'||request.documentId!==s.doc.id))cancelSvgImport();},[modal,s.doc.id]);
  useEffect(()=>{setQuery('');setCategory('All');setFilter('All');setValue(modal==='rename-file'?s.doc.name:modal==='rename-page'?page.name:modal==='rename'?n?.name??'':modal==='text-link'?n?.hyperlink??'':'');if(modal==='roadmap')fetch('./features.json').then(r=>r.json()).then(setFeatures).catch(notifyError);},[modal]);
@@ -47,6 +44,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  const close=()=>{if(modal==='fig-import-report')clearFigImportReport();if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
  if(modal==='text-search')return <TextSearch key={s.doc.id}/>;
  if(modal==='move-to-page')return <MoveLayersDialog/>;
+ if(modal==='history')return <VersionHistory key={s.doc.id}/>;
  if(modal==='present')return <PrototypePresentation/>;
  if(modal==='file-cover')return <DocumentCoverDialog/>;
  if(modal==='document-outline')return <DocumentOutline/>;
@@ -61,7 +59,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  const title=modal==='asset-usage'?'Local asset usage':modal==='fig-import-report'?'Figma import report':modal==='file-info'?'File information':modal==='release-notes'?'Release notes':modal==='preferences'?'Preferences':modal==='svg-import'?'Import SVG':modal==='mcp'?'Free local MCP automation':modal==='variables'?'Variables and modes':modal==='styles'?'Local design styles':modal==='delete-component'?'Delete main component?':modal==='components'?'Components and variants':modal==='text-link'?'Link this text.':modal==='fonts'?'Every idea has a type.':modal==='actions'?'What would you like to do?':modal==='roadmap'?'The complete feature register':modal==='figma'?'Your ideas, in both directions.':modal==='export'?'Export your design':modal==='shortcuts'?'A little less clicking.':modal==='history'?'Version history':modal==='snapshot'?'Save a version':modal==='comments'?'Comments':modal==='colors'?'Styles & colors':modal==='about'?'Forma':modal.startsWith('comment:')?'Leave a note':modal.startsWith('rename')?'Give it a name':'Forma';
  const rename=()=>{if(!value.trim())return;if(modal==='rename-file')s.edit(d=>{d.name=value.trim();});if(modal==='rename-page')s.edit(d=>{d.pages.find(p=>p.id===s.pageId)!.name=value.trim();});if(modal==='rename')s.patch(s.selection,{name:value.trim()});close();};
  const rows=features.filter(f=>(category==='All'||f.category===category)&&(filter==='All'||f.status===filter)&&(`${f.id} ${f.name} ${f.category}`).toLowerCase().includes(query.toLowerCase()));
- const saveVersion=()=>{void saveSnapshot(s.doc,value).then(()=>s.set({modal:'history',toast:'Version saved'})).catch(notifyError);};
+
  return <div className="modal-backdrop" onPointerDown={e=>{if(e.target===e.currentTarget)close();}}><div role="dialog" aria-modal="true" aria-label={title} className={'dialog '+(['preferences','svg-import','fig-import-report','roadmap','shortcuts','fonts','components','variables','styles','asset-usage','mcp'].includes(modal)?'wide-dialog':'') } onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close();return;}if(e.key==='Tab'){const list=[...e.currentTarget.querySelectorAll<HTMLElement>(modal==='shortcuts'?'button:not([disabled]):not([tabindex="-1"]),input,select,textarea,a[href],[tabindex="0"]':'button:not([disabled]),input,select,textarea,a[href]')];const first=list[0],last=list.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}}}>
  <header className="dialog-header"><div><span className="eyebrow">OANARINA FORMA</span><h2>{title}</h2></div><button aria-label="Close dialog" onClick={close}><X size={18}/></button></header>
  <div className="dialog-body">
@@ -85,8 +83,8 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  {modal==='figma'&&<><p className="dialog-description">Transfer supported editable layers with the Figma Bridge plugin, or exchange visuals through SVG. Open supported binary <code>.fig</code> Design files directly and review the import report. Save converted projects as .oui; binary .fig export is not available.</p><div className="transfer-card"><FileJson size={23}/><div><h3>Editable Figma Bridge</h3><p>Frames, shapes, text, paints, images and supported linked components, instances and variants. Selected instances include their main definitions. Unsupported structures and overrides are reported and may become detached editable frames.</p></div></div><ol className="steps"><li>Download and unzip the plugin. In Figma desktop, choose Plugins → Development → Import plugin from manifest.</li><li>Choose <code>manifest.json</code> in the downloaded folder and run Oanarina Bridge.</li><li>Export from Figma to an <code>.oui</code> file and open it here. To go back, export this project, then import it through the plugin.</li></ol><div className="button-row"><a className="outline-button" href="./figma-bridge.zip" download><Download size={14}/>Download plugin</a><button className="primary-button" onClick={()=>{exportBridge().catch(notifyError);}}>Export for Figma</button><button className="outline-button" onClick={()=>{close();void openProject();}}>Import from Figma</button></div><div className="transfer-card"><Layers size={22}/><div><h3>SVG exchange</h3><p>Export SVG here and drag it into Figma. Place an SVG to review supported editable shapes, paths, text and hierarchy, or choose a sanitized visual asset. Unsupported SVG features are reported. The bridge preserves a different subset of editable project properties.</p><button className="text-button" onClick={()=>exportArtwork('svg')}>Export SVG <ExternalLink size={12}/></button></div></div><p className="small-note">Bridge integration requires a Figma desktop round-trip check. See the included compatibility guide for limits on mixed text, fonts, advanced effects, auto layout and component behavior.</p></>}
  {modal==='export'&&<ExportDialog format={format} setFormat={setFormat} scale={scale} setScale={setScale} includeGuides={includeGuides} setIncludeGuides={setIncludeGuides}/>}
  {modal==='shortcuts'&&<ShortcutHelp/>}
- {modal==='snapshot'&&<form onSubmit={e=>{e.preventDefault();saveVersion();}}><input aria-label="Version name" autoFocus placeholder="What changed in this version?" value={value} onChange={e=>setValue(e.target.value)}/><button className="primary-button" type="submit"><Check size={14}/>Save local version</button></form>}
- {modal==='history'&&<><p className="dialog-description">Named snapshots are stored on this device. Export a project for a portable backup.</p><button className="outline-button" onClick={()=>s.set({modal:'snapshot'})}><Clock size={14}/>Save a named version</button><div className="version-list">{versions.map((v,i)=><div key={i}><Clock size={16}/><div><strong>{v.name}</strong><small>{new Date(v.date).toLocaleString()}</small></div><button className="outline-button" onClick={()=>{try{const d=parseDocument(JSON.stringify(v.doc));s.edit(target=>{delete target.description;Object.assign(target,d);});s.set({pageId:d.pages[0].id,selection:[],modal:null,toast:'Version restored. Undo is available.'});}catch(e){notifyError(e);}}}>Restore</button></div>)}</div></>}
+ {modal==='snapshot'&&<SaveVersion/>}
+
  {modal.startsWith('comment:')&&<form onSubmit={e=>{e.preventDefault();if(value.trim()){const [x,y]=modal.slice(8).split(',').map(Number);addComment(value.trim(),x,y);close();}}}><textarea autoFocus aria-label="Comment text" placeholder="Add a thought, a question, a little feedback…" value={value} onChange={e=>setValue(e.target.value)}/><button className="primary-button" type="submit">Post local comment</button></form>}
  {modal==='comments'&&<>{!page.comments.length&&<p className="dialog-description">No comments yet. Press C, then click the canvas to leave a note.</p>}{page.comments.map(c=><div className={'comment-card '+(c.resolved?'resolved':'')} key={c.id}><div className="avatar">O</div><div><strong>You · local note</strong><p>{c.text}</p><button className="text-button" onClick={()=>s.edit(d=>{d.pages.find(p=>p.id===s.pageId)!.comments.find(a=>a.id===c.id)!.resolved=!c.resolved;})}>{c.resolved?'Reopen':'Resolve'}</button></div><button title="Delete comment" onClick={()=>s.edit(d=>{const p=d.pages.find(p=>p.id===s.pageId)!;p.comments=p.comments.filter(a=>a.id!==c.id);})}><X size={14}/></button></div>)}</>}
  {modal==='colors'&&<><p className="dialog-description">A shared palette for this document. Apply a color from the inspector.</p>{s.doc.colors.map((c,i)=><div className="palette-row" key={i}><input aria-label={c.name+' color'} type="color" value={c.value} onChange={e=>s.edit(d=>{d.colors[i].value=e.target.value;})}/><input aria-label={c.name+' name'} defaultValue={c.name} onBlur={e=>{if(e.target.value)s.edit(d=>{d.colors[i].name=e.target.value;});}}/><code>{c.value}</code><button title="Remove color" onClick={()=>s.edit(d=>{d.colors.splice(i,1);})}><X size={13}/></button></div>)}<button className="outline-button" onClick={()=>s.edit(d=>d.colors.push({name:'New color',value:'#c8b9ee'}))}>Add color</button></>}
