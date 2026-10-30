@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-10-30",
+  "releases": [
+    {
+      "version": "0.2.0-dev.9",
+      "channel": "development",
+      "title": "Pages, image clipboard and remembered views",
+      "notes": [
+        "Duplicate, reorder and search pages with contextual and keyboard actions; shared component links stay intact and unsafe deletion is refused.",
+        "Remember each Design/Whiteboard page's pan and zoom locally, and preview its static artwork on hover or keyboard focus.",
+        "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. The new Copy as PNG source creates a transparent 2× selection snapshot.",
+        "Follow system light/dark appearance, or retain an explicit interface theme.",
+        "Saved-file MCP adds atomic page duplication and reordering. Browser startup waits for recovery before editing or autosave."
+      ],
+      "limits": [
+        "This is development source. The next Mac installer is pending final native window acceptance, signing and notarization.",
+        "Copy as PNG still requires final native runtime acceptance. Browser/Windows system-image clipboard and private Figma clipboard are unfinished.",
+        "Substantial Figma suite parity remains unfinished, including binary .fig interchange and cloud collaboration."
+      ]
+    },
+    {
+      "version": "0.2.0-dev.8",
+      "channel": "preview",
+      "title": "Native editable clipboard and canvas backgrounds",
+      "notes": [
+        "Transfer editable Forma layers between Mac document windows, with validated component/style/variable/font dependencies and one-step Undo.",
+        "Edit page canvas color, opacity and visibility; use an explicit color-pair contrast checker.",
+        "Use the local vector, typography, layout, components, variables, prototype, whiteboard, Slides and motion workspaces."
+      ],
+      "limits": [
+        "This Mac preview is earlier than the current development source and has documented feature limits.",
+        "The app and DMG were Developer ID signed, notarized, stapled and Gatekeeper checked. The universal binary includes Intel; Intel runtime validation is pending.",
+        "Keep .oui projects and backups when upgrading. There is no silent updater."
+      ],
+      "download": {
+        "url": "https://www.oanarinaldi.com/downloads/ui-tool/Forma-0.2.0-dev.8.dmg",
+        "sha256": "9d6ec589ee35058b1e7b55aa87214dd6d6cc7a390459aa06405a9e23dd90a716",
+        "bytes": 31747674,
+        "notarized": true
+      }
+    }
+  ]
+}

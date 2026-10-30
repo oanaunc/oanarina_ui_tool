@@ -1,5 +1,6 @@
 import ActionPalette from './ActionPalette';
 import Preferences from './Preferences';
+import ReleaseNotes from './ReleaseNotes';
 import SvgImportReview from './SvgImportReview';
 import McpSetup from './McpSetup';
 import {GuideExportOption} from './LayoutGuides';
@@ -28,7 +29,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  const close=()=>{if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
  if(modal==='present')return <PrototypePresentation/>;
 
- const title=modal==='preferences'?'Preferences':modal==='svg-import'?'Import SVG':modal==='mcp'?'Free local MCP automation':modal==='variables'?'Variables and modes':modal==='styles'?'Local design styles':modal==='delete-component'?'Delete main component?':modal==='components'?'Components and variants':modal==='text-link'?'Link this text.':modal==='fonts'?'Every idea has a type.':modal==='actions'?'What would you like to do?':modal==='roadmap'?'The complete feature register':modal==='figma'?'Your ideas, in both directions.':modal==='export'?'Export your design':modal==='shortcuts'?'A little less clicking.':modal==='history'?'Version history':modal==='snapshot'?'Save a version':modal==='comments'?'Comments':modal==='colors'?'Styles & colors':modal==='about'?'Forma':modal.startsWith('comment:')?'Leave a note':modal.startsWith('rename')?'Give it a name':'Forma';
+ const title=modal==='release-notes'?'Release notes':modal==='preferences'?'Preferences':modal==='svg-import'?'Import SVG':modal==='mcp'?'Free local MCP automation':modal==='variables'?'Variables and modes':modal==='styles'?'Local design styles':modal==='delete-component'?'Delete main component?':modal==='components'?'Components and variants':modal==='text-link'?'Link this text.':modal==='fonts'?'Every idea has a type.':modal==='actions'?'What would you like to do?':modal==='roadmap'?'The complete feature register':modal==='figma'?'Your ideas, in both directions.':modal==='export'?'Export your design':modal==='shortcuts'?'A little less clicking.':modal==='history'?'Version history':modal==='snapshot'?'Save a version':modal==='comments'?'Comments':modal==='colors'?'Styles & colors':modal==='about'?'Forma':modal.startsWith('comment:')?'Leave a note':modal.startsWith('rename')?'Give it a name':'Forma';
  const rename=()=>{if(!value.trim())return;if(modal==='rename-file')s.edit(d=>{d.name=value.trim();});if(modal==='rename-page')s.edit(d=>{d.pages.find(p=>p.id===s.pageId)!.name=value.trim();});if(modal==='rename')s.patch(s.selection,{name:value.trim()});close();};
  const rows=features.filter(f=>(category==='All'||f.category===category)&&(filter==='All'||f.status===filter)&&(`${f.id} ${f.name} ${f.category}`).toLowerCase().includes(query.toLowerCase()));
  const saveVersion=()=>{void saveSnapshot(s.doc,value).then(()=>s.set({modal:'history',toast:'Version saved'})).catch(notifyError);};
@@ -41,6 +42,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  {modal==='mcp'&&<McpSetup/>}
  {modal==='svg-import'&&<SvgImportReview/>}
  {modal==='preferences'&&<Preferences/>}
+ {modal==='release-notes'&&<ReleaseNotes/>}
  {modal==='delete-component'&&<><p>Instances will keep their current appearance and become disconnected. Undo or Restore main component can recover the link.</p><button className="primary-button" onClick={()=>{s.remove();close();}}>Delete main component</button><button className="outline-button" onClick={close}>Keep component</button></>}
  {modal==='fonts'&&<FontLibrary/>}
  {modal==='text-link'&&<form onSubmit={e=>{e.preventDefault();if(value&&!/^https?:\/\//i.test(value)){s.set({toast:'Use an https:// or http:// link.'});return;}s.patch(s.selection,{hyperlink:value||undefined});close();}}><input type="url" aria-label="Text hyperlink" autoFocus placeholder="https://example.com" value={value} onChange={e=>setValue(e.target.value)}/><div className="button-row"><button className="primary-button" type="submit">Save link</button><button className="outline-button" type="button" onClick={()=>{s.patch(s.selection,{hyperlink:undefined});close();}}>Remove link</button></div></form>}
