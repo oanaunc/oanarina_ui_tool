@@ -28,3 +28,6 @@ test('one preview fits compact viewport and slice uses actual crop',async({page}
 test('portal retains readable opaque surfaces in both themes',async({page})=>{
  await open(page,fixture());await target(page).focus();await expect(page.locator('.layer-thumbnail')).toBeVisible();expect(await page.locator('.layer-thumbnail').evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(44, 43, 48)');await page.evaluate(()=>window.dispatchEvent(new CustomEvent('command',{detail:'theme'})));await expect(page.locator('.layer-thumbnail')).toHaveClass(/theme-light/);expect(await page.locator('.layer-thumbnail').evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(255, 255, 255)');expect(await page.locator('.layer-thumbnail').evaluate(e=>getComputedStyle(e).color)).toBe('rgb(55, 50, 61)');
 });
+test('window blur clears both pending and visible layer previews',async({page})=>{
+ await open(page,fixture());await target(page).hover();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.waitForTimeout(250);await expect(page.locator('.layer-thumbnail')).toHaveCount(0);await page.mouse.move(700,20);await target(page).hover();await expect(page.locator('.layer-thumbnail')).toBeVisible();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await expect(page.locator('.layer-thumbnail')).toHaveCount(0);
+});
