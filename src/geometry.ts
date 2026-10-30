@@ -30,7 +30,7 @@ export function localPath(n:DesignNode):string {
 }
 export function geometry(n:DesignNode):paper.PathItem {
  if(['text','image','slice'].includes(n.type))throw Error('Convert text to outlines or select vector shapes for this operation.');
- scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();
+ scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();p.fillRule=n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero');
  if(n.type==='path'){p.scale(n.width/(n.pathWidth||n.width||1),n.height/(n.pathHeight||n.height||1),new scope.Point(0,0));}
  if(n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined)p.scale((n.flipX?-1:1)*(n.motionScaleX??1),(n.flipY?-1:1)*(n.motionScaleY??1),new scope.Point(n.width/2,n.height/2));
  p.translate(new scope.Point(n.x,n.y));if(n.rotation)p.rotate(n.rotation,new scope.Point(n.x+n.width/2,n.y+n.height/2));return p;
@@ -47,7 +47,7 @@ export function updateBooleans(nodes:DesignNode[]){
   const result=combineGeometry(children,parent.booleanOp!);const props=pathProperties(result);Object.assign(parent,props);result.remove();
  }
 }
-export function geometricArea(n:DesignNode){const p=geometry(n);const a=Math.abs((p as paper.Path|paper.CompoundPath).area);p.remove();return a;}
+export function geometricArea(n:DesignNode){const p=geometry(n);if(p.fillRule==='evenodd')p.reorient(false);const a=Math.abs((p as paper.Path|paper.CompoundPath).area);p.remove();return a;}
 export function pathContours(n:DesignNode):VectorContour[]{scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();const paths=p instanceof scope.CompoundPath?p.children as paper.Path[]:[p as paper.Path];return paths.map(path=>({closed:path.closed,points:path.segments.map(s=>({x:s.point.x,y:s.point.y,in:{x:s.handleIn.x,y:s.handleIn.y},out:{x:s.handleOut.x,y:s.handleOut.y},mode:'mirrored'}))}));}
 export function vectorOperation(n:DesignNode,operation:'smooth'|'simplify'|'reverse'|'close'|'open'|'flatten'){
  const p=geometry(n);if(operation==='smooth')p.smooth({type:'catmull-rom',factor:.5});if(operation==='simplify')p.simplify(1.5);if(operation==='reverse')p.reverse();if(operation==='flatten')p.flatten(.4);

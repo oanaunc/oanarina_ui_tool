@@ -41,7 +41,7 @@ export interface DesignNode {
   exportSettings?:FrameExportSetting[];readyForDevelopment?:boolean;
   textOutline?:TextOutline;textRuns?:TextRun[];fontAxes?:Record<string,number>;fontFeatures?:Record<string,number>;underline?:UnderlineStyle;
   textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number; letterSpacing:number;
-  path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
+  fillRule?:'nonzero'|'evenodd';path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
   gridRows?:number;gridColumns?:GridTrack[];gridRowTracks?:GridTrack[];gridColumn?:number;gridRow?:number;gridColumnSpan?:number;gridRowSpan?:number;gridAlignX?:GridAlignment;gridAlignY?:GridAlignment;
   sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch'|'baseline';wrap?:boolean;
@@ -93,6 +93,7 @@ export function parseDocument(raw:string):DesignDocument {
       for(const k of ['name','fill','stroke','text','fontFamily','path','image'])if(typeof n[k]!=='string')throw Error('Invalid text property.');
       if(n.image&&!/^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,/.test(n.image))throw Error('Only embedded images are supported.');
       if(!Array.isArray(n.points)||n.points.some((pt:{x:number;y:number})=>!Number.isFinite(pt.x)||!Number.isFinite(pt.y)))throw Error('Invalid path points.');
+      if(n.fillRule!==undefined&&!['nonzero','evenodd'].includes(n.fillRule))throw Error('Invalid vector winding rule.');
       const contours=n.contours;if(contours!==undefined&&(!Array.isArray(contours)||contours.length>1000||contours.some((c:VectorContour)=>!Array.isArray(c.points)||typeof c.closed!=='boolean')))throw Error('Invalid vector contours.');
       const points=[...n.points,...(contours??[]).flatMap((c:VectorContour)=>c.points)];if(points.length>100000)throw Error('Too many vector points.');
       for(const pt of points){if(!Number.isFinite(pt.x)||!Number.isFinite(pt.y))throw Error('Invalid vector point.');for(const handle of [pt.in,pt.out])if(handle&&(!Number.isFinite(handle.x)||!Number.isFinite(handle.y)))throw Error('Invalid vector tangent.');}
