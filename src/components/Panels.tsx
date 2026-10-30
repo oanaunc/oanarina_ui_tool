@@ -1,4 +1,5 @@
 import PageBackground from './PageBackground';
+import {FrameExportSettings} from './FrameDelivery';
 import FrameActions,{FramePresetList} from './FrameActions';
 import PageList from './PageList';
 import ContrastChecker from './ContrastChecker';
@@ -101,6 +102,6 @@ export function RightPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id==
  <section className="inspector-section" data-testid="effects-section"><EffectsEditor n={n} patch={patch}/></section>
  {(n.type==='component'||n.type==='instance'||n.instanceRootId)&&<Section name="Component"><ComponentInspector n={n}/></Section>}
  </>}
- <ContrastChecker selection={sel}/><Section name="Export" action={<ArrowDown size={14}/>}><div className="export-settings"><select aria-label="Export scale" value={scale} onChange={e=>setScale(Number(e.target.value))}>{[1,2,3,4].map(v=><option key={v} value={v}>{v}×</option>)}</select><select aria-label="Export format" value={format} onChange={e=>setFormat(e.target.value as typeof format)}><option value="svg">SVG</option><option value="png">PNG</option><option value="jpg">JPG</option></select></div><GuideExportOption value={includeGuides} onChange={setIncludeGuides}/><button className="outline-button" onClick={()=>{void exportArtwork(format,scale,includeGuides);}}>Export {sel.length?sel.length===1?n.name:`${sel.length} layers`:'page'}</button></Section>
+ <ContrastChecker selection={sel}/>{sel.length===1&&n.type==='frame'?<FrameExportSettings key={n.id} id={n.id}/>:<Section name="Export" action={<ArrowDown size={14}/>}><div className="export-settings"><select aria-label="Export scale" value={scale} onChange={e=>setScale(Number(e.target.value))}>{[1,2,3,4].map(v=><option key={v} value={v}>{v}×</option>)}</select><select aria-label="Export format" value={format} onChange={e=>setFormat(e.target.value as typeof format)}><option value="svg">SVG</option><option value="png">PNG</option><option value="jpg">JPG</option></select></div><GuideExportOption value={includeGuides} onChange={setIncludeGuides}/><button className="outline-button" onClick={()=>{void exportArtwork(format,scale,includeGuides);}}>Export {sel.length?sel.length===1?n.name:`${sel.length} layers`:'page'}</button></Section>}
  </div><div className="inspector-footer"><span className="live-dot"/>{s.recoveryAt===s.doc.updatedAt?'Recovery saved locally':'Saving local recovery…'} · Made for Mac</div></aside>;
 }

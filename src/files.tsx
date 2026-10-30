@@ -3,6 +3,10 @@ import {openDocumentForEditing,saveDocument} from './repository';
 import {desktopDocuments,markDesktopSaved} from './desktop-lifecycle';
 import type {DesktopBootstrap,DesktopDocumentState} from './desktop-lifecycle';
 import {exportSelection,visualBounds} from './transforms';
+import type {Matrix} from './transforms';
+import {frameExportGeometry} from './frame-delivery';
+import {frameExportFilename,validateFrameExportSettings} from './frame-export-settings';
+import type {FrameExportSetting} from './frame-export-settings';
 import {sampleMotion} from './motion';
 import {insertInstance} from './components-model';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -45,7 +49,7 @@ export async function openSelectedProject(file:File){
 }
 export async function openProject(){try{if(window.desktop){const raw=await window.desktop.open();if(raw){const opened=await openDocumentForEditing(parseDocument(raw));useEditor.getState().load(opened.document);if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});}}else pickFile('.oui,.json,.fig',async files=>openSelectedProject(files[0]));}catch(e){notifyError(e);}}
 export function pickFile(accept:string,fn:(files:File[])=>void|Promise<void>){const input=document.createElement('input');input.type='file';input.accept=accept;input.multiple=accept.includes('image');input.hidden=true;document.body.appendChild(input);input.onchange=()=>{const files=[...(input.files??[])];input.remove();if(files.length)Promise.resolve(fn(files)).catch(notifyError);};input.addEventListener('cancel',()=>input.remove(),{once:true});input.click();}
-export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number},includeGuides=false){const b=viewport??visualBounds(nodes);return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width)}" height="${Math.ceil(b.height)}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForUsage(textFontUsage(nodes),useEditor.getState().doc.fonts)}</style>${renderToStaticMarkup(<><Artwork nodes={nodes} hyperlinks/>{includeGuides&&<LayoutGuideOverlay nodes={nodes}/>}</>)}</svg>`;}
+export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number},includeGuides=false,options?:{transform?:Matrix;scale?:number}){const b=viewport??visualBounds(nodes),art=<><Artwork nodes={nodes} hyperlinks/>{includeGuides&&<LayoutGuideOverlay nodes={nodes}/>}</>;return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width*(options?.scale??1))}" height="${Math.ceil(b.height*(options?.scale??1))}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForUsage(textFontUsage(nodes),useEditor.getState().doc.fonts)}</style>${renderToStaticMarkup(options?.transform?<g transform={`matrix(${options.transform.join(' ')})`}>{art}</g>:art)}</svg>`;}
 export function exportNodes(){const s=useEditor.getState(),page=currentPage(),ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;return exportSelection(ns,s.selection);}
 export async function exportArtwork(format:'svg'|'png'|'jpg',scale=1,includeGuides=false){
  try{const s=useEditor.getState(),ns=exportNodes();if(!ns.length){s.set({toast:'Add a layer before exporting.'});return;}const b=visualBounds(ns),svg=exportSvg(ns,undefined,includeGuides),name=(ns.length===1?ns[0].name:s.doc.name);
@@ -54,6 +58,17 @@ export async function exportArtwork(format:'svg'|'png'|'jpg',scale=1,includeGuid
  const image=new Image(),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
  try{await new Promise<void>((resolve,reject)=>{image.onload=()=>resolve();image.onerror=()=>reject(Error('Image export failed.'));image.src=url;});const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.ceil(b.width*scale));canvas.height=Math.max(1,Math.ceil(b.height*scale));const ctx=canvas.getContext('2d')!;if(format==='jpg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);}ctx.drawImage(image,0,0,canvas.width,canvas.height);const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Export failed.')),format==='jpg'?'image/jpeg':'image/png',.95));await download(name+'.'+format,blob);}finally{URL.revokeObjectURL(url);}
  }catch(e){notifyError(e);}
+}
+/** Snapshot the frame, settings, geometry and embedded-font SVG before any asynchronous image or save operation. */
+export async function exportFrameArtwork(id:string,setting:FrameExportSetting){
+ validateFrameExportSettings([setting]);const profile=structuredClone(setting),s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The frame page is missing.');
+ const sampled=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,frame=sampled.find(n=>n.id===id);if(!frame||frame.type!=='frame')throw Error('Select one existing frame.');
+ const plan=frameExportGeometry({...page,nodes:sampled},id,profile.bounds),b=plan.viewport,name=frameExportFilename(frame.name,profile),svg=exportSvg(plan.nodes,b,profile.includeGuides,{transform:plan.transform,scale:profile.format==='svg'?profile.scale:1});
+ if(profile.format==='svg')return download(name,svg,'image/svg+xml');
+ const width=Math.max(1,Math.ceil(b.width*profile.scale)),height=Math.max(1,Math.ceil(b.height*profile.scale));
+ if(!Number.isFinite(width)||!Number.isFinite(height)||width>16384||height>16384||width*height>80_000_000)throw Error('Export is too large. Use a smaller scale or frame.');
+ const image=new Image(),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+ try{await new Promise<void>((resolve,reject)=>{image.onload=()=>resolve();image.onerror=()=>reject(Error('Frame image export failed.'));image.src=url;});const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');if(!ctx)throw Error('Image export is unavailable.');if(profile.format==='jpg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);}ctx.drawImage(image,0,0,width,height);const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(Error('Frame export failed.')),profile.format==='jpg'?'image/jpeg':'image/png',.95));return await download(name,blob);}finally{image.onload=null;image.onerror=null;URL.revokeObjectURL(url);}
 }
 export async function importImages(files:File[]){for(const file of files){if(file.size>20_000_000)throw Error('Choose an image smaller than 20 MB.');
  if(file.name.toLowerCase().endsWith('.svg')){await importSvg(await file.text(),file.name);continue;}
