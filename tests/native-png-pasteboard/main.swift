@@ -13,6 +13,14 @@ func fixture(_ width:Int,_ height:Int,_ type:String="public.png")->Data {
 }
 func url(_ data:Data)->String{"data:image/png;base64,"+data.base64EncodedString()}
 do{
+ var order=ClipboardCommandOrder()
+ let pendingPng=order.advance(),textCopy=order.advance()
+ check(!order.isCurrent(pendingPng)&&order.isCurrent(textCopy),"new native text-copy intent invalidates an older pending PNG route")
+ let rendererCopy=order.advance()
+ check(!order.isCurrent(textCopy)&&order.isCurrent(rendererCopy),"renderer authorization invalidates an older native focus-query completion")
+ var routed:[String]=[]
+ for (token,name) in [(rendererCopy,"newest"),(textCopy,"older"),(pendingPng,"oldest")] {if order.isCurrent(token){routed.append(name)}}
+ check(routed == ["newest"],"reversed asynchronous focus completions route only the latest clipboard command")
  let sentinel=NSPasteboardItem();sentinel.setString("private sentinel",forType:.string);board.clearContents();board.writeObjects([sentinel])
  let data=fixture(4,6),written=try NodePasteboard.write(["png":url(data)],to:board)
  check(written,"fixed PNG write succeeds")

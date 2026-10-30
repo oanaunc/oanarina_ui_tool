@@ -2,6 +2,14 @@ import AppKit
 import ImageIO
 
 /** Fixed representations only. Never accepts pasteboard names, arbitrary UTIs or file paths. */
+// Clipboard intents can cross asynchronous WebKit focus queries. Only the newest
+// intent may authorize a write or route its native/editor clipboard command.
+struct ClipboardCommandOrder {
+    private var token=UUID()
+    mutating func advance()->UUID {token=UUID();return token}
+    func isCurrent(_ candidate:UUID)->Bool {token==candidate}
+}
+
 enum NodePasteboard {
     static let nodes=NSPasteboard.PasteboardType("com.oanarinaldi.forma.nodes-json")
     static let svg=NSPasteboard.PasteboardType("public.svg-image")

@@ -18,10 +18,15 @@ export async function copyEditorSelectionAsPng(){
  if(typeof window==='undefined'||!window.desktop?.clipboardWrite){before.set({toast:'Copy as PNG is available in the Mac app. Use PNG export in the browser.'});return false;}
  const nodes=exportNodes();if(!nodes.length)throw Error('Select artwork to copy as PNG.');
  const bounds=visualBounds(nodes),size=pngClipboardDimensions(bounds.width,bounds.height),svg=exportSvg(nodes);
- const png=await renderClipboardPng(svg,size),current=useEditor.getState();
- if(generation!==pngGeneration||current.doc!==doc||current.pageId!==pageId||current.selection.join('\0')!==selection||current.motionOpen!==motion||current.motionTime!==time){current.set({toast:'PNG copy cancelled because the project, selection or animation changed. Copy again.'});return false;}
- const written=await window.desktop.clipboardWrite({png});
- useEditor.getState().set({toast:written?'Selection copied as PNG to the Mac clipboard.':'The Mac clipboard was not updated.'});return written;
+ let editingFocused=false;
+ const onFocus=(event:FocusEvent)=>{if(event.target instanceof Element&&event.target.closest('input,textarea,[contenteditable=true]'))editingFocused=true;};
+ document.addEventListener('focusin',onFocus,true);
+ try{
+  const png=await renderClipboardPng(svg,size),current=useEditor.getState();
+  if(editingFocused||generation!==pngGeneration||current.doc!==doc||current.pageId!==pageId||current.selection.join('\0')!==selection||current.motionOpen!==motion||current.motionTime!==time){current.set({toast:'PNG copy cancelled because the project, selection, animation or editing focus changed. Copy again.'});return false;}
+  const written=await window.desktop.clipboardWrite({png});
+  useEditor.getState().set({toast:written?'Selection copied as PNG to the Mac clipboard.':'The Mac clipboard was not updated.'});return written;
+ }finally{document.removeEventListener('focusin',onFocus,true);}
 }
 /** Invoked only by an explicit Copy/Cut command. A failed system write never cuts. */
 export async function copyEditorSelection(cut=false,onCut?:()=>void){

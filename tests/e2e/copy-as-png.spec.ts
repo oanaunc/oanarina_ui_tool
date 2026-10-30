@@ -37,6 +37,16 @@ test('Escape/selection changes cancel a render before the clipboard write and a 
  await select(page);await holdImage(page);await page.keyboard.press('Meta+Shift+c');await expect.poll(()=>page.evaluate(()=>(window as any).pngRenderWaiting)).toBe(true);await page.keyboard.press('Meta+c');await expect.poll(()=>f.writes.length).toBe(1);expect(f.writes[0]).toHaveProperty('nodes');await page.evaluate(()=>(window as any).releasePngRender());await expect(page.locator('.toast')).toContainText('PNG copy cancelled');expect(f.writes).toHaveLength(1);await expect(page.locator('.layer-row')).toHaveCount(1);
 });
 
+test('an editable focus transition cancels an older PNG even after blur, without touching the system clipboard',async({page})=>{
+ const f=await fixture(page,artwork());await select(page);
+ for(const kind of ['input','textarea','contenteditable']){
+  await holdImage(page);await page.keyboard.press('Meta+Shift+c');await expect.poll(()=>page.evaluate(()=>(window as any).pngRenderWaiting)).toBe(true);
+  await page.evaluate((kind:string)=>{const field=document.createElement(kind==='contenteditable'?'div':kind);if(kind==='contenteditable')field.contentEditable='true';document.body.append(field);field.focus();(document.querySelector('svg.canvas') as SVGElement).focus();field.remove();},kind);
+  await page.evaluate(()=>(window as any).releasePngRender());await expect(page.locator('.toast')).toContainText('editing focus changed');expect(f.writes).toHaveLength(0);
+ }
+ await page.keyboard.press('Meta+Shift+c');await expect.poll(()=>f.writes.length).toBe(1);
+});
+
 test('document/page changes during rendering cancel PNG without writing or adding image artwork',async({page})=>{
  const f=await fixture(page,artwork());await select(page);await holdImage(page);await page.keyboard.press('Meta+Shift+c');await expect.poll(()=>page.evaluate(()=>(window as any).pngRenderWaiting)).toBe(true);await page.getByRole('spinbutton',{name:'W',exact:true}).fill('30');await page.getByRole('spinbutton',{name:'W',exact:true}).press('Enter');await page.evaluate(()=>(window as any).releasePngRender());await expect(page.locator('.toast')).toContainText('PNG copy cancelled');expect(f.writes).toHaveLength(0);
  await select(page);await holdImage(page);await page.keyboard.press('Meta+Shift+c');await expect.poll(()=>page.evaluate(()=>(window as any).pngRenderWaiting)).toBe(true);await page.getByRole('button',{name:'Add page',exact:true}).click();await page.evaluate(()=>(window as any).releasePngRender());await expect(page.locator('.toast')).toContainText('PNG copy cancelled');expect(f.writes).toHaveLength(0);await expect(page.locator('.layer-row')).toHaveCount(0);
