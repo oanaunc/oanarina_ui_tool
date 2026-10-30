@@ -1,5 +1,11 @@
 [
   [
+    "repeat-shape-tool",
+    "Repeat last shape tool",
+    "Tools",
+    "⌥R"
+  ],
+  [
     "tool-move",
     "Move tool",
     "Tools",

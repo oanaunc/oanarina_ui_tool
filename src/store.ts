@@ -1,3 +1,5 @@
+import {isShapeTool,rememberShapeTool,restoredShapeTool} from './shape-drawing';
+import type {ShapeTool} from './shape-drawing';
 import {duplicateRootNames} from './workflow-preferences';
 import {validateDocumentMetadata} from './document-metadata';
 import {moveDocumentLayers} from './move-layers';
@@ -34,7 +36,7 @@ import {updateTextMetrics} from './text-layout';
 import {sampleDocument} from './sample';
 const clone=<T,>(a:T):T=>structuredClone(a);
 interface EditorState {
- doc:DesignDocument;pageId:string;selection:string[];tool:Tool;zoom:number;pan:{x:number;y:number};viewportRestored:boolean;previousViewport:boolean;nextViewport:boolean;cameraGesture:number|null;
+ doc:DesignDocument;pageId:string;selection:string[];tool:Tool;lastShapeTool:ShapeTool;zoom:number;pan:{x:number;y:number};viewportRestored:boolean;previousViewport:boolean;nextViewport:boolean;cameraGesture:number|null;
  past:DesignDocument[];future:DesignDocument[];clipboard:DesignNode[];clipboardWhiteboard?:WhiteboardClipboard;clipboardOrigin?:{x:number;y:number};clipboardWorld?:Record<string,Matrix>;clipboardSwapProperties?:Record<string,string[]>;clipboardComponentSets?:ComponentSet[];clipboardSlideRoles?:Record<string,SlideRole>;savedAt:string;toast:string;
  motionOpen:boolean;motionTime:number;motionPlaying:boolean;autoKey:boolean;recoveryAt:string;fontRevision:number;grid:boolean;snap:boolean;outlines:boolean;rulers:boolean;uiHidden:boolean;mode:'design'|'prototype'|'inspect';
  vectorEditId:string|null;vectorSelection:string[];modal:string|null;leftTab:'layers'|'assets';home:boolean;search:string;theme:'dark'|'light';
@@ -55,7 +57,7 @@ export const useEditor=create<EditorState>((commit,get)=>{
  const viewports=new PageViewportCache();let viewportTracking=false,detachViewports:(()=>void)|undefined;
  const loadPage=(d:DesignDocument)=>{if(d.workspace==='slides'&&d.slides)return d.slides.pageId;const id=viewports.lastPage(d.id);return d.pages.some(p=>p.id===id)?id!:d.pages[0].id;};
  const set=(update:Partial<EditorState>|((state:EditorState)=>Partial<EditorState>),restore=false,discrete=false,replay=false)=>{
-  const before=get(),delta=typeof update==='function'?update(before):{...update};let next={...before,...delta},historyBefore=before,cancelledCamera=false;
+  const before=get(),delta=typeof update==='function'?update(before):{...update};if(isShapeTool(delta.tool)){delta.lastShapeTool=delta.tool;rememberShapeTool(delta.tool);}let next={...before,...delta},historyBefore=before,cancelledCamera=false;
   if(!next.doc.pages.some(p=>p.id===next.pageId)){next.pageId=loadPage(next.doc);delta.pageId=next.pageId;}
   const changedPage=next.doc.id!==before.doc.id||next.pageId!==before.pageId;
   if(activeCameraGesture&&!replay&&(restore||changedPage||discrete&&('zoom' in delta||'pan' in delta)||next.doc!==before.doc||next.zoom!==before.zoom||next.pan.x!==before.pan.x||next.pan.y!==before.pan.y||next.motionOpen!==before.motionOpen||next.motionTime!==before.motionTime||next.modal!==before.modal||next.home!==before.home||next.uiHidden!==before.uiHidden)){
@@ -72,7 +74,7 @@ export const useEditor=create<EditorState>((commit,get)=>{
   commit(delta);
  };
  const doc=sampleDocument();
- return {doc,pageId:doc.pages[0].id,selection:[],tool:'move',zoom:.7,pan:{x:12,y:16},viewportRestored:false,previousViewport:false,nextViewport:false,cameraGesture:null,past:[],future:[],clipboard:[],savedAt:'',toast:'',motionOpen:false,motionTime:0,motionPlaying:false,autoKey:false,recoveryAt:'',fontRevision:0,grid:false,snap:true,outlines:false,rulers:false,uiHidden:false,mode:'design',vectorEditId:null,vectorSelection:[],modal:null,leftTab:'layers',home:false,search:'',theme:'dark',
+ return {doc,pageId:doc.pages[0].id,selection:[],tool:'move',lastShapeTool:restoredShapeTool(),zoom:.7,pan:{x:12,y:16},viewportRestored:false,previousViewport:false,nextViewport:false,cameraGesture:null,past:[],future:[],clipboard:[],savedAt:'',toast:'',motionOpen:false,motionTime:0,motionPlaying:false,autoKey:false,recoveryAt:'',fontRevision:0,grid:false,snap:true,outlines:false,rulers:false,uiHidden:false,mode:'design',vectorEditId:null,vectorSelection:[],modal:null,leftTab:'layers',home:false,search:'',theme:'dark',
  enablePageViewports:()=>{if(viewportTracking)return;viewportTracking=true;if(typeof window!=='undefined')detachViewports=viewports.attach(window);},
  disablePageViewports:()=>{viewportTracking=false;detachViewports?.();detachViewports=undefined;viewports.flush();},
  set:(p)=>{set(p);if(p.toast){clearTimeout(timer);timer=setTimeout(()=>set({toast:''}),4000);}},
