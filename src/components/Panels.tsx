@@ -33,6 +33,7 @@ import SelectionColors from './SelectionColors';
 import {maskLayerIndicators,maskModeName} from '../mask-indicators';
 import RichTextInspector from './RichTextInspector';
 import TextVariants from './TextVariants';
+import {MultiVectorControls} from './MultiVectorEditor';
 import VectorPointTools from './VectorPointTools';
 import NumberField from './NumberField';
 import PrototypeEditor from './PrototypeEditor';
@@ -101,7 +102,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
  {motionView.inspector&&s.motionOpen&&s.mode==='design'?<MotionInspector/>:s.mode==='prototype'?<PrototypeEditor n={n}/>:s.mode==='inspect'?<InspectPanel key={page.id}/>:!n?<><Section name="Page"><PageBackground key={page.id} page={page}/></Section><Section name="Start creating"><p className="inspector-note">A place for your next good idea.<br/>Choose a tool, or start with a frame.</p><div className="frame-presets">{[['Desktop',1440,1024],['Phone',393,852],['Tablet',834,1194]].map(([name,w,h])=><button key={name} onClick={()=>insertPreset(String(name),Number(w),Number(h))}><Frame size={17}/><span>{name}</span><small>{w} × {h}</small></button>)}</div></Section><GuideSettings/><Section name="Document colors"><div className="color-swatches">{s.doc.colors.map(c=><button key={c.name} title={c.name+' '+c.value} style={{background:c.value}} onClick={()=>s.set({modal:'colors'})}/>)}</div><button className="text-button" onClick={()=>s.set({modal:'colors'})}>Manage styles <ArrowRight size={12}/></button></Section><Section name="Make it yours"><p className="inspector-note">Your files stay on your Mac.<br/>No account. No subscription.<br/>Just you and the canvas.</p><button className="outline-button" onClick={()=>s.set({modal:'figma'})}>Transfer from Figma <ExternalLink size={12}/></button></Section></>:
 
 
- <><Section name={sel.length>1?`${sel.length} layers selected`:n.type[0].toUpperCase()+n.type.slice(1)}>
+ <>{sel.length>1&&<MultiVectorControls/>}<Section name={sel.length>1?`${sel.length} layers selected`:n.type[0].toUpperCase()+n.type.slice(1)}>
  <div className="alignment-bar">{[[AlignLeft,'left'],[AlignCenter,'center'],[AlignRight,'right'],[AlignStartVertical,'top'],[AlignCenterVertical,'middle'],[AlignEndVertical,'bottom']].map(([Icon,dir])=>{const I=Icon as typeof AlignLeft;return <button disabled={!sel.length||sel.some(n=>isLocked(n,page.nodes))||sel.length===1&&!n.parentId} key={String(dir)} title={'Align '+dir} onClick={e=>{try{s.align(String(dir),e.shiftKey?'parent':'auto');}catch(error){notifyError(error);}}}><I size={15}/></button>;})}</div>
  <div className="field-grid"><NumberField label="X" value={n.x} onChange={x=>patch({x})}/><NumberField label="Y" value={n.y} onChange={y=>patch({y})}/><NumberField label="W" value={n.width} min={1} onChange={width=>patch({width,sizingX:'fixed'})}/><NumberField label="H" value={n.height} min={1} onChange={height=>patch({height,sizingY:'fixed'})}/><NumberField label="Rotation" value={n.rotation} onChange={rotation=>patch({rotation})}/><NumberField label="Radius" value={n.radius} min={0} onChange={radius=>patch({radius})}/></div>
  {sel.length===1&&<RotationOriginControls key={'rotation-origin:'+n.id} n={n}/>}
