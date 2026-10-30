@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project';
+import {node} from '../../src/model';
+import {eraseVectorStroke} from '../../src/vector-eraser-geometry';
+import {identity} from '../../src/transforms';
+test('erased exact curve intervals use existing validated MCP persistence and Undo without adding a document schema',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-eraser-'));try{const project=await Project.open(path.join(dir,'erased.oui'),true),initial=await project.read(),pageId=initial.document.pages[0].id,n=node('path',{id:'curve',fill:'none',stroke:'#ff0000',strokeWidth:4,width:200,height:100,contours:[{closed:false,points:[{x:0,y:0,out:{x:50,y:100}},{x:200,y:100,in:{x:-50,y:-100}}]}]}),created=await project.apply(initial.revision,[{op:'create_node',pageId,id:n.id,type:n.type,properties:{fill:n.fill,stroke:n.stroke,strokeWidth:n.strokeWidth,width:n.width,height:n.height,contours:n.contours}}]),before=created.document.pages[0].nodes[0],contours=eraseVectorStroke(before,identity,{points:[{x:100,y:50}],diameter:40,shape:'round'}),result={contours},updated=await project.apply(created.revision,[{op:'update_node',pageId,nodeId:n.id,properties:{contours:result.contours}}]);assert.deepEqual(updated.document.pages[0].nodes[0].contours,result.contours);const saved=(await project.read()).document;assert.deepEqual(saved.pages,updated.document.pages);const invalid=structuredClone(result.contours);invalid[0].points[0].x=NaN;await assert.rejects(project.apply(updated.revision,[{op:'rename_document',name:'Never write'},{op:'update_node',pageId,nodeId:n.id,properties:{contours:invalid}}]));assert.deepEqual((await project.read()).document.pages,updated.document.pages);const undone=await project.undo(updated.revision);assert.deepEqual(undone.document.pages,created.document.pages);}finally{await fs.rm(dir,{recursive:true,force:true});}});

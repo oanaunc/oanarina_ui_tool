@@ -1,3 +1,5 @@
+import {VectorLassoControl} from './VectorLasso';
+import VectorEraserControls from './VectorEraserControls';
 import VectorCutControls from './VectorCutControls';
 import {useState} from 'react';
 import {useEditor} from '../store';
@@ -15,7 +17,7 @@ export default function VectorPointTools({n}:{n:DesignNode}){
  let endpoint=false;try{if(s.vectorSelection.length===1){vectorEndpoint(n,s.vectorSelection[0]);endpoint=true;}}catch{/* Interior/closed points cannot continue. */}
  return <div className="vector-point-tools"><p className="inspector-note">{s.vectorSelection.length} selected points</p>{disabled&&<p className="inspector-note">Inspector geometry controls require an unlocked layer outside instances with Motion closed.{s.motionOpen&&!isLocked(n,ns)&&!n.instanceRootId&&' Canvas anchor and handle dragging changes the base contours at the current motion time.'}</p>}
  <fieldset disabled={disabled} style={{border:0,padding:0,margin:0}}>
- <VectorCutControls n={n}/><VectorBendControls n={n}/>
+ <VectorLassoControl n={n}/><VectorEraserControls n={n}/><VectorCutControls n={n}/><VectorBendControls n={n}/>
  <button className="outline-button" onClick={()=>runCommand('vector-offset')}>Offset vector path…</button>
  <button className="outline-button" onClick={()=>runCommand('vector-outline-stroke')}>Outline vector stroke…</button>
  <button className="outline-button" onClick={()=>runCommand('vector-separate')}>Separate vector regions…</button>

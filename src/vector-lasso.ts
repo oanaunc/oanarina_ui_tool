@@ -1,0 +1,28 @@
+import {create} from 'zustand';
+import type {DesignNode} from './model';
+import type {BendPoint} from './vector-bend-geometry';
+import {captureColorContext} from './color-edit-context';
+import type {VectorCutContext} from './vector-cut';
+import {sameVectorCutContext,useVectorCut} from './vector-cut';
+import {useVectorEraser} from './vector-eraser';
+import {useVectorBend} from './vector-bend';
+import {useCanvasGradient} from './canvas-gradient';
+import {useCanvasImageCrop} from './canvas-image-crop';
+import {useMaskView} from './mask-view';
+import {useEditor} from './store';
+import {getPreferences,subscribePreferences} from './preferences';
+import {vectorCutMatrix} from './vector-cut-space';
+import {point} from './transforms';
+export interface LassoContext extends VectorCutContext {pointSelection:string[];anchors:{key:string;point:BendPoint}[];}
+export type LassoOperation='replace'|'add'|'subtract';
+export function pointInVectorLasso(p:BendPoint,polygon:BendPoint[]){let inside=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const a=polygon[j],b=polygon[i],dx=b.x-a.x,dy=b.y-a.y,cross=dx*(p.y-a.y)-dy*(p.x-a.x),dot=(p.x-a.x)*dx+(p.y-a.y)*dy;if(dx*dx+dy*dy>1e-20&&Math.abs(cross)<=1e-8*Math.max(1,Math.hypot(dx,dy))&&dot>=0&&dot<=dx*dx+dy*dy)return true;if((a.y>p.y)!==(b.y>p.y)&&p.x<(b.x-a.x)*(p.y-a.y)/(b.y-a.y)+a.x)inside=!inside;}return inside;}
+export function lassoVectorKeys(anchors:LassoContext['anchors'],polygon:BendPoint[]){if(polygon.length<3||polygon.length>256||polygon.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y)||Math.abs(p.x)>1e6||Math.abs(p.y)>1e6)||anchors.length>10000)throw Error('Draw a lasso with 3–256 finite canvas vertices, on at most 10,000 anchors.');const first=polygon[0],second=polygon.find(p=>Math.hypot(p.x-first.x,p.y-first.y)>1e-8);if(!second||!polygon.some(p=>Math.abs((second.x-first.x)*(p.y-first.y)-(second.y-first.y)*(p.x-first.x))>1e-8))return [];return anchors.filter(a=>pointInVectorLasso(a.point,polygon)).map(a=>a.key);}
+export function captureVectorLasso(id:string):LassoContext{const s=useEditor.getState(),nodes=s.doc.pages.find(p=>p.id===s.pageId)?.nodes??[],lookup=new Map(nodes.map(n=>[n.id,n])),n=lookup.get(id);if(!n||n.type!=='path'||!n.contours||n.booleanOp||s.vectorEditId!==id||s.selection.length!==1||s.selection[0]!==id||s.motionOpen||s.mode!=='design'||s.home||s.modal||s.uiHidden||s.outlines||s.doc.workspace&&s.doc.workspace!=='design'||!['move','scale'].includes(s.tool))throw Error('Lasso requires one unlocked contour path in Design point editing, with Motion closed.');let current:DesignNode|undefined=n,depth=0;const seen=new Set<string>();while(current){if(depth++>64||seen.has(current.id)||current.locked||!current.visible||current.instanceRootId||current.booleanOp||current.type==='instance')throw Error('Unlock and detach the vector hierarchy and make it visible before using Lasso.');seen.add(current.id);current=lookup.get(current.parentId??'');}if(n.contours.reduce((sum,c)=>sum+c.points.length,0)>10000)throw Error('Lasso supports at most 10,000 anchors.');const matrix=vectorCutMatrix(n,nodes,lookup),anchors=n.contours.flatMap((c,ci)=>c.points.map((p,pi)=>{const world=point(matrix,p.x,p.y);if(!Number.isFinite(world.x)||!Number.isFinite(world.y)||Math.abs(world.x)>1e6||Math.abs(world.y)>1e6)throw Error('Lasso anchors exceed the canvas coordinate limit.');return {key:`${ci}:${pi}`,point:world};}));return {editor:captureColorContext(s),id,tool:s.tool,zoom:s.zoom,pan:{...s.pan},uiScale:getPreferences().uiScale,valid:true,pointSelection:[...s.vectorSelection],anchors};}
+export const sameVectorLassoContext=(c:LassoContext)=>c.valid&&!useEditor.getState().outlines&&sameVectorCutContext(c)&&JSON.stringify(c.pointSelection)===JSON.stringify(useEditor.getState().vectorSelection);
+interface View {context:LassoContext|null;activate:(id:string)=>void;reset:()=>void;}
+export const useVectorLasso=create<View>((set,get)=>({context:null,activate:id=>{const c=captureVectorLasso(id);get().reset();useVectorEraser.getState().reset();useVectorCut.getState().reset();useVectorBend.getState().reset();useCanvasGradient.getState().reset();useCanvasImageCrop.getState().reset();useMaskView.getState().reset();set({context:c});},reset:()=>{const c=get().context;if(c)c.valid=false;set({context:null});}}));
+useEditor.subscribe(()=>{const v=useVectorLasso.getState();if(v.context&&!sameVectorLassoContext(v.context))v.reset();});
+subscribePreferences(()=>{const v=useVectorLasso.getState();if(v.context&&!sameVectorLassoContext(v.context))v.reset();});
+for(const view of [useVectorEraser,useVectorCut,useVectorBend,useCanvasGradient,useCanvasImageCrop])view.subscribe(v=>{if(v.context&&useVectorLasso.getState().context)useVectorLasso.getState().reset();});
+useMaskView.subscribe(v=>{if((v.preview||v.outlines)&&useVectorLasso.getState().context)useVectorLasso.getState().reset();});
+export function commitVectorLasso(c:LassoContext,polygon:BendPoint[],operation:LassoOperation){if(useVectorLasso.getState().context!==c||!sameVectorLassoContext(c))throw Error('The lasso target changed. Enable Lasso again.');if(!['replace','add','subtract'].includes(operation))throw Error('Invalid lasso selection operation.');captureVectorLasso(c.id);const hits=lassoVectorKeys(c.anchors,polygon),all=new Set(c.anchors.map(a=>a.key)),base=c.pointSelection.filter(k=>all.has(k)),hitSet=new Set(hits),selected=operation==='replace'?hits:operation==='add'?[...new Set([...base,...hits])]:base.filter(k=>!hitSet.has(k));useVectorLasso.getState().reset();useEditor.getState().set({vectorSelection:selected});return selected;}
