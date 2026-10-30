@@ -1,0 +1,4 @@
+import {useEffect,useMemo} from 'react';
+import {useEditor} from '../store';
+import {captureMotionContext,sameMotionContext,useMotionView} from '../motion-editor';
+export function useMotionProof(keys?:string[]){const s=useEditor(),signature=keys,proof=useMemo(()=>captureMotionContext(),[s.doc,s.pageId,s.selection,s.motionOpen,s.mode,s.home,s.modal,s.uiHidden,signature]);useEffect(()=>{/* StrictMode restarts effects with the same memo; validate only at setup, then invalidate one-way until a new origin renders. */proof.valid=true;if(!sameMotionContext(proof)||signature!==undefined&&useMotionView.getState().keys!==signature)proof.valid=false;const off=useEditor.subscribe(()=>{if(!sameMotionContext(proof))proof.valid=false;}),offKeys=useMotionView.subscribe(v=>{if(signature!==undefined&&v.keys!==signature)proof.valid=false;});return()=>{proof.valid=false;off();offKeys();};},[proof,signature]);return proof;}
