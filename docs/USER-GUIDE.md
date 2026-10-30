@@ -111,3 +111,11 @@ Open the document title in the top bar for local file actions. Arrow Up/Down ope
 Layer rows show α/V/L for Alpha/Vector/Luminance mask sources and a dotted-circle marker for masked targets. Hover for the nearest source and mode; accessible row descriptions also distinguish inherited ancestor coverage. Long source display names are shortened in repeated indicators without changing full saved names. See [mask scope](MASKS.md).
 
 File → Preferences → Interface motion offers Follow system, Reduce and Allow, saved on this device. Reset resumes the system choice. This is a scoped chrome policy; the current interface is mostly immediate and the setting does not stop intentional document playback or alter exports. See [motion scope](INTERFACE-MOTION.md).
+
+## Canvas overview, text search and frame delivery
+
+Enable **View → Show canvas scrollbars** or **Show overview minimap** for optional local navigation. Drag their controls or use arrows/page keys. Escape cancels an active camera drag; artwork and Undo stay unchanged. The minimap is schematic. See [overview controls and limits](CANVAS-OVERVIEW.md).
+
+Use **Text → Find and replace text…** or **Command-F** to find literal base text in a page, captured selection trees or the whole file. Preview or reveal results, then replace one/all editable matches with a single Undo step. Locked results are read-only. Mixed formatting outside replaced text remains intact. See [search scope and limits](TEXT-SEARCH.md).
+
+Select one frame in Design to inspect potential overflow, set its default prototype starting point, or save SVG/PNG/JPG export profiles. Overflow inspection previews without editing clipping; its candidate bounds remain conservative. Frame export profiles support scale, suffix, frame/artwork bounds and layout guides, with individual export buttons. PDF/batch/advanced profiles remain unfinished. See [frame delivery](FRAME-DELIVERY.md).

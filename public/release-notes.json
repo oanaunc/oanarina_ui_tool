@@ -3,6 +3,23 @@
   "asOf": "2026-10-30",
   "releases": [
     {
+      "version": "0.2.0-dev.12",
+      "channel": "preview",
+      "title": "Canvas overview, text search and frame delivery",
+      "notes": [
+        "Navigate with optional accessible canvas scrollbars and a schematic minimap. Camera gestures can be canceled without changing artwork.",
+        "Find literal text across pages, selected layer trees and slides; replace editable matches with preserved rich formatting, Undo and saved-file validation.",
+        "Inspect frame overflow in a read-only preview, create a prototype starting point from the selected frame, and save frame export profiles for SVG, PNG and JPEG."
+      ],
+      "limits": [
+        "This is a development preview. Exact installer metadata and checksums are published on the Forma website after release validation.",
+        "Minimap bounds are schematic; masks, stroke/effect expansion and exact rotated clipping are not reproduced.",
+        "Text search operates on bounded literal base text; language-specific word breaking and motion-keyframe replacement are unfinished.",
+        "Frame overflow bounds are conservative, and advanced/batch/PDF frame export profiles remain unfinished.",
+        "Complete Figma parity, binary .fig export and cloud collaboration remain unfinished."
+      ]
+    },
+    {
       "version": "0.2.0-dev.11",
       "channel": "preview",
       "title": "Canvas navigation and frame workflows",
@@ -44,7 +61,7 @@
       "notes": [
         "Duplicate, reorder and search pages with contextual and keyboard actions; shared component links stay intact and unsafe deletion is refused.",
         "Remember each Design/Whiteboard page's pan and zoom locally, and preview its static artwork on hover or keyboard focus.",
-        "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. Copy as PNG creates a transparent 2\u00d7 selection snapshot.",
+        "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. Copy as PNG creates a transparent 2× selection snapshot.",
         "Follow system light/dark appearance, or retain an explicit interface theme.",
         "Saved-file MCP adds atomic page duplication and reordering. Browser startup waits for recovery before editing or autosave.",
         "Move supported complete layer trees between pages with stable identities and live component links; unsafe contextual cases are refused.",

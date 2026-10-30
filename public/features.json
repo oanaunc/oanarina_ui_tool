@@ -1654,10 +1654,10 @@
     "category": "Canvas navigation",
     "name": "Canvas scrollbars",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "View/Actions toggles accessible canvas scrollbars with track/thumb, arrows, page and endpoint keys. Cancelable camera-only gestures persist device-local preferences without document edits. Bounded page geometry and one-stop viewport history; tests/canvas-overview.test.ts, tests/e2e/canvas-overview.spec.ts; docs/CANVAS-OVERVIEW.md. Reference verification pending."
   },
   {
     "id": "UI-06-016",
@@ -1794,10 +1794,10 @@
     "category": "Canvas navigation",
     "name": "Overview minimap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "View/Actions opens a schematic minimap with visible transformed/sampled layer outlines, viewport click/drag and keyboard navigation. Bounded to 20k records and 1500 outlines; masks, effects and exact pixels are not reproduced. Camera-only cancellation/history tests; docs/CANVAS-OVERVIEW.md. Reference verification pending."
   },
   {
     "id": "UI-06-030",
@@ -2604,10 +2604,10 @@
     "category": "Frames",
     "name": "Frame overflow inspection",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Selected-frame Design inspector provides a read-only rendered overflow preview with that frame clip disabled, sampled motion and conservative painted descendant bounds with candidate reveal/selection. Nested clips/masks/occlusion may conceal candidates; exact pixel overflow proof remains unfinished. docs/FRAME-DELIVERY.md; core and production pixel/Undo/save checks; reference verification pending."
   },
   {
     "id": "UI-09-021",
@@ -2687,17 +2687,17 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Saved per-frame SVG/PNG/JPG profiles expose 1x–4x scale, filename suffix, frame/artwork bounds and guides through inspector/Export dialog, with validation, Undo and .oui persistence. Exports snapshot before asynchronous work; SVG dimensions and PNG/JPG pixels tested. PDF, advanced settings and batch execution absent. docs/FRAME-DELIVERY.md; reference verification pending."
   },
   {
     "id": "UI-09-029",
     "category": "Frames",
     "name": "Frame prototype starting point",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "Eligible selected outer frames expose default prototype start and read-only Present from this frame in Design/Prototype. Reuses an existing flow or adds one without deleting other flows; Undo/save and actual viewer start tested. Hidden/managed/generated/nested-frame targets refuse. Existing multi-flow editor retained; docs/FRAME-DELIVERY.md. Reference verification pending."
   },
   {
     "id": "UI-09-030",
@@ -7254,20 +7254,20 @@
     "category": "Advanced typography",
     "name": "Text selection find",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text menu/Actions/Command-F searches literal base text in captured page, selected layer trees or whole file, with case/Unicode word/visibility controls, previews and reveal across pages/slides. Bounded queries/results and language-specific limitations: docs/TEXT-SEARCH.md. Core and four production browser cases; reference verification pending."
   },
   {
     "id": "UI-22-034",
     "category": "Advanced typography",
     "name": "Text replacement",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Replace one/all editable literal matches atomically, preserving unaffected rich runs and first-character replacement style, inherited locks, Undo and .oui persistence. Managed overwrites refuse; bounded growth and motion/base-text limits documented in docs/TEXT-SEARCH.md. Core and production browser validation; reference verification pending."
   },
   {
     "id": "UI-22-035",

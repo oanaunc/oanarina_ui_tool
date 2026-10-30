@@ -30,7 +30,7 @@ extension Studio {
         if CommandLine.arguments.contains("--lifecycle-smoke-test"){runLifecycleSmoke(document);return}
         guard smokeStage==0 else{return};smokeStage=1
         verifyNavigationMenu(document){
-            self.smokeJS(document,"const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');return JSON.stringify({videoMp4:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/mp4'),videoWebM:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/webm'),canvasCapture:typeof HTMLCanvasElement.prototype.captureStream==='function',title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});"){value in guard let text=value as? String,let data=text.data(using:.utf8),var report=(try? JSONSerialization.jsonObject(with:data)) as? [String:Any] else{self.smokeFail("standard renderer smoke report")};report["nativeNavigation"]=self.smokeChecks;print(self.json(report));fflush(stdout);self.smokeTerminate()}
+            self.smokeJS(document,"const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');return JSON.stringify({videoMp4:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/mp4'),videoWebM:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/webm'),canvasCapture:typeof HTMLCanvasElement.prototype.captureStream==='function',title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});"){value in guard let text=value as? String,let data=text.data(using:.utf8),var report=(try? JSONSerialization.jsonObject(with:data)) as? [String:Any] else{self.smokeFail("standard renderer smoke report")};report["nativeNavigation"]=Array(self.smokeChecks.prefix(7));report["nativeTextSearch"]=Array(self.smokeChecks.dropFirst(7));print(self.json(report));fflush(stdout);self.smokeTerminate()}
         }
     }
     // Exercise real AppKit menu key equivalents against the isolated renderer camera.
@@ -40,7 +40,7 @@ extension Studio {
             guard let item=view.items.first(where:{$0.representedObject as? String==id}) else{smokeFail("native navigation command registered")}
             check(item.keyEquivalent==key && item.keyEquivalentModifierMask==[.option,.command] && item.target===self && item.action == #selector(menuAction(_:)),"native shortcut registered: \(id)")
         }
-        let read="return document.querySelector('svg.canvas > g[transform]')?.getAttribute('transform') ?? '';"
+        let read="return await new Promise((resolve,reject)=>{const end=performance.now()+5000;function tick(){const value=document.querySelector('svg.canvas > g[transform]')?.getAttribute('transform');if(value){resolve(value);return;}if(performance.now()>end){reject(Error('Canvas did not mount after native ready'));return;}setTimeout(tick,25);}tick();});"
         smokeJS(document,read){value in
             guard let initial=value as? String,!initial.isEmpty else{self.smokeFail("initial camera transform")}
             let dirty=document.state?.dirty
@@ -73,7 +73,7 @@ extension Studio {
                 findKey()
                 self.smokeJS(document,wait){_ in
                     self.check(true,"repeated native Command-F refocuses query")
-                    self.smokeJS(document,"const input=document.querySelector('.text-search-dialog input[type=search]');if(input.selectionStart!==0||input.selectionEnd!==input.value.length)throw Error('Find query not selected');input.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));if(document.querySelector('.text-search-dialog'))throw Error('Find did not close');return true;"){_ in
+                    self.smokeJS(document,"const input=document.querySelector('.text-search-dialog input[type=search]');if(input.selectionStart!==0||input.selectionEnd!==input.value.length)throw Error('Find query not selected');input.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));return await new Promise((resolve,reject)=>{const end=performance.now()+5000;function tick(){if(!document.querySelector('.text-search-dialog')){resolve(true);return;}if(performance.now()>end){reject(Error('Find did not close'));return;}setTimeout(tick,25);}tick();});"){_ in
                         self.check(true,"native Find selects query and closes with Escape")
                         self.check(document.state?.dirty==dirty,"native Find keeps document dirty state")
                         completion()
