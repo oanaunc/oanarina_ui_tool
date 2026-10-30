@@ -2,7 +2,7 @@ import {beforeEach,it,expect} from 'vitest';
 import {blankDocument,node,parseDocument} from '../src/model';
 import {setKeyframe,timeline} from '../src/motion';
 import {useEditor} from '../src/store';
-import {animatedFrames,captureMotionContext,editMotionPage,marqueeMotionKeys,motionRows,moveMotionKeys,patchMotionKeys,timelineZoomAt,useMotionView} from '../src/motion-editor';
+import {animatedFrames,sameMotionContext,sameMotionNavigationContext,captureMotionContext,editMotionPage,marqueeMotionKeys,motionRows,moveMotionKeys,patchMotionKeys,timelineZoomAt,useMotionView} from '../src/motion-editor';
 function setup(){const d=blankDocument(),a=node('rectangle',{id:'a',x:0,y:0}),b=node('rectangle',{id:'b',x:200,y:0});d.pages[0].nodes=[a,b];for(const n of [a,b]){setKeyframe(d.pages[0],n.id,'x',0,n.x);setKeyframe(d.pages[0],n.id,'x',1,n.x+100);setKeyframe(d.pages[0],n.id,'x',2,n.x+200);}useEditor.getState().load(d);useEditor.getState().set({selection:['a'],motionOpen:true,mode:'design',home:false,modal:null,uiHidden:false,motionPlaying:false});useMotionView.getState().setKeys([]);return useEditor.getState().doc.pages[0];}
 beforeEach(setup);
 it('anchored continuous zoom keeps the time under the cursor, within scroll/zoom bounds',()=>{const zoom=3,scroll=400,cursor=350,viewport=800,oldTime=(scroll+cursor-155)/((viewport-155)*zoom),next=timelineZoomAt(zoom,-25,scroll,cursor,viewport),newTime=(next.scroll+cursor-155)/((viewport-155)*next.zoom);expect(newTime).toBeCloseTo(oldTime,12);expect(timelineZoomAt(1,1000,0,200,800).zoom).toBe(1);expect(timelineZoomAt(32,-1000,0,200,800).zoom).toBe(32);});
@@ -16,3 +16,5 @@ it('timeline selection and inspector state stay editor-only and clear across doc
 it('global page edits check all affected animated owners before mutation',()=>{const p=setup(),d=structuredClone(useEditor.getState().doc);d.pages[0].nodes[1].locked=true;useEditor.getState().set({doc:d});const before=useEditor.getState();expect(()=>editMotionPage(captureMotionContext(),p=>{p.motion!.duration=3;},p.motion!.tracks.map(t=>t.nodeId))).toThrow();expect(useEditor.getState().doc).toBe(before.doc);});
 
 it('equivalent hexadecimal fill casing does not falsely flag a frame as animated',()=>{const p=blankDocument().pages[0],n=node('frame');p.nodes=[n];setKeyframe(p,n.id,'fill',0,'#AABBCC');setKeyframe(p,n.id,'fill',1,'#aabbcc');expect(animatedFrames(p.nodes,p.motion)).toEqual([]);});
+
+it('Inspect navigation remains read-only and a context cannot cross editor modes',()=>{useEditor.getState().set({mode:'inspect'});const c=captureMotionContext(),before=useEditor.getState();expect(sameMotionNavigationContext(c)).toBe(true);expect(sameMotionContext(c)).toBe(false);expect(()=>editMotionPage(c,p=>{p.name='Forbidden';})).toThrow();expect(useEditor.getState().doc).toBe(before.doc);useEditor.getState().set({mode:'design'});expect(sameMotionNavigationContext(c)).toBe(false);expect(sameMotionContext(c)).toBe(false);});
