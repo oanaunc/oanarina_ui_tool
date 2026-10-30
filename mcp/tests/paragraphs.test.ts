@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project';
+test('paragraph metadata is validated, rebased and atomically undoable through MCP',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-paragraphs-'));try{const file=path.join(dir,'paragraphs.oui'),project=await Project.open(file,true),initial=await project.read(),pageId=initial.document.pages[0].id,created=await project.apply(initial.revision,[{op:'create_node',pageId,id:'label',type:'text',properties:{text:'One\nTwo',listStyle:'number',listHanging:true,listItemSpacing:8,paragraphStyles:[{start:4,listLevel:1,textAlign:'right'}]}}]);const saved=await project.apply(created.revision,[{op:'update_node',pageId,nodeId:'label',properties:{text:'One\nT\nwo'}}]);assert.deepEqual(saved.document.pages[0].nodes[0].paragraphStyles,[{start:4,listLevel:1,textAlign:'right'},{start:6,listLevel:1,textAlign:'right'}]);const before=await fs.readFile(file,'utf8');for(const properties of [{paragraphStyles:[{start:1,listLevel:1}]},{paragraphStyles:[{start:0,listLevel:9}]},{markerGap:-1}]){await assert.rejects(project.apply(saved.revision,[{op:'rename_document',name:'Do not write'},{op:'update_node',pageId,nodeId:'label',properties}]));assert.equal(await fs.readFile(file,'utf8'),before);}const undone=await project.undo(saved.revision);assert.deepEqual(undone.document.pages,created.document.pages);}finally{await fs.rm(dir,{recursive:true,force:true});}});
