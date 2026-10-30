@@ -1,6 +1,6 @@
 # v0.2.0-dev.9 validation — pages, raster clipboard and recovery
 
-Date: 2026-10-30. Product: Forma. Development source checkpoint; final release acceptance remains pending. The register contains **2,022 requirements: 1,061 implemented, 169 partial and 792 planned**. This is not complete Figma parity. The machine-readable [feature register](../public/features.json) and [implementation limits](IMPLEMENTATION.md) remain authoritative.
+Date: 2026-10-30. Product: Forma. Development source checkpoint; final release acceptance remains pending. The register contains **2,022 requirements: 1,062 implemented, 168 partial and 792 planned**. This is not complete Figma parity. The machine-readable [feature register](../public/features.json) and [implementation limits](IMPLEMENTATION.md) remain authoritative.
 
 ## Source scope
 
@@ -12,7 +12,7 @@ Preferences also adds live Follow system appearance with legacy-compatible expli
 
 Native PNG/TIFF Paste normalizes the first oriented frame to embedded PNG, preserving alpha and enforcing encoded/dimension/pixel limits before full decoding. The renderer revalidates input and checks that the document/page/target remains current after decoding. Insertion is an ordinary image layer with one Undo and saved pixels, including the active-slide route. See [raster scope](RASTER-CLIPBOARD.md).
 
-The new native Copy as PNG source produces a transparent 2× raster snapshot of selected artwork, using the existing export renderer and its documented bounds. It is read-only and uses a fixed PNG representation through the existing single-use clipboard authorization boundary. Stale renders are canceled on document/page/selection/motion changes, editable focus or newer clipboard intents. The register keeps this command **partial until final native window acceptance**. Browser tests use an IPC fixture, not AppKit. See [PNG-copy scope](COPY-AS-PNG.md).
+The new native Copy as PNG source produces a transparent 2× raster snapshot of selected artwork, using the existing export renderer and its documented bounds. It is read-only and uses a fixed PNG representation through the existing single-use clipboard authorization boundary. Stale renders are canceled on document/page/selection/motion changes, editable focus or newer clipboard intents. The command was partial during the locked-Mac investigation; it is now implemented after all 29 actual WK/native clipboard checks pass. Browser tests use an IPC fixture, not AppKit. See [PNG-copy scope](COPY-AS-PNG.md).
 
 Saved-file MCP adds duplicate/reorder operations and shared guarded page deletion. Mixed batches reconcile component/layout/rich-text state at page-operation boundaries. A reorder-only transaction with no net change preserves exact bytes, revision, mtime and Undo history while still checking its revision and lock. Actual stdio schemas and saved-file Undo/reopen have coverage. See [MCP contract](../mcp/README.md#page-operations).
 
@@ -60,7 +60,7 @@ No test writes the user's general clipboard. Native document-window harnesses us
 
 The publicly downloadable notarized release remains **0.2.0-dev.8**. Do not publish the first dev.9 candidate preserved under `build/dev9-first-candidate/`: it predates the startup recovery fixes even though that earlier artifact received notarization.
 
-Final dev.9 native window testing is blocked because the Mac is locked. The clipboard harness correctly rejected its inactive window; readiness/origin/nonce guards were not relaxed. The saved `oanarina-notary` Keychain profile was also inaccessible during the lock. Unlock locally, confirm native access and recheck the existing profile before diagnosing credential loss or rebuilding release artifacts. Passwords must not be supplied in chat or source. Rebuild the final integrated source, then require app/DMG Accepted results, stapling, Gatekeeper validation and exact native smoke JSON before publishing a new download.
+Earlier dev.9 native window testing was blocked because the Mac was locked. The clipboard harness correctly rejected its inactive window; readiness/origin/nonce guards were not relaxed. The saved `oanarina-notary` Keychain profile was also inaccessible during the lock. The user subsequently unlocked the Mac and restored the profile locally. Native access and the existing profile now work; all 29 clipboard checks, 37 lifecycle checks and the standard bridge/catalog/font smoke pass with empty stderr on the development artifact. Passwords were not supplied in chat or source. The final signed/stapled artifact still requires exact smoke JSON, app/DMG Accepted results and Gatekeeper validation before publication.
 
 ## Website film
 
@@ -82,3 +82,9 @@ These are local, unpublished dev.9 build inputs/results, not public installer ha
 - Standalone MCP ZIP: 474,462 bytes; SHA-256 `78646c11df4cd2f7f01ba30fb8e327906287c7344bfbe734853a66efd3e6f326`.
 
 App-bundled ZIPs match these source build inputs. The bundle retains `com.oanarinaldi.uitool`, short version 0.2.0 and build 10. Latest local evidence is in `build/test-core-integrated-dev9-chrome.log`, `build/test-production-dev9-chrome.log`, `build/test-production-dev9-chrome-final.log`, `build/test-whiteboard-dev9-chrome-recheck.log`, `build/test-actions-dev9-chrome-recheck.log`, `build/test-development-dev9-chrome.log`, `build/build-mac-dev9-chrome.log` and `build/dev9-chrome-artifacts.json`. The MCP ZIP is byte-identical to the earlier 39-test artifact verified in `build/test-mcp-dev9-workflows.log` and `build/check-mcp-dev9-workflows.log`; no newer MCP runtime code is being claimed. The earlier checkpoint logs remain available separately. Native UI release gates and a new final signed/notarized artifact are still required.
+
+## Unlocked release preparation
+
+The first unlocked full production invocation completed 254 checks and exposed one sidebar test synchronization race: after widening the viewport, the polled left width already matched its final value, so it did not wait for ResizeObserver to restore the other panel. The saved desired right width was still 480; the immediate layout read returned its previous clamped 291. The test now polls the right width that actually changes, then checks the unchanged left width. No product code, assertion value or timeout changed. Focused repeated sidebar checks and the final release browser gate follow this correction.
+
+The current bundled history is labeled Mac preview without embedding its own installer checksum. Apple/notarization labels require the separate release proof; exact current download metadata belongs alongside the finished installer to avoid a circular self-hash.

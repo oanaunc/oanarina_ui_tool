@@ -89,7 +89,7 @@ Each Design/Whiteboard page remembers its pan and zoom on this device. Reopening
 
 In the native Mac app, Command–V can paste PNG or TIFF image data from another app as an embedded editable image. TIFF uses its first oriented frame. Paste supports one-step Undo and saved pixels, including inside the active slide. Encoded data is limited to 20 MB, 8192 pixels per side and 16 million pixels; larger images must be resized before copying. See [raster paste](RASTER-CLIPBOARD.md).
 
-The development source also adds **Edit → Copy as PNG**, **Shift Command C**, for a transparent 2× snapshot of selected artwork. It uses the same pixel limits and does not add an Undo entry. Browser use points to file export. Browser/Windows system image clipboard remains unfinished; the new Mac PNG-copy path still requires final native window acceptance before release. See [Copy as PNG scope](COPY-AS-PNG.md).
+The development source also adds **Edit → Copy as PNG**, **Shift Command C**, for a transparent 2× snapshot of selected artwork. It uses the same pixel limits and does not add an Undo entry. Browser use points to file export. Browser/Windows system image clipboard remains unfinished; the Mac PNG-copy path passes actual WK/native command acceptance. See [Copy as PNG scope](COPY-AS-PNG.md).
 
 Saved-file MCP adds `duplicate_page` and `reorder_page` inside `apply_operations`. Reorder uses the final zero-based page position; duplicate returns its new page ID. Both share the editor's page-reference guards. Read the latest revision before writing, then reopen the saved file in Forma. See [MCP examples and limits](../mcp/README.md#page-operations).
 

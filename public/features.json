@@ -407,7 +407,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.9: Explicit native PNG/TIFF paste creates an editable embedded image with orientation-aware first-frame normalization, predecode 20 MB/8192-edge/16 MP limits and one Undo/save. Actual named-pasteboard/WKWebView tests; browser/Windows image clipboard remains unfinished; Copy as PNG has separately tested source with native window acceptance pending. docs/COPY-AS-PNG.md. docs/RASTER-CLIPBOARD.md."
+    "notes": "v0.2.0-dev.9: Explicit native PNG/TIFF paste creates an editable embedded image with orientation-aware first-frame normalization, predecode 20 MB/8192-edge/16 MP limits and one Undo/save. Actual named-pasteboard/WKWebView tests; browser/Windows image clipboard remains unfinished; Copy as PNG also passes actual WK/native command acceptance. docs/COPY-AS-PNG.md. docs/RASTER-CLIPBOARD.md."
   },
   {
     "id": "UI-02-012",
@@ -13424,10 +13424,10 @@
     "category": "Export and delivery",
     "name": "Copy as PNG",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.9: Native Shift-Command-C, Edit menu and Actions render supported selections as transparent2x PNG with bounded fixed public.png transfer, read-only state and stale/focus/new-command cancellation. Browser pixels/security and standalone AppKit pasteboard/ordering tests pass; actual WK/native command acceptance awaits an unlocked Mac. docs/COPY-AS-PNG.md."
+    "notes": "v0.2.0-dev.9: Native Shift-Command-C, Edit menu and Actions render supported selections as transparent2x PNG with bounded fixed public.png transfer, read-only state and stale/focus/new-command cancellation. All29 actual WK/native clipboard checks pass, including dimensions/alpha/representation/replay and paste/Undo. Browser pixels/security and standalone AppKit boundary tests also pass. Browser/Windows system PNG and private Figma clipboard are separate unfinished paths. docs/COPY-AS-PNG.md."
   },
   {
     "id": "UI-40-035",

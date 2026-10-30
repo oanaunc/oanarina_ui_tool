@@ -4,12 +4,12 @@
   "releases": [
     {
       "version": "0.2.0-dev.9",
-      "channel": "development",
+      "channel": "preview",
       "title": "Pages, local layouts and image clipboard",
       "notes": [
         "Duplicate, reorder and search pages with contextual and keyboard actions; shared component links stay intact and unsafe deletion is refused.",
         "Remember each Design/Whiteboard page's pan and zoom locally, and preview its static artwork on hover or keyboard focus.",
-        "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. The new Copy as PNG source creates a transparent 2× selection snapshot.",
+        "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. Copy as PNG creates a transparent 2× selection snapshot.",
         "Follow system light/dark appearance, or retain an explicit interface theme.",
         "Saved-file MCP adds atomic page duplication and reordering. Browser startup waits for recovery before editing or autosave.",
         "Move supported complete layer trees between pages with stable identities and live component links; unsafe contextual cases are refused.",
@@ -21,8 +21,8 @@
         "Identify mask sources, modes and nearest affected artwork in the layer tree with bounded accessible descriptions."
       ],
       "limits": [
-        "This is development source. The next Mac installer is pending final native window acceptance, signing and notarization.",
-        "Copy as PNG still requires final native runtime acceptance. Browser/Windows system-image clipboard and private Figma clipboard are unfinished.",
+        "This is a development preview with documented limits. Current installer metadata and checksums are published on the Forma website.",
+        "Browser/Windows system-image clipboard and private Figma editable clipboard remain unfinished.",
         "Substantial Figma suite parity remains unfinished, including binary .fig interchange and cloud collaboration."
       ]
     },

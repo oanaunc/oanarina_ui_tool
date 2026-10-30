@@ -6,7 +6,7 @@ Paste inserts on the design canvas or inside the active slide container. An impo
 
 ImageIO checks encoded size and source pixel dimensions before decoding pixels: maximum 20 MB encoded, 8192 pixels on each side, and 16 million pixels total. The normalized PNG is limited to 14,999,000 bytes so its data URI stays within the shared 20 MB transfer boundary. The renderer checks the PNG header and pixel limits before its own decode, validates the decoded dimensions, and checks that the original document/page/target remains current. Full project validation happens before a single undoable edit. Existing 50 MB project limits still apply.
 
-TIFF pages beyond the first, animation and source metadata are not retained. There is no Finder/file URL import, file promise handling, HTML/RTF image extraction, arbitrary UTI IPC, automatic clipboard monitor or image clipboard write. Copy continues to publish editable Forma data, SVG and text. Browser preview and Windows system image clipboard remain unfinished. System clipboard images therefore remain **partial** in the feature register.
+TIFF pages beyond the first, animation and source metadata are not retained. There is no Finder/file URL import, file promise handling, HTML/RTF image extraction, arbitrary UTI IPC, automatic clipboard monitor or arbitrary image clipboard write. Ordinary Copy publishes editable Forma data, SVG and text; the separate [Copy as PNG](COPY-AS-PNG.md) command publishes a bounded PNG snapshot. Browser preview and Windows system image clipboard remain unfinished. System clipboard images therefore remain **partial** in the feature register.
 
 ## Validation
 
