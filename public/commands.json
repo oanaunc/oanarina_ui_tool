@@ -138,6 +138,12 @@
     "⇧P"
   ],
   [
+    "tool-brush",
+    "Brush tool",
+    "Tools",
+    ""
+  ],
+  [
     "tool-text",
     "Text tool",
     "Tools",
@@ -206,6 +212,12 @@
   [
     "file-info",
     "File information…",
+    "File",
+    ""
+  ],
+  [
+    "file-cover",
+    "File cover…",
     "File",
     ""
   ],

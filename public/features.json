@@ -1484,10 +1484,10 @@
     "category": "Pages and document structure",
     "name": "File cover selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Unreleased source: Reachable any-page frame cover picker/search/reset, isolated cached grid/list images with authored viewport/full-page clipping/masks/background/visible overlap, render-only IDs, Undo/save/reopen and deletion/move lifecycle. Optional oui1/2 metadata validated before mutation.500-layer/4MB UTF-8 preview budgets, static posters and conservative cached-font conflict diagnostics; native/Figma thumbnail parity remains unverified. docs/DOCUMENT-COVER-SELECTION.md."
   },
   {
     "id": "UI-05-029",
@@ -4744,90 +4744,90 @@
     "category": "Freehand and Figma Draw",
     "name": "Brush drawing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable Brush canvas tool materializes primitive vector stamps as one editable group, captured owner/affine mapping, shared artwork/export/masks, draft cancellation, one Undo and save/reopen. Primitive ellipse/rectangle/diamond/triangle brushes only; arbitrary art/stretch/scatter brushes, uncertain clipped/masked container ownership and native tablet/reference acceptance remain absent. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-005",
     "category": "Freehand and Figma Draw",
     "name": "Brush preset picker",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable five stock presets and persistent local custom picker with actual rendered settings; built-ins are read-only and customization is independent. No Figma preset/library parity claim. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-006",
     "category": "Freehand and Figma Draw",
     "name": "Vector brush library",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reusable device-local primitive preset library supports save/update/delete/reset and bounded JSON import/export. Arbitrary artwork, calligraphic/stretch/scatter and hosted/shared brush libraries remain absent. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-007",
     "category": "Freehand and Figma Draw",
     "name": "Custom brush creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Save a named independent primitive brush with shape/aspect/spacing/direction/size/color/opacity and pressure response, edit/update/delete and persist it locally. Sampling arbitrary canvas artwork or creating unrestricted vector/art brushes remains absent. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-008",
     "category": "Freehand and Figma Draw",
     "name": "Brush spacing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Spacing percent controls actual nominal-size arc-length intervals, including continuous remainder across input/coalesced segments and interpolated pressure at each stamp. Bounded strokes refuse atomically without a hidden prefix. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-009",
     "category": "Freehand and Figma Draw",
     "name": "Brush direction",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Fixed or follow-stroke tangent direction plus angle control changes actual stamp transforms, including captured signed/nonuniform parent mapping. Native/reference acceptance pending. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-010",
     "category": "Freehand and Figma Draw",
     "name": "Brush size",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable size/aspect controls change editable stamp geometry and shared preview/export; captured settings, bounds and cancellation prevent stale gesture commits. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-011",
     "category": "Freehand and Figma Draw",
     "name": "Brush pressure response",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Actual supplied pen/touch pressure interpolates size/opacity response and configurable minimum into saved stamps; mouse uses full pressure and release zero does not collapse the end interval. Real Chromium pen input tested; physical tablet and Mac WKWebView pressure acceptance remain unverified. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-012",
     "category": "Freehand and Figma Draw",
     "name": "Brush opacity",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Opacity control changes each materialized stamp, preserving overlapping alpha compositing in shared Canvas/SVG/masks; pressure opacity can additionally vary stamps. Presets and completed artwork persist independently. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-013",
@@ -5014,30 +5014,30 @@
     "category": "Freehand and Figma Draw",
     "name": "Brush import",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Forma primitive brush/library JSON imports validate complete scalar/color schema, size/count/byte budgets and retained asynchronous context before replacing local settings. Third-party/native Figma brush formats and arbitrary art assets remain unsupported. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-032",
     "category": "Freehand and Figma Draw",
     "name": "Brush export",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable selected-brush or complete local-library JSON download preserves supported primitive settings for reimport. No third-party/Figma brush export format. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-033",
     "category": "Freehand and Figma Draw",
     "name": "Brush reset",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reset restores the selected saved stock/custom preset without changing completed document artwork; source settings and custom presets persist locally. Document Undo is reserved for materialized strokes. docs/VECTOR-BRUSH-DRAWING.md."
   },
   {
     "id": "UI-16-034",
@@ -9484,130 +9484,130 @@
     "category": "Libraries and design systems",
     "name": "Publish library",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Publish an immutable reusable-only local snapshot file with closed component/set/style/guide/token dependencies and affirmative redistribution font policy; source history/Undo. No hosted/team organization publishing. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-007",
     "category": "Libraries and design systems",
     "name": "Library publish description",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable local publication description is prepared/reviewed and saved with immutable snapshot/history; unrelated artwork/comments are excluded. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-008",
     "category": "Libraries and design systems",
     "name": "Library version details",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Local immutable version details expose positive version, name, description, date and source identity; fingerprints indicate content equality, not authenticated publisher identity. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-009",
     "category": "Libraries and design systems",
     "name": "Enable library in file",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Explicit Enable installs real editable cached definitions, stable qualified IDs and saved dependency; linked instances/style/token consumers work with Undo/persistence. Local snapshot workflow only, with eight-library and graph budgets. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-010",
     "category": "Libraries and design systems",
     "name": "Disable library in file",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Disable blocks this library widget insertion and suppresses its update notification while cached consumers/definitions remain usable. Ordinary local assets still expose cached definitions; no hosted entitlement or remote removal. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-011",
     "category": "Libraries and design systems",
     "name": "Browse available libraries",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Browse imported/published immutable local snapshots and their cached versions, with explicit download/import/remove controls. No hosted organization/community discovery. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-012",
     "category": "Libraries and design systems",
     "name": "Search library assets",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable case-insensitive local snapshot asset search and24-row accessible pagination filter named component/set/style/guide/token groups. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-013",
     "category": "Libraries and design systems",
     "name": "Library asset preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Isolated incoming/cached SVG component previews plus bounded textual style/token/guide previews support review. Default variant only,256-layer/geometry/SVG budgets and platform font metrics; no universal/reference preview parity. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-014",
     "category": "Libraries and design systems",
     "name": "Library update notification",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Imported newer cached snapshot triggers local update availability, with ignore handling and per-asset accepted versions. No network polling, source-folder watching or live publisher notifications. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-015",
     "category": "Libraries and design systems",
     "name": "Review library updates",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Review named added/changed/unchanged/removed groups, local edit conflicts, bounded before/after geometry/scalar details, dependency closure and installed/source versions. No unrestricted visual diff or automatic merge. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-016",
     "category": "Libraries and design systems",
     "name": "Accept all library updates",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Accept all incoming local groups/removal notices in one validated Undo transaction; stable source IDs, actual style/token/component derivation and consumer overrides survive. Unsafe destructive/property/variable/mode changes refuse; removed source groups retain cached definitions. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-017",
     "category": "Libraries and design systems",
     "name": "Accept selected library updates",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Accept selected local groups automatically includes required displayed dependency groups in one validated Undo transaction; source changes propagate to real linked consumers. Conservative conflict/removal limits and no cloud synchronization. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-018",
     "category": "Libraries and design systems",
     "name": "Ignore library update",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable Ignore suppresses a specific immutable local snapshot notification while preserving manual review and cached consumers; saved bounded ignore history supports Undo. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-019",
@@ -9684,10 +9684,10 @@
     "category": "Libraries and design systems",
     "name": "Missing library indicator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Saved dependencies show missing local snapshot/cache and missing/removed source groups while cached editable artwork remains usable. Source files must be explicitly reimported; no remote availability monitoring. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-027",
@@ -9777,17 +9777,17 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete."
+    "notes": "Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete. Unreleased local snapshot updates additionally identify moved/edited cached definitions and refuse unsafe overwrite/removal; no interactive library merge. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-29-036",
     "category": "Libraries and design systems",
     "name": "Library change history",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Published and accepted local snapshot history shows immutable version/date/name/description and explicit cached version review/download, bounded to50entries; no cloud audit service. docs/LOCAL-COMPONENT-LIBRARIES.md."
   },
   {
     "id": "UI-30-001",
@@ -17524,10 +17524,10 @@
     "category": "Performance and reliability",
     "name": "Font loading status",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Shared live task status covers catalog, bundled/Google/cache loading, embedded/imported registration, ready/failure/unavailable/superseded outcomes and retry. Compact unique-family indicator and last40 volatile task details; no invented byte percentage. Async Apply/Replace retain exact invalidatable source context, valid Undo/save and no newer-dialog close. docs/FONT-LOADING-CONTEXT.md."
   },
   {
     "id": "UI-53-007",
@@ -19914,10 +19914,10 @@
     "category": "Free local MCP integration",
     "name": "MCP image asset import",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": ""
+    "notes": "Unreleased source: Source-only import_image_asset accepts embedded static noninterlaced8-bit RGB/RGBA PNG, validates canonical base64/chunks/CRC/order and bounded decompression, then creates an editable page-root image in one revision-checked atomic transaction with Undo. Real stdio/redaction and editor pixels/save/reopen tested. PNG subset only; no asset paths/URLs, other formats, live synchronization or raster export; frozen download lacks this tool. docs/MCP-PNG-IMPORT.md."
   },
   {
     "id": "UI-59-036",
