@@ -1,3 +1,4 @@
+import {roundedPolygonPath} from './basic-shapes';
 import paper from 'paper/dist/paper-core.js';
 import {bounds,descendants} from './model';
 import type {DesignNode,VectorPoint,VectorContour} from './model';
@@ -24,14 +25,14 @@ export function contourPath(points:VectorPoint[],closed=false){
 export function localPath(n:DesignNode):string {
  if(n.type==='path')return n.contours!==undefined?n.contours.map(c=>contourPath(c.points,c.closed)).join(' '):n.points.length?contourPath(n.points,n.closed):n.path;
  if(n.type==='ellipse')return ellipsePath(n);
- if(n.type==='polygon'||n.type==='star')return contourPath(shapePoints(n),true);
+ if(n.type==='polygon'||n.type==='star')return n.radius>0?roundedPolygonPath(shapePoints(n),n.radius):contourPath(shapePoints(n),true);
  if(n.type==='line'||n.type==='arrow')return n.points.length?contourPath(n.points,false):`M0 0L${n.width} ${n.height}`;
  return cornerPath(n.width,n.height,n.corners??[n.radius,n.radius,n.radius,n.radius]);
 }
 export function geometry(n:DesignNode):paper.PathItem {
  if(['text','image','slice'].includes(n.type))throw Error('Convert text to outlines or select vector shapes for this operation.');
  scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();p.fillRule=n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero');
- if(n.type==='path'){p.scale(n.width/(n.pathWidth||n.width||1),n.height/(n.pathHeight||n.height||1),new scope.Point(0,0));}
+ if(n.type==='path'||['line','arrow'].includes(n.type)&&n.points.length>1){p.scale(n.width/(n.pathWidth||n.width||1),n.height/(n.pathHeight||n.height||1),new scope.Point(0,0));}
  if(n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined)p.scale((n.flipX?-1:1)*(n.motionScaleX??1),(n.flipY?-1:1)*(n.motionScaleY??1),new scope.Point(n.width/2,n.height/2));
  p.translate(new scope.Point(n.x,n.y));if(n.rotation)p.rotate(n.rotation,new scope.Point(n.x+n.width/2,n.y+n.height/2));return p;
 }
@@ -64,4 +65,4 @@ export function selectionBounds(nodes:DesignNode[]){return bounds(nodes);}
 export function insertVectorPoint(n:DesignNode,world:{x:number;y:number}){const p=geometry(n);const location=p.getNearestLocation(new scope.Point(world.x,world.y));if(!location)throw Error('No vector segment found.');location.path.divideAt(location);const props=pathProperties(p);p.remove();const converted={...n,...props};return {...props,contours:pathContours(converted)};}
 
 const scaledPaths=new Map<string,string>();
-export function scaledLocalPath(n:DesignNode){const data=localPath(n);if(n.type!=='path'||(!n.pathWidth&&!n.pathHeight))return data;const sx=n.width/(n.pathWidth||n.width||1),sy=n.height/(n.pathHeight||n.height||1);if(sx===1&&sy===1)return data;const key=data+'@'+sx+':'+sy;if(scaledPaths.has(key))return scaledPaths.get(key)!;scope.activate();const p=scope.PathItem.create(data||'M0 0');p.remove();p.scale(sx,sy,new scope.Point(0,0));const result=p.pathData;p.remove();if(scaledPaths.size>500)scaledPaths.clear();scaledPaths.set(key,result);return result;}
+export function scaledLocalPath(n:DesignNode){const data=localPath(n);if(!['path','line','arrow'].includes(n.type)||(!n.pathWidth&&!n.pathHeight))return data;const sx=n.width/(n.pathWidth||n.width||1),sy=n.height/(n.pathHeight||n.height||1);if(sx===1&&sy===1)return data;const key=data+'@'+sx+':'+sy;if(scaledPaths.has(key))return scaledPaths.get(key)!;scope.activate();const p=scope.PathItem.create(data||'M0 0');p.remove();p.scale(sx,sy,new scope.Point(0,0));const result=p.pathData;p.remove();if(scaledPaths.size>500)scaledPaths.clear();scaledPaths.set(key,result);return result;}

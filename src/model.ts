@@ -1,3 +1,4 @@
+import type {ArrowheadStyle} from './arrowheads';
 import type {TextOutline} from './text-outline';
 import type {FrameExportSetting} from './frame-export-settings';
 import {validateDocumentMetadata} from './document-metadata';
@@ -41,7 +42,7 @@ export interface DesignNode {
   exportSettings?:FrameExportSetting[];readyForDevelopment?:boolean;
   textOutline?:TextOutline;textRuns?:TextRun[];fontAxes?:Record<string,number>;fontFeatures?:Record<string,number>;underline?:UnderlineStyle;
   textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number; letterSpacing:number;
-  fillRule?:'nonzero'|'evenodd';path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
+  arrowStart?:ArrowheadStyle;arrowEnd?:ArrowheadStyle;arrowSize?:number;fillRule?:'nonzero'|'evenodd';path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
   gridRows?:number;gridColumns?:GridTrack[];gridRowTracks?:GridTrack[];gridColumn?:number;gridRow?:number;gridColumnSpan?:number;gridRowSpan?:number;gridAlignX?:GridAlignment;gridAlignY?:GridAlignment;
   sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch'|'baseline';wrap?:boolean;

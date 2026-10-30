@@ -1,5 +1,6 @@
 import {validateSectionMetadata} from './section-metadata';
 import {validateDocumentImageAdjustments} from './image-paint';
+import {validateDocumentArrowheads} from './arrowheads';
 import {validateDocumentExportSettings} from './frame-export-settings';
 /** Optional .oui document metadata. Bounds apply equally to files and local UI. */
 export const DOCUMENT_DESCRIPTION_LIMIT=10_000;
@@ -10,6 +11,7 @@ export function validateDocumentMetadata(document:{description?:unknown;pages?:u
  validateDocumentExportSettings(document);
  validateSectionMetadata(document);
  validateDocumentImageAdjustments(document);
+ validateDocumentArrowheads(document);
 }
 /** Plain text is preserved literally; only line endings and empty clearing normalize. */
 export function normalizedDocumentDescription(value:string):string|undefined{

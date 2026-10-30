@@ -1,4 +1,5 @@
 import {ImagePaintDefinition} from './ImagePaintDefinition';
+import {orientedArrowheadPath,arrowStyle,arrowTips} from '../arrowheads';
 import {currentTextOutline} from '../text-outline';
 import type {CSSProperties} from 'react';
 import {effectsFor} from '../effects';
@@ -12,12 +13,12 @@ import type {DesignNode} from '../model';
 import {maskRegion,maskRuns,vectorPaintVisible} from '../masks';
 import type {MaskMode} from '../masks';
 function paintValue(p:Paint,id:string){return p.type==='solid'?p.color:`url(#${id})`;}
-function PaintDefinition({paint:p,id,n}:{paint:Paint;id:string;n:DesignNode}){
+function PaintDefinition({paint:p,id,n,strokeSpace=false}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean}){
  const stops=[...p.stops].sort((a,b)=>a.position-b.position).map(s=><stop key={s.id} offset={s.position} stopColor={s.color} stopOpacity={s.opacity}/>),a=p.angle*Math.PI/180;
- if(p.type==='linear')return <linearGradient id={id} x1={.5-Math.cos(a)/2} y1={.5-Math.sin(a)/2} x2={.5+Math.cos(a)/2} y2={.5+Math.sin(a)/2}>{stops}</linearGradient>;
- if(p.type==='radial')return <radialGradient id={id} cx={p.cx} cy={p.cy} r={p.radius}>{stops}</radialGradient>;
- if(p.type==='angular'||p.type==='diamond')return <pattern id={id} width="1" height="1" patternContentUnits="objectBoundingBox"><image href={rasterGradient(p)} width="1" height="1" preserveAspectRatio="none"/></pattern>;
- if(p.type==='image')return <ImagePaintDefinition paint={p} id={id} width={n.width} height={n.height}/>;
+ if(p.type==='linear')return <linearGradient id={id} gradientUnits={strokeSpace?'userSpaceOnUse':undefined} gradientTransform={strokeSpace?`scale(${Math.max(.001,n.width)} ${Math.max(.001,n.height)})`:undefined} x1={.5-Math.cos(a)/2} y1={.5-Math.sin(a)/2} x2={.5+Math.cos(a)/2} y2={.5+Math.sin(a)/2}>{stops}</linearGradient>;
+ if(p.type==='radial')return <radialGradient id={id} gradientUnits={strokeSpace?'userSpaceOnUse':undefined} gradientTransform={strokeSpace?`scale(${Math.max(.001,n.width)} ${Math.max(.001,n.height)})`:undefined} cx={p.cx} cy={p.cy} r={p.radius}>{stops}</radialGradient>;
+ if(p.type==='angular'||p.type==='diamond')return <pattern id={id} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} patternUnits={strokeSpace?'userSpaceOnUse':undefined} patternContentUnits={strokeSpace?'userSpaceOnUse':'objectBoundingBox'}><image href={rasterGradient(p)} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} preserveAspectRatio="none"/></pattern>;
+ if(p.type==='image')return <ImagePaintDefinition paint={p} id={id} width={strokeSpace?Math.max(1,n.width):n.width} height={strokeSpace?Math.max(1,n.height):n.height} userSpace={strokeSpace}/>;
  return null;
 }
 function Shape({n,hyperlinks=false,maskVector=false,...props}:{n:DesignNode;hyperlinks?:boolean;maskVector?:boolean}&React.SVGProps<SVGPathElement>){
@@ -26,9 +27,9 @@ function Shape({n,hyperlinks=false,maskVector=false,...props}:{n:DesignNode;hype
  return <path d={scaledLocalPath(n)} {...props} fillRule={n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero')} clipRule={n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero')}/>;
 }
 function Stroke({n,s,id,maskVector=false}:{n:DesignNode;s:StrokeStyle;id:string;maskVector?:boolean}){
- const alignment=['line','arrow'].includes(n.type)?'center':s.align;
- const props={fill:'none',stroke:maskVector?'#ffffff':paintValue(s.paint,id),strokeWidth:s.width*(alignment==='center'?1:2),opacity:maskVector?1:s.paint.opacity,strokeLinecap:s.cap,strokeLinejoin:s.join,strokeMiterlimit:s.miterLimit,strokeDasharray:s.dash.length?s.dash.join(' '):undefined,strokeDashoffset:s.dashOffset};
- return <g clipPath={alignment==='inside'?`url(#local-clip-${n.id})`:undefined} mask={alignment==='outside'?`url(#outside-mask-${n.id})`:undefined}><Shape n={n} {...props}/>{n.type==='arrow'&&<path d={`M ${n.width-12} ${n.height-6} L ${n.width} ${n.height} L ${n.width-12} ${n.height+6}`} fill="none" stroke={maskVector?'#ffffff':s.paint.color} strokeWidth={s.width} transform={`rotate(${Math.atan2(n.height,n.width)*180/Math.PI} ${n.width} ${n.height})`}/>}</g>;
+ const alignment=['line','arrow'].includes(n.type)||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none'?'center':s.align;
+ const props={fill:'none',stroke:maskVector?'#ffffff':paintValue(s.paint,id),strokeWidth:s.width*(alignment==='center'?1:2),opacity:1,strokeLinecap:s.cap,strokeLinejoin:s.join,strokeMiterlimit:s.miterLimit,strokeDasharray:s.dash.length?s.dash.join(' '):undefined,strokeDashoffset:s.dashOffset};
+ return <g opacity={maskVector?1:s.paint.opacity} clipPath={alignment==='inside'?`url(#local-clip-${n.id})`:undefined} mask={alignment==='outside'?`url(#outside-mask-${n.id})`:undefined}><Shape n={n} {...props}/>{(()=>{if(arrowStyle(n,'start')==='none'&&arrowStyle(n,'end')==='none')return null;const tips=arrowTips(n);return tips&&(['start','end'] as const).map(end=>{const style=arrowStyle(n,end);if(style==='none')return null;const tip=tips[end],open=style==='open'||style==='bar',color=maskVector?'#ffffff':paintValue(s.paint,id);return <path data-arrowhead={end} key={end} d={orientedArrowheadPath(style,n.arrowSize??12,tip)} fill={open?'none':color} stroke={open?color:'none'} strokeWidth={s.width} strokeLinecap={s.cap} strokeLinejoin={s.join} strokeMiterlimit={s.miterLimit} opacity={1}/>;});})()}</g>;
 }
 export function Artwork({nodes,outlines=false,hyperlinks=false,onNode,onInteraction}:{nodes:DesignNode[];outlines?:boolean;hyperlinks?:boolean;onNode?:(e:React.PointerEvent,id:string)=>void;onInteraction?:(e:React.SyntheticEvent,id:string,type:'click'|'pointerdown'|'pointerup'|'pointerenter'|'pointerleave')=>void}) {
  const ids=new Set(nodes.map(n=>n.id)),children=new Map<string|null,DesignNode[]>();
@@ -50,7 +51,7 @@ export function Artwork({nodes,outlines=false,hyperlinks=false,onNode,onInteract
   <clipPath id={'local-clip-'+n.id}><Shape n={n}/></clipPath>
   <mask id={'outside-mask-'+n.id} x="-100%" y="-100%" width="300%" height="300%"><rect x={-n.width} y={-n.height} width={n.width*3} height={n.height*3} fill="white"/><Shape n={n} fill="black" stroke="none"/></mask>
   {fillsFor(n).map(p=><PaintDefinition key={p.id} paint={p} id={`fill-${n.id}-${p.id}`} n={n}/>)}
-  {strokesFor(n).map(s=><PaintDefinition key={s.id} paint={s.paint} id={`stroke-${n.id}-${s.id}`} n={n}/>)}
+  {strokesFor(n).map(s=><PaintDefinition key={s.id} paint={s.paint} id={`stroke-${n.id}-${s.id}`} n={n} strokeSpace={arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none'}/>)}
   <EffectFilter n={n}/>
  </defs>)}{renderSiblings(children.get(null)??[])}</>;
 }
