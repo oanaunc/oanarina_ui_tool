@@ -1,3 +1,4 @@
+import {getPreferences} from '../preferences';
 import FigImportReport from './FigImportReport';
 import {clearFigImportReport,getFigImportReport} from '../fig-import';
 import FileInformation from './FileInformation';
@@ -24,12 +25,13 @@ import {cancelSvgImport,getSvgImportRequest,exportArtwork,notifyError,openProjec
 import FontLibrary from './FontLibrary';
 import {addComment} from './Canvas';
 interface Feature {id:string;name:string;category:string;status:string;priority:string;notes:string;}
-export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(''),[value,setValue]=useState(''),[features,setFeatures]=useState<Feature[]>([]),[category,setCategory]=useState('All'),[filter,setFilter]=useState('All'),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false),[format,setFormat]=useState<'svg'|'png'|'jpg'>('svg');
+export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(''),[value,setValue]=useState(''),[features,setFeatures]=useState<Feature[]>([]),[category,setCategory]=useState('All'),[filter,setFilter]=useState('All'),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false),[format,setFormat]=useState<'svg'|'png'|'jpg'>(()=>getPreferences().defaultExportFormat);
  const [versions,setVersions]=useState<Snapshot[]>([]);
  useEffect(()=>{if(s.modal==='history')listSnapshots(s.doc.id).then(setVersions).catch(notifyError);},[s.modal,s.doc.id]);
  const page=s.doc.pages.find(p=>p.id===s.pageId)!,n=page.nodes.find(n=>s.selection.includes(n.id)),modal=s.modal;
  useEffect(()=>{const report=getFigImportReport();if(report&&(modal!=='fig-import-report'||report.document.id!==s.doc.id))clearFigImportReport();const request=getSvgImportRequest();if(request&&(modal!=='svg-import'||request.documentId!==s.doc.id))cancelSvgImport();},[modal,s.doc.id]);
  useEffect(()=>{setQuery('');setCategory('All');setFilter('All');setValue(modal==='rename-file'?s.doc.name:modal==='rename-page'?page.name:modal==='rename'?n?.name??'':modal==='text-link'?n?.hyperlink??'':'');if(modal==='roadmap')fetch('./features.json').then(r=>r.json()).then(setFeatures).catch(notifyError);},[modal]);
+ useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
  const close=()=>{if(modal==='fig-import-report')clearFigImportReport();if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
  if(modal==='text-search')return <TextSearch key={s.doc.id}/>;

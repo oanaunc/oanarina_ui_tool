@@ -1,4 +1,5 @@
 import {ConstraintGuideControls} from './ConstraintGuides';
+import {usePreferences} from '../preferences';
 import GroupBounds from './GroupBounds';
 import SectionActions,{OpenSectionLink} from './SectionActions';
 import {filterStatusLayerRows} from '../section-workflows';
@@ -81,7 +82,8 @@ export function LeftPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===
 }
 
 function Section({name,children,action}:{name:string;children:React.ReactNode;action?:React.ReactNode}){return <section className="inspector-section"><div className="section-title"><span>{name}</span>{action}</div>{children}</section>;}
-export function RightPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===s.pageId)!,displayNodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,sel=displayNodes.filter(n=>s.selection.includes(n.id)),n=sel[0],[format,setFormat]=useState<'svg'|'png'|'jpg'>('svg'),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false);
+export function RightPanel(){const exportPreferences=usePreferences(),s=useEditor(),page=s.doc.pages.find(p=>p.id===s.pageId)!,displayNodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,sel=displayNodes.filter(n=>s.selection.includes(n.id)),n=sel[0],[format,setFormat]=useState<'svg'|'png'|'jpg'>(exportPreferences.defaultExportFormat),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false);
+ useEffect(()=>setFormat(exportPreferences.defaultExportFormat),[exportPreferences.defaultExportFormat]);
  const patch=(p:Partial<DesignNode>)=>{try{s.patch(s.selection,p);}catch(error){notifyError(error);}};
  return <aside className="right-panel panel"><div className="panel-tabs right-tabs">{(['design','prototype','inspect'] as const).map(mode=><button key={mode} className={s.mode===mode?'active':''} onClick={()=>s.set({mode})}>{mode==='inspect'?'Inspect':mode[0].toUpperCase()+mode.slice(1)}</button>)}</div>
  <div className="inspector-scroll">

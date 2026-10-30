@@ -1,3 +1,5 @@
+import {selectionZoomCamera} from './workflow-preferences';
+import {canvasSelectionBounds} from './canvas-geometry';
 import {applyMotionEdits,sampleMotion} from './motion';
 import {recordAction} from './action-history';
 import {copyEditorSelection,copyEditorSelectionAsPng,pasteEditorClipboard} from './native-clipboard';
@@ -13,7 +15,7 @@ import {combineVariants,detachInstance,goToMain,resetOverrides} from './componen
 import {combineGeometry,flattenGeometry,geometry,normalizedRootSelection,pathContours,pathProperties,vectorOperation} from './geometry';
 import {currentPage,useEditor} from './store';
 import {createInstance,download,exportArtwork,importImages,notifyError,serializedProject,openProject,pickFile,saveProject} from './files';
-import {descendants,isLocked,node} from './model';
+import {descendants,effectiveVisible,isLocked,node} from './model';
 import type {DesignNode,Tool} from './model';
 export const commands=[
  ['tool-move','Move tool','Tools','V'],['tool-frame','Frame tool','Tools','F'],['tool-section','Section tool','Tools','⇧S'],['tool-slice','Slice tool','Tools','S'],['tool-rectangle','Rectangle tool','Tools','R'],['tool-ellipse','Ellipse tool','Tools','O'],['tool-line','Line tool','Tools','L'],['tool-arrow','Arrow tool','Tools','⇧L'],['tool-polygon','Polygon tool','Tools',''],['tool-star','Star tool','Tools',''],['tool-pen','Pen tool','Tools','P'],['tool-pencil','Pencil tool','Tools','⇧P'],['tool-text','Text tool','Tools','T'],['tool-hand','Hand tool','Tools','H'],['tool-scale','Scale tool','Tools','K'],['tool-comment','Comment tool','Tools','C'],
@@ -76,7 +78,7 @@ export function runCommand(id:string,event?:Event){if(event&&['copy','cut','past
  case 'tidy':{const roots=normalizedRootSelection(ns,s.selection);if(roots.length<2)break;const x=Math.min(...roots.map(n=>n.x)),y=Math.min(...roots.map(n=>n.y)),w=Math.max(...roots.map(n=>n.width)),h=Math.max(...roots.map(n=>n.height)),columns=Math.ceil(Math.sqrt(roots.length));s.edit(d=>{const p=d.pages.find(p=>p.id===s.pageId)!;roots.forEach((root,i)=>{const dx=x+i%columns*(w+16)-root.x,dy=y+Math.floor(i/columns)*(h+16)-root.y;const ids=descendants(p.nodes,[root.id]);p.nodes.filter(n=>ids.includes(n.id)).forEach(n=>{n.x+=dx;n.y+=dy;});});});break;}
  case 'canvas-scrollbars':updatePreferences({showCanvasScrollbars:!getPreferences().showCanvasScrollbars});break;case 'overview-minimap':updatePreferences({showOverviewMinimap:!getPreferences().showOverviewMinimap});break;
  case 'previous-viewport':s.navigateViewport(-1);break;case 'next-viewport':s.navigateViewport(1);break;case 'find-selection':s.findSelection();break;case 'frame-names':updatePreferences({showFrameNames:!getPreferences().showFrameNames});break;case 'section-names':updatePreferences({showSectionNames:!getPreferences().showSectionNames});break;
- case 'fit':s.fit();break;case 'fit-selection':s.fit(true);break;case 'zoom-in':s.setCamera({zoom:Math.min(8,s.zoom*1.2)});break;case 'zoom-out':s.setCamera({zoom:Math.max(.05,s.zoom/1.2)});break;case 'zoom-100':s.setCamera({zoom:1});break;
+ case 'fit':s.fit();break;case 'fit-selection':s.fit(true);break;case 'zoom-in':case 'zoom-out':{const zoom=id==='zoom-in'?Math.min(8,s.zoom*1.2):Math.max(.05,s.zoom/1.2),nodes=s.motionOpen?sampleMotion(ns,currentPage().motion,s.motionTime):ns,ids=s.selection.filter(id=>nodes.some(n=>n.id===id&&effectiveVisible(n,nodes)));s.setCamera((event?.type==='keydown'||event?.type==='forma-native-command')&&getPreferences().keyboardZoomSelection&&ids.length?selectionZoomCamera(s,zoom,canvasSelectionBounds(nodes,ids)):{zoom});break;}case 'zoom-100':s.setCamera({zoom:1});break;
  case 'layout-guides':s.edit(d=>{d.layoutGuidesVisible=!(d.layoutGuidesVisible??true);});break;case 'grid':s.set({grid:!s.grid});break;case 'snap':s.edit(d=>{d.snapping={...{enabled:true,pixel:'pixel',objects:true,centers:true,guides:true,frames:true,layout:true,spacing:true},...d.snapping,enabled:!(d.snapping?.enabled??true)};});break;case 'rulers':s.set({rulers:!s.rulers});break;case 'outlines':s.set({outlines:!s.outlines});break;case 'toggle-ui':s.set({uiHidden:!s.uiHidden});break;case 'theme':{const theme=s.theme==='dark'?'light':'dark';updateAppearance(theme);s.set({theme});break;}
  case 'page':s.addPage();break;case 'delete-page':s.deletePage();break;case 'home':s.set({home:true});break;
  case 'motion':s.set({motionOpen:!s.motionOpen,motionPlaying:false});break;
@@ -101,7 +103,7 @@ export function handleKey(e:KeyboardEvent){if(e.defaultPrevented)return;const s=
  const action=commands.find(c=>!navigationIds.includes(c[0])&&matchesShortcut(e,c[3])&&(c[0]!=='edit-vector'||s.tool==='move'&&s.selection.length===1));
  if(action){e.preventDefault();runCommand(action[0],e);return;}
  if(cmd&&k==='/'){e.preventDefault();runCommand('actions');return;}
- if(!cmd){if(/^[0-9]$/.test(k)&&s.selection.length){e.preventDefault();s.patch(s.selection,{opacity:k==='0'?1:Number(k)/10});return;}
+ if(!cmd){if(getPreferences().numberKeyOpacity&&/^[0-9]$/.test(k)&&s.selection.length){e.preventDefault();const ids=s.selection.filter(id=>currentPage().nodes.some(n=>n.id===id&&!isLocked(n,currentPage().nodes)));if(ids.length)s.patch(ids,{opacity:k==='0'?1:Number(k)/10});return;}
  const tool=({v:'move',f:'frame',r:'rectangle',o:'ellipse',l:e.shiftKey?'arrow':'line',t:'text',p:e.shiftKey?'pencil':'pen',h:'hand',k:'scale',c:'comment',s:e.shiftKey?'section':'slice'} as const)[k as 'v'];if(tool){e.preventDefault();s.set({tool});}}
 }
 export function insertPreset(name:string,w:number,h:number){const s=useEditor.getState(),ns=currentPage().nodes,x=ns.length?Math.max(...ns.map(n=>n.x+n.width))+80:80;s.add('frame',{name,x,y:100,width:w,height:h});s.fit(true);}

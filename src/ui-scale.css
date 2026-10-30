@@ -1,0 +1,7 @@
+/* Scale interface surfaces individually. The SVG canvas and playback stages stay in CSS pixels. */
+.app>.topbar,.app>.menubar,.app .sidebar-slot,.app .sidebar-resizer,.app .toolbar,.app>.modal-backdrop>.dialog,.app>.layer-rename-backdrop>.layer-rename-dialog,.app>.home,.app>.toast,.app>.restore-ui{zoom:var(--ui-scale,1)}
+.app .context-menu{font-size:calc(11px * var(--ui-scale,1))}
+.app .context-menu button{font-size:inherit;padding:calc(6px * var(--ui-scale,1))}
+.recent-limit-note{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:6px;line-height:1.5}
+.font-specimen[hidden]{display:none}
+.app>.modal-backdrop>.dialog{max-height:calc(90vh / var(--ui-scale,1));max-width:calc((100vw - 32px) / var(--ui-scale,1))}

@@ -3,6 +3,8 @@ import type {DesignNode,NodeKind} from './model';
 
 /** User preferences are local to this app/browser origin and never serialized in .oui. */
 export interface EditorPreferences {
+ uiScale:number;fontPreview:boolean;autosaveIntervalMs:number;recentFileLimit:number;
+ defaultExportFormat:'svg'|'png'|'jpg';colorPickerFormat:'HEX'|'RGB'|'HSL'|'HSB';duplicateNaming:'preserve'|'copy'|'increment';keyboardZoomSelection:boolean;controlClickContextMenu:boolean;numberKeyOpacity:boolean;
  smallNudge:number;largeNudge:number;rotationSnapIncrement:number;
  showFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;
  keepDrawingTool:boolean;hoverHighlight:boolean;showSelectionDimensions:boolean;
@@ -14,6 +16,7 @@ export interface EditorPreferences {
 }
 export const PREFERENCES_KEY='oui-preferences';
 export const defaultPreferences:Readonly<EditorPreferences>=Object.freeze({
+ uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,
  smallNudge:1,largeNudge:10,rotationSnapIncrement:15,
  showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,
  keepDrawingTool:false,hoverHighlight:true,showSelectionDimensions:true,
@@ -23,7 +26,7 @@ export const defaultPreferences:Readonly<EditorPreferences>=Object.freeze({
  defaultFontFamily:'Inter',defaultFontSize:24,defaultFontWeight:400,
  defaultFontStyle:'normal',defaultLineHeight:1.3,
 });
-const ranges:Partial<Record<keyof EditorPreferences,readonly[number,number]>>={smallNudge:[.01,1000],largeNudge:[.01,10000],rotationSnapIncrement:[.1,180],zoomSensitivity:[.05,5],defaultStrokeWidth:[0,1000],defaultFontSize:[1,1000],defaultFontWeight:[1,1000],defaultLineHeight:[.5,10]};
+const ranges:Partial<Record<keyof EditorPreferences,readonly[number,number]>>={uiScale:[.85,1.25],autosaveIntervalMs:[100,60000],recentFileLimit:[0,1000],smallNudge:[.01,1000],largeNudge:[.01,10000],rotationSnapIncrement:[.1,180],zoomSensitivity:[.05,5],defaultStrokeWidth:[0,1000],defaultFontSize:[1,1000],defaultFontWeight:[1,1000],defaultLineHeight:[.5,10]};
 const colors=new Set(['defaultFrameFill','defaultShapeFill','defaultStrokeColor','defaultTextFill']);
 export function validatePreferences(value:unknown):EditorPreferences {
  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Preferences must be an object.');
@@ -32,10 +35,14 @@ export function validatePreferences(value:unknown):EditorPreferences {
  const out={} as EditorPreferences;
  for(const key of fields){let v=record[key];const range=ranges[key];
   if(range){if(typeof v!=='number'||!Number.isFinite(v)||v<range[0]||v>range[1])throw Error(`${key} must be between ${range[0]} and ${range[1]}.`);}
+  else if(key==='defaultExportFormat'){if(!['svg','png','jpg'].includes(v as string))throw Error('Choose SVG, PNG or JPG as the default export format.');}
+  else if(key==='colorPickerFormat'){if(!['HEX','RGB','HSL','HSB'].includes(v as string))throw Error('Choose HEX, RGB, HSL or HSB as the color picker format.');}
+  else if(key==='duplicateNaming'){if(!['preserve','copy','increment'].includes(v as string))throw Error('Choose a valid duplicate naming style.');}
   else if(colors.has(key)){if(typeof v!=='string'||(!/^#[\da-f]{6}$/i.test(v)&&!(['defaultFrameFill','defaultShapeFill'].includes(key)&&v==='none')))throw Error('Choose a valid preference color.');v=v.toLowerCase();}
   else if(key==='defaultFontFamily'){if(typeof v!=='string'||!v.trim()||v.length>512||/[\u0000-\u001f<>]/.test(v))throw Error('Choose a valid default font family.');v=v.trim();}
   else if(key==='defaultFontStyle'){if(v!=='normal'&&v!=='italic')throw Error('Choose normal or italic text.');}
   else if(typeof v!=='boolean')throw Error('Invalid preference toggle.');
+  if((key==='autosaveIntervalMs'||key==='recentFileLimit')&&!Number.isSafeInteger(v))throw Error('Use a whole number for recovery interval and recent-file limit.');
   (out as unknown as Record<string,unknown>)[key]=v;
  }
  return out;
@@ -43,7 +50,7 @@ export function validatePreferences(value:unknown):EditorPreferences {
 let cached:Readonly<EditorPreferences>|undefined,lastRaw:string|null|undefined;
 const listeners=new Set<()=>void>();
 function rawPreferences(){try{return typeof localStorage==='undefined'?null:localStorage.getItem(PREFERENCES_KEY);}catch{return null;}}
-function decode(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false},...data.values}));}catch{return defaultPreferences;}}
+function decode(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false},...data.values}));}catch{return defaultPreferences;}}
 export function getPreferences():Readonly<EditorPreferences>{const raw=rawPreferences();if(!cached||raw!==lastRaw){lastRaw=raw;cached=decode(raw);}return cached;}
 function emit(){for(const listener of [...listeners])listener();}
 /** Re-read local storage, including changes made by another app window. */

@@ -21,9 +21,9 @@ export function parsePanelLayout(raw:string|null):PanelLayout{
 export function readPanelLayout():{layout:PanelLayout;warning:string}{try{return{layout:parsePanelLayout(localStorage.getItem(PANEL_LAYOUT_KEY)),warning:''};}catch{return{layout:defaultPanelLayout(),warning:'Saved sidebar settings could not be read. Using defaults in this window.'};}}
 export function writePanelLayout(layout:PanelLayout):string{try{const checked=parsePanelLayout(JSON.stringify(layout));localStorage.setItem(PANEL_LAYOUT_KEY,JSON.stringify(checked));return '';}catch{return 'Sidebar settings apply in this window, but could not be saved on this device.';}}
 /** Desired widths survive temporary viewport clamping. No document or camera state is involved. */
-export function resolvePanelLayout(layout:PanelLayout,viewportWidth:number){
- const width=Number.isFinite(viewportWidth)?Math.max(0,viewportWidth):1512,compact=width<=700;
- const defaults=width<=700?{left:151,right:240}:width<=850?{left:185,right:205}:width<=1150?{left:206,right:225}:{left:232,right:251};
+export function resolvePanelLayout(layout:PanelLayout,viewportWidth:number,physicalWidth=viewportWidth){
+ const width=Number.isFinite(viewportWidth)?Math.max(0,viewportWidth):1512,compact=physicalWidth<=700;
+ const defaults=compact?{left:151,right:240}:width<=850?{left:185,right:205}:width<=1150?{left:206,right:225}:{left:232,right:251};
  let left=layout.left.collapsed?PANEL_RAIL:layout.left.width??defaults.left,right=layout.right.collapsed?PANEL_RAIL:layout.right.width??defaults.right;
  if(compact){left=layout.left.collapsed?PANEL_RAIL:Math.min(left,Math.max(80,width-160));return{left,right:Math.max(80,Math.min(240,width-16)),compact,leftMax:PANEL_LIMITS.left.max,rightMax:PANEL_LIMITS.right.max};}
  const available=Math.max(0,width-MIN_CANVAS-2*PANEL_SEPARATOR),leftMin=layout.left.collapsed?PANEL_RAIL:PANEL_LIMITS.left.min,rightMin=layout.right.collapsed?PANEL_RAIL:PANEL_LIMITS.right.min;

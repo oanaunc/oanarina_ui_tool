@@ -1,3 +1,4 @@
+import {usePreferences} from '../preferences';
 import {useId,useLayoutEffect,useRef,useState} from 'react';
 import {ChevronDown} from 'lucide-react';
 import {commands,matchesShortcut,runCommand} from '../commands';
@@ -10,7 +11,7 @@ interface OpenMenu {document:DesignDocument;last:boolean;left:number;top:number;
 const groups=TITLE_MENU_GROUPS.map(ids=>ids.map(id=>commands.find(c=>c[0]===id)!)),items=groups.flat();
 
 export default function DocumentTitleMenu({onOpen}:{onOpen:()=>void}){
- const s=useEditor(),trigger=useRef<HTMLButtonElement>(null),host=useRef<HTMLDivElement>(null),popup=useRef<HTMLDivElement>(null),id=useId(),[opened,setOpened]=useState<OpenMenu|null>(null),prefix=useRef({text:'',time:0}),returnFromModal=useRef<{documentId:string;modal:string}|null>(null);
+ const {uiScale}=usePreferences(),s=useEditor(),trigger=useRef<HTMLButtonElement>(null),host=useRef<HTMLDivElement>(null),popup=useRef<HTMLDivElement>(null),id=useId(),[opened,setOpened]=useState<OpenMenu|null>(null),prefix=useRef({text:'',time:0}),returnFromModal=useRef<{documentId:string;modal:string}|null>(null);
  const valid=!!opened&&opened.document===s.doc&&!s.modal&&!s.home&&!s.uiHidden;
  const close=(restore=false)=>{setOpened(null);prefix.current={text:'',time:0};if(restore)trigger.current?.focus();};
  const open=(last=false)=>{const current=useEditor.getState();if(current.modal||current.home||current.uiHidden)return;const box=trigger.current!.getBoundingClientRect();onOpen();prefix.current={text:'',time:0};setOpened({document:current.doc,last,left:Math.max(8,Math.min(box.left,window.innerWidth-288)),top:box.bottom+6});};
@@ -22,7 +23,7 @@ export default function DocumentTitleMenu({onOpen}:{onOpen:()=>void}){
  const tabOut=(backward:boolean)=>{const list=[...document.querySelectorAll<HTMLElement>('button,a[href],input,select,textarea,[tabindex]')].filter(el=>el.tabIndex>=0&&!el.matches(':disabled')&&!popup.current?.contains(el)&&el.getClientRects().length&&!el.closest('[inert]')),at=list.indexOf(trigger.current!);close();(list[at+(backward?-1:1)]??trigger.current)?.focus();};
  return <div className="document-title-control" ref={host} onBlur={event=>{if(opened&&!event.currentTarget.contains(event.relatedTarget as Node))close();}}>
   <button ref={trigger} className="document-title-trigger" aria-label={'Document title menu: '+s.doc.name} title={s.doc.name+' · File actions'} aria-haspopup="menu" aria-expanded={valid} aria-controls={valid?id:undefined} disabled={!!s.modal} onClick={()=>valid?close(true):open()} onDoubleClick={()=>{close();const current=useEditor.getState();if(!current.modal&&!current.home){runCommand('rename-file');returnFromModal.current={documentId:current.doc.id,modal:'rename-file'};}}} onKeyDown={event=>{if(event.metaKey||event.ctrlKey||event.altKey)return;if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();if(valid)close(true);else open();}else if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();event.stopPropagation();open(event.key==='ArrowUp');}}}><span>{s.doc.name}</span><ChevronDown size={12} aria-hidden="true"/></button>
-  {valid&&<div ref={popup} id={id} className="document-title-menu" role="menu" aria-label="Document actions" style={{left:opened!.left,top:opened!.top,maxHeight:Math.max(80,window.innerHeight-opened!.top-8)}} onKeyDown={event=>{
+  {valid&&<div ref={popup} id={id} className="document-title-menu" role="menu" aria-label="Document actions" style={{left:Math.max(8,Math.min(opened!.left,window.innerWidth-288*uiScale-8))/uiScale,top:opened!.top/uiScale,maxHeight:Math.max(80,window.innerHeight-opened!.top-8)/uiScale}} onKeyDown={event=>{
    event.stopPropagation();const list=buttons(),active=list.indexOf(document.activeElement as HTMLButtonElement);
    if(event.key==='Escape'){event.preventDefault();close(true);return;}
    if(event.key==='Tab'){event.preventDefault();tabOut(event.shiftKey);return;}
