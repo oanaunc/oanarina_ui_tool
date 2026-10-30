@@ -2,6 +2,7 @@ import SliceManager from './SliceManager';
 import KeyboardSelectionBox from './KeyboardSelectionBox';
 import VectorOffsetDialog from './VectorOffsetDialog';
 import StrokeOutlineDialog from './StrokeOutlineDialog';
+import VectorSeparationDialog from './VectorSeparationDialog';
 import DocumentOutline from './DocumentOutline';
 import KeyboardInsertDialog from './KeyboardInsertDialog';
 import AssetUsageAudit from './AssetUsageAudit';
@@ -49,6 +50,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  if(modal==='selection-box')return <KeyboardSelectionBox/>;
  if(modal==='vector-offset')return <VectorOffsetDialog/>;
  if(modal==='stroke-outline')return <StrokeOutlineDialog/>;
+ if(modal==='vector-separation')return <VectorSeparationDialog/>;
  if(modal==='keyboard-insert')return <KeyboardInsertDialog/>;
 
  const title=modal==='asset-usage'?'Local asset usage':modal==='fig-import-report'?'Figma import report':modal==='file-info'?'File information':modal==='release-notes'?'Release notes':modal==='preferences'?'Preferences':modal==='svg-import'?'Import SVG':modal==='mcp'?'Free local MCP automation':modal==='variables'?'Variables and modes':modal==='styles'?'Local design styles':modal==='delete-component'?'Delete main component?':modal==='components'?'Components and variants':modal==='text-link'?'Link this text.':modal==='fonts'?'Every idea has a type.':modal==='actions'?'What would you like to do?':modal==='roadmap'?'The complete feature register':modal==='figma'?'Your ideas, in both directions.':modal==='export'?'Export your design':modal==='shortcuts'?'A little less clicking.':modal==='history'?'Version history':modal==='snapshot'?'Save a version':modal==='comments'?'Comments':modal==='colors'?'Styles & colors':modal==='about'?'Forma':modal.startsWith('comment:')?'Leave a note':modal.startsWith('rename')?'Give it a name':'Forma';

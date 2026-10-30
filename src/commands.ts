@@ -1,5 +1,6 @@
 import {useMaskView} from './mask-view';
 import {openStrokeOutline} from './vector-stroke-outline-actions';
+import {openVectorSeparation} from './vector-separation-actions';
 import {openVectorOffset} from './vector-offset-actions';
 import {openAssetUsage} from './asset-usage-entry';
 import {repeatShapeState} from './shape-drawing';
@@ -25,6 +26,7 @@ import {createInstance,download,exportArtwork,importImages,notifyError,serialize
 import {descendants,effectiveVisible,isLocked,node} from './model';
 import type {DesignNode,Tool} from './model';
 export const commands=[
+ ['vector-separate','Separate vector regions…','Vector',''],
  ['vector-outline-stroke','Outline vector stroke…','Vector',''],
  ['slice-manager','Slices and exports…','File',''],['toggle-slices','Show / hide slices','View',''],
  ['vector-offset','Offset vector path…','Vector',''],
@@ -51,6 +53,7 @@ export function runCommand(id:string,event?:Event){if(event&&['copy','cut','past
  try{if((id==='edit-vector'&&!s.vectorEditId)||id.startsWith('vector-')){if(s.motionOpen){const target=s.vectorEditId?ns.find(n=>n.id===s.vectorEditId):sel.length===1?sel[0]:undefined;if(id!=='edit-vector'||target?.type!=='path'||!Array.isArray(target.contours))throw Error('Close Motion before changing vector topology or converting geometry.');}const targets=ns.filter(n=>n.id===s.vectorEditId||s.selection.includes(n.id));if(targets.some(n=>isLocked(n,ns)))throw Error('Unlock the vector layer and its ancestors before editing geometry.');if(targets.some(n=>n.instanceRootId))throw Error('Detach the instance before editing vector geometry.');}if(id.startsWith('tool-')&&commands.some(c=>c[0]===id&&c[2]==='Tools')){s.set({tool:id.slice(5) as Tool});return;}if(s.doc.workspace==='slides'&&['paste','duplicate','delete','cut','import'].includes(id)){window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:id}));return;}switch(id){
  case 'vector-offset':openVectorOffset();break;
  case 'vector-outline-stroke':openStrokeOutline();break;
+ case 'vector-separate':openVectorSeparation();break;
  case 'repeat-shape-tool':if(s.home||s.modal||s.doc.workspace==='slides')throw Error('Open the Design or Whiteboard canvas to repeat a shape tool.');s.set(repeatShapeState(s.lastShapeTool));break;
  case 'new-slides':s.load(createSlideDocument());break;case 'new-whiteboard':s.load(createWhiteboardDocument());break;case 'new':s.newDocument();break;case 'sample':s.newDocument(true);break;case 'open':void openProject();break;case 'save':void saveProject();break;case 'save-as':void saveProject(true);break;
  case 'slice-manager':if(s.home||s.doc.workspace==='slides')throw Error('Open a Design or Whiteboard page to manage slices.');s.set({modal:'slices'});break;
