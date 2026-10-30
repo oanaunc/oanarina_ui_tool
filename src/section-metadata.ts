@@ -1,0 +1,2 @@
+/** Optional section metadata is validated equally during imports and editor transactions. */
+export function validateSectionMetadata(document:{pages?:unknown}){if(!Array.isArray(document.pages))return;for(const page of document.pages){if(!page||!Array.isArray(page.nodes))continue;for(const n of page.nodes)if(n.readyForDevelopment!==undefined&&(n.type!=='section'||typeof n.readyForDevelopment!=='boolean'))throw Error('Ready for development must be a boolean on a section.');}}

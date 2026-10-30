@@ -1,3 +1,4 @@
+import {validateSectionMetadata} from './section-metadata';
 import {validateDocumentExportSettings} from './frame-export-settings';
 /** Optional .oui document metadata. Bounds apply equally to files and local UI. */
 export const DOCUMENT_DESCRIPTION_LIMIT=10_000;
@@ -6,6 +7,7 @@ export function validateDocumentMetadata(document:{description?:unknown;pages?:u
  const value=document.description;
  if(value!==undefined&&(typeof value!=='string'||value.length>DOCUMENT_DESCRIPTION_LIMIT||forbiddenControls.test(value)))throw Error('File description must be plain text up to 10,000 characters, without disallowed control characters.');
  validateDocumentExportSettings(document);
+ validateSectionMetadata(document);
 }
 /** Plain text is preserved literally; only line endings and empty clearing normalize. */
 export function normalizedDocumentDescription(value:string):string|undefined{

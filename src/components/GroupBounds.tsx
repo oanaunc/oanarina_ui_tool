@@ -1,0 +1,5 @@
+import {useState} from 'react';
+import {useEditor} from '../store';
+import {planGroupBounds} from '../group-bounds';
+import {prepareFrameFitForEdit,finalizeFrameFit} from '../frame-actions';
+export default function GroupBounds({id}:{id:string}){const s=useEditor(),[error,setError]=useState('');return <section className="inspector-section" aria-label="Group bounds"><div className="section-title"><span>Group bounds</span></div><button className="outline-button" onClick={()=>{try{if(s.motionOpen)throw Error('Close the motion editor before changing group bounds.');let plan:ReturnType<typeof planGroupBounds>;s.edit(d=>{const page=d.pages.find(p=>p.id===s.pageId)!;plan=planGroupBounds(page.nodes,id,d);page.nodes=prepareFrameFitForEdit(plan);},d=>finalizeFrameFit(d,s.pageId,plan));setError('');}catch(e){setError(e instanceof Error?e.message:'Cannot fit group bounds.');}}}>Fit group bounds to children</button><p className="inspector-note">Explicit fit of direct child geometry, including hidden layers. Stroke and effect padding are excluded. Free groups with fixed child geometry only.</p>{error&&<p role="alert" className="layer-tree-error">{error}</p>}</section>;}
