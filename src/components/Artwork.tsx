@@ -1,3 +1,4 @@
+import {ImagePaintDefinition} from './ImagePaintDefinition';
 import {currentTextOutline} from '../text-outline';
 import type {CSSProperties} from 'react';
 import {effectsFor} from '../effects';
@@ -16,10 +17,7 @@ function PaintDefinition({paint:p,id,n}:{paint:Paint;id:string;n:DesignNode}){
  if(p.type==='linear')return <linearGradient id={id} x1={.5-Math.cos(a)/2} y1={.5-Math.sin(a)/2} x2={.5+Math.cos(a)/2} y2={.5+Math.sin(a)/2}>{stops}</linearGradient>;
  if(p.type==='radial')return <radialGradient id={id} cx={p.cx} cy={p.cy} r={p.radius}>{stops}</radialGradient>;
  if(p.type==='angular'||p.type==='diamond')return <pattern id={id} width="1" height="1" patternContentUnits="objectBoundingBox"><image href={rasterGradient(p)} width="1" height="1" preserveAspectRatio="none"/></pattern>;
- if(p.type==='image'){
-  const scale=p.scale??1,tile=p.scaleMode==='tile',w=(p.imageWidth??n.width)*scale,h=(p.imageHeight??n.height)*scale;
-  return <pattern id={id} width={tile?w:1} height={tile?h:1} patternUnits={tile?'userSpaceOnUse':'objectBoundingBox'} viewBox={tile?`0 0 ${w} ${h}`:`0 0 ${n.width} ${n.height}`} patternTransform={tile?`rotate(${p.angle})`:undefined}><image href={p.image} width={tile?w:n.width*scale} height={tile?h:n.height*scale} x={p.offsetX??0} y={p.offsetY??0} preserveAspectRatio={p.scaleMode==='stretch'?'none':p.scaleMode==='fit'?'xMidYMid meet':'xMidYMid slice'} transform={tile?undefined:`rotate(${p.angle} ${n.width/2} ${n.height/2})`}/></pattern>;
- }
+ if(p.type==='image')return <ImagePaintDefinition paint={p} id={id} width={n.width} height={n.height}/>;
  return null;
 }
 function Shape({n,hyperlinks=false,maskVector=false,...props}:{n:DesignNode;hyperlinks?:boolean;maskVector?:boolean}&React.SVGProps<SVGPathElement>){
