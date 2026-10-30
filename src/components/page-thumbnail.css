@@ -1,4 +1,4 @@
-.page-thumbnail{position:fixed;z-index:85;box-sizing:border-box;display:flex;flex-direction:column;padding:8px;gap:8px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);box-shadow:0 12px 38px #0005;pointer-events:none;overflow:hidden}
+.page-thumbnail{--panel:#2c2b30;--text:#dbd8e0;--muted:#99949f;--line:#ffffff0b;position:fixed;z-index:85;box-sizing:border-box;display:flex;flex-direction:column;padding:8px;gap:8px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);box-shadow:0 12px 38px #0005;pointer-events:none;overflow:hidden}
 .page-thumbnail-caption{display:flex;flex-direction:column;gap:3px;min-height:30px;flex-shrink:0}
 .page-thumbnail-caption strong{font-size:11px;line-height:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .page-thumbnail-caption span{font-size:10px;line-height:13px;color:var(--muted)}
@@ -6,3 +6,5 @@
 .page-thumbnail-art>svg{display:block;pointer-events:none}
 .page-thumbnail-art>span{padding:12px;text-align:center;font-size:11px;line-height:1.6;color:#62616e}
 @media(max-height:240px){.page-thumbnail-caption{min-height:0;gap:0}.page-thumbnail-caption span{display:none}.page-thumbnail{gap:3px;padding:5px}}
+
+.page-thumbnail.theme-light{--panel:#fff;--text:#37323d;--muted:#8f8897;--line:#0000000d}
