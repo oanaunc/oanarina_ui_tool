@@ -1,4 +1,5 @@
 import {validateDocumentLayoutSettings} from './layout-settings';
+import {validateDocumentEdgeStrokes} from './edge-strokes';
 import {validateDocumentLinearGradients} from './linear-gradient';
 import {validateComponentWorkflowMetadata} from './component-workflow-metadata';
 import {validateDocumentMedia} from './media';
@@ -13,6 +14,7 @@ export function validateDocumentMetadata(document:{description?:unknown;pages?:u
  const value=document.description;
  if(value!==undefined&&(typeof value!=='string'||value.length>DOCUMENT_DESCRIPTION_LIMIT||forbiddenControls.test(value)))throw Error('File description must be plain text up to 10,000 characters, without disallowed control characters.');
  validateDocumentLayoutSettings(document);
+ validateDocumentEdgeStrokes(document);
  validateDocumentExportSettings(document);
  validateSectionMetadata(document);
  validateDocumentImageAdjustments(document);
