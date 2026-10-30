@@ -1,0 +1,9 @@
+import {useEffect,useMemo} from 'react';
+import type {DesignNode} from '../model';
+import {previewMaskNodes} from '../mask-view-geometry';
+import {useMaskView} from '../mask-view';
+import {sameColorContext} from '../color-edit-context';
+import {useEditor} from '../store';
+import {Artwork} from './Artwork';
+/** One editor renderer, with optional ephemeral mode substitution; exports never read this state. */
+export default function MaskCanvasArtwork({nodes,mediaMode,outlines,zoom,onNode}:{nodes:DesignNode[];mediaMode?:'editor';outlines:boolean;zoom:number;onNode:(e:React.PointerEvent,id:string)=>void}){const s=useEditor(),view=useMaskView(),preview=view.preview,visible=preview&&sameColorContext(preview.context,s)?preview:null,shown=useMemo(()=>visible?previewMaskNodes(nodes,visible.sourceId,visible.mode):nodes,[nodes,visible]);useEffect(()=>{const clear=()=>useMaskView.getState().clearPreview(),key=(e:KeyboardEvent)=>{if(e.key==='Escape'&&(useMaskView.getState().preview||useMaskView.getState().outlines)){useMaskView.getState().reset();if(!(e.target instanceof Element)||!e.target.closest('[data-canvas]')){e.preventDefault();e.stopImmediatePropagation();}}};window.addEventListener('blur',clear);window.addEventListener('keydown',key,true);const hidden=()=>{if(document.hidden)clear();};document.addEventListener('visibilitychange',hidden);return()=>{window.removeEventListener('blur',clear);window.removeEventListener('keydown',key,true);document.removeEventListener('visibilitychange',hidden);};},[]);return <g data-mask-outlines={view.outlines&&!visible||undefined} data-mask-preview-source={visible?.sourceId} data-mask-preview-mode={visible?.mode}><Artwork nodes={shown} mediaMode={mediaMode} outlines={!visible&&(outlines||view.outlines)} maskOutlines={view.outlines&&!visible?{zoom}:undefined} onNode={(e,id)=>{useMaskView.getState().clearPreview();onNode(e,id);}}/></g>;}
