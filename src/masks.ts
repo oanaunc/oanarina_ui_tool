@@ -1,3 +1,4 @@
+import {arrowheadBoxes,arrowStyle} from './arrowheads';
 import {bounds,isLocked,node} from './model';
 import type {DesignDocument,DesignNode} from './model';
 import {strokesFor} from './paints';

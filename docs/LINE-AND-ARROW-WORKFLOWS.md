@@ -4,6 +4,8 @@ Source implementation after the vector workflows, without a new release package 
 
 ## Controls and behavior
 
+Drawing a line or arrow preserves the pointer start/end order in every direction. Arrow mode uses the whole canvas; its CSS is isolated from toolbar dropdown arrows. Escape, pointer cancellation, lost capture, window blur/resize and modal/context changes discard a draft. Drawing tools hide resize handles so existing selections do not intercept a new drawing.
+
 A selected straight line or arrow has a **Line and arrow** inspector:
 
 - **Line length** and **Line angle** measure the actual canvas-space segment, including its own rotation/reflection/scale and every ancestor transform. Changes keep the start endpoint fixed.
@@ -43,6 +45,6 @@ Line length was already registered; its canvas-space control is improved here. D
 ## Validation
 
 - Full core suite: 775 tests in 72 files. New cases verify affine endpoints/length/angle, collapsed axes, resizing geometry matching displayed endpoints, invalid/collapsed input, transformed head bounds, default preservation, vector conversion, metadata validation/Undo/version compatibility, polygon/star curves, and Bridge preflight/omission/winding contracts.
-- Production browser: six new cases cover transformed endpoint editing, Undo/Redo, recovery and save/reopen, locks, every head style, actual exported solid/gradient/image head pixels, inherited opacity without overlap darkening, and parametric rounded polygon/star SVG geometry.
-- Fourteen vector and thirteen existing paint/mask production interactions passed during shared-renderer regression checks.
+- Production browser: twelve new cases cover transformed endpoint editing, Undo/Redo, recovery and save/reopen, locks, every head style, actual exported solid/gradient/image head pixels, inherited opacity without overlap darkening, parametric rounded polygon/star SVG geometry, reverse-direction stroke/head pixels and creation cancellation. Image-stroke source coordinates are checked with zero and nonzero line height.
+- Thirty-nine distinct production interactions passed across the twelve line/shape cases, fourteen vector and thirteen existing paint/mask cases during shared-renderer regression checks.
 - TypeScript and production Vite compilation, MCP type checks and 40 MCP tests passed. No installer, native package, website artifact, version change or signing/notarization task belongs to this source batch.
