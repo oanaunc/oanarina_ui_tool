@@ -1,4 +1,5 @@
 import PageBackground from './PageBackground';
+import FrameActions,{FramePresetList} from './FrameActions';
 import PageList from './PageList';
 import ContrastChecker from './ContrastChecker';
 import LayerTreeActions from './LayerTreeActions';
@@ -63,7 +64,7 @@ export function LeftPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===
  {s.doc.pages.flatMap(p=>p.nodes).filter(n=>n.type==='component'&&!s.doc.componentSets?.some(set=>set.variants.some(v=>v.componentId===n.id))&&n.name.toLowerCase().includes(query.toLowerCase())).map(n=>assetCard(n))}
 
  <div className="section-title"><span>Quick start</span></div><button className="asset-card" onClick={insertBasicCard}><div className="asset-preview card-preview">A fresh idea <ArrowUp size={18}/></div><span>Simple card</span><small>Editable frame & text</small></button>
- <div className="section-title"><span>Frame presets</span></div>{[['Desktop',1440,1024],['MacBook Air',1440,900],['iPhone',393,852],['iPad',834,1194],['Social square',1080,1080]].map(([name,w,h])=><button className="preset-row" key={name} onClick={()=>insertPreset(String(name),Number(w),Number(h))}><Frame size={13}/>{name}<small>{w} × {h}</small></button>)}
+ <div className="section-title"><span>Frame presets</span></div><FramePresetList query={query}/>
  </div>}
  {s.leftTab==='layers'&&<button disabled={!s.selection.length} onClick={()=>moveLayers(s.selection,null,'inside')} className={'layer-root-drop '+(drop?.id===null?'layer-drop-inside'+(drop.allowed?'':' layer-drop-invalid'):'')} onDragOver={e=>{if(dragIds.length){e.preventDefault();let allowed=true;try{planLayerMove(page.nodes,dragIds,null,'inside',s.doc);setLayerError('');}catch(error){allowed=false;setLayerError(error instanceof Error?error.message:'Invalid root destination.');}setDrop({id:null,placement:'inside',allowed});e.dataTransfer.dropEffect=allowed?'move':'none';}}} onDrop={e=>{e.preventDefault();moveLayers(droppedIds(e),null,'inside');}}>Drop here to move to page root</button>}
  <LayerTreeActions menu={menu} onClose={()=>setMenu(null)} onExpand={changeExpanded}/>
@@ -85,7 +86,7 @@ export function RightPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id==
  {containers.includes(n.type)&&<label className="check-row"><input type="checkbox" checked={n.clip} onChange={e=>patch({clip:e.target.checked})}/>Clip content</label>}
  </Section>
  {['frame','component','instance'].includes(n.type)&&<LayoutGuideInspector n={n}/>}<details><summary>Guides & snapping</summary><GuideSettings/></details>
- <AspectLockControl n={n} patch={patch}/><MaskInspector nodes={page.nodes} selection={s.selection}/><Section name="Resizing"><SizingEditor n={n} parent={page.nodes.find(p=>p.id===n.parentId)} patch={patch}/></Section>
+ {sel.length===1&&n.type==='frame'&&<FrameActions key={n.id} id={n.id}/>}<AspectLockControl n={n} patch={patch}/><MaskInspector nodes={page.nodes} selection={s.selection}/><Section name="Resizing"><SizingEditor n={n} parent={page.nodes.find(p=>p.id===n.parentId)} patch={patch}/></Section>
  {n.booleanOp&&<Section name="Boolean group"><select aria-label="Boolean operation" value={n.booleanOp} onChange={e=>patch({booleanOp:e.target.value as DesignNode['booleanOp']})}>{['union','subtract','intersect','exclude'].map(op=><option key={op}>{op}</option>)}</select><p className="inspector-note">Edit the operands in Layers; the result updates live.</p><div className="button-row"><button className="outline-button" onClick={()=>runCommand('release-boolean')}>Release</button><button className="outline-button" onClick={()=>runCommand('flatten')}>Flatten</button></div></Section>}
  {['rectangle','frame','component','instance'].includes(n.type)&&<Section name="Independent corners"><div className="field-grid">{['Top left','Top right','Bottom right','Bottom left'].map((label,i)=><NumberField key={label} label={label} value={n.corners?.[i]??n.radius} min={0} onChange={value=>{const corners:[number,number,number,number]=n.corners?[...n.corners]:[n.radius,n.radius,n.radius,n.radius];corners[i]=value;patch({corners});}}/>)}</div><button className="text-button" onClick={()=>patch({corners:undefined})}>Use uniform radius</button></Section>}
  {(n.type==='polygon'||n.type==='star')&&<Section name="Shape geometry"><NumberField label="Point count" value={n.pointCount??(n.type==='star'?5:6)} min={3} max={100} onChange={pointCount=>patch({pointCount:Math.round(pointCount)})}/>{n.type==='star'&&<NumberField label="Inner ratio %" value={(n.innerRadius??.43)*100} min={1} max={99} onChange={value=>patch({innerRadius:value/100})}/>}</Section>}
