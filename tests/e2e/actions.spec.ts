@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {ACTION_HISTORY_KEY} from '../../src/action-history';
 async function start(page:any){await page.goto('/');await page.getByRole('button',{name:'New design file',exact:true}).click();}
-async function open(page:any){await page.keyboard.press('Meta+k');await expect(page.getByRole('dialog',{name:'What would you like to do?',exact:true})).toBeVisible();await expect(page.getByRole('combobox',{name:'Search actions',exact:true})).toBeFocused();}
+async function open(page:any){await expect(page.locator('svg.canvas')).toBeVisible();await page.keyboard.press('Meta+k');await expect(page.getByRole('dialog',{name:'What would you like to do?',exact:true})).toBeVisible();await expect(page.getByRole('combobox',{name:'Search actions',exact:true})).toBeFocused();}
 async function active(page:any){const input=page.getByRole('combobox',{name:'Search actions',exact:true}),id=await input.getAttribute('aria-activedescendant');return page.locator(`[id="${id}"]`).getAttribute('data-action-id');}
 async function saved(page:any){const event=page.waitForEvent('download');await page.keyboard.press('Meta+s');return JSON.parse(await fs.readFile((await(await event).path())!,'utf8'));}
 test('keyboard result navigation, category and keyword matching execute real undoable commands without leaking keys',async({page})=>{
