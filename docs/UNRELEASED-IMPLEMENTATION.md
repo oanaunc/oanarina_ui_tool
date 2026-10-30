@@ -1,5 +1,7 @@
 # Source implementation after dev.12
 
+This report records the preceding implementation pass. See the [layout, media and SVG continuation](UNRELEASED-LAYOUT-MEDIA-EXPORT.md) for the current register and later validation. Counts below are the snapshot for this pass.
+
 This is implementation work in the shared editor and saved-file MCP source. No new Mac application, installer, notarization submission, downloadable Bridge/MCP archive, version bump or website deployment was produced for this pass. The existing dev.12 downloads remain unchanged. Source pushes now run source checks; producing a Mac development app requires the separate manual CI input.
 
 The [feature register](FEATURE-REGISTER.md) contains 2,022 individually named requirements: **1,160 implemented, 183 partial and 679 planned**. Compared with the dev.12 register, 85 more requirements have reached implemented status. One hundred rows have new implementation evidence or documented limits. These are implementation statuses; exact Figma reference verification remains separate and pending. Forma is not a finished Figma clone.

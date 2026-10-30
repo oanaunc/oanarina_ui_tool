@@ -3294,20 +3294,20 @@
     "category": "Basic shapes",
     "name": "Center-based shape drawing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Option center drawing for six basic shapes with live Shift constraints, transformed-parent coordinates and cancellation; repeat last shape through toolbar, Actions, context menu and Option+R. Shift+R remains rulers. See docs/SHAPE-DRAWING-WORKFLOWS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-11-030",
     "category": "Basic shapes",
     "name": "Repeat last shape tool",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Option center drawing for six basic shapes with live Shift constraints, transformed-parent coordinates and cancellation; repeat last shape through toolbar, Actions, context menu and Option+R. Shift+R remains rulers. See docs/SHAPE-DRAWING-WORKFLOWS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-12-001",
@@ -6494,80 +6494,80 @@
     "category": "Images and media",
     "name": "Animated GIF playback",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-20-030",
     "category": "Images and media",
     "name": "Video import",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-20-031",
     "category": "Images and media",
     "name": "Video poster frame",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-20-032",
     "category": "Images and media",
     "name": "Video playback",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-20-033",
     "category": "Images and media",
     "name": "Video loop",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-20-034",
     "category": "Images and media",
     "name": "Video audio toggle",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-20-035",
     "category": "Images and media",
     "name": "Video start time",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-20-036",
     "category": "Images and media",
     "name": "Video prototype playback",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Animated GIFs and bounded embedded MP4/WebM layers, saved poster, actual editor/prototype playback, whole-source loop, mute and initial/restart time. Browser codecs/autoplay policy apply; rectangular visibility gates suppress offscreen audio, masks/nonrectangular clips require manual Play. Motion/static exports/Bridge use posters; no video encoding, Slides import or native codec acceptance. See docs/EMBEDDED-MEDIA.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-21-001",
@@ -7684,10 +7684,10 @@
     "category": "Constraints and resizing",
     "name": "Aspect ratio in layout",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Shared aspect-ratio fill/stretch sizing, paired padding, mask-preserving reverse paint/hit order, guarded sibling insertion, reverse wrap lines and seven wrap alignments. Hard min/max constraints take precedence over incompatible ratios; imported auto-sized text retains content precedence until explicitly relocked. Dev CSS and Bridge do not reproduce all layout settings. See docs/AUTO-LAYOUT-COMPLETION.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-23-022",
@@ -7854,20 +7854,20 @@
     "category": "Auto layout fundamentals",
     "name": "Horizontal padding",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Set each edge independently or use uniform padding; no paired horizontal/vertical quick-control yet."
+    "notes": "Unreleased source after dev.12: Shared aspect-ratio fill/stretch sizing, paired padding, mask-preserving reverse paint/hit order, guarded sibling insertion, reverse wrap lines and seven wrap alignments. Hard min/max constraints take precedence over incompatible ratios; imported auto-sized text retains content precedence until explicitly relocked. Dev CSS and Bridge do not reproduce all layout settings. See docs/AUTO-LAYOUT-COMPLETION.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-24-009",
     "category": "Auto layout fundamentals",
     "name": "Vertical padding",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Set each edge independently or use uniform padding; no paired horizontal/vertical quick-control yet."
+    "notes": "Unreleased source after dev.12: Shared aspect-ratio fill/stretch sizing, paired padding, mask-preserving reverse paint/hit order, guarded sibling insertion, reverse wrap lines and seven wrap alignments. Hard min/max constraints take precedence over incompatible ratios; imported auto-sized text retains content precedence until explicitly relocked. Dev CSS and Bridge do not reproduce all layout settings. See docs/AUTO-LAYOUT-COMPLETION.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-24-010",
@@ -8044,10 +8044,10 @@
     "category": "Auto layout fundamentals",
     "name": "Reverse stacking order",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Shared aspect-ratio fill/stretch sizing, paired padding, mask-preserving reverse paint/hit order, guarded sibling insertion, reverse wrap lines and seven wrap alignments. Hard min/max constraints take precedence over incompatible ratios; imported auto-sized text retains content precedence until explicitly relocked. Dev CSS and Bridge do not reproduce all layout settings. See docs/AUTO-LAYOUT-COMPLETION.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-24-028",
@@ -8057,7 +8057,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Horizontal rows align direct text first-line SVG baselines, with bottom-edge fallback and ascent/descent hug measurement. Nested container baseline extraction and complete native font metric fidelity remain unfinished. See docs/GRID-LAYOUT.md."
+    "notes": "Unreleased source: first-line SVG baselines through translation-only nested containers. Rotated/flipped/scaled nesting falls back to container bottom; complete font-metric/reference parity remains unfinished. See docs/AUTO-LAYOUT-COMPLETION.md."
   },
   {
     "id": "UI-24-029",
@@ -8067,7 +8067,7 @@
     "status": "planned",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source: explicit stroke inclusion in local axis-aligned linear/grid sizing, gaps, padding, fill and wrap. Arbitrary transformed bounds and miter/cap/arrow extrema remain unfinished; shadows excluded. See docs/AUTO-LAYOUT-COMPLETION.md."
   },
   {
     "id": "UI-24-030",
@@ -8114,10 +8114,10 @@
     "category": "Auto layout fundamentals",
     "name": "Insert child into auto layout",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Shared aspect-ratio fill/stretch sizing, paired padding, mask-preserving reverse paint/hit order, guarded sibling insertion, reverse wrap lines and seven wrap alignments. Hard min/max constraints take precedence over incompatible ratios; imported auto-sized text retains content precedence until explicitly relocked. Dev CSS and Bridge do not reproduce all layout settings. See docs/AUTO-LAYOUT-COMPLETION.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-24-035",
@@ -8384,20 +8384,20 @@
     "category": "Auto layout grid and wrap",
     "name": "Wrap direction",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Shared aspect-ratio fill/stretch sizing, paired padding, mask-preserving reverse paint/hit order, guarded sibling insertion, reverse wrap lines and seven wrap alignments. Hard min/max constraints take precedence over incompatible ratios; imported auto-sized text retains content precedence until explicitly relocked. Dev CSS and Bridge do not reproduce all layout settings. See docs/AUTO-LAYOUT-COMPLETION.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-25-026",
     "category": "Auto layout grid and wrap",
     "name": "Wrap alignment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Shared aspect-ratio fill/stretch sizing, paired padding, mask-preserving reverse paint/hit order, guarded sibling insertion, reverse wrap lines and seven wrap alignments. Hard min/max constraints take precedence over incompatible ratios; imported auto-sized text retains content precedence until explicitly relocked. Dev CSS and Bridge do not reproduce all layout settings. See docs/AUTO-LAYOUT-COMPLETION.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-25-027",
@@ -13314,10 +13314,10 @@
     "category": "Export and delivery",
     "name": "SVG text as text",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Editable SVG text, stable layer IDs, safe presentation-attribute formatting, hidden-layer snapshot preference/profile overrides, overlapping-page crop for frame bounds and trusted SVG clipboard copy. No new glyph outlining or stroke conversion; native clipboard acceptance remains deferred. See docs/SVG-EXPORT-OPTIONS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-40-024",
@@ -13334,10 +13334,10 @@
     "category": "Export and delivery",
     "name": "SVG include layer IDs",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Editable SVG text, stable layer IDs, safe presentation-attribute formatting, hidden-layer snapshot preference/profile overrides, overlapping-page crop for frame bounds and trusted SVG clipboard copy. No new glyph outlining or stroke conversion; native clipboard acceptance remains deferred. See docs/SVG-EXPORT-OPTIONS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-40-026",
@@ -13364,10 +13364,10 @@
     "category": "Export and delivery",
     "name": "SVG preserve attributes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Editable SVG text, stable layer IDs, safe presentation-attribute formatting, hidden-layer snapshot preference/profile overrides, overlapping-page crop for frame bounds and trusted SVG clipboard copy. No new glyph outlining or stroke conversion; native clipboard acceptance remains deferred. See docs/SVG-EXPORT-OPTIONS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-40-029",
@@ -13394,30 +13394,30 @@
     "category": "Export and delivery",
     "name": "Export hidden layers preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Editable SVG text, stable layer IDs, safe presentation-attribute formatting, hidden-layer snapshot preference/profile overrides, overlapping-page crop for frame bounds and trusted SVG clipboard copy. No new glyph outlining or stroke conversion; native clipboard acceptance remains deferred. See docs/SVG-EXPORT-OPTIONS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-40-032",
     "category": "Export and delivery",
     "name": "Export overlapping contents option",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Visual bounds now include rotated/scaled geometry, strokes and effect padding. Clipping intersections use conservative bounding boxes; text glyph overflow, complex groups and slice-specific options need further work."
+    "notes": "Unreleased source after dev.12: Editable SVG text, stable layer IDs, safe presentation-attribute formatting, hidden-layer snapshot preference/profile overrides, overlapping-page crop for frame bounds and trusted SVG clipboard copy. No new glyph outlining or stroke conversion; native clipboard acceptance remains deferred. See docs/SVG-EXPORT-OPTIONS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-40-033",
     "category": "Export and delivery",
     "name": "Copy SVG markup",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Editable SVG text, stable layer IDs, safe presentation-attribute formatting, hidden-layer snapshot preference/profile overrides, overlapping-page crop for frame bounds and trusted SVG clipboard copy. No new glyph outlining or stroke conversion; native clipboard acceptance remains deferred. See docs/SVG-EXPORT-OPTIONS.md. Validated source workflows with Undo/persistence where applicable; exact Figma reference acceptance remains pending. Downloaded dev.12 packages are unchanged."
   },
   {
     "id": "UI-40-034",
