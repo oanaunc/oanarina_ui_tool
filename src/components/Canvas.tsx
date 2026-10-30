@@ -112,7 +112,7 @@ export default function Canvas(){
  {s.grid&&<rect width="100%" height="100%" fill="url(#dots)" pointerEvents="none"/>}
  <g transform={`translate(${s.pan.x} ${s.pan.y}) scale(${s.zoom})`}>
  {ns.filter(n=>['frame','section','component'].includes(n.type)&&!n.parentId&&n.visible&&(n.type==='section'?prefs.showSectionNames:prefs.showFrameNames)).map(n=><text data-canvas-node-name={n.type} key={n.id} x={n.x} y={n.y-14/s.zoom} fill={n.type==='component'?'#b89af3':'#a29da9'} fontSize={11/s.zoom} onPointerDown={e=>begin(e,n.id)}>{n.type==='component'?'◇  ':'▦  '}{n.name}</text>)}
- <Artwork nodes={ns} outlines={s.outlines} onNode={(e,id)=>begin(e,id)}/>
+ <Artwork nodes={ns} mediaMode={s.motionOpen?undefined:'editor'} outlines={s.outlines} onNode={(e,id)=>begin(e,id)}/>
  {s.mode==='prototype'&&<PrototypeConnections nodes={ns}/>}
  <GridOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>{s.mode==='design'&&!s.vectorEditId&&<ConstraintGuideOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>}
  {s.doc.layoutGuidesVisible!==false&&<LayoutGuideOverlay nodes={ns} zoom={s.zoom}/>}<CanvasGuideOverlay page={page} zoom={s.zoom} pan={s.pan}/><SnapOverlay lines={snapLines} zoom={s.zoom}/>{measuring&&s.selection.length===1&&<MeasurementOverlay nodes={ns} selectedId={s.selection[0]} targetId={hoveredId} zoom={s.zoom}/>}

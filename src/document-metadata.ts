@@ -1,5 +1,6 @@
 import {validateDocumentLayoutSettings} from './layout-settings';
 import {validateComponentWorkflowMetadata} from './component-workflow-metadata';
+import {validateDocumentMedia} from './media';
 import {validateSectionMetadata} from './section-metadata';
 import {validateDocumentImageAdjustments} from './image-paint';
 import {validateDocumentArrowheads} from './arrowheads';
@@ -16,6 +17,7 @@ export function validateDocumentMetadata(document:{description?:unknown;pages?:u
  validateDocumentImageAdjustments(document);
  validateDocumentArrowheads(document);
  validateComponentWorkflowMetadata(document);
+ validateDocumentMedia(document);
 }
 /** Plain text is preserved literally; only line endings and empty clearing normalize. */
 export function normalizedDocumentDescription(value:string):string|undefined{
