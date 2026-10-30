@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1062,"partial":169,"planned":791}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1070,"partial":172,"planned":780}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -200,8 +200,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-06-010 | Zoom around pointer | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-06-011 | Zoom with keyboard | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-06-012 | Fit frame to viewport | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-06-013 | Previous viewport | planned | reference-verification-pending |
-| UI-06-014 | Next viewport | planned | reference-verification-pending |
+| UI-06-013 | Previous viewport | implemented | View/Actions and Option-Command-Left restore the previous camera; bounded 100-view history groups continuous gestures and resets on page/document load. No document edits. tests/canvas-navigation.test.ts and tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending. |
+| UI-06-014 | Next viewport | implemented | View/Actions and Option-Command-Right restore forward camera history; new navigation truncates the forward branch. Same bounded/page-local ephemeral scope as Previous viewport. Core and production browser navigation tests; reference verification pending. |
 | UI-06-015 | Canvas scrollbars | planned | reference-verification-pending |
 | UI-06-016 | Canvas rulers | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-06-017 | Horizontal guides | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
@@ -212,12 +212,12 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-06-022 | Toggle canvas guide visibility | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-06-023 | Toggle pixel grid | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-06-024 | Toggle outlines | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-06-025 | Toggle frame names | planned | reference-verification-pending |
-| UI-06-026 | Toggle section names | planned | reference-verification-pending |
+| UI-06-025 | Toggle frame names | partial | Independent persistent View/Actions checkbox controls existing top-level frame/component labels without changing artwork. Nested container labels are not implemented. tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending. |
+| UI-06-026 | Toggle section names | partial | Independent persistent View/Actions checkbox controls existing top-level section labels without changing artwork. Nested section labels are not implemented. tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending. |
 | UI-06-027 | Toggle comment pins | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-06-028 | Canvas background contrast | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-06-029 | Overview minimap | planned | reference-verification-pending |
-| UI-06-030 | Find selected object on canvas | planned | reference-verification-pending |
+| UI-06-030 | Find selected object on canvas | implemented | View/Actions or Option-Command-F centers transformed visible selection, including sampled motion geometry. Preserves zoom for small objects; zooms out for large selections to the existing 5% minimum. At that limit exceptionally large selections may exceed the viewport. Camera-only edit with Back history; core and production browser checks. Reference verification pending. |
 
 ## Selection
 
@@ -298,9 +298,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-09-003 | Desktop presets | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-004 | Phone presets | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-005 | Tablet presets | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-09-006 | Watch presets | planned | reference-verification-pending |
-| UI-09-007 | Paper presets | planned | reference-verification-pending |
-| UI-09-008 | Presentation presets | planned | reference-verification-pending |
+| UI-09-006 | Watch presets | implemented | Assets → Frame presets → Watch inserts three logical interface sizes with standard Undo/save; not device safe-area simulation. Search matches categories/names/dimensions. tests/frame-actions.test.ts; tests/e2e/frame-workflows.spec.ts; docs/FRAME-WORKFLOWS.md. Reference verification pending. |
+| UI-09-007 | Paper presets | implemented | Assets → Frame presets → Paper provides A5/A4/A3/Letter/Legal/Tabloid at rounded 96 CSS pixels/inch with Undo/save. RGB geometry only; print bleed, CMYK and calibrated output are separate requirements. Production browser checks; docs/FRAME-WORKFLOWS.md. Reference verification pending. |
+| UI-09-008 | Presentation presets | implemented | Assets → Frame presets → Presentation provides 16:9, 4:3 and 16:10 ordinary editable frames, with searchable dimensions, Undo/save. Production browser checks; docs/FRAME-WORKFLOWS.md. Reference verification pending. |
 | UI-09-009 | Social asset presets | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-010 | Resize frame | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-011 | Frame dimensions | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -313,16 +313,16 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-09-018 | Clip frame content | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-019 | Frame without clipping | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-020 | Frame overflow inspection | planned | reference-verification-pending |
-| UI-09-021 | Frame contents selection | planned | reference-verification-pending |
+| UI-09-021 | Frame contents selection | implemented | Single-frame Design inspector selects visible unlocked direct children in front-to-back order, excluding grandchildren. Selection-only action leaves document/undo unchanged; browser interaction checks. docs/FRAME-WORKFLOWS.md. Reference verification pending. |
 | UI-09-022 | Frame selection from layers | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-023 | Convert group to frame | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-024 | Frame current selection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-09-025 | Resize frame to fit content | planned | reference-verification-pending |
+| UI-09-025 | Resize frame to fit content | partial | Single-frame inspector fits free-layout frames to direct-child rectangular bounds, including hidden layers; preserves descendant world geometry, size and original constraint fields with one Undo/save. Stroke/effect padding and overflowing grandchildren are excluded. Managed/motion/generated/auto-layout contexts or invalid composed geometry are refused atomically. Core and production browser tests; docs/FRAME-WORKFLOWS.md. Reference verification pending. |
 | UI-09-026 | Duplicate frame | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-027 | Rename frame | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-09-028 | Frame-level export settings | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-09-029 | Frame prototype starting point | planned | Not implemented in this preview. |
-| UI-09-030 | Frame orientation swap | planned | reference-verification-pending |
+| UI-09-030 | Frame orientation swap | implemented | Single-frame inspector swaps authored width/height around the frame center with one Undo/save and existing child constraints. Locks, size limits, managed/generated frames, active motion editing and auto-layout placement are guarded. tests/frame-actions.test.ts and production browser workflow checks; docs/FRAME-WORKFLOWS.md. Reference verification pending. |
 
 ## Sections groups and slices
 

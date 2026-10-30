@@ -6,7 +6,7 @@ Camera history retains at most 100 views in the current window. Wheel/hand-pan c
 
 Find selected object centers the visible selection using its transformed bounds, including the currently sampled timeline position while Motion mode is open. It preserves the current zoom for smaller selections and zooms out for larger selections, within the editor's existing 5% minimum. Hidden selections produce a clear message. At that zoom limit, exceptionally large selections may extend beyond the viewport.
 
-Frame/component names and section names are independent device-local preferences. They control the existing top-level canvas labels; nested containers do not gain additional labels. Changes persist in the preferences envelope, including migration from existing version-one preferences, and do not modify artwork or exports. The web View menu exposes checked states and unavailable history actions are disabled. The native menu uses the same additive command registry; its arrow key equivalents require the native accelerator mapping described below.
+Frame/component names and section names are independent device-local preferences. They control the existing top-level canvas labels; nested containers do not gain additional labels. Changes persist in the preferences envelope, including migration from existing version-one preferences, and do not modify artwork or exports. The web View menu exposes checked states and unavailable history actions are disabled. The native menu uses the same additive command registry and AppKit arrow function-key equivalents.
 
 ## Verification
 
@@ -16,7 +16,7 @@ Frame/component names and section names are independent device-local preferences
 - Final navigation production browser suite: 4 passed, including actual hand-tool dragging and modified-wheel zoom; 13 distinct browser cases passed across the two runs.
 - Synthetic fixtures only; no user project, Figma ID or private screenshot is included.
 
-Native integration: `Studio.accelerator(_:)` in `macos/main.swift` currently normalizes Enter and punctuation. Map `←` and `→` to AppKit function-key Unicode scalars `0xF702` and `0xF703` before returning the key equivalent. This change belongs to the next native candidate; the accepted dev.10 artifact remains unchanged.
+Native integration: `Studio.accelerator(_:)` maps `←` and `→` to AppKit function-key Unicode scalars `0xF702` and `0xF703`. The universal candidate passes seven native navigation checks, including actual Option-Command-Left/Right menu dispatch and observed renderer camera restoration without dirtying the document. The accepted dev.10 artifact remains unchanged; see [combined validation](VALIDATION-v0.2-navigation-frames.md) for the new candidate.
 
 Reference verification against Figma is pending. This is a bounded navigation improvement, not a claim of complete editor parity.
 

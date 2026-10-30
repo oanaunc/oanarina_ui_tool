@@ -29,7 +29,44 @@ extension Studio {
         if CommandLine.arguments.contains("--clipboard-smoke-test"){runClipboardSmoke(document);return}
         if CommandLine.arguments.contains("--lifecycle-smoke-test"){runLifecycleSmoke(document);return}
         guard smokeStage==0 else{return};smokeStage=1
-        smokeJS(document,"const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');return JSON.stringify({videoMp4:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/mp4'),videoWebM:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/webm'),canvasCapture:typeof HTMLCanvasElement.prototype.captureStream==='function',title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});"){value in print(value);fflush(stdout);self.smokeTerminate()}
+        verifyNavigationMenu(document){
+            self.smokeJS(document,"const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');return JSON.stringify({videoMp4:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/mp4'),videoWebM:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/webm'),canvasCapture:typeof HTMLCanvasElement.prototype.captureStream==='function',title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});"){value in guard let text=value as? String,let data=text.data(using:.utf8),var report=(try? JSONSerialization.jsonObject(with:data)) as? [String:Any] else{self.smokeFail("standard renderer smoke report")};report["nativeNavigation"]=self.smokeChecks;print(self.json(report));fflush(stdout);self.smokeTerminate()}
+        }
+    }
+    // Exercise real AppKit menu key equivalents against the isolated renderer camera.
+    func verifyNavigationMenu(_ document:DocumentWindow,_ completion:@escaping()->Void){
+        guard let view=NSApp.mainMenu?.items.first(where:{$0.title=="View"})?.submenu else{smokeFail("native View menu")}
+        for (id,key) in [("previous-viewport",String(UnicodeScalar(0xF702)!)),("next-viewport",String(UnicodeScalar(0xF703)!)),("find-selection","f")]{
+            guard let item=view.items.first(where:{$0.representedObject as? String==id}) else{smokeFail("native navigation command registered")}
+            check(item.keyEquivalent==key && item.keyEquivalentModifierMask==[.option,.command] && item.target===self && item.action == #selector(menuAction(_:)),"native shortcut registered: \(id)")
+        }
+        let read="return document.querySelector('svg.canvas > g[transform]')?.getAttribute('transform') ?? '';"
+        smokeJS(document,read){value in
+            guard let initial=value as? String,!initial.isEmpty else{self.smokeFail("initial camera transform")}
+            let dirty=document.state?.dirty
+            self.command("zoom-in")
+            self.waitForCamera(document,initial,equal:false){zoomed in
+                self.check(zoomed != initial,"native Zoom in reaches renderer")
+                self.performNavigationKey(0xF702,keyCode:123)
+                self.waitForCamera(document,initial,equal:true){_ in
+                    self.check(true,"native Option-Command-Left restores camera")
+                    self.performNavigationKey(0xF703,keyCode:124)
+                    self.waitForCamera(document,zoomed,equal:true){_ in
+                        self.check(document.state?.dirty==dirty,"native camera history keeps document dirty state")
+                        self.check(true,"native Option-Command-Right restores forward camera")
+                        completion()
+                    }
+                }
+            }
+        }
+    }
+    func performNavigationKey(_ scalar:UInt32,keyCode:UInt16){
+        let key=String(UnicodeScalar(scalar)!)
+        guard let event=NSEvent.keyEvent(with:.keyDown,location:.zero,modifierFlags:[.option,.command],timestamp:ProcessInfo.processInfo.systemUptime,windowNumber:0,context:nil,characters:key,charactersIgnoringModifiers:key,isARepeat:false,keyCode:keyCode),NSApp.mainMenu?.performKeyEquivalent(with:event)==true else{smokeFail("AppKit navigation key dispatch")}
+    }
+    func waitForCamera(_ document:DocumentWindow,_ expected:String,equal:Bool,_ completion:@escaping(String)->Void){
+        let source="const expected=\(json(expected)),equal=\(equal ? "true":"false");return await new Promise((resolve,reject)=>{const end=performance.now()+5000;function tick(){const current=document.querySelector('svg.canvas > g[transform]')?.getAttribute('transform');if(typeof current==='string'&&((current===expected)===equal)){resolve(current);return;}if(performance.now()>end){reject(Error('Native camera command did not settle'));return;}setTimeout(tick,25);}tick();});"
+        smokeJS(document,source){value in guard let result=value as? String else{self.smokeFail("camera response")};completion(result)}
     }
     func verifySavedRestore(_ closed:DocumentWindow,_ completion:@escaping()->Void){
         guard let file=closed.session.file else{smokeFail("saved restore fixture")}

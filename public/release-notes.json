@@ -3,6 +3,24 @@
   "asOf": "2026-10-30",
   "releases": [
     {
+      "version": "0.2.0-dev.11",
+      "channel": "preview",
+      "title": "Canvas navigation and frame workflows",
+      "notes": [
+        "Move Back and Forward through bounded camera history with Option-Command-Left/Right. Finding a selection centers its current animated position without changing artwork.",
+        "Control existing top-level frame and section names independently with persistent View settings.",
+        "Insert searchable Watch, Paper and Presentation frame presets from Assets.",
+        "Swap a frame orientation, select its visible unlocked direct children, or fit a supported free-layout frame while keeping child artwork in place. Undo and saved files retain supported frame edits.",
+        "Refuse overflowing frame-fit geometry before changing the document."
+      ],
+      "limits": [
+        "This is a development preview. Current installer metadata and checksums are published on the Forma website.",
+        "Name toggles cover existing top-level labels. Nested container labels remain unfinished.",
+        "Fit uses direct child rectangular bounds without stroke/effect padding and refuses managed, motion, generated and auto-layout contexts.",
+        "Substantial Figma parity remains unfinished, including binary .fig export and cloud collaboration."
+      ]
+    },
+    {
       "version": "0.2.0-dev.10",
       "channel": "preview",
       "title": "Offline Figma Design import",

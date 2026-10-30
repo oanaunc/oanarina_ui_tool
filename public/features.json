@@ -1634,20 +1634,20 @@
     "category": "Canvas navigation",
     "name": "Previous viewport",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "View/Actions and Option-Command-Left restore the previous camera; bounded 100-view history groups continuous gestures and resets on page/document load. No document edits. tests/canvas-navigation.test.ts and tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending."
   },
   {
     "id": "UI-06-014",
     "category": "Canvas navigation",
     "name": "Next viewport",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "View/Actions and Option-Command-Right restore forward camera history; new navigation truncates the forward branch. Same bounded/page-local ephemeral scope as Previous viewport. Core and production browser navigation tests; reference verification pending."
   },
   {
     "id": "UI-06-015",
@@ -1754,20 +1754,20 @@
     "category": "Canvas navigation",
     "name": "Toggle frame names",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Independent persistent View/Actions checkbox controls existing top-level frame/component labels without changing artwork. Nested container labels are not implemented. tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending."
   },
   {
     "id": "UI-06-026",
     "category": "Canvas navigation",
     "name": "Toggle section names",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Independent persistent View/Actions checkbox controls existing top-level section labels without changing artwork. Nested section labels are not implemented. tests/e2e/canvas-navigation.spec.ts; docs/CANVAS-NAVIGATION.md. Reference verification pending."
   },
   {
     "id": "UI-06-027",
@@ -1804,10 +1804,10 @@
     "category": "Canvas navigation",
     "name": "Find selected object on canvas",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "View/Actions or Option-Command-F centers transformed visible selection, including sampled motion geometry. Preserves zoom for small objects; zooms out for large selections to the existing 5% minimum. At that limit exceptionally large selections may exceed the viewport. Camera-only edit with Back history; core and production browser checks. Reference verification pending."
   },
   {
     "id": "UI-07-001",
@@ -2464,30 +2464,30 @@
     "category": "Frames",
     "name": "Watch presets",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Assets → Frame presets → Watch inserts three logical interface sizes with standard Undo/save; not device safe-area simulation. Search matches categories/names/dimensions. tests/frame-actions.test.ts; tests/e2e/frame-workflows.spec.ts; docs/FRAME-WORKFLOWS.md. Reference verification pending."
   },
   {
     "id": "UI-09-007",
     "category": "Frames",
     "name": "Paper presets",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Assets → Frame presets → Paper provides A5/A4/A3/Letter/Legal/Tabloid at rounded 96 CSS pixels/inch with Undo/save. RGB geometry only; print bleed, CMYK and calibrated output are separate requirements. Production browser checks; docs/FRAME-WORKFLOWS.md. Reference verification pending."
   },
   {
     "id": "UI-09-008",
     "category": "Frames",
     "name": "Presentation presets",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Assets → Frame presets → Presentation provides 16:9, 4:3 and 16:10 ordinary editable frames, with searchable dimensions, Undo/save. Production browser checks; docs/FRAME-WORKFLOWS.md. Reference verification pending."
   },
   {
     "id": "UI-09-009",
@@ -2614,10 +2614,10 @@
     "category": "Frames",
     "name": "Frame contents selection",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Single-frame Design inspector selects visible unlocked direct children in front-to-back order, excluding grandchildren. Selection-only action leaves document/undo unchanged; browser interaction checks. docs/FRAME-WORKFLOWS.md. Reference verification pending."
   },
   {
     "id": "UI-09-022",
@@ -2654,10 +2654,10 @@
     "category": "Frames",
     "name": "Resize frame to fit content",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Single-frame inspector fits free-layout frames to direct-child rectangular bounds, including hidden layers; preserves descendant world geometry, size and original constraint fields with one Undo/save. Stroke/effect padding and overflowing grandchildren are excluded. Managed/motion/generated/auto-layout contexts or invalid composed geometry are refused atomically. Core and production browser tests; docs/FRAME-WORKFLOWS.md. Reference verification pending."
   },
   {
     "id": "UI-09-026",
@@ -2704,10 +2704,10 @@
     "category": "Frames",
     "name": "Frame orientation swap",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Single-frame inspector swaps authored width/height around the frame center with one Undo/save and existing child constraints. Locks, size limits, managed/generated frames, active motion editing and auto-layout placement are guarded. tests/frame-actions.test.ts and production browser workflow checks; docs/FRAME-WORKFLOWS.md. Reference verification pending."
   },
   {
     "id": "UI-10-001",
