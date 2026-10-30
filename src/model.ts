@@ -1,3 +1,4 @@
+import {validateDocumentSurfaces} from './surface-paint';
 import {validateStrokeStack} from './paints';
 import type {ArrowheadStyle} from './arrowheads';
 import type {EmbeddedVideo} from './media';
@@ -87,6 +88,7 @@ export function parseDocument(raw:string):DesignDocument {
   if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file or a Figma Bridge .oui file. Direct .fig files are not supported yet.');
   if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
   validateDocumentMetadata(d);
+  validateDocumentSurfaces(d);
   if(d.pages.length>1000)throw Error('Too many pages.');
   const ids=new Set<string>();
   for(const p of d.pages){if(typeof p.id!=='string'||ids.has(p.id)||typeof p.name!=='string'||!Array.isArray(p.nodes)||!Array.isArray(p.comments)||p.nodes.length>20000)throw Error('Invalid page.');ids.add(p.id);
