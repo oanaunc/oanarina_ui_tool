@@ -1,5 +1,6 @@
-import {openDocumentForEditing} from './repository';
-import {markDesktopSaved} from './desktop-lifecycle';
+import {importFigBytes,setFigImportReport} from './fig-import';
+import {openDocumentForEditing,saveDocument} from './repository';
+import {desktopDocuments,markDesktopSaved} from './desktop-lifecycle';
 import type {DesktopBootstrap,DesktopDocumentState} from './desktop-lifecycle';
 import {exportSelection,visualBounds} from './transforms';
 import {sampleMotion} from './motion';
@@ -22,7 +23,27 @@ export async function download(name:string,data:string|Blob,mime='text/plain',sa
 export function serializedProject(){const s=useEditor.getState();return serializeFontDocument(s.doc,assetsForUsage(projectFontUsage(s.doc),s.doc.fonts));}
 export async function saveProject(saveAs=false):Promise<boolean>{try{const s=useEditor.getState(),doc=s.doc,raw=serializeFontDocument(doc,assetsForUsage(projectFontUsage(doc),doc.fonts));if(!await download(doc.name+'.oui',raw,'application/json',saveAs))return false;if(useEditor.getState().doc.id===doc.id)s.set({savedAt:doc.updatedAt,toast:'Project saved'});await markDesktopSaved(doc);return true;}catch(e){notifyError(e);return false;}}
 export function notifyError(e:unknown){useEditor.getState().set({toast:e instanceof Error?e.message:'Something went wrong.'});}
-export async function openProject(){const load=async(raw:string)=>{const opened=await openDocumentForEditing(parseDocument(raw));useEditor.getState().load(opened.document);if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});};try{if(window.desktop){const raw=await window.desktop.open();if(raw)await load(raw);}else pickFile('.oui,.json',async files=>load(await files[0].text()));}catch(e){notifyError(e);}}
+let openIntent=0;let pendingProjectOpen:AbortController|undefined;
+export async function openSelectedProject(file:File){
+ pendingProjectOpen?.abort();const intent=++openIntent;
+ if(file.size>=50_000_000)throw Error('Choose a project smaller than 50 MB.');
+ const before=useEditor.getState(),controller=new AbortController();pendingProjectOpen=controller;
+ const current=()=>intent===openIntent&&useEditor.getState().doc===before.doc&&useEditor.getState().home===before.home&&useEditor.getState().pageId===before.pageId;
+ const off=useEditor.subscribe(()=>{if(!current())controller.abort();});
+ try{
+  const isFig=/\.fig$/i.test(file.name),result=isFig?await importFigBytes(new Uint8Array(await file.arrayBuffer()),file.name,controller.signal):undefined;
+  function stale(){if(!current())throw Error('The project changed while reading this file. Open it again.');}
+  stale();
+  const source=result?.document??parseDocument(await file.text());stale();
+  try{const retained=before.home&&!before.past.length&&!before.recoveryAt?true:await saveDocument(before.doc,controller.signal);if(!retained&&before.past.length&&before.savedAt!==before.doc.updatedAt)throw Error('The current edited project cannot be retained. Save a .oui backup before opening another file.');}catch(error){controller.signal.throwIfAborted();if(before.past.length&&before.savedAt!==before.doc.updatedAt)throw Error('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.',{cause:error});}stale();
+  const opened=await openDocumentForEditing(source,controller.signal);stale();
+  off();desktopDocuments.mark(opened.document,isFig);useEditor.getState().load(opened.document);
+  if(result){setFigImportReport({...result,document:opened.document});useEditor.getState().set({modal:'fig-import-report',toast:'Figma file imported as a new .oui project.'});}
+  if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});
+  setTimeout(()=>{if(useEditor.getState().doc.id===opened.document.id)useEditor.getState().fit();},0);
+ }finally{off();if(pendingProjectOpen===controller)pendingProjectOpen=undefined;}
+}
+export async function openProject(){try{if(window.desktop){const raw=await window.desktop.open();if(raw){const opened=await openDocumentForEditing(parseDocument(raw));useEditor.getState().load(opened.document);if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});}}else pickFile('.oui,.json,.fig',async files=>openSelectedProject(files[0]));}catch(e){notifyError(e);}}
 export function pickFile(accept:string,fn:(files:File[])=>void|Promise<void>){const input=document.createElement('input');input.type='file';input.accept=accept;input.multiple=accept.includes('image');input.hidden=true;document.body.appendChild(input);input.onchange=()=>{const files=[...(input.files??[])];input.remove();if(files.length)Promise.resolve(fn(files)).catch(notifyError);};input.addEventListener('cancel',()=>input.remove(),{once:true});input.click();}
 export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number},includeGuides=false){const b=viewport??visualBounds(nodes);return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(b.width)}" height="${Math.ceil(b.height)}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}"><style>${fontCssForUsage(textFontUsage(nodes),useEditor.getState().doc.fonts)}</style>${renderToStaticMarkup(<><Artwork nodes={nodes} hyperlinks/>{includeGuides&&<LayoutGuideOverlay nodes={nodes}/>}</>)}</svg>`;}
 export function exportNodes(){const s=useEditor.getState(),page=currentPage(),ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;return exportSelection(ns,s.selection);}

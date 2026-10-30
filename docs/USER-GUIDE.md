@@ -14,7 +14,7 @@ Open **Forma.app** on Mac, or run `npm run dev` for the browser editor. The samp
 - Press C and click the canvas to add a local note. Comments can be resolved/reopened in View → Comments.
 - **Command-S** saves a portable `.oui`; Command-Shift-S saves a new copy. Recovery and recent files stay on this device, subject to storage limits. Use File → Save a named version for a local checkpoint.
 - Export a selected layer/subtree or the page through **Export**, as SVG, PNG or JPEG, at 1×–4×.
-- Choose **File → Figma import / export** for the plugin, supported property guide and visual SVG route. Direct `.fig` is not supported.
+- Choose **File → Figma import / export** for the plugin, supported property guide and visual SVG route. For a local binary `.fig` Design file, use **File → Open project…** and review the [import report and limits](FIG-IMPORT.md), then save a `.oui` copy. Binary `.fig` export remains unavailable.
 - **Command-K** searches available actions. **Help → Feature register** shows implemented, partial and planned requirements. See [implementation limits](IMPLEMENTATION.md) before relying on advanced behavior.
 
 ## v0.2 development controls

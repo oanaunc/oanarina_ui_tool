@@ -1,7 +1,7 @@
 import type {DesignDocument} from './model';
 import {useEditor} from './store';
 export interface DesktopDocumentState {id:string;name:string;revision:number;dirty:boolean;}
-export interface DesktopBootstrap {kind:'new'|'file'|'recovery';command?:string;raw?:string;documentId?:string;restoreActive?:boolean;dirty?:boolean;explicitOpen?:boolean;}
+export interface DesktopBootstrap {kind:'new'|'file'|'recovery'|'fig';data?:string;name?:string;command?:string;raw?:string;documentId?:string;restoreActive?:boolean;dirty?:boolean;explicitOpen?:boolean;}
 /** One tracker per renderer. Timestamps do not turn undo-to-saved content dirty. */
 export class DesktopDocumentTracker {
  private baseline=new Map<string,{content:string;dirty:boolean}>();private last='';private revision=0;

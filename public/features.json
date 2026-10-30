@@ -12994,10 +12994,10 @@
     "category": "Import and Figma interchange",
     "name": "Direct binary fig import",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Offline bounded fig-kiwi Design import via File Open, with validated scene/raster conversion and reduction report. Supported components become detached layers and native annotation blocks may retain snapshots; binary export and exact full-format parity remain unfinished. See docs/FIG-IMPORT.md."
   },
   {
     "id": "UI-39-032",

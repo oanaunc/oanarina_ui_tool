@@ -18,6 +18,18 @@
 				<string>com.oanarinaldi.ui-document</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Figma Design Import</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.figma.document</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>OanarinaUITool</string>
@@ -32,7 +44,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>0.2.0</string>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>11</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>NSHighResolutionCapable</key>
@@ -47,7 +59,9 @@
 			<key>UTTypeDescription</key>
 			<string>Forma editable layer clipboard</string>
 			<key>UTTypeConformsTo</key>
-			<array><string>public.json</string></array>
+			<array>
+				<string>public.json</string>
+			</array>
 		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
@@ -63,6 +77,26 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>oui</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.figma.document</string>
+			<key>UTTypeDescription</key>
+			<string>Figma Design Document</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>fig</string>
 				</array>
 			</dict>
 		</dict>

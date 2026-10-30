@@ -3,13 +3,30 @@
   "asOf": "2026-10-30",
   "releases": [
     {
+      "version": "0.2.0-dev.10",
+      "channel": "preview",
+      "title": "Offline Figma Design import",
+      "notes": [
+        "Open supported local binary .fig Design files in the browser or Mac app, without uploading the source file.",
+        "Preserve supported page/layer geometry, embedded images and original glyph shapes while keeping text editable. Review any feature reductions after import.",
+        "Import component instances as detached editable layers. Native annotation blocks can retain their own embedded visual snapshots.",
+        "Imported Mac files start as new unsaved projects. Save a .oui copy; the Figma source is never a save destination.",
+        "Cancel obsolete imports before they can replace current edits or the active recovery identity."
+      ],
+      "limits": [
+        "This is a preview candidate. Installer metadata and checksums are published on the Forma website only after release validation.",
+        "Binary .fig import supports a documented subset of Design files. Live component linkage, native rich annotation editing, complete prototype/layout semantics and full visual parity are not promised.",
+        "Binary .fig export and substantial Figma suite parity remain unfinished."
+      ]
+    },
+    {
       "version": "0.2.0-dev.9",
       "channel": "preview",
       "title": "Pages, local layouts and image clipboard",
       "notes": [
         "Duplicate, reorder and search pages with contextual and keyboard actions; shared component links stay intact and unsafe deletion is refused.",
         "Remember each Design/Whiteboard page's pan and zoom locally, and preview its static artwork on hover or keyboard focus.",
-        "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. Copy as PNG creates a transparent 2× selection snapshot.",
+        "Paste bounded PNG/TIFF image data into the Mac canvas, including the active slide. Copy as PNG creates a transparent 2\u00d7 selection snapshot.",
         "Follow system light/dark appearance, or retain an explicit interface theme.",
         "Saved-file MCP adds atomic page duplication and reordering. Browser startup waits for recovery before editing or autosave.",
         "Move supported complete layer trees between pages with stable identities and live component links; unsafe contextual cases are refused.",

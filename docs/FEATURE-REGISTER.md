@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1062,"partial":168,"planned":792}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. No binary .fig import/export claim is made.
+Status: {"implemented":1062,"partial":169,"planned":791}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -1501,7 +1501,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-39-028 | Transfer validation errors | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
 | UI-39-029 | SVG import from Figma | partial | v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. SVG import offers validated editable layers with reduction reports or a sanitized visual asset. Paths, common shapes, groups, transforms, supported text/gradients/use and simple clips work. CSS, filters, arbitrary masks/clip paths and full text/paint semantics remain incomplete. |
 | UI-39-030 | SVG export for Figma | partial | Limited supported properties; plugin mock tests pass. Real desktop plugin round trip pending. See figma-plugin/README.md. |
-| UI-39-031 | Direct binary fig import | planned | reference-verification-pending |
+| UI-39-031 | Direct binary fig import | partial | Offline bounded fig-kiwi Design import via File Open, with validated scene/raster conversion and reduction report. Supported components become detached layers and native annotation blocks may retain snapshots; binary export and exact full-format parity remain unfinished. See docs/FIG-IMPORT.md. |
 | UI-39-032 | Direct binary fig export | planned | reference-verification-pending |
 | UI-39-033 | Sketch document import | planned | reference-verification-pending |
 | UI-39-034 | PDF document import | planned | reference-verification-pending |

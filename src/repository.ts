@@ -7,27 +7,40 @@ let opening:Promise<IDBDatabase>|undefined;
 function database(){return opening??=new Promise<IDBDatabase>((resolve,reject)=>{const request=indexedDB.open('oanarina-projects',1);request.onupgradeneeded=()=>{const db=request.result;db.createObjectStore('documents',{keyPath:'id'});db.createObjectStore('metadata');const snapshots=db.createObjectStore('snapshots',{keyPath:'id'});snapshots.createIndex('documentId','documentId');};request.onsuccess=()=>{const db=request.result;db.onversionchange=()=>{db.close();opening=undefined;};resolve(db);};request.onerror=()=>{opening=undefined;reject(request.error??Error('Cannot open local project storage.'));};request.onblocked=()=>{opening=undefined;reject(Error('Close older Oanarina windows to upgrade local storage.'));};});}
 function complete(tx:IDBTransaction){return new Promise<void>((resolve,reject)=>{tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error??Error('Local recovery could not be saved.'));tx.onabort=()=>reject(tx.error??Error('Local recovery write was interrupted.'));});}
 function result<T>(r:IDBRequest<T>){return new Promise<T>((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
-export async function saveDocument(doc:DesignDocument){const db=await database(),tx=db.transaction(['documents','metadata'],'readwrite'),done=complete(tx);try{const state=validateFileBrowserState(await result(tx.objectStore('metadata').get('browser-v1'))),metadata=fileMetadata(state,doc.id);if(metadata.deleted){await done;return false;}tx.objectStore('documents').put(doc);if(!metadata.trashedAt)tx.objectStore('metadata').put(doc.id,'active');await done;changed();return true;}catch(error){try{tx.abort();}catch{}await done.catch(()=>{});throw error;}}
+export async function saveDocument(doc:DesignDocument,signal?:AbortSignal){
+ signal?.throwIfAborted();const db=await database();signal?.throwIfAborted();const tx=db.transaction(['documents','metadata'],'readwrite'),done=complete(tx);
+ const abort=()=>{try{tx.abort();}catch{}};signal?.addEventListener('abort',abort,{once:true});
+ try{signal?.throwIfAborted();const state=validateFileBrowserState(await result(tx.objectStore('metadata').get('browser-v1')));signal?.throwIfAborted();const metadata=fileMetadata(state,doc.id);if(metadata.deleted){await done;return false;}tx.objectStore('documents').put(doc);if(!metadata.trashedAt)tx.objectStore('metadata').put(doc.id,'active');await done;changed();return true;}
+ catch(error){abort();await done.catch(()=>{});signal?.throwIfAborted();throw error;}
+ finally{signal?.removeEventListener('abort',abort);}
+}
 export async function listDocuments(){const db=await database(),docs=await result<DesignDocument[]>(db.transaction('documents').objectStore('documents').getAll());return docs.sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt));}
 export async function activeDocument(){await migrateLegacyStorage();const db=await database(),id=await result<string|undefined>(db.transaction('metadata').objectStore('metadata').get('active'));return id?documentById(id):null;}
 export async function documentById(id:string,options:{includeTrashed?:boolean}={}){const db=await database(),tx=db.transaction(['documents','metadata']),[doc,raw]=await Promise.all([result<DesignDocument|undefined>(tx.objectStore('documents').get(id)),result(tx.objectStore('metadata').get('browser-v1'))]),meta=fileMetadata(validateFileBrowserState(raw),id);return doc&&!meta.deleted&&(options.includeTrashed||!meta.trashedAt)?parseDocument(JSON.stringify(doc)):null;}
 function validatedOpenDocument(document:DesignDocument){const raw=JSON.stringify(document);if(new TextEncoder().encode(raw).length>50_000_000)throw Error('Choose a project smaller than 50 MB.');return parseDocument(raw);}
-function persistExplicitOpen(doc:DesignDocument){return organizationWrite((tx,state)=>{const before=fileMetadata(state,doc.id);if(before.deleted||before.trashedAt)putMetadata(state,{...before,deleted:undefined,trashedAt:undefined,archived:false,revision:before.revision+1});tx.objectStore('documents').put(doc);tx.objectStore('metadata').put(doc.id,'active');return doc;});}
+function persistExplicitOpen(doc:DesignDocument,signal?:AbortSignal){return organizationWrite((tx,state)=>{const before=fileMetadata(state,doc.id);if(before.deleted||before.trashedAt)putMetadata(state,{...before,deleted:undefined,trashedAt:undefined,archived:false,revision:before.revision+1});tx.objectStore('documents').put(doc);tx.objectStore('metadata').put(doc.id,'active');return doc;},false,signal);}
 /** Explicit user file-open only. Recovery and autosave must never revive tombstones. */
 export async function prepareDocumentForOpen(document:DesignDocument){return persistExplicitOpen(validatedOpenDocument(document));}
 export interface OpenDocumentResult {document:DesignDocument;recoveryStored:boolean;warning?:string;}
 /** Validate before the catch: only local persistence failures may use the RAM fallback. */
-export async function openDocumentForEditing(document:DesignDocument):Promise<OpenDocumentResult>{
- const valid=validatedOpenDocument(document);
- try{return{document:await persistExplicitOpen(valid),recoveryStored:true};}
- catch{return{document:valid,recoveryStored:false,warning:'Opened in memory. Local recovery is unavailable. Save a .oui backup and reopen to retry local storage.'};}
+export async function openDocumentForEditing(document:DesignDocument,signal?:AbortSignal):Promise<OpenDocumentResult>{
+ signal?.throwIfAborted();const valid=validatedOpenDocument(document);
+ try{return{document:await persistExplicitOpen(valid,signal),recoveryStored:true};}
+ catch{signal?.throwIfAborted();return{document:valid,recoveryStored:false,warning:'Opened in memory. Local recovery is unavailable. Save a .oui backup and reopen to retry local storage.'};}
 }
 
 const revisionKey='oui-library-revision';
 function changed(){if(typeof window==='undefined')return;window.dispatchEvent(new Event('oanarina-library-changed'));try{localStorage.setItem(revisionKey,crypto.randomUUID());}catch{}}
 export function subscribeRepository(listener:()=>void){const storage=(event:StorageEvent)=>{if(event.key===revisionKey||event.key===null)listener();};if(typeof window!=='undefined'){window.addEventListener('oanarina-library-changed',listener);window.addEventListener('storage',storage);}return()=>{if(typeof window!=='undefined'){window.removeEventListener('oanarina-library-changed',listener);window.removeEventListener('storage',storage);}};}
 export async function listLocalFiles():Promise<{entries:LocalFileEntry[];organization:FileBrowserState}>{await migrateLegacyStorage();const db=await database(),tx=db.transaction(['documents','metadata']),[docs,raw]=await Promise.all([result<DesignDocument[]>(tx.objectStore('documents').getAll()),result(tx.objectStore('metadata').get('browser-v1'))]),organization=validateFileBrowserState(raw);return{entries:docs.filter(d=>!fileMetadata(organization,d.id).deleted).map(doc=>({doc,metadata:fileMetadata(organization,doc.id)})),organization};}
-async function organizationWrite<T>(fn:(tx:IDBTransaction,state:FileBrowserState)=>T|Promise<T>,snapshots=false):Promise<T>{const db=await database(),tx=db.transaction(['documents','metadata',...(snapshots?['snapshots']:[])],'readwrite'),done=complete(tx);try{const state=validateFileBrowserState(await result(tx.objectStore('metadata').get('browser-v1'))),value=await fn(tx,state);validateFileBrowserState(state);tx.objectStore('metadata').put(state,'browser-v1');await done;changed();return value;}catch(error){try{tx.abort();}catch{}await done.catch(()=>{});throw error;}}
+async function organizationWrite<T>(fn:(tx:IDBTransaction,state:FileBrowserState)=>T|Promise<T>,snapshots=false,signal?:AbortSignal):Promise<T>{
+ signal?.throwIfAborted();const db=await database();signal?.throwIfAborted();
+ const tx=db.transaction(['documents','metadata',...(snapshots?['snapshots']:[])],'readwrite'),done=complete(tx);
+ const abort=()=>{try{tx.abort();}catch{}};signal?.addEventListener('abort',abort,{once:true});
+ try{signal?.throwIfAborted();const state=validateFileBrowserState(await result(tx.objectStore('metadata').get('browser-v1')));signal?.throwIfAborted();const value=await fn(tx,state);signal?.throwIfAborted();validateFileBrowserState(state);tx.objectStore('metadata').put(state,'browser-v1');await done;changed();return value;}
+ catch(error){abort();await done.catch(()=>{});signal?.throwIfAborted();throw error;}
+ finally{signal?.removeEventListener('abort',abort);}
+}
 async function existingDocument(tx:IDBTransaction,state:FileBrowserState,id:string,includeTrashed=false){const metadata=fileMetadata(state,id),doc=await result<DesignDocument|undefined>(tx.objectStore('documents').get(id));if(!doc||metadata.deleted||metadata.trashedAt&&!includeTrashed)throw Error('This local file is unavailable. Refresh the file browser.');return doc;}
 function putMetadata(state:FileBrowserState,metadata:LocalFileMetadata){const index=state.files.findIndex(f=>f.id===metadata.id);if(index>=0)state.files[index]=metadata;else{if(state.files.length>=10000)throw Error('Local organization supports up to 10,000 file records.');state.files.push(metadata);}}
 export type FileMetadataPatch=Partial<Pick<LocalFileMetadata,'folderId'|'starred'|'pinned'|'archived'|'trashedAt'>>;

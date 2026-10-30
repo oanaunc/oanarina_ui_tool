@@ -25,6 +25,7 @@ extension Studio {
     func smokeJS(_ document:DocumentWindow,_ source:String,_ completion:@escaping(Any)->Void){document.web.callAsyncJavaScript(source,arguments:[:],in:nil,in:.page){result in switch result{case .success(let value):completion(value);case .failure(let error):self.smokeFail(error.localizedDescription)}}}
     func runSmoke(_ document:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(document);return}
+        if CommandLine.arguments.contains("--fig-import-smoke-test"){runFigImportSmoke(document);return}
         if CommandLine.arguments.contains("--clipboard-smoke-test"){runClipboardSmoke(document);return}
         if CommandLine.arguments.contains("--lifecycle-smoke-test"){runLifecycleSmoke(document);return}
         guard smokeStage==0 else{return};smokeStage=1
@@ -175,5 +176,47 @@ extension Studio {
                 }
             }
         }
+    }
+}
+
+/** Synthetic bytes supplied by the test runner; no user project or persistent app state is used. */
+extension Studio {
+    func runFigImportSmoke(_ initial:DocumentWindow){
+        guard smokeStage==0 else{return};smokeStage=1
+        guard let raw=ProcessInfo.processInfo.environment["FORMA_SMOKE_FIG_BASE64"],raw.count<100_000,let data=Data(base64Encoded:raw) else{smokeFail("Missing bounded synthetic Figma fixture")}
+        let directory=FileManager.default.temporaryDirectory.appendingPathComponent("forma-native-fig-"+UUID().uuidString,isDirectory:true),source=directory.appendingPathComponent("Synthetic.fig"),destination=directory.appendingPathComponent("Converted.oui")
+        do{try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:true);try data.write(to:source,options:.atomic)}catch{smokeFail(error.localizedDescription)}
+        smokeDirectory=directory
+        let fingerprint=ProjectFileSafety.fingerprint(data)
+        DispatchQueue.main.asyncAfter(deadline:.now()+35){if !self.smokeFinishing{self.smokeFail("Native Figma import timed out")}}
+        smokeReadyOverride={imported in
+            self.check(imported !== initial && self.documents.count==2,"selected fig opens an independent document window")
+            self.check(imported.session.file==nil && imported.session.dirty,"fig import starts unsaved without source save binding")
+            self.check(imported.state?.dirty==true,"renderer reports imported project dirty before ready")
+            self.check(imported.importedSource==source,"source reference stays native only")
+            self.check(imported.bootstrap["data"]==nil,"selected binary payload released after ready")
+            let count=self.documents.count;self.check(self.openURL(source)&&self.documents.count==count,"reopening selected fig focuses its imported window")
+            self.smokeCancelSavePanels=true
+            self.smokeJS(imported,"return await window.__studioSave();"){value in
+                self.check(value as? Bool==false && imported.session.file==nil,"first Save requires a new destination and Cancel preserves unsaved state")
+                self.check((try? ProjectFileSafety.current(source))==fingerprint,"cancelled Save leaves original fig bytes unchanged")
+                self.smokeCancelSavePanels=false;imported.session.file=destination
+                self.smokeJS(imported,"if(!await window.__studioSave())throw Error('Converted .oui save failed');return await window.__studioState();"){value in
+                    guard let state=value as? [String:Any] else{self.smokeFail("Converted project state missing")}
+                    self.check(state["dirty"] as? Bool==false,"successful converted oui save clears dirty state")
+                    self.check((try? self.readProject(destination)) != nil,"converted oui passes native saved-project validation")
+                    self.check((try? ProjectFileSafety.current(source))==fingerprint,"successful converted save leaves original fig unchanged")
+                    imported.session.file=source
+                    self.smokeJS(imported,"return await window.__studioSave();"){value in
+                        self.check(value as? Bool==false,"native save refuses a fig source destination even if misbound")
+                        self.check((try? ProjectFileSafety.current(source))==fingerprint,"refused fig overwrite preserves exact source fingerprint")
+                        self.smokeFinishing=true
+                        print(self.json(["nativeFigImport":true,"count":self.smokeChecks.count,"checks":self.smokeChecks]));fflush(stdout)
+                        imported.closeApproved();initial.closeApproved();try? FileManager.default.removeItem(at:directory);self.smokeTerminate()
+                    }
+                }
+            }
+        }
+        guard openURL(source) else{smokeFail("Synthetic fig could not be selected")}
     }
 }
