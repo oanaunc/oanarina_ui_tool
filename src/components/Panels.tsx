@@ -22,6 +22,7 @@ import MaskInspector from './MaskInspector';
 import SelectionColors from './SelectionColors';
 import {maskLayerIndicators,maskModeName} from '../mask-indicators';
 import RichTextInspector from './RichTextInspector';
+import TextVariants from './TextVariants';
 import VectorPointTools from './VectorPointTools';
 import NumberField from './NumberField';
 import PrototypeEditor from './PrototypeEditor';
@@ -113,7 +114,7 @@ export function RightPanel(){const exportPreferences=usePreferences(),s=useEdito
  {sel.length===1&&n.media?<VideoInspector key={n.id} n={n}/>:<section className="inspector-section" data-testid="fill-section"><FillEditor n={n} patch={patch}/></section>}
  <section className="inspector-section" data-testid="stroke-section"><StrokeEditor n={n} patch={patch}/></section>
  <SelectionColors/><Section name="Design system"><DesignSystemInspector n={n}/></Section>
- {n.type==='text'&&<Section name="Character formatting"><RichTextInspector n={n}/></Section>}<Section name="Layer"><NumberField label="Opacity %" value={n.opacity*100} min={0} max={100} onChange={v=>patch({opacity:v/100})}/><select aria-label="Blend mode" value={n.blendMode??'normal'} onChange={e=>patch({blendMode:e.target.value})}>{['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity'].map(mode=><option key={mode}>{mode}</option>)}</select>{containers.includes(n.type)&&<label className="check-row"><input type="checkbox" checked={n.isolate??false} onChange={e=>patch({isolate:e.target.checked})}/>Isolate blending</label>}</Section>
+ {n.type==='text'&&<Section name="Character formatting"><TextVariants n={n}/><RichTextInspector n={n}/></Section>}<Section name="Layer"><NumberField label="Opacity %" value={n.opacity*100} min={0} max={100} onChange={v=>patch({opacity:v/100})}/><select aria-label="Blend mode" value={n.blendMode??'normal'} onChange={e=>patch({blendMode:e.target.value})}>{['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity'].map(mode=><option key={mode}>{mode}</option>)}</select>{containers.includes(n.type)&&<label className="check-row"><input type="checkbox" checked={n.isolate??false} onChange={e=>patch({isolate:e.target.checked})}/>Isolate blending</label>}</Section>
  <section className="inspector-section" data-testid="effects-section"><EffectsEditor n={n} patch={patch}/></section>
  {(n.type==='component'||n.type==='instance'||n.instanceRootId)&&<Section name="Component"><ComponentInspector n={n}/></Section>}
  </>}

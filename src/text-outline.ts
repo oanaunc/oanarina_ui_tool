@@ -2,7 +2,7 @@ import type {DesignNode} from './model';
 export interface TextOutline {signature:string;path:string;}
 const fields=['text','fontFamily','fontSize','fontWeight','fontStyle','textAlign','verticalAlign','textResize','lineHeight','letterSpacing','paragraphSpacing','paragraphIndent','maxLines','textOverflow','listStyle','hyperlink','textRuns','fontAxes','fontFeatures','underline','decorations','width','height','clip'] as const;
 /** Keep original glyph geometry only until an appearance/layout-affecting text edit. */
-export function textOutlineSignature(n:DesignNode){return JSON.stringify(fields.map(key=>n[key]??null));}
+export function textOutlineSignature(n:DesignNode){const values:unknown[]=fields.map(key=>n[key]??null);if(n.smallCaps||n.textPosition&&n.textPosition!=='normal')values.push(n.smallCaps??false,n.textPosition??'normal');return JSON.stringify(values);}
 export function currentTextOutline(n:DesignNode){return n.type==='text'&&n.textOutline?.signature===textOutlineSignature(n)?n.textOutline.path:undefined;}
 /** This metadata accepts path data only, never markup, URLs or arbitrary SVG. */
 export function validateTextOutline(value:unknown){
