@@ -4,6 +4,7 @@ import type {ColorMode} from '../colors';
 import {clearRecentColors,rememberColor,useRecentColors} from '../recent-colors';
 import './color-picker.css';
 import CanvasColorSampler from './CanvasColorSampler';
+import {getPreferences} from '../preferences';
 import {useEditor} from '../store';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 
@@ -11,7 +12,7 @@ export default function ColorPicker({color,opacity,onChange,prefix}:{color:strin
  const screenAbort=useRef<AbortController|null>(null),mounted=useRef(true);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;screenAbort.current?.abort();};},[]);
  const [sampling,setSampling]=useState(false),[screenBusy,setScreenBusy]=useState(false),sampleButton=useRef<HTMLButtonElement>(null);
- const [draft,setDraft]=useState({color,opacity}),[mode,setMode]=useState<ColorMode>('HEX'),[error,setError]=useState('');
+ const [draft,setDraft]=useState({color,opacity}),[mode,setMode]=useState<ColorMode>(()=>getPreferences().colorPickerFormat),[error,setError]=useState('');
  const [hsv,setHsvDraft]=useState(()=>colorHsv(color)),hsvRef=useRef(hsv);
  const value=useRef(draft),active=useRef(false),base=useRef({color,opacity}),baseHsv=useRef(hsv),square=useRef<HTMLDivElement>(null),recent=useRecentColors();
  const update=(next:typeof draft,exact?:typeof hsv)=>{value.current=next;setDraft(next);const c=colorHsv(next.color),resolved=exact??{...c,h:c.s===0?hsvRef.current.h:c.h,s:c.v===0?hsvRef.current.s:c.s};hsvRef.current=resolved;setHsvDraft(resolved);};

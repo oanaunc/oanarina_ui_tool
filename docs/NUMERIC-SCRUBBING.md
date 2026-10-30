@@ -19,3 +19,8 @@ Validation: numeric-scrub.test.ts checks speed, bounds and malformed inputs.
 Browser tests verify a single Undo step, save persistence, changing speed, lock
 refusal, and Escape/blur/pointercancel/modal interruption. This does not claim
 exact Figma reference acceptance or a live artwork preview while scrubbing.
+
+Typed expressions and arrow-key drafts also belong to the focused target context.
+Native/global selection commands invalidate a draft even when the new target has
+the same numeric value. An ordinary blur commits before the original selection
+changes; a delayed blur cannot apply the old draft to another target.
