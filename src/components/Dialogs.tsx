@@ -1,3 +1,4 @@
+import SliceManager from './SliceManager';
 import KeyboardSelectionBox from './KeyboardSelectionBox';
 import DocumentOutline from './DocumentOutline';
 import KeyboardInsertDialog from './KeyboardInsertDialog';
@@ -42,6 +43,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  if(modal==='move-to-page')return <MoveLayersDialog/>;
  if(modal==='present')return <PrototypePresentation/>;
  if(modal==='document-outline')return <DocumentOutline/>;
+ if(modal==='slices')return <SliceManager/>;
  if(modal==='selection-box')return <KeyboardSelectionBox/>;
  if(modal==='keyboard-insert')return <KeyboardInsertDialog/>;
 

@@ -1,0 +1,6 @@
+import type {DesignNode} from '../model';
+import {useMemo} from 'react';
+import {sliceOutlines} from '../slices';
+import {usePreferences} from '../preferences';
+/** Canvas-only stroke/label targets leave the artwork inside each crop clickable. */
+export default function SliceOverlay({nodes,zoom,onNode}:{nodes:DesignNode[];zoom:number;onNode:(e:React.PointerEvent,id:string)=>void}){const prefs=usePreferences(),outlines=useMemo(()=>sliceOutlines(nodes),[nodes]);if(!prefs.showSlices)return null;return <g data-slice-overlays="true">{outlines.map(n=>{const corners=n.corners;const points=corners.map(p=>`${p.x},${p.y}`).join(' '),label=n.name.length>80?n.name.slice(0,79)+'…':n.name;return <g key={n.id} data-slice-overlay={n.id} data-node-id={n.id} onPointerDown={e=>onNode(e,n.id)}><polygon points={points} fill="none" stroke="#78d7d3" strokeWidth={1/zoom} strokeDasharray={`${5/zoom} ${3/zoom}`} pointerEvents="none"/><polygon data-slice-hit={n.id} points={points} fill="none" stroke="transparent" strokeWidth={8/zoom} pointerEvents="stroke"/><text data-slice-label={n.id} x={corners[0].x} y={corners[0].y-6/zoom} fontSize={11/zoom} fill="#a7ebe6" style={{cursor:'pointer',userSelect:'none'}}>{label||'Slice'}</text></g>;})}</g>;}

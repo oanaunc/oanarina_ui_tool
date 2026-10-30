@@ -1,3 +1,4 @@
+import {withoutSliceSubtrees} from './slices';
 import {validateExportHierarchy} from './svg-export-options';
 import {getPreferences} from './preferences';
 import type {DesignDocument,DesignNode,Page} from './model';
@@ -26,9 +27,9 @@ export function layerExportGeometry(page:Page,id:string,bounds:FrameExportSettin
  if(n.type==='frame'&&(!includeOverlaps||bounds!=='frame'))return frameExportGeometry(page,id,bounds);
  const matrix=layerWorldMatrix(page,id);
  if(n.type==='slice'||bounds==='frame'){
-  if(n.type==='frame'&&includeOverlaps)validateExportHierarchy(page.nodes);
+  if(n.type==='slice'||n.type==='frame'&&includeOverlaps)validateExportHierarchy(page.nodes);
   if(n.width<=0||n.height<=0)throw Error('Layer bounds require positive width and height. Use artwork bounds for a stroked line.');
-  return {nodes:n.type==='slice'||n.type==='frame'&&includeOverlaps?page.nodes.filter(n=>n.type!=='slice'):exportSelection(page.nodes,[id]),viewport:{x:0,y:0,width:n.width,height:n.height},transform:inverseMatrix(matrix)};
+  return {nodes:n.type==='slice'||n.type==='frame'&&includeOverlaps?withoutSliceSubtrees(page.nodes):exportSelection(page.nodes,[id]),viewport:{x:0,y:0,width:n.width,height:n.height},transform:inverseMatrix(matrix)};
  }
  const nodes=exportSelection(page.nodes,[id]),viewport=visualBounds(nodes);if(![viewport.x,viewport.y,viewport.width,viewport.height].every(Number.isFinite)||viewport.width<=0||viewport.height<=0)throw Error('The artwork bounds are not finite and positive.');return {nodes,viewport,transform:undefined};
 }

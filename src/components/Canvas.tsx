@@ -1,3 +1,4 @@
+import SliceOverlay from './SliceOverlay';
 import {useMemo} from 'react';
 import {boxSelectionIndex,querySelectionBox,parentHoverTarget} from '../selection-box';
 import {SelectionBoxOverlay} from './KeyboardSelectionBox';
@@ -124,7 +125,7 @@ export default function Canvas(){
  <MaskCanvasArtwork nodes={ns} mediaMode={s.motionOpen?undefined:'editor'} outlines={s.outlines} zoom={s.zoom} onNode={(e,id)=>begin(e,id)}/>
  {s.mode==='prototype'&&<PrototypeConnections nodes={ns}/>}
  <GridOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>{s.mode==='design'&&!s.vectorEditId&&<ConstraintGuideOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>}
- <SelectionBoxOverlay zoom={s.zoom}/>{s.doc.layoutGuidesVisible!==false&&<LayoutGuideOverlay nodes={ns} zoom={s.zoom}/>}<CanvasGuideOverlay page={page} zoom={s.zoom} pan={s.pan}/><SnapOverlay lines={snapLines} zoom={s.zoom}/>{measuring&&s.selection.length===1&&<MeasurementOverlay nodes={ns} selectedId={s.selection[0]} targetId={hoveredId} zoom={s.zoom}/>}
+ <SliceOverlay nodes={ns} zoom={s.zoom} onNode={(e,id)=>begin(e,id)}/><SelectionBoxOverlay zoom={s.zoom}/>{s.doc.layoutGuidesVisible!==false&&<LayoutGuideOverlay nodes={ns} zoom={s.zoom}/>}<CanvasGuideOverlay page={page} zoom={s.zoom} pan={s.pan}/><SnapOverlay lines={snapLines} zoom={s.zoom}/>{measuring&&s.selection.length===1&&<MeasurementOverlay nodes={ns} selectedId={s.selection[0]} targetId={hoveredId} zoom={s.zoom}/>}
  {pen.length>0&&<path d={contourPath(pen)} fill="none" stroke="#c7adf4" strokeWidth={2/s.zoom}/>}
  {pen.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={3/s.zoom} fill="#fff"/>)}
  {parentHover&&!s.selection.includes(parentHover.id)&&parentHover.id!==hovered?.id&&!s.vectorEditId&&['move','scale'].includes(s.tool)&&<polygon data-parent-hover-outline={parentHover.id} points={canvasCorners(parentHover,ns).map(p=>p.x+','+p.y).join(' ')} fill="none" stroke="#c59ae0" strokeWidth={1/s.zoom} strokeDasharray={`${5/s.zoom} ${3/s.zoom}`} pointerEvents="none"/>}
