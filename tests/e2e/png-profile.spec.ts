@@ -5,7 +5,7 @@ import {unzipSync,strFromU8} from 'fflate';
 import {createHash} from 'node:crypto';
 import {blankDocument,node,parseDocument} from '../../src/model';
 import type {DesignDocument} from '../../src/model';
-async function load(page:Page,d:DesignDocument){d.fonts=[];await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.locator('.layer-row')).toHaveCount(d.pages[0].nodes.length);}
+async function load(page:Page,d:DesignDocument){page.on('filechooser',()=>{});d.fonts=[];await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.locator('.layer-row')).toHaveCount(d.pages[0].nodes.length);}
 async function bytes(download:Download){return new Uint8Array(await fs.readFile((await download.path())!));}
 async function save(page:Page){const event=page.waitForEvent('download');await page.keyboard.press('Meta+s');return parseDocument(await fs.readFile((await(await event).path())!,'utf8'));}
 async function open(page:Page){await page.getByRole('button',{name:'Export',exact:true}).click();return page.getByRole('dialog',{name:'Export your design',exact:true});}
