@@ -4,7 +4,7 @@ The register describes the target, not a completed clone. **Implemented** means 
 
 ## Current source versus public release
 
-The source is **0.2.0-dev.10**, with 1,062 implemented, 169 partial and 791 planned requirements (2,022 total). The previous signed/notarized public Mac preview is **0.2.0-dev.8**; dev.9 passed Apple notarization and native acceptance but was held while dev.10 adds the local .fig importer; dev.10 release validation is underway. See [page and raster validation](VALIDATION-v0.2-pages-raster.md) for this source checkpoint, [native clipboard and canvas validation](VALIDATION-v0.2-native-clipboard.md) for the preceding preview, and [component-bridge validation](VALIDATION-v0.2-component-bridge.md) for the Figma acceptance boundary.
+The source is **0.2.0-dev.10**, with 1,062 implemented, 169 partial and 791 planned requirements (2,022 total). The signed/notarized Mac preview is **0.2.0-dev.10**; it passes the [current import validation](VALIDATION-v0.2-fig-import.md), with documented subset limits. Dev.9 was held while this importer was added. See [page and raster validation](VALIDATION-v0.2-pages-raster.md) for this source checkpoint, [native clipboard and canvas validation](VALIDATION-v0.2-native-clipboard.md) for the preceding preview, and [component-bridge validation](VALIDATION-v0.2-component-bridge.md) for the Figma acceptance boundary.
 
 ## Working development workflows
 

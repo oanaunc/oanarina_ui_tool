@@ -25,3 +25,16 @@ The first full production invocation passed 267 browser checks but also collecte
 ## Release boundary
 
 Dev.9's accepted/stapled artifact is retained locally and was held from public release while this importer was added. Dev.10 publication requires its own app and DMG Accepted responses, stapling, Gatekeeper checks and exact-artifact native smoke results. Public download metadata must describe the actual published artifact.
+
+
+## Final release acceptance — October 30, 2026
+
+The final dev.10 package passes the 652-test core suite and universal arm64/x86_64 build. Apple accepted both app and DMG submissions. Both are stapled and Gatekeeper reports `accepted`, with `source=Notarized Developer ID`.
+
+The exact signed/stapled app passes the standard bridge/font/catalog smoke, all 37 native lifecycle checks, all 29 private-pasteboard clipboard checks and all 13 synthetic Figma import/save checks. All four native runs exit successfully with empty stderr. Native tests use isolated storage and owned synthetic temporary files, not the user's project or general clipboard. Intel runtime testing remains pending.
+
+- Installer: `Forma-0.2.0-dev.10.dmg`
+- Size: 32,420,069 bytes
+- SHA-256: `011d4b8ade64bdeae832a1d69c4e2d58fdc62aa9b16c45542496241f68e24e79`
+
+The accepted artifact and exact renderer/binary hashes are retained locally in `build/dev10-accepted/ARTIFACTS.json`. Private acceptance data is not part of the installer or website demo. This remains an unfinished preview, not a completed Figma clone.
