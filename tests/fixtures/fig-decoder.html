@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Offline decoder acceptance fixture</title></head>
+<body><label>Figma file<input type="file" id="file"></label><button id="decode">Decode</button><button id="cancel">Cancel</button><pre id="output" role="status"></pre>
+<script type="module">
+import {decodeFigFile} from '../../src/fig-container.ts';
+let controller;
+document.querySelector('#decode').onclick=async()=>{
+ const file=document.querySelector('#file').files[0]; if(!file)return;
+ controller=new AbortController();document.querySelector('#output').textContent='Decoding';
+ try{const source=new Uint8Array(await file.arrayBuffer());const decoded=await decodeFigFile(source,{signal:controller.signal});document.querySelector('#output').textContent=JSON.stringify({version:decoded.version,message:decoded.message,images:Object.keys(decoded.images),retainedInput:source.byteLength},(_,v)=>v instanceof Uint8Array?[...v]:v);}
+ catch(e){document.querySelector('#output').textContent=e.name+': '+e.message;}
+};
+document.querySelector('#cancel').onclick=()=>controller?.abort();
+</script></body></html>
