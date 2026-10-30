@@ -1,3 +1,4 @@
+import {explicitFontFamilies} from './font-fallback';
 import {blankDocument,isLocked,node,parseDocument} from './model';
 import type {DesignDocument,DesignNode} from './model';
 import {allNodes,hydrateLegacyInstances,subtree} from './components-model';
@@ -74,7 +75,7 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  }
  const records=clone(copied.records),validConnectors=records.connectors.filter(c=>ids.has(c.fromId)&&ids.has(c.toId));if(validConnectors.length!==records.connectors.length)warnings.push('Connectors to uncopied objects are ordinary editable paths.');records.connectors=validConnectors;records.mindMaps=records.mindMaps.map(m=>({...m,connectorIds:m.connectorIds.filter(id=>validConnectors.some(c=>c.id===id))}));
  doc.whiteboard={...emptyWhiteboard(),stickies:records.stickies,tables:records.tables,connectors:records.connectors,mindMaps:records.mindMaps,drawings:records.drawings};
- doc.fonts=selectFontAssets(source.fonts??[],[...textFontRequests(nodes),...(doc.styles??[]).filter(s=>s.type==='text').map(s=>({family:s.value.fontFamily??'Inter',weight:s.value.fontAxes?.wght??s.value.fontWeight??400,style:s.value.fontStyle==='italic'||(s.value.fontAxes?.ital??0)>=.5?'italic' as const:'normal' as const}))]);
+ doc.fonts=selectFontAssets(source.fonts??[],[...textFontRequests(nodes),...(doc.styles??[]).filter(s=>s.type==='text').flatMap(s=>explicitFontFamilies(s.value).map(family=>({family,weight:s.value.fontAxes?.wght??s.value.fontWeight??400,style:s.value.fontStyle==='italic'||(s.value.fontAxes?.ital??0)>=.5?'italic' as const:'normal' as const}))) ]);
  roots.splice(0,roots.length,...doc.pages[0].nodes.filter(n=>!n.parentId).map(n=>n.id));limit(doc);closedReferences(doc);const payload:DesignClipboard={format:'forma-clipboard',version:1,project:parseDocument(JSON.stringify(doc)),roots,origin:parent?point(worldMatrix(parent,page.nodes),0,0):{x:0,y:0},warnings:[...new Set(warnings)],slideRoles:Object.fromEntries((source.slides?.slides??[]).flatMap(s=>Object.entries(s.roles)).filter(([id])=>primary.has(id)))};bounded(JSON.stringify(payload));return payload;
 }
 export function parseDesignClipboard(raw:string):DesignClipboard{

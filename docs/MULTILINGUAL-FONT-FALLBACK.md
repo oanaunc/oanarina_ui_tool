@@ -1,0 +1,33 @@
+# Ordered multilingual font fallbacks
+
+This source pass implements an explicit local fallback policy for UI-22-038. The feature remains **partial**: there is no glyph-coverage detector, automatic language-to-font assignment or guarantee that every script is supported by the selected fonts.
+
+## Reachable workflow
+
+Select text, expand its rich-text inspector and use **Layer font fallbacks** in All/Text information. Add one family per entry, reorder with Earlier/Later arrows, remove entries, or reset to the default system tail. The Characters tab exposes **Range font fallbacks** for a nonempty selection; those lists override the layer list, and **Inherit layer fallbacks** clears the range override. Mixed ranges are labeled; adding a family replaces their selected fallback list. Each operation is undoable and persists in `.oui`.
+
+The effective order is primary family → ordered fallbacks → `system-ui` → `sans-serif`, with duplicate effective names removed without changing the first occurrence. Entries are individual safely escaped names, not raw CSS expressions. Reserved CSS family keywords (`serif`, `sans-serif`, `monospace`, `cursive`, `fantasy`, `system-ui`, `ui-serif`, `ui-sans-serif`, `ui-monospace`, `ui-rounded`, `emoji`, `math`, `fangsong`) intentionally select the corresponding generic family. An actual installed font whose literal name is one of those reserved words cannot be distinguished in this model. Quoted generic names in CSS imports are explicitly refused rather than silently reinterpreted.
+
+The browser selects fallback per character using available faces and its shaping engine. Google families follow the existing on-demand font loader; imported/embedded fonts and installed licensed faces remain usable through the existing font library. This does not install, obtain or redistribute commercial fonts. Unsupported scripts can still produce missing-glyph boxes.
+
+## Shared behavior and saved data
+
+Optional `fontFallbacks?: string[]` is additive to `.oui` versions 1 and 2. Lists contain at most eight distinct, trimmed names, each up to 128 characters, without control characters. Node, range, style, clipboard, source MCP and standalone Bridge inputs validate before accepted document mutation. Only text nodes can own the field. Missing fields stay missing on open/parse/font refresh/save; there is no migration or automatic policy injection.
+
+Resolved range styles carry the list through text segmentation, rich clipboard MIME/HTML and ordinary text-edit range rebasing. New/updated text styles explicitly snapshot an empty list for the default policy; applying a legacy style with an omitted list restores the system default without inventing serialized metadata. Components inherit source policy; an editable text-child override remains explicit across source changes, supports reset and Undo. Real edits detach the relevant text style through the existing shared binding rules.
+
+SVG text, rich tspans, list markers, ordinary and vector/alpha/luminance text-mask glyphs, inline canvas textarea, Canvas2D/DOM text measurement, raised/lowered glyph envelopes, wrapping, auto sizing, hanging-quote measurements, cap-height references and OpenType specimens all use the same escaped family stack. Fallback edits invalidate saved imported glyph outlines. Developer CSS includes the ordered stack.
+
+This intentionally corrects a previous inconsistency: root SVG text specified a system tail while rich tspans and measurement often used only one family. An unavailable primary face or uncovered glyph can therefore have different browser metrics than the previous implicit fallback, even when the new field is absent. Existing available primary-font geometry and headless estimates are preserved; no optional field is written as a side effect. Auto-sized text can reflow when font availability changes, as with the existing font refresh workflow.
+
+Font requests include primary and all explicit fallback families for each used rich range, weight, style and text. Saved projects, design clipboard, editor SVG/raster export, slide export and source MCP SVG retain eligible embedded font faces using existing usage/Unicode-range/embedding-permission rules. These rules select declared font subsets, not exact glyph coverage; a potentially usable fallback may be embedded even if the browser did not choose it. Restricted fonts are excluded. Installed system faces and CSS generic families are not bundled automatically.
+
+## Interchange and limits
+
+`.oui` and supported rich clipboard data preserve editable policies. SVG preserves family order and embeds eligible available font assets; rendering depends on the receiving SVG/browser renderer supporting those fonts. Editable SVG and external HTML imports read bounded, quoted/escaped family lists, including commas inside quoted names. SVG import omits a redundant final `system-ui, sans-serif` tail. More than eight explicit fallback names, oversized/invalid names and quoted literal generic names are refused. The existing editable SVG importer still has its own shaping/layout limits.
+
+The Figma Bridge validates these fields but explicitly reports that editable Figma transfer omits ordered fallback policies. It continues to choose a base native font through its existing adapter; there is no live Figma glyph-policy round-trip claim. Source MCP SVG uses approximate headless text metrics and warns that installed fonts are not embedded. Native AppKit/WKWebView acceptance, native screen readers, exact script coverage, alternate export-engine shaping and color emoji fidelity are not verified by this source-only pass.
+
+## Verification
+
+Core tests cover validation/atomic failure, `.oui` versions 1/2, primary precedence and escaping, range inheritance/copy/rebasing, style creation/update/legacy defaults, generated instance overrides/reset/Undo, potential-face embedding and source MCP/Bridge boundaries. Actual Chromium checks use existing open-license font files under synthetic family names and a Unicode-restricted primary face: Greek/Cyrillic characters must fall through to another embedded face, shared measurements must match actual SVG text lengths, and changing fallback order must change rasterized SVG pixels. Other checks cover save/reopen, masks, auto width, cap height/quotes/DOM probes, old missing-field documents, stale range/mode/selection handlers, inherited locks and long names at 1280×720 / 125% UI scale. Test font aliases and declared Unicode ranges are synthetic fixtures, not a product coverage-detection feature.
