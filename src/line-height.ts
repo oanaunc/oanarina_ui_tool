@@ -1,0 +1,5 @@
+import type {DesignNode} from './model';
+export type LineHeightUnit='multiplier'|'percent'|'px';
+export function validateLineHeightPx(value:unknown){if(value!==undefined&&(typeof value!=='number'||!Number.isFinite(value)||value<=0||value>10000))throw Error('Pixel line height must be greater than zero and at most 10000.');}
+export function lineHeightValue(n:Pick<DesignNode,'lineHeight'|'lineHeightPx'|'fontSize'>,unit:LineHeightUnit){const ratio=n.lineHeightPx===undefined?n.lineHeight:n.lineHeightPx/n.fontSize;return unit==='px'?n.lineHeightPx??n.lineHeight*n.fontSize:unit==='percent'?ratio*100:ratio;}
+export function lineHeightPatch(value:number,unit:LineHeightUnit,fontSize:number){if(!Number.isFinite(fontSize)||fontSize<=0)throw Error('Invalid font size.');if(!Number.isFinite(value)||value<=0)throw Error('Line height must be greater than zero.');const ratio=unit==='px'?value/fontSize:unit==='percent'?value/100:value;if(ratio>100)throw Error('Line height supports at most 100 times the base font size.');if(unit==='px')validateLineHeightPx(value);return {lineHeight:ratio,lineHeightPx:unit==='px'?value:undefined};}
