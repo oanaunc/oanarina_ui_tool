@@ -1,4 +1,5 @@
 import {validateDocumentLayoutSettings} from './layout-settings';
+import {validateDocumentLinearGradients} from './linear-gradient';
 import {validateComponentWorkflowMetadata} from './component-workflow-metadata';
 import {validateDocumentMedia} from './media';
 import {validateSectionMetadata} from './section-metadata';
@@ -15,6 +16,7 @@ export function validateDocumentMetadata(document:{description?:unknown;pages?:u
  validateDocumentExportSettings(document);
  validateSectionMetadata(document);
  validateDocumentImageAdjustments(document);
+ validateDocumentLinearGradients(document);
  validateDocumentArrowheads(document);
  validateComponentWorkflowMetadata(document);
  validateDocumentMedia(document);

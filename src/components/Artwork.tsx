@@ -1,3 +1,4 @@
+import {GradientPaintDefinition} from './GradientPaintDefinition';
 import {textLinePlacement} from '../text-direction';
 import {textBackgroundColor} from '../text-background';
 import {textAccessibleName} from '../text-description';
@@ -21,9 +22,7 @@ import {maskRegion,maskRuns,vectorPaintVisible} from '../masks';
 import type {MaskMode} from '../masks';
 function paintValue(p:Paint,id:string){return p.type==='solid'?p.color:`url(#${id})`;}
 function PaintDefinition({paint:p,id,n,strokeSpace=false}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean}){
- const stops=[...p.stops].sort((a,b)=>a.position-b.position).map(s=><stop key={s.id} offset={s.position} stopColor={s.color} stopOpacity={s.opacity}/>),a=p.angle*Math.PI/180;
- if(p.type==='linear')return <linearGradient id={id} gradientUnits={strokeSpace?'userSpaceOnUse':undefined} gradientTransform={strokeSpace?`scale(${Math.max(.001,n.width)} ${Math.max(.001,n.height)})`:undefined} x1={.5-Math.cos(a)/2} y1={.5-Math.sin(a)/2} x2={.5+Math.cos(a)/2} y2={.5+Math.sin(a)/2}>{stops}</linearGradient>;
- if(p.type==='radial')return <radialGradient id={id} gradientUnits={strokeSpace?'userSpaceOnUse':undefined} gradientTransform={strokeSpace?`scale(${Math.max(.001,n.width)} ${Math.max(.001,n.height)})`:undefined} cx={p.cx} cy={p.cy} r={p.radius}>{stops}</radialGradient>;
+ if(p.type==='linear'||p.type==='radial')return <GradientPaintDefinition paint={p} id={id} width={n.width} height={n.height} userSpace={strokeSpace}/>;
  if(p.type==='angular'||p.type==='diamond')return <pattern id={id} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} patternUnits={strokeSpace?'userSpaceOnUse':undefined} patternContentUnits={strokeSpace?'userSpaceOnUse':'objectBoundingBox'}><image href={rasterGradient(p)} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} preserveAspectRatio="none"/></pattern>;
  if(p.type==='image')return <ImagePaintDefinition paint={p} id={id} width={strokeSpace?Math.max(1,n.width):n.width} height={strokeSpace?Math.max(1,n.height):n.height} userSpace={strokeSpace}/>;
  return null;
