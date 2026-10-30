@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1283,"partial":223,"planned":516}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1305,"partial":230,"planned":487}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -174,7 +174,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-05-019 | Page loading on demand | planned | reference-verification-pending |
 | UI-05-020 | Page section organization | planned | reference-verification-pending |
 | UI-05-021 | Page-specific prototype flows | implemented | v0.2.0-dev.9 audit: Existing page-owned starting-flow authoring supports name/description/frame, Undo/Redo and saved .oui. Two-page actual browser verification checks separate IDs, recovery, explicit saved-file open and page-only presentation choices/start frames. No hosted sharing or cross-page prototype links. docs/PAGES.md. |
-| UI-05-022 | Page-level developer status | planned | reference-verification-pending |
+| UI-05-022 | Page-level developer status | implemented | Inspect → Development handoff marks or resets the current page as ready/completed; independent page metadata persists with Undo and legacy absence is preserved. Cross-page handoff search and real navigation are available. File-local status only; reference/native verification pending. See docs/LOCAL-HANDOFF-STATUS.md. |
 | UI-05-023 | Page identifier persistence | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-05-024 | Document color profile | planned | reference-verification-pending |
 | UI-05-025 | sRGB document profile | planned | reference-verification-pending |
@@ -1356,34 +1356,34 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | --- | --- | --- | --- |
 | UI-36-001 | Add canvas comment | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-36-002 | Comment pin position | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-36-003 | Comment author display | planned | reference-verification-pending |
-| UI-36-004 | Comment creation timestamp | planned | reference-verification-pending |
-| UI-36-005 | Comment text editing | planned | Not implemented in this preview. |
+| UI-36-003 | Comment author display | implemented | File-local threads show saved authors for posts/replies. New messages use an explicit session display name; legacy absent authors stay unknown. No account authentication or author permissions. See docs/LOCAL-COMMENT-THREADS.md. |
+| UI-36-004 | Comment creation timestamp | implemented | New file-local posts/replies save creation timestamps and display localized times; edits retain creation time plus edited timestamp. Legacy absent time remains unrecorded. Validation, Undo and persistence are checked. See docs/LOCAL-COMMENT-THREADS.md. |
+| UI-36-005 | Comment text editing | implemented | Thread panel edits root/reply text through source-bound drafts and ordinary document history, preserving authors/creation times and recording edited time. Stale same-event actions refuse; bounded legacy text is disclosed. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-006 | Delete own comment | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-36-007 | Reply to comment | planned | reference-verification-pending |
+| UI-36-007 | Reply to comment | implemented | Thread panel posts, edits and deletes bounded file-local replies with explicit local author/time, Undo/save/reopen, per-thread pagination and malformed-input refusal. No mentions, remote delivery or account ownership. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-008 | Mention collaborator | planned | reference-verification-pending |
 | UI-36-009 | Resolve comment | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-36-010 | Reopen comment | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-36-011 | Filter unresolved comments | planned | reference-verification-pending |
-| UI-36-012 | Filter resolved comments | planned | reference-verification-pending |
-| UI-36-013 | Filter comments by author | planned | reference-verification-pending |
-| UI-36-014 | Jump to comment | planned | reference-verification-pending |
+| UI-36-011 | Filter unresolved comments | implemented | Cross-page local thread panel filters unresolved threads with bounded indexing/search and explicit truncation diagnostics; filtering changes no document history. See docs/LOCAL-COMMENT-THREADS.md. |
+| UI-36-012 | Filter resolved comments | implemented | Cross-page local thread panel filters resolved threads and reopens them through Undoable edits; filtering changes no project. See docs/LOCAL-COMMENT-THREADS.md. |
+| UI-36-013 | Filter comments by author | implemented | Local thread panel filters saved root/reply author names, alongside status/search and result pagination. Legacy unknown identity is explicit; no cloud user picker. See docs/LOCAL-COMMENT-THREADS.md. |
+| UI-36-014 | Jump to comment | implemented | Jump selects the actual page/anchored layer and centers the derived affine pin position using the logical SVG viewport, preserving artwork and Undo. Missing/collapsed anchors use disclosed saved-position fallback. Source/identity/context guards prevent stale retargeting. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-015 | Comment thread panel | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-36-016 | Comment notification | planned | reference-verification-pending |
 | UI-36-017 | Comment link | planned | reference-verification-pending |
 | UI-36-018 | Emoji reaction | planned | reference-verification-pending |
-| UI-36-019 | Copy comment text | planned | reference-verification-pending |
+| UI-36-019 | Copy comment text | implemented | Copy root/reply plain text from the local thread panel; browser clipboard refusal exposes a selected read-only text fallback for standard Command-C. No fabricated native node/SVG clipboard representation or expanded IPC. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-020 | Comment on prototype | planned | reference-verification-pending |
 | UI-36-021 | Comment permissions | planned | reference-verification-pending |
-| UI-36-022 | Annotation tool | planned | reference-verification-pending |
-| UI-36-023 | Annotation text | planned | reference-verification-pending |
-| UI-36-024 | Annotation category | planned | reference-verification-pending |
-| UI-36-025 | Annotation categories management | planned | reference-verification-pending |
-| UI-36-026 | Annotated property reference | planned | reference-verification-pending |
-| UI-36-027 | Measurement annotation | planned | reference-verification-pending |
-| UI-36-028 | Distance annotation | planned | reference-verification-pending |
-| UI-36-029 | Developer note | planned | reference-verification-pending |
-| UI-36-030 | Annotation visibility | planned | reference-verification-pending |
+| UI-36-022 | Annotation tool | partial | Inspect offers real layer annotation editing and optional HTML canvas marker navigation, with private note persistence/Undo. A dedicated pointer annotation placement tool is not implemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-023 | Annotation text | implemented | Inspect → Layer annotations creates/edits/removes literal plain-text notes with Undo/save/reopen, original-context guards, locks and component defaults/root overrides. Private metadata is excluded from artwork, library and explicit Figma delivery. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-024 | Annotation category | partial | Annotations choose real named/color categories from their owning layer set. Per-layer scoped categories preserve coherent whole-set instance overrides; document-global categories and exact Figma category parity remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-025 | Annotation categories management | partial | Inspect creates, renames, recolors and deletes local annotation categories with atomic reference cleanup, Undo and persistence. Categories belong to one layer set; document-global category management remains unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-026 | Annotated property reference | partial | Property annotations reference eight validated numeric fields and display their live authored values. Unsupported property types and general paint/style/prototype property references remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-027 | Measurement annotation | partial | Measurement annotations compute transformed authored box width/height/diagonal using translation-independent affine linear vectors; actual geometry changes update values. Arbitrary point/edge and ink measurements remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-028 | Distance annotation | partial | Distance annotations follow validated/remapped same-page targets and compute live center-to-center distances, with missing-target and insufficient numeric precision diagnostics. Edge-gap/arbitrary-point distances remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-029 | Developer note | implemented | Inspect creates and edits file-local developer notes, filters them and displays them in cross-page handoff annotations. Validation, context guards, Undo/persistence and component root override semantics apply; no hosted developer assignment. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
+| UI-36-030 | Annotation visibility | partial | Saved per-layer annotation marker visibility and an ephemeral global canvas marker toggle work with Undo for stored changes. HTML count markers stay outside Artwork exports; full on-canvas annotation text/measurement visibility parity remains unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
 
 ## Collaboration
 
@@ -1449,12 +1449,12 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-38-017 | Version author | planned | reference-verification-pending |
 | UI-38-018 | Version timestamp | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
 | UI-38-019 | Version description | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-38-020 | Preview older version | planned | reference-verification-pending |
+| UI-38-020 | Preview older version | implemented | File → Version history → Preview loads a validated historical snapshot lazily and shows any saved page without mutating/registering historical fonts in the editor. Shared bounded cover renderer reports unsupported/missing-font limits. No pixel-perfect reference claim. See docs/LOCAL-VERSION-REVIEW.md. |
 | UI-38-021 | Restore older version | implemented | v0.2.0-dev.2: transactional IndexedDB documents/active pointer and named snapshots; additive migration preserves old localStorage copies. Browser tests cover migration, restoration/undo and a real embedded image larger than the previous storage quota. |
-| UI-38-022 | Duplicate version as new file | planned | reference-verification-pending |
+| UI-38-022 | Duplicate version as new file | implemented | A reviewed named version duplicates into an independent local file in All files without replacing the current design. Full validation, original-context checks and abortable repository writes prevent stale actions. Scoped internal references stay intact. See docs/LOCAL-VERSION-REVIEW.md. |
 | UI-38-023 | Version link | planned | reference-verification-pending |
-| UI-38-024 | Compare versions | planned | reference-verification-pending |
-| UI-38-025 | Version change summary | planned | reference-verification-pending |
+| UI-38-024 | Compare versions | implemented | Named local version → Compare with current design matches stable page/layer IDs, reports additions/removals/changes/cross-page moves and layer order changes. Object key order/timestamps do not create changes. Structural comparison only; no pixel diff or author attribution. See docs/LOCAL-VERSION-REVIEW.md. |
+| UI-38-025 | Version change summary | implemented | Version comparison summarizes complete layer/page/document changes and named fields, with 200 bounded entries and explicit count/budget diagnostics. Report omits property values, comment bodies, URLs and image/font bytes. See docs/LOCAL-VERSION-REVIEW.md. |
 | UI-38-026 | Branch creation | planned | reference-verification-pending |
 | UI-38-027 | Branch review | planned | reference-verification-pending |
 | UI-38-028 | Branch merge | planned | reference-verification-pending |
@@ -1580,10 +1580,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-41-017 | Alias chain inspection | implemented | Named iterative alias traces include collection/mode/fallback, missing/cycle labels and visible 256-hop guard. See docs/DEV-INSPECTION.md. |
 | UI-41-018 | Download selected asset | planned | reference-verification-pending |
 | UI-41-019 | Automatic icon detection | planned | reference-verification-pending |
-| UI-41-020 | Ready-for-development status | planned | reference-verification-pending |
-| UI-41-021 | Completed development status | planned | reference-verification-pending |
-| UI-41-022 | Handoff section list | planned | reference-verification-pending |
-| UI-41-023 | Handoff annotation display | planned | reference-verification-pending |
+| UI-41-020 | Ready-for-development status | implemented | Inspect marks page or one unlocked non-managed layer ready for development, with badges/search, component defaults and explicit instance-root overrides/reset. Legacy section Ready flags remain compatible. One Undo/save/reopen; no cloud assignment or completion verification. See docs/LOCAL-HANDOFF-STATUS.md. |
+| UI-41-021 | Completed development status | implemented | Inspect marks page or unlocked editable layer completed, resets to no status, filters completed layers and keeps source/instance override semantics. Validation, context/Motion guards, Undo/save/reopen apply. Local authored status, not verified code completion. See docs/LOCAL-HANDOFF-STATUS.md. |
+| UI-41-022 | Handoff section list | implemented | Inspect handoff list searches ready/completed pages, sections and layers across the file; status/scope filters, bounded indexing, 50-row pagination and actual page/layer navigation preserve hidden/locked artwork. No hosted developer workspace. See docs/LOCAL-HANDOFF-STATUS.md. |
+| UI-41-023 | Handoff annotation display | implemented | Inspect shows actual file-local handoff annotation text, kinds/categories and live supported values across pages, with search/type filtering, bounded results and source-safe navigation to hidden/locked owners. Source references and private metadata survive .oui; no hosted annotation backend. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
 | UI-41-024 | Developer links | implemented | Inspect → Developer resources attaches named file-local HTTP(S) links; explicit isolated open/copy, no automatic requests. Validated metadata, real Undo/save/reopen, locks and stale-context guards. Resource sites retain their own permissions. See docs/DEVELOPER-RESOURCES.md. |
 | UI-41-025 | Attach issue link | implemented | Inspect → Developer resources → Issue accepts a named validated HTTP(S) issue URL, editable/removable/copyable with Undo/save/reopen. File-local attachment only; no issue-account authentication or status synchronization. See docs/DEVELOPER-RESOURCES.md. |
 | UI-41-026 | Attach documentation link | implemented | Inspect → Developer resources → Documentation attaches a named validated HTTP(S) documentation URL with explicit open/copy, editing/removal, Undo and persistence. No remote content embedding or automatic fetch. See docs/DEVELOPER-RESOURCES.md. |
@@ -1702,7 +1702,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-44-020 | High-contrast selection | planned | reference-verification-pending |
 | UI-44-021 | Accessible tooltips | planned | reference-verification-pending |
 | UI-44-022 | Accessible error announcements | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-44-023 | Accessible comment threads | planned | reference-verification-pending |
+| UI-44-023 | Accessible comment threads | implemented | Canvas pins have keyboard activation and original-source proofs; thread dialog supports focus trap/return, focused-thread headings, labeled filters/forms, pagination, readable authors/times, errors/status and plain-copy fallback at 125% UI scale. Native assistive-technology/reference acceptance pending. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-44-024 | English interface | planned | reference-verification-pending |
 | UI-44-025 | Romanian interface | planned | reference-verification-pending |
 | UI-44-026 | Additional language packs | planned | reference-verification-pending |
@@ -2072,7 +2072,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-54-016 | Token consistency audit | planned | reference-verification-pending |
 | UI-54-017 | Batch rename preview | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Batch rename shows every resulting name and validates the complete selection before a single edit. |
 | UI-54-018 | Multi-format export queue | planned | reference-verification-pending |
-| UI-54-019 | Document minimap navigation | planned | reference-verification-pending |
+| UI-54-019 | Document minimap navigation | implemented | View/Actions → Show overview minimap shows current-page schematic bounds, camera viewport, click/drag/keyboard navigation and Fit/F, with camera history and no saved-artwork edit. Cached bounded affine transforms, logical viewport/scaled tracks and permanent source/gesture interruption proofs are tested. Approximate clips, no masks/effect ink or all-pages atlas. See docs/DOCUMENT-MINIMAP.md. |
 | UI-54-020 | Command usage learning | planned | reference-verification-pending |
 | UI-54-021 | Custom workspace layouts | planned | reference-verification-pending |
 | UI-54-022 | Side-by-side device preview | planned | reference-verification-pending |

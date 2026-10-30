@@ -1424,10 +1424,10 @@
     "category": "Pages and document structure",
     "name": "Page-level developer status",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Inspect → Development handoff marks or resets the current page as ready/completed; independent page metadata persists with Undo and legacy absence is preserved. Cross-page handoff search and real navigation are available. File-local status only; reference/native verification pending. See docs/LOCAL-HANDOFF-STATUS.md."
   },
   {
     "id": "UI-05-023",
@@ -11694,30 +11694,30 @@
     "category": "Comments and annotations",
     "name": "Comment author display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "File-local threads show saved authors for posts/replies. New messages use an explicit session display name; legacy absent authors stay unknown. No account authentication or author permissions. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-004",
     "category": "Comments and annotations",
     "name": "Comment creation timestamp",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "New file-local posts/replies save creation timestamps and display localized times; edits retain creation time plus edited timestamp. Legacy absent time remains unrecorded. Validation, Undo and persistence are checked. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-005",
     "category": "Comments and annotations",
     "name": "Comment text editing",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "Thread panel edits root/reply text through source-bound drafts and ordinary document history, preserving authors/creation times and recording edited time. Stale same-event actions refuse; bounded legacy text is disclosed. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-006",
@@ -11734,10 +11734,10 @@
     "category": "Comments and annotations",
     "name": "Reply to comment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Thread panel posts, edits and deletes bounded file-local replies with explicit local author/time, Undo/save/reopen, per-thread pagination and malformed-input refusal. No mentions, remote delivery or account ownership. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-008",
@@ -11774,40 +11774,40 @@
     "category": "Comments and annotations",
     "name": "Filter unresolved comments",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Cross-page local thread panel filters unresolved threads with bounded indexing/search and explicit truncation diagnostics; filtering changes no document history. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-012",
     "category": "Comments and annotations",
     "name": "Filter resolved comments",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Cross-page local thread panel filters resolved threads and reopens them through Undoable edits; filtering changes no project. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-013",
     "category": "Comments and annotations",
     "name": "Filter comments by author",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Local thread panel filters saved root/reply author names, alongside status/search and result pagination. Legacy unknown identity is explicit; no cloud user picker. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-014",
     "category": "Comments and annotations",
     "name": "Jump to comment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Jump selects the actual page/anchored layer and centers the derived affine pin position using the logical SVG viewport, preserving artwork and Undo. Missing/collapsed anchors use disclosed saved-position fallback. Source/identity/context guards prevent stale retargeting. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-015",
@@ -11854,10 +11854,10 @@
     "category": "Comments and annotations",
     "name": "Copy comment text",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Copy root/reply plain text from the local thread panel; browser clipboard refusal exposes a selected read-only text fallback for standard Command-C. No fabricated native node/SVG clipboard representation or expanded IPC. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-36-020",
@@ -11884,90 +11884,90 @@
     "category": "Comments and annotations",
     "name": "Annotation tool",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Inspect offers real layer annotation editing and optional HTML canvas marker navigation, with private note persistence/Undo. A dedicated pointer annotation placement tool is not implemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-023",
     "category": "Comments and annotations",
     "name": "Annotation text",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Inspect → Layer annotations creates/edits/removes literal plain-text notes with Undo/save/reopen, original-context guards, locks and component defaults/root overrides. Private metadata is excluded from artwork, library and explicit Figma delivery. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-024",
     "category": "Comments and annotations",
     "name": "Annotation category",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Annotations choose real named/color categories from their owning layer set. Per-layer scoped categories preserve coherent whole-set instance overrides; document-global categories and exact Figma category parity remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-025",
     "category": "Comments and annotations",
     "name": "Annotation categories management",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Inspect creates, renames, recolors and deletes local annotation categories with atomic reference cleanup, Undo and persistence. Categories belong to one layer set; document-global category management remains unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-026",
     "category": "Comments and annotations",
     "name": "Annotated property reference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Property annotations reference eight validated numeric fields and display their live authored values. Unsupported property types and general paint/style/prototype property references remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-027",
     "category": "Comments and annotations",
     "name": "Measurement annotation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Measurement annotations compute transformed authored box width/height/diagonal using translation-independent affine linear vectors; actual geometry changes update values. Arbitrary point/edge and ink measurements remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-028",
     "category": "Comments and annotations",
     "name": "Distance annotation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Distance annotations follow validated/remapped same-page targets and compute live center-to-center distances, with missing-target and insufficient numeric precision diagnostics. Edge-gap/arbitrary-point distances remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-029",
     "category": "Comments and annotations",
     "name": "Developer note",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Inspect creates and edits file-local developer notes, filters them and displays them in cross-page handoff annotations. Validation, context guards, Undo/persistence and component root override semantics apply; no hosted developer assignment. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-36-030",
     "category": "Comments and annotations",
     "name": "Annotation visibility",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Saved per-layer annotation marker visibility and an ephemeral global canvas marker toggle work with Undo for stored changes. HTML count markers stay outside Artwork exports; full on-canvas annotation text/measurement visibility parity remains unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-37-001",
@@ -12524,10 +12524,10 @@
     "category": "History and recovery",
     "name": "Preview older version",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "File → Version history → Preview loads a validated historical snapshot lazily and shows any saved page without mutating/registering historical fonts in the editor. Shared bounded cover renderer reports unsupported/missing-font limits. No pixel-perfect reference claim. See docs/LOCAL-VERSION-REVIEW.md."
   },
   {
     "id": "UI-38-021",
@@ -12544,10 +12544,10 @@
     "category": "History and recovery",
     "name": "Duplicate version as new file",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A reviewed named version duplicates into an independent local file in All files without replacing the current design. Full validation, original-context checks and abortable repository writes prevent stale actions. Scoped internal references stay intact. See docs/LOCAL-VERSION-REVIEW.md."
   },
   {
     "id": "UI-38-023",
@@ -12564,20 +12564,20 @@
     "category": "History and recovery",
     "name": "Compare versions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Named local version → Compare with current design matches stable page/layer IDs, reports additions/removals/changes/cross-page moves and layer order changes. Object key order/timestamps do not create changes. Structural comparison only; no pixel diff or author attribution. See docs/LOCAL-VERSION-REVIEW.md."
   },
   {
     "id": "UI-38-025",
     "category": "History and recovery",
     "name": "Version change summary",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Version comparison summarizes complete layer/page/document changes and named fields, with 200 bounded entries and explicit count/budget diagnostics. Report omits property values, comment bodies, URLs and image/font bytes. See docs/LOCAL-VERSION-REVIEW.md."
   },
   {
     "id": "UI-38-026",
@@ -13684,40 +13684,40 @@
     "category": "Dev Mode and inspection",
     "name": "Ready-for-development status",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect marks page or one unlocked non-managed layer ready for development, with badges/search, component defaults and explicit instance-root overrides/reset. Legacy section Ready flags remain compatible. One Undo/save/reopen; no cloud assignment or completion verification. See docs/LOCAL-HANDOFF-STATUS.md."
   },
   {
     "id": "UI-41-021",
     "category": "Dev Mode and inspection",
     "name": "Completed development status",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect marks page or unlocked editable layer completed, resets to no status, filters completed layers and keeps source/instance override semantics. Validation, context/Motion guards, Undo/save/reopen apply. Local authored status, not verified code completion. See docs/LOCAL-HANDOFF-STATUS.md."
   },
   {
     "id": "UI-41-022",
     "category": "Dev Mode and inspection",
     "name": "Handoff section list",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect handoff list searches ready/completed pages, sections and layers across the file; status/scope filters, bounded indexing, 50-row pagination and actual page/layer navigation preserve hidden/locked artwork. No hosted developer workspace. See docs/LOCAL-HANDOFF-STATUS.md."
   },
   {
     "id": "UI-41-023",
     "category": "Dev Mode and inspection",
     "name": "Handoff annotation display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect shows actual file-local handoff annotation text, kinds/categories and live supported values across pages, with search/type filtering, bounded results and source-safe navigation to hidden/locked owners. Source references and private metadata survive .oui; no hosted annotation backend. See docs/LOCAL-LAYER-ANNOTATIONS.md."
   },
   {
     "id": "UI-41-024",
@@ -14754,10 +14754,10 @@
     "category": "Accessibility and localization",
     "name": "Accessible comment threads",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Canvas pins have keyboard activation and original-source proofs; thread dialog supports focus trap/return, focused-thread headings, labeled filters/forms, pagination, readable authors/times, errors/status and plain-copy fallback at 125% UI scale. Native assistive-technology/reference acceptance pending. See docs/LOCAL-COMMENT-THREADS.md."
   },
   {
     "id": "UI-44-024",
@@ -17954,10 +17954,10 @@
     "category": "Oanarina improvements after parity",
     "name": "Document minimap navigation",
     "priority": "after-parity",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": null,
-    "notes": ""
+    "notes": "View/Actions → Show overview minimap shows current-page schematic bounds, camera viewport, click/drag/keyboard navigation and Fit/F, with camera history and no saved-artwork edit. Cached bounded affine transforms, logical viewport/scaled tracks and permanent source/gesture interruption proofs are tested. Approximate clips, no masks/effect ink or all-pages atlas. See docs/DOCUMENT-MINIMAP.md."
   },
   {
     "id": "UI-54-020",
