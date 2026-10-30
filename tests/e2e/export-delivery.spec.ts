@@ -7,7 +7,7 @@ import {blankDocument,node,parseDocument} from '../../src/model';
 import type {DesignDocument} from '../../src/model';
 import {createPaint} from '../../src/paints';
 import {defaultFrameExportSetting} from '../../src/frame-export-settings';
-async function load(page:Page,d:DesignDocument){d.fonts=[];await page.addInitScript(doc=>localStorage.setItem('oui-active',JSON.stringify(doc)),d);await page.goto('/');await expect(page.locator('.layer-row')).toHaveCount(d.pages[0].nodes.length);}
+async function load(page:Page,d:DesignDocument){page.on('filechooser',()=>{});d.fonts=[];await page.addInitScript(doc=>localStorage.setItem('oui-active',JSON.stringify(doc)),d);await page.goto('/');await expect(page.locator('.layer-row')).toHaveCount(d.pages[0].nodes.length);}
 async function save(page:Page){const event=page.waitForEvent('download');await page.keyboard.press('Meta+s');return parseDocument(await fs.readFile((await(await event).path())!,'utf8'));}
 async function bytes(download:Download){return new Uint8Array(await fs.readFile((await download.path())!));}
 async function pixels(page:Page,data:Uint8Array,points:number[][]){return page.evaluate(async({data,points})=>{const image=await createImageBitmap(new Blob([new Uint8Array(data)])),canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const ctx=canvas.getContext('2d')!;ctx.drawImage(image,0,0);const result={width:image.width,height:image.height,pixels:points.map(([x,y])=>[...ctx.getImageData(x,y,1,1).data])};image.close();return result;},{data:[...data],points});}
