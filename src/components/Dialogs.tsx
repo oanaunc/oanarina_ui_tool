@@ -2,6 +2,7 @@ import FigImportReport from './FigImportReport';
 import {clearFigImportReport,getFigImportReport} from '../fig-import';
 import FileInformation from './FileInformation';
 import MoveLayersDialog from './MoveLayersDialog';
+import TextSearch from './TextSearch';
 import ActionPalette from './ActionPalette';
 import Preferences from './Preferences';
 import ReleaseNotes from './ReleaseNotes';
@@ -31,6 +32,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{setQuery('');setCategory('All');setFilter('All');setValue(modal==='rename-file'?s.doc.name:modal==='rename-page'?page.name:modal==='rename'?n?.name??'':modal==='text-link'?n?.hyperlink??'':'');if(modal==='roadmap')fetch('./features.json').then(r=>r.json()).then(setFeatures).catch(notifyError);},[modal]);
  if(!modal)return null;
  const close=()=>{if(modal==='fig-import-report')clearFigImportReport();if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
+ if(modal==='text-search')return <TextSearch key={s.doc.id}/>;
  if(modal==='move-to-page')return <MoveLayersDialog/>;
  if(modal==='present')return <PrototypePresentation/>;
 

@@ -660,6 +660,12 @@
     ""
   ],
   [
+    "text-find",
+    "Find and replace text…",
+    "Text",
+    "⌘F"
+  ],
+  [
     "text-bold",
     "Bold",
     "Text",

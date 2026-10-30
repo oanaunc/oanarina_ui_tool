@@ -54,6 +54,28 @@ extension Studio {
                     self.waitForCamera(document,zoomed,equal:true){_ in
                         self.check(document.state?.dirty==dirty,"native camera history keeps document dirty state")
                         self.check(true,"native Option-Command-Right restores forward camera")
+                        self.verifyTextSearchMenu(document,completion)
+                    }
+                }
+            }
+        }
+    }
+    func verifyTextSearchMenu(_ document:DocumentWindow,_ completion:@escaping()->Void){
+        guard let text=NSApp.mainMenu?.items.first(where:{$0.title=="Text"})?.submenu,let item=text.items.first(where:{$0.representedObject as? String=="text-find"}) else{smokeFail("native Text Find menu")}
+        check(item.keyEquivalent=="f" && item.keyEquivalentModifierMask==[.command],"native Find uses Command-F only")
+        let dirty=document.state?.dirty
+        func findKey(){guard let event=NSEvent.keyEvent(with:.keyDown,location:.zero,modifierFlags:[.command],timestamp:ProcessInfo.processInfo.systemUptime,windowNumber:0,context:nil,characters:"f",charactersIgnoringModifiers:"f",isARepeat:false,keyCode:3),NSApp.mainMenu?.performKeyEquivalent(with:event)==true else{self.smokeFail("AppKit Find key dispatch")}}
+        findKey()
+        let wait="return await new Promise((resolve,reject)=>{const end=performance.now()+5000;function tick(){const input=document.querySelector('.text-search-dialog input[type=search]');if(input&&document.activeElement===input){resolve(true);return;}if(performance.now()>end){reject(Error('Native Find did not focus query'));return;}setTimeout(tick,25);}tick();});"
+        smokeJS(document,wait){_ in
+            self.check(true,"native Command-F opens focused text search")
+            self.smokeJS(document,"const query=document.querySelector('.text-search-dialog input[type=search]');query.value='native query';query.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.text-search-dialog textarea').focus();return true;"){_ in
+                findKey()
+                self.smokeJS(document,wait){_ in
+                    self.check(true,"repeated native Command-F refocuses query")
+                    self.smokeJS(document,"const input=document.querySelector('.text-search-dialog input[type=search]');if(input.selectionStart!==0||input.selectionEnd!==input.value.length)throw Error('Find query not selected');input.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));if(document.querySelector('.text-search-dialog'))throw Error('Find did not close');return true;"){_ in
+                        self.check(true,"native Find selects query and closes with Escape")
+                        self.check(document.state?.dirty==dirty,"native Find keeps document dirty state")
                         completion()
                     }
                 }
