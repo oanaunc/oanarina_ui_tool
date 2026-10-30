@@ -36,3 +36,5 @@ The new component checks use a strict API-contract mock with live inheritance, o
 Reference: [Figma component properties](https://developers.figma.com/docs/plugins/working-with-component-properties/), [instances](https://developers.figma.com/docs/plugins/api/InstanceNode/) and [component sets](https://developers.figma.com/docs/plugins/api/ComponentSetNode/).
 
 Forma image adjustments are preserved by the app’s SVG/PNG rendering. Editable Bridge transfer retains the embedded source asset and explicitly reports nonzero adjustments as omitted; it does not map Forma tone curves to Figma filter parameters. Section ready-for-development metadata is local to Forma and is reported as omitted when its section is transferred as a frame. These omission checks have API-contract mock coverage, not desktop plugin acceptance.
+
+Saved Forma layer export profiles (including custom scales, width/height sizing and suffixes) are validated before editable Bridge import and reported as omitted. Exported asset files and ZIP checksum manifests are delivery artifacts, separate from editable layer transfer.

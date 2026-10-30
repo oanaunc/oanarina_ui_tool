@@ -1,0 +1,54 @@
+import {effectiveVisible} from './model';
+import {zipSync} from 'fflate';
+import {useEditor} from './store';
+import {download,exportNodes,exportSvg} from './files';
+import {visualBounds} from './transforms';
+import {fillsFor,strokesFor} from './paints';
+import {sampleMotion} from './motion';
+import {frameExportFilename,exportFilename,validateFrameExportSettings} from './frame-export-settings';
+import type {FrameExportSetting} from './frame-export-settings';
+import {EXPORT_ASSET_LIMIT,EXPORT_BYTE_LIMIT,exportDimensions,exportTargets,layerExportGeometry} from './export-plan';
+import type {ExportTargetMode} from './export-plan';
+export interface ExportJob {name:string;format:FrameExportSetting['format'];svg:string;width:number;height:number;scale:number;quality?:number;images?:string[];}
+export interface ExportBatch {name:string;documentName:string;pageName:string;jobs:ExportJob[];}
+function imageSources(nodes:ReturnType<typeof exportNodes>){
+ const map=new Map(nodes.map(n=>[n.id,n])),shown=new Map<string,boolean>(),sources=new Set<string>();
+ const visible=(n:typeof nodes[number])=>{const trail:typeof nodes=[],seen=new Set<string>();let current:typeof n|undefined=n;while(current&&!shown.has(current.id)&&!seen.has(current.id)){trail.push(current);seen.add(current.id);current=map.get(current.parentId??'');}let value=current?(shown.get(current.id)??false):true;for(const entry of trail.reverse()){value=value&&entry.visible&&entry.opacity>0;shown.set(entry.id,value);}return shown.get(n.id)!;};
+ for(const n of nodes)if(!n.exportGhost&&n.type!=='slice'&&visible(n))for(const p of [...fillsFor(n),...strokesFor(n).filter(s=>s.visible&&s.width>0).map(s=>s.paint)])if(p.type==='image'&&p.visible&&p.opacity>0&&p.image)sources.add(p.image);
+ return [...sources];
+}
+export function layerExportJob(id:string,setting:FrameExportSetting):ExportJob{
+ validateFrameExportSettings([setting]);const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The export page is missing.');const nodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,n=nodes.find(n=>n.id===id);if(!n)throw Error('The export layer is missing.');const geometry=layerExportGeometry({...page,nodes},id,setting.bounds),size=exportDimensions(geometry.viewport.width,geometry.viewport.height,setting);
+ return {name:frameExportFilename(n.name,setting),format:setting.format,quality:setting.quality,...size,images:imageSources(geometry.nodes),svg:exportSvg(geometry.nodes,geometry.viewport,setting.includeGuides,{transform:geometry.transform,scale:setting.format==='svg'?size.scale:1,dimensions:size})};
+}
+export function combinedExportJob(format:FrameExportSetting['format'],scale=1,includeGuides=false,sizing?:FrameExportSetting['sizing'],quality=.95):ExportJob{
+ const s=useEditor.getState(),nodes=exportNodes();if(!nodes.length||!nodes.some(n=>n.type!=='slice'&&!n.exportGhost&&effectiveVisible(n,nodes)))throw Error('Add visible artwork before exporting.');const bounds=visualBounds(nodes),size=exportDimensions(bounds.width,bounds.height,{id:'combined',format,scale,includeGuides,sizing,quality,suffix:'',bounds:'artwork'}),name=nodes.length===1?nodes[0].name:s.doc.name;
+ return {name:exportFilename(name,'',format),format,quality,...size,images:imageSources(nodes),svg:exportSvg(nodes,bounds,includeGuides,{scale:format==='svg'?size.scale:1,dimensions:size})};
+}
+export async function exportPreparedJob(job:ExportJob,signal?:AbortSignal){const snapshot={...job},bytes=await renderExportJob(snapshot,signal);check(signal);return download(snapshot.name,new Blob([new Uint8Array(bytes).buffer],{type:snapshot.format==='svg'?'image/svg+xml':snapshot.format==='jpg'?'image/jpeg':'image/png'}));}
+export async function exportCombinedArtwork(format:FrameExportSetting['format'],scale=1,includeGuides=false,sizing?:FrameExportSetting['sizing'],signal?:AbortSignal,quality=.95){return exportPreparedJob(combinedExportJob(format,scale,includeGuides,sizing,quality),signal);}
+/** This function has no await: all artwork, fonts, images and filenames belong to one immutable snapshot. */
+export function prepareExportBatch(mode:ExportTargetMode,selection?:readonly string[]):ExportBatch{
+ const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The export page is missing.');const plans=exportTargets(page,selection??s.selection,mode),jobs:ExportJob[]=[],used=new Set<string>(),key=(name:string)=>name.normalize('NFKC').toUpperCase().toLowerCase();let bytes=0;
+ for(const plan of plans){const job=layerExportJob(plan.id,plan.setting),base=job.name;let i=2;while(used.has(key(job.name))){const dot=base.lastIndexOf('.');job.name=exportFilename(base.slice(0,dot),'-'+i++,base.slice(dot+1));}used.add(key(job.name));bytes+=new TextEncoder().encode(job.svg).length;if(bytes>EXPORT_BYTE_LIMIT)throw Error('Batch source artwork exceeds 100 MB. Export fewer assets.');jobs.push(job);}
+ return {name:exportFilename(s.doc.name,'-assets','zip'),documentName:s.doc.name,pageName:page.name,jobs};
+}
+function check(signal?:AbortSignal){if(signal?.aborted)throw Error('Artwork export cancelled.');}
+/** A nested broken raster can otherwise be silently omitted by SVG image decoding. */
+export async function validateExportAssets(job:ExportJob,signal?:AbortSignal){
+ for(const source of job.images??[]){check(signal);if(!/^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,/.test(source))throw Error('An export image is not an embedded supported asset.');const image=new Image();let abort:(()=>void)|undefined;try{await new Promise<void>((resolve,reject)=>{abort=()=>{image.src='';reject(Error('Artwork export cancelled.'));};signal?.addEventListener('abort',abort,{once:true});image.onload=()=>resolve();image.onerror=()=>reject(Error('An embedded image could not be decoded. Replace the image before exporting.'));image.src=source;});check(signal);if(!image.naturalWidth||!image.naturalHeight||image.naturalWidth>16384||image.naturalHeight>16384||image.naturalWidth*image.naturalHeight>80_000_000)throw Error('An embedded image exceeds the supported raster dimensions.');}finally{if(abort)signal?.removeEventListener('abort',abort);image.onload=null;image.onerror=null;image.src='';}}
+}
+export async function renderExportJob(job:ExportJob,signal?:AbortSignal):Promise<Uint8Array>{
+ job={...job,images:job.images?[...job.images]:undefined};check(signal);if(!['svg','png','jpg'].includes(job.format)||typeof job.name!=='string'||!job.name||/[\u0000-\u001f\u007f-\u009f/\\]/.test(job.name)||job.name.startsWith('.')||job.quality!==undefined&&(!Number.isFinite(job.quality)||job.quality<.1||job.quality>1)||!job.name.toLowerCase().endsWith('.'+job.format)||new TextEncoder().encode(job.name).length>240)throw Error('Invalid export asset filename or format.');if(![job.width,job.height].every(v=>Number.isSafeInteger(v)&&v>0)||!Number.isFinite(job.scale)||job.scale<=0)throw Error('Invalid export dimensions.');if(job.images?.length)await validateExportAssets(job,signal);check(signal);if(job.format==='svg'){const bytes=new TextEncoder().encode(job.svg);if(bytes.byteLength>EXPORT_BYTE_LIMIT)throw Error('An export asset exceeds 100 MB.');return bytes;}
+ if(![job.width,job.height].every(v=>Number.isInteger(v)&&v>0&&v<=16384)||job.width*job.height>80_000_000)throw Error('Export dimensions exceed the raster limit.');
+ const image=new Image(),url=URL.createObjectURL(new Blob([job.svg],{type:'image/svg+xml'}));let abort:(()=>void)|undefined;
+ try{await new Promise<void>((resolve,reject)=>{abort=()=>{image.src='';reject(Error('Artwork export cancelled.'));};signal?.addEventListener('abort',abort,{once:true});image.onload=()=>resolve();image.onerror=()=>reject(Error('An asset or embedded font could not be rendered.'));image.src=url;});check(signal);const canvas=document.createElement('canvas');canvas.width=job.width;canvas.height=job.height;const ctx=canvas.getContext('2d');if(!ctx)throw Error('Raster export is unavailable.');if(job.format==='jpg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,job.width,job.height);}ctx.drawImage(image,0,0,job.width,job.height);const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(Error('Raster export encoding failed.')),job.format==='jpg'?'image/jpeg':'image/png',job.quality??.95));check(signal);if(blob.size>EXPORT_BYTE_LIMIT)throw Error('An export asset exceeds 100 MB.');return new Uint8Array(await blob.arrayBuffer());}finally{if(abort)signal?.removeEventListener('abort',abort);image.onload=null;image.onerror=null;image.src='';URL.revokeObjectURL(url);}
+}
+export async function exportLayerArtwork(id:string,setting:FrameExportSetting,signal?:AbortSignal){return exportPreparedJob(layerExportJob(id,structuredClone(setting)),signal);}
+export async function exportChecksum(bytes:Uint8Array){if(!globalThis.crypto?.subtle)throw Error('SHA-256 checksums are unavailable in this environment.');const digest=await crypto.subtle.digest('SHA-256',new Uint8Array(bytes).buffer);return [...new Uint8Array(digest)].map(v=>v.toString(16).padStart(2,'0')).join('');}
+export async function renderExportBatch(batch:ExportBatch,onProgress?:(done:number,total:number)=>void,signal?:AbortSignal){
+ if(!batch.jobs.length||batch.jobs.length>EXPORT_ASSET_LIMIT)throw Error('Choose between 1 and 200 export assets.');batch={...batch,jobs:batch.jobs.map(job=>({...job,images:job.images?[...job.images]:undefined}))};const files:Record<string,Uint8Array>={},assets=[];let total=0;
+ for(const [i,job] of batch.jobs.entries()){check(signal);const bytes=await renderExportJob(job,signal);total+=bytes.byteLength;if(total>EXPORT_BYTE_LIMIT)throw Error('The assets exceed 100 MB. Export fewer assets.');const file='assets/'+job.name;if(file in files)throw Error('Export asset names must be unique.');files[file]=bytes;assets.push({file,format:job.format,width:job.width,height:job.height,scale:job.scale,bytes:bytes.byteLength,sha256:await exportChecksum(bytes)});check(signal);onProgress?.(i+1,batch.jobs.length);}
+ files['manifest.json']=new TextEncoder().encode(JSON.stringify({format:'forma-export-manifest',version:1,documentName:batch.documentName,pageName:batch.pageName,assets},null,2));check(signal);const zip=zipSync(files,{level:0});if(zip.byteLength>EXPORT_BYTE_LIMIT)throw Error('The assets archive exceeds 100 MB. Export fewer assets.');check(signal);return zip;
+}
+export async function exportAssetBatch(batch:ExportBatch,onProgress?:(done:number,total:number)=>void,signal?:AbortSignal){const name=exportFilename(batch.name.replace(/\.zip$/i,''),'','zip');const bytes=await renderExportBatch(batch,onProgress,signal);check(signal);return download(name,new Blob([bytes],{type:'application/zip'}));}
