@@ -10,6 +10,12 @@ export type {SvgExportSettings} from './svg-export-settings';
 export function svgLayerId(id:string){return 'forma-layer-'+Array.from(new TextEncoder().encode(id),v=>v.toString(16).padStart(2,'0')).join('');}
 /** Visibility changes belong to an immutable export snapshot, never the editor. */
 export function exportVisibility(nodes:DesignNode[],includeHidden=false){return includeHidden?nodes.map(n=>({...n,visible:true})):nodes;}
+/** Hidden subtrees must not retain their image/font resources in SVG definitions. */
+export function visibleExportNodes(nodes:DesignNode[]){
+ const map=new Map(nodes.map(n=>[n.id,n])),shown=new Map<string,boolean>();
+ for(const start of nodes){if(shown.has(start.id))continue;const trail:DesignNode[]=[],seen=new Set<string>();let n:DesignNode|undefined=start;while(n&&!shown.has(n.id)&&!seen.has(n.id)){seen.add(n.id);trail.push(n);n=map.get(n.parentId??'');}let visible=n?(shown.get(n.id)??false):true;for(const next of trail.reverse()){visible=visible&&next.visible;shown.set(next.id,visible);}}
+ return nodes.flatMap(n=>{if(shown.get(n.id))return [n];if(n.mask&&(!n.parentId||shown.get(n.parentId))){const stub:DesignNode={...n,type:'rectangle',paints:[],strokes:[],effects:[],image:'',text:'',textRuns:undefined,textOutline:undefined,path:'',contours:undefined,points:[],fill:'none',stroke:'',shadow:false,blur:0};delete (stub as unknown as {media?:unknown}).media;return [stub];}return [];});
+}
 export function svgTextNodes(nodes:DesignNode[],options?:SvgExportSettings){validateSvgExportSettings(options);return options?.textMode==='text'?nodes.map(n=>n.type==='text'?{...n,textOutline:undefined}:n):nodes;}
 /** Prevent recursive SVG rendering or overflowing composed transforms. */
 export function validateExportHierarchy(nodes:DesignNode[]){
