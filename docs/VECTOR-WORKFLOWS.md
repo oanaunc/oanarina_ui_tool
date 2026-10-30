@@ -52,3 +52,5 @@ Partial: UI-14-032 Round vector corners, limited to straight adjoining segments.
 ### Motion regression validation
 
 Source-only repair: TypeScript validation, all 868 core tests and 29 related browser interactions pass without generating release packages. Browser coverage includes unchanged sampled-width/ancestor-scale anchor dragging, tangent editing, read-only entry/exit, saved-file preservation of base dimensions and tracks, Undo, and cancellation on time/camera/modal/blur/Escape changes. Topology controls and point deletion remain blocked in Motion.
+
+Exiting vector editing with Escape, Enter or **Finish editing points** always clears the editing UI, including when the current path or its ancestor was locked after entry, the path became managed, or the source disappeared. Exiting skips normalization for locked, managed, missing, non-path and Motion sources and creates no document or Undo change in those cases. Entry and topology-edit guards remain enforced. Core cases and real Escape/Enter browser checks cover the protected exits and preservation of the lock transaction as the next Undo.
