@@ -1,3 +1,4 @@
+import {validateDocumentProgressiveBlur} from '../progressive-blur';
 import {fontFamilyStack} from '../font-fallback';
 import {GradientPaintDefinition} from './GradientPaintDefinition';
 import {edgeStrokePath,effectiveStrokeWidth} from '../edge-strokes';
@@ -41,6 +42,7 @@ function Stroke({n,s,id,maskVector=false}:{n:DesignNode;s:StrokeStyle;id:string;
  return <g opacity={maskVector?1:s.paint.opacity} clipPath={alignment==='inside'?`url(#local-clip-${n.id})`:undefined} mask={alignment==='outside'?`url(#outside-mask-${n.id})`:undefined}><Shape n={n} {...props}/>{(()=>{if(arrowStyle(n,'start')==='none'&&arrowStyle(n,'end')==='none')return null;const tips=arrowTips(n);return tips&&(['start','end'] as const).map(end=>{const style=arrowStyle(n,end);if(style==='none')return null;const tip=tips[end],open=style==='open'||style==='bar',color=maskVector?'#ffffff':paintValue(s.paint,id);return <path data-arrowhead={end} key={end} d={orientedArrowheadPath(style,n.arrowSize??12,tip)} fill={open?'none':color} stroke={open?color:'none'} strokeWidth={s.width} strokeLinecap={s.cap} strokeLinejoin={s.join} strokeMiterlimit={s.miterLimit} opacity={1}/>;});})()}</g>;
 }
 export function Artwork({nodes,outlines=false,hyperlinks=false,onNode,onInteraction,mediaMode,maskOutlines}:{nodes:DesignNode[];mediaMode?:'editor'|'prototype';outlines?:boolean;maskOutlines?:{zoom:number};hyperlinks?:boolean;onNode?:(e:React.PointerEvent,id:string)=>void;onInteraction?:(e:React.SyntheticEvent,id:string,type:'click'|'pointerdown'|'pointerup'|'pointerenter'|'pointerleave')=>void}) {
+ const progressiveRegions=validateDocumentProgressiveBlur({pages:[{nodes}]});
  const outlineKinds=maskOutlines?maskOutlineKinds(nodes):undefined;
  const ids=new Set(nodes.map(n=>n.id)),children=new Map<string|null,DesignNode[]>();
  for(const n of nodes){const parent=n.parentId&&ids.has(n.parentId)?n.parentId:null;const list=children.get(parent)??[];list.push(n);children.set(parent,list);}
@@ -64,6 +66,6 @@ export function Artwork({nodes,outlines=false,hyperlinks=false,onNode,onInteract
   <mask id={'outside-mask-'+n.id} x="-100%" y="-100%" width="300%" height="300%"><rect x={-n.width} y={-n.height} width={n.width*3} height={n.height*3} fill="white"/><Shape n={n} fill="black" stroke="none"/></mask>
   {fillsFor(n).map(p=><PaintDefinition key={p.id} paint={p} id={`fill-${n.id}-${p.id}`} n={n}/>)}
   {strokesFor(n).map(s=><PaintDefinition key={s.id} paint={s.paint} id={`stroke-${n.id}-${s.id}`} n={n} strokeSpace={!!s.edgeWidths||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none'}/>)}
-  <EffectFilter n={n}/>
+  <EffectFilter n={n} nodes={nodes} progressiveRegion={progressiveRegions.get(n.id)}/>
  </defs>)}{renderSiblings(children.get(null)??[])}</>;
 }
