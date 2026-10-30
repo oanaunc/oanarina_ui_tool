@@ -54,10 +54,13 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | `apply_operations` | Atomic batches of up to 500 node/page/design-system edits |
 | `replace_document` | Validated complete document replacement for advanced model features |
 | `undo_transaction` | Restore the previous successful MCP transaction; last 20 in memory |
+| `import_image_asset` | Source-only: validate embedded static 8-bit RGB/RGBA PNG, create an editable page-root image in one transaction |
 | `validate_project` | Run the editor's shared document validators |
 | `export_svg` | Return SVG for vector/text pages; reject images and browser-raster fills |
 
 The resource `oanarina://project/summary` provides current metadata. Tool schemas are discoverable through MCP. Every write requires a `revision` returned by a read. Stale revisions fail without changing the file.
+
+Source `import_image_asset` takes `revision`, `pageId`, `dataUrl` (`data:image/png;base64,…`) and optional `name`, `x`, `y`, `displayWidth`. It preserves aspect ratio and returns natural/display dimensions, bytes, node ID and new revision without echoing the asset. Supports bounded noninterlaced 8-bit RGB/RGBA static PNG; other raster formats, indexed/grayscale/16-bit/interlaced PNG, animation and compressed metadata are refused. No asset paths or network URLs are accepted. See [PNG import](../docs/MCP-PNG-IMPORT.md) for validation and limits. The frozen standalone download does not include this new source tool yet.
 
 `apply_operations` supports `rename_document`, `create_page`, `rename_page`, `duplicate_page`, `reorder_page`, `delete_page`, `create_node`, `update_node`, `delete_node` and `set_design_system`. Nodes can specify an optional unique `id` when created, so children can reference parents created earlier in the same atomic batch. Node `properties` use the shared `.oui` node fields; changing `id` or `type` through an update is rejected. Deleting a frame also deletes its descendants; deleting an owned instance child records a visibility override. Moving a container moves its descendants.
 
