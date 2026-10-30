@@ -1,5 +1,17 @@
 [
   [
+    "linear-repeat",
+    "Linear repeat…",
+    "Object",
+    ""
+  ],
+  [
+    "radial-repeat",
+    "Radial repeat…",
+    "Object",
+    ""
+  ],
+  [
     "vector-separate",
     "Separate vector regions…",
     "Vector",

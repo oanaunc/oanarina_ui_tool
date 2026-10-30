@@ -3664,20 +3664,20 @@
     "category": "Transforms and arrangement",
     "name": "Smart duplicate with transform",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Transform-aware Duplicate repeats the world affine map from preceding source to selected copy, including translation, rotation, reflection and visual scale, with subtree/style preservation, one Undo and reopening. Sequence is editor-only; selection/page/mode/tool/Undo/load changes invalidate it. Auto-layout/skew/collapsed-basis/budget conflicts refuse atomically. docs/SMART-DUPLICATE.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-12-037",
     "category": "Transforms and arrangement",
     "name": "Custom rotation origin",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Single-layer custom rotation origin presets/percentages/canvas cross with guarded draft-only drag, keyboard placement, compensated numeric/pointer/90°/180° rotation, descendant following, Undo/save/clipboard/component/source-MCP validation. Optional normalized metadata preserves oui1/2 and legacy center rendering. In-flow auto-layout compensation refuses; multi-selection still uses selection center. Bridge explicitly omits editing metadata with existing pose limits. docs/CUSTOM-ROTATION-ORIGIN.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-12-038",
@@ -4024,10 +4024,10 @@
     "category": "Snapping and measurement",
     "name": "Snap vector points to geometry",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Optional persisted vector anchor/curve snapping in single-path point dragging, with actual canvas hint, anchor priority, all-stationary-point cubic closest search, cached signed-affine targets, Command/Control bypass and one Undo/reopen. Budgets preserve ordinary drag with explanation; clipped/masked/managed targets excluded. Tangents, primitive boundaries, intersections, axis-only, networks and multivector snapping remain absent. docs/VECTOR-GEOMETRY-SNAPPING.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-14-001",
@@ -4464,20 +4464,20 @@
     "category": "Vector pen and editing",
     "name": "Vector eraser tool",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Geometric continuous round/square brush removes covered centerline intervals from supported solid stroke contours; exact retained cubic subdivisions, shared scene preview, bounded frozen-prefix feedback, one Undo/save/reopen and source-MCP persistence checks. Whole-path removal refuses; no filled-region/network/full-layer erasing. docs/VECTOR-ERASER-LASSO.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-14-045",
     "category": "Vector pen and editing",
     "name": "Vector eraser size and shape",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable eraser controls select round or square brush and diameter1–500 canvas units. Continuous sweeps, cursor/preview agreement, bounded 64-turn prefix and explicit freeze feedback, interruption/pointer/context guards and actual browser checks. Stroke-centerline erasure scope and whole-path refusal documented. docs/VECTOR-ERASER-LASSO.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-14-046",
@@ -4924,80 +4924,80 @@
     "category": "Freehand and Figma Draw",
     "name": "Lasso vector selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Actual freehand anchor lasso within one contour path; concave/self-crossing even-odd selection, inclusive boundaries, Shift add/Option subtract, signed-affine cached anchor projection, bounded outline and invalidatable pointer/context guards. Selection-only operation leaves document/history untouched; up to256 vertices/10000 anchors. docs/VECTOR-ERASER-LASSO.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-023",
     "category": "Freehand and Figma Draw",
     "name": "Multi-vector editing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Simultaneous point/handle editing across2–16 selected contour paths: qualified anchor identities, world-space box/add/subtract selection, anchor/tangent draft dragging, precision modifier, nudge/Delete, exact no-op preservation, guarded atomic postderive edits, Undo/save/reopen. Up to4096 anchors/20000 page layers. Shared networks, cross-layer topology, anchor-fragment Cut and multi-vector snapping remain absent. docs/MULTI-VECTOR-EDITING.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-024",
     "category": "Freehand and Figma Draw",
     "name": "Pattern fills",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Editable local pattern tile source with up to64 bounded rect/ellipse/line primitives, add/delete/order/duplicate/size/position/rotation/colors/opacity, staged source preview/Apply one Undo, full-scene shared SVG rendering, validated canonical snapshots and local persistence. Arbitrary live document-layer pattern sources remain absent. docs/PATTERN-TEXTURE-NOISE-FILLS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-025",
     "category": "Freehand and Figma Draw",
     "name": "Pattern scale",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable surface scale percentage controls repeat editable patterns/noise/local textures at1–6400%, bounded by0.25–65536px tile periods. Shared canvas/SVG/export/masks/styles/component/clipboard validation, no-op preservation, Undo/reopen. docs/PATTERN-TEXTURE-NOISE-FILLS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-026",
     "category": "Freehand and Figma Draw",
     "name": "Pattern rotation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Surface rotation changes the complete gap-free repeating lattice around its source origin with bounded angle, shared SVG/canvas/export coordinates, opacity/mask/affine tests, Undo and saved reopening. docs/PATTERN-TEXTURE-NOISE-FILLS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-027",
     "category": "Freehand and Figma Draw",
     "name": "Repeat pattern offsets",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Repeat X/Y offsets translate the complete surface lattice without tile gaps, retaining rotation/scale and shared canvas/export/mask coordinates; explicit reset, Undo and persistence. docs/PATTERN-TEXTURE-NOISE-FILLS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-028",
     "category": "Freehand and Figma Draw",
     "name": "Noise fill",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Seeded deterministic raster noise fill with monochrome/two-color or independent RGB channels, coverage/transparent pixels, tile size/grain scale, colors and seed controls; pure lossless PNG snapshot generation, validated canonical metadata and Undo/save. This is bounded repeating raster grain, not a shader. docs/PATTERN-TEXTURE-NOISE-FILLS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-029",
     "category": "Freehand and Figma Draw",
     "name": "Texture fill",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Embedded still PNG/JPEG/WebP texture fill chooser/replacement, intrinsic pixel tiling, scale/rotation/phase/opacity and image adjustments. Existing decoder/signature/dimension/byte limits, delayed-file context guards, no external URLs, Undo/save/PNG/SVG preservation. Source-MCP image-asset upload remains separate. docs/PATTERN-TEXTURE-NOISE-FILLS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-030",
@@ -5054,20 +5054,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Radial repeat",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable staged radial repeat dialog with count/world pivot/radius/angle/rotate-copies, actual canvas preview and Apply materializing editable sibling subtrees in one guarded Undo. Signed affine geometry, masked sibling ordering, internal IDs/instances/paints, no-op source and saved reopening tested. Persistent live repeat objects/animation tracks remain absent; unsupported controllers/skew refuse. docs/LINEAR-RADIAL-REPEAT.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-036",
     "category": "Freehand and Figma Draw",
     "name": "Linear repeat",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable staged linear repeat dialog with count/world X/Y steps, actual canvas preview/Cancel and editable materialized copies in one Undo. Preserves copied subtrees/references/appearance, original source and same-parent mask order; validated budgets and postderive checks. No persistent live repeat metadata or source animation-track copying. docs/LINEAR-RADIAL-REPEAT.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-16-037",
@@ -5754,10 +5754,10 @@
     "category": "Strokes",
     "name": "Outline stroke conversion",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Existing reachable Vector Outline stroke workflow converts supported single solid vector strokes to editable filled contours with caps/joins/dashes/phase and own affine baking. Guarded preview/Undo/save and validated geometry; curved boundaries are bounded approximations. General multi-paint/image/gradient/translucent/effected/arrowhead strokes remain unsupported. Same concrete workflow as UI-14-034; no additional feature count invented. docs/VECTOR-STROKE-OUTLINE.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-18-028",
@@ -18404,10 +18404,10 @@
     "category": "Motion workspace and timeline",
     "name": "Motion inspector tab",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Motion inspector tab shares selected keyframes with the timeline and edits validated time/value/easing for current unlocked sources; guarded transactions, Undo and persistence. Ordinary Design/Prototype/Inspect tabs retained. docs/MOTION-TIMELINE-WORKFLOWS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-56-003",
@@ -18494,10 +18494,10 @@
     "category": "Motion workspace and timeline",
     "name": "Track selection",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
+    "notes": "Unreleased source: explicit shared track selection/highlights, Shift multiselect and keyboard activation, current track inspector, batch visibility/remove/select-key actions, source/page pruning, guarded Design-only edits and Undo/save. Read-only Inspect seeking remains available. docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md; core/browser tests. Native/Figma reference acceptance pending."
   },
   {
     "id": "UI-56-012",
@@ -18614,10 +18614,10 @@
     "category": "Motion workspace and timeline",
     "name": "Pinch timeline zoom",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Cursor-anchored timeline magnification using ctrl-wheel, real two-touch pointer pinch and WebKit cumulative GestureEvent scale paths. Bounded1–32x viewport with scroll anchoring, CSS-scale conversion and gesture/context cancellation; browser touch/pinch tests. Actual Mac hardware acceptance pending. docs/MOTION-TIMELINE-WORKFLOWS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-56-024",
@@ -18644,10 +18644,10 @@
     "category": "Motion workspace and timeline",
     "name": "Space-drag timeline navigation",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Space-drag timeline navigation pans horizontal/vertical track scroll without changing keys/history; a Space tap retains explicit playback. Context/blur/Escape/pointer guards, CSS-scale conversion and real browser interaction tests. docs/MOTION-TIMELINE-WORKFLOWS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-56-027",
@@ -18684,10 +18684,10 @@
     "category": "Motion workspace and timeline",
     "name": "Marquee keyframes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Source-row keyframe marquee selects across virtualized rows/dense clusters with additive selection and visible draft rectangle. Bounded DOM rendering plus paged accessible cluster members retain every source key; selection does not mutate the document. docs/MOTION-TIMELINE-WORKFLOWS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-56-031",
@@ -18844,10 +18844,10 @@
     "category": "Motion workspace and timeline",
     "name": "Keyframe bezier editor",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
+    "notes": "Unreleased source: Graphical SVG cubic Bezier editor complements numeric easing fields; drag/keyboard control handles, bounded time/progress/overshoot, local draft and one release Undo, selected-key application, pointer/capture/context guards and saved reopening. docs/MOTION-TIMELINE-WORKFLOWS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-56-047",
@@ -18885,19 +18885,19 @@
     "name": "Frame animation preview",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
+    "notes": "Unreleased source: explicit animated-frame preview uses the shared presenter and sampled Artwork, fixed authored viewport, retained signed ancestor transforms/clips/sibling masks, render-only namespaced IDs, Play/Pause/Restart/scrub, fullscreen/navigation, reduced-motion one-shot policy and source/context invalidation without document/history edits. Actual pixel/fullscreen/browser checks. Partial: scroll-overflow remains ordinary-prototype-only; unsafe ancestor-aware Smart Animate refuses while preserving the current frame; unsupported ancestor effects/nonrect clips/Boolean or mask-source isolation refuse. docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md. Native/reference acceptance pending."
   },
   {
     "id": "UI-56-051",
     "category": "Motion workspace and timeline",
     "name": "Top-level animated frame detection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Linear-time highest-frame ownership index detects varying visible animation tracks on visible frame descendants, including sections/nested frames and reversed flat hierarchy order. Inspector lists animated frame ownership/counts;20k-layer core coverage. docs/MOTION-TIMELINE-WORKFLOWS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-56-052",
@@ -18907,7 +18907,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
+    "notes": "MediaRecorder export remains codec dependent. WebM is encoded and decoded in Chromium source tests; Mac MP4 and browser/native codec end-to-end acceptance remain separate and pending under the release-build freeze. Shared track selection and graphical Bezier editing are now implemented; explicit frame presentation has its own partial scope. docs/MOTION-TIMELINE-WORKFLOWS.md; docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md."
   },
   {
     "id": "UI-56-053",
@@ -18927,7 +18927,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Track selection currently selects its layer. Bezier values are edited numerically; a curve graph remains planned. Canvas frame preview works; fullscreen prototype integration is incomplete. MediaRecorder export is codec dependent: WebM is encoded and decoded in Chromium; Mac MP4 requires native end-to-end validation."
+    "notes": "MediaRecorder export remains codec dependent. WebM is encoded and decoded in Chromium source tests; Mac MP4 and browser/native codec end-to-end acceptance remain separate and pending under the release-build freeze. Shared track selection and graphical Bezier editing are now implemented; explicit frame presentation has its own partial scope. docs/MOTION-TIMELINE-WORKFLOWS.md; docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md."
   },
   {
     "id": "UI-56-055",
@@ -18974,10 +18974,10 @@
     "category": "Motion workspace and timeline",
     "name": "Motion reduced-motion behavior",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Motion follows existing resolved Interface motion preference. Reduction activation pauses editor playback; explicit Play/Space is permitted as a single pass without changing authored looping or export data. Discrete scrubbing and existing prototype/Slides policy retained. Browser preference/loop tests; native hardware/reference verification separate. docs/MOTION-TIMELINE-WORKFLOWS.md. Exact Figma reference/native acceptance remains pending."
   },
   {
     "id": "UI-56-060",
