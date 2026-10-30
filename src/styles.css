@@ -18,3 +18,6 @@
 .animation-export{border-top:1px solid var(--line);flex-shrink:0}.animation-export>summary{font-size:9px;cursor:pointer;padding:7px 12px;color:var(--muted)}.animation-export .timeline-actions{border-top:0}.animation-export progress{width:80px;height:8px;accent-color:#d5aee4}
 
 .asset-preview>svg{width:100%;height:100%;display:block}.asset-preview{overflow:hidden}
+
+/* Exposed component property groups retain their labels in the instance inspector. */
+.component-property-group{min-width:0;margin:12px 0;padding:0 10px 6px;border:1px solid var(--line);border-radius:8px}.component-property-group>legend{padding:0 5px;color:var(--muted);font-size:10px}

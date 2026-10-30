@@ -43,7 +43,7 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  const queue=[...primary.values()],visited=new Set<string>(),swapIds=swapPropertyIds(allNodes(source));
  for(let i=0;i<queue.length;i++){
   const n=queue[i];if(visited.has(n.id))continue;visited.add(n.id);if(visited.size>20000)throw Error('Clipboard supports at most 20,000 layers including dependencies.');
-  const refs=[n.componentId,...(n.componentMetadata?.properties??[]).filter(p=>p.type==='instance-swap').map(p=>String(p.defaultValue)),...(swapIds[n.componentId??'']??[]).map(id=>String(n.propertyValues?.[id]??''))];
+  const refs=[n.componentId,...n.componentMetadata?.preferredInstances??[],...(n.componentMetadata?.properties??[]).flatMap(p=>p.preferredValues??[]),...(n.componentMetadata?.properties??[]).filter(p=>p.type==='instance-swap').map(p=>String(p.defaultValue)),...(swapIds[n.componentId??'']??[]).map(id=>String(n.propertyValues?.[id]??''))];
   for(const id of refs){const main=all.get(id??'');if(!main||main.type!=='component')continue;const set=source.componentSets?.find(s=>s.variants.some(v=>v.componentId===main.id)),root=all.get(set?.containerId??main.id)??main,owner=source.pages.find(p=>p.nodes.some(n=>n.id===root.id))!,nodes=subtree(owner,root.id),target=nodes.some(n=>primary.has(n.id))?primary:dependencies;
    for(const node of nodes)if(!target.has(node.id)){const copy=clone(node);target.set(node.id,copy);queue.push(copy);}else if(target===primary&&primary.get(node.id)?.type==='group'&&node.type!=='group'){primary.set(node.id,clone(node));}
   }
@@ -58,7 +58,7 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  doc.styles=clone(source.styles?.filter(s=>styleIds.has(s.id))??[]);doc.layoutGuideStyles=clone(source.layoutGuideStyles?.filter(s=>guideIds.has(s.id))??[]);
  let added=true;while(added){added=false;for(const v of source.variables??[])if(variableIds.has(v.id))for(const value of Object.values(v.values))if(typeof value==='object'&&!variableIds.has(value.alias)){variableIds.add(value.alias);added=true;}}
  doc.variables=clone(source.variables?.filter(v=>variableIds.has(v.id))??[]);const collections=new Set(doc.variables.map(v=>v.collectionId));doc.variableCollections=clone(source.variableCollections?.filter(c=>collections.has(c.id))??[]);
- for(const n of nodes){const owner=source.pages.find(p=>p.nodes.some(a=>a.id===n.id));if(owner){
+ for(const n of nodes){const meta=n.componentMetadata;if(meta){const retain=(refs:string[]|undefined)=>{if(!refs)return refs;const available=refs.filter(id=>all.get(id)?.type==='component'&&ids.has(id));if(available.length!==refs.length)warnings.push('Unavailable preferred component suggestions were omitted.');return available.length?available:undefined;};meta.preferredInstances=retain(meta.preferredInstances);for(const prop of meta.properties??[])if(prop.preferredValues)prop.preferredValues=retain(prop.preferredValues);}const owner=source.pages.find(p=>p.nodes.some(a=>a.id===n.id));if(owner){
    const lineage:DesignNode[]=[];let current=owner.nodes.find(a=>a.id===n.id);
    if(n.parentId){if(current)lineage.push(current);}else while(current){lineage.unshift(current);current=owner.nodes.find(a=>a.id===current!.parentId);}
    const inherited:Record<string,string>=Object.assign({},source.variableModes,...lineage.slice(0,-1).map(n=>n.variableModes)),external=Object.fromEntries(Object.entries(inherited).filter(([id])=>collections.has(id)));
