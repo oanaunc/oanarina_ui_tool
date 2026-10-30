@@ -305,7 +305,13 @@ function bridgeComponentWorkflowMetadata(d,report){
  for(const set of d.componentSets||[])for(const v of set.variants)if(v.description!==undefined){if(!plain(v.description,10000,true))throw Error('Invalid variant description.');omitted.add('Per-variant descriptions');}
  for(const label of omitted)report.push(label+' are retained in the Forma file and omitted from editable Figma transfer.');
 }
+function validateBridgeGrid(n){
+ for(const key of ['gridRows','gridColumn','gridRow','gridColumnSpan','gridRowSpan']){const v=n[key];if(v!==undefined&&(!Number.isInteger(v)||v<(key==='gridRows'?0:1)||v>(key==='gridColumnSpan'||key==='gridRowSpan'?256:4096)))throw Error('Invalid grid count or placement.');}
+ for(const key of ['gridAlignX','gridAlignY'])if(n[key]!==undefined&&!['start','center','end','stretch'].includes(n[key]))throw Error('Invalid grid cell alignment.');
+ for(const key of ['gridColumns','gridRowTracks']){const tracks=n[key];if(tracks===undefined)continue;if(!Array.isArray(tracks)||tracks.length>4096)throw Error('Invalid grid tracks.');for(const t of tracks){if(!t||typeof t!=='object'||!['fixed','fr','hug'].includes(t.sizing)||!Number.isFinite(t.value)||t.value<0||t.value>1e6||t.sizing==='fr'&&t.value<.001)throw Error('Invalid grid track.');for(const v of [t.min,t.max])if(v!==undefined&&(!Number.isFinite(v)||v<0||v>1e6))throw Error('Invalid grid track limit.');if(t.min!==undefined&&t.max!==undefined&&t.min>t.max)throw Error('Grid track minimum exceeds maximum.');}}
+}
 function bridgeLayoutMetadata(d,report){const omitted=new Set();for(const page of d.pages)for(const n of page.nodes){
+ validateBridgeGrid(n);if(n.layout==='grid'||['gridColumns','gridRowTracks','gridRows','gridColumn','gridRow','gridColumnSpan','gridRowSpan','gridAlignX','gridAlignY'].some(key=>n[key]!==undefined))omitted.add('Grid track definitions and cell assignments');
  if(n.layoutAspectRatio!==undefined){if(typeof n.layoutAspectRatio!=='number'||!Number.isFinite(n.layoutAspectRatio)||n.layoutAspectRatio<=0)throw Error('Invalid preserved layout aspect ratio.');omitted.add('Auto-layout aspect preservation metadata');}
  if(n.layoutStacking!==undefined){if(!['last-on-top','first-on-top'].includes(n.layoutStacking))throw Error('Invalid auto layout stacking order.');omitted.add('Auto-layout painting order preferences');}
  if(n.layoutIncludeStroke!==undefined){if(typeof n.layoutIncludeStroke!=='boolean')throw Error('Invalid stroke-in-layout flag.');omitted.add('Stroke-in-layout preferences');}
