@@ -10,6 +10,7 @@
 .canvas-overview.with-scrollbars{right:22px}
 .canvas-overview header{display:flex;justify-content:space-between;padding:7px 9px;font-size:10px;color:var(--text)}
 .canvas-overview header span{font-size:9px;color:var(--muted)}
+.canvas-overview header{align-items:center;gap:6px}.canvas-overview header button{padding:3px 7px;font-size:10px;line-height:1.2;min-height:0}.canvas-overview-caption{padding:0 8px 6px;font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.canvas-overview p.canvas-overview-limit{padding-top:0;font-size:8px}
 .canvas-overview-map{display:block;width:100%;padding:0;border:0;border-radius:0;touch-action:none;cursor:crosshair;line-height:0}
 .canvas-overview-map svg{display:block;width:100%;height:auto;aspect-ratio:200/128}
 .canvas-overview p{margin:0;padding:6px 8px;color:var(--muted);font-size:9px;line-height:1.4;white-space:normal}
