@@ -1,3 +1,4 @@
+import {refuseVariableWidthConversion} from './variable-width';
 import paper from 'paper/dist/paper-core.js';
 import {geometry,pathContours,pathProperties} from './geometry';
 import type {DesignNode} from './model';
@@ -32,7 +33,7 @@ function openOffset(contours:paper.Path[],amount:number,join:OffsetJoin){
 }
 
 /** Parent-space offset, bounded and flattened to .25 parent units; no exact cubic-offset claim. */
-export function offsetVectorPath(n:DesignNode,amount:number,join:OffsetJoin):Partial<DesignNode>{
+export function offsetVectorPath(n:DesignNode,amount:number,join:OffsetJoin):Partial<DesignNode>{refuseVariableWidthConversion(n);
  if(!Number.isFinite(amount)||Math.abs(amount)>OFFSET_LIMITS.distance||Math.abs(amount)<.001)throw Error('Use a nonzero offset from −10,000 to 10,000 (minimum 0.001).');
  if(join!=='square'&&join!=='round')throw Error('Choose square or round offset joins.');
  if(!['path','rectangle','ellipse','polygon','star','line','arrow'].includes(n.type)||n.booleanOp)throw Error('Select one leaf vector shape, not a live boolean result.');

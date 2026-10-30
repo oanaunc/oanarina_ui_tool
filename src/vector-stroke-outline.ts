@@ -1,3 +1,4 @@
+import {refuseVariableWidthConversion} from './variable-width';
 import paper from 'paper/dist/paper-core.js';
 import type {DesignNode} from './model';
 import {geometry,pathContours,pathProperties} from './geometry';
@@ -31,7 +32,7 @@ function strokeBand(runs:Run[],radius:number,stroke:StrokeStyle){const pieces:pa
 }
 
 /** Solid one-stroke conversion. Expansion happens before own affine transforms, as in the SVG renderer. */
-export function outlineVectorStroke(n:DesignNode):Partial<DesignNode>{
+export function outlineVectorStroke(n:DesignNode):Partial<DesignNode>{refuseVariableWidthConversion(n);
  if(!['path','rectangle','ellipse','polygon','star','line','arrow'].includes(n.type)||n.booleanOp)throw Error('Select a leaf vector, not a live boolean result.');
  const strokes=strokesFor(n);validateStrokeStack(strokes);if(strokes.length!==1)throw Error('Stroke outlining currently requires exactly one saved stroke.');const stroke=strokes[0];if(stroke.edgeWidths)throw Error('Disable independent edge widths before outlining a stroke. Edge-stroke outlining is not supported yet.');if(!stroke.visible||!stroke.paint.visible||stroke.paint.opacity<=0||stroke.width<=0)throw Error('Choose one visible stroke with positive width.');if(stroke.paint.type!=='solid')throw Error('Stroke outlining currently supports solid stroke paints. Gradient and image strokes remain separate.');if(stroke.width>STROKE_OUTLINE_LIMITS.width||stroke.miterLimit>100||Math.abs(stroke.dashOffset)>1e6||stroke.dash.length>100||stroke.dash.some(v=>v<.001||v>1e6))throw Error('Use width ≤10,000, miter limit ≤100 and positive dash lengths ≥0.001 within the outline limits.');if(arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none')throw Error('Remove arrowheads before outlining this stroke. Arrowhead outlines are not supported yet.');if(effectsFor(n).some(e=>e.visible))throw Error('Remove visible effects before outlining this stroke.');
  if(n.path.length>200000||(n.contours?.length??0)>32||n.points.length+(n.contours??[]).reduce((sum,c)=>sum+c.points.length,0)>512)throw Error('Stroke outlining supports up to 32 contours and 512 input points.');

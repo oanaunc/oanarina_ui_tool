@@ -1,3 +1,4 @@
+import {refuseVariableWidthConversion} from './variable-width';
 import paper from 'paper/dist/paper-core.js';
 import {geometry} from './geometry';
 import {node} from './model';
@@ -13,7 +14,7 @@ function finite(p:{x:number;y:number}){if(!Number.isFinite(p.x)||!Number.isFinit
 function contour(p:paper.Path):VectorContour{return {closed:true,points:p.segments.map(s=>({x:s.point.x,y:s.point.y,in:{x:s.handleIn.x,y:s.handleIn.y},out:{x:s.handleOut.x,y:s.handleOut.y},mode:'independent'}))};}
 export interface VectorSeparation {group:DesignNode;regions:DesignNode[];removedContours:number;}
 /** Exact saved cubic contours; no flattening or knife-cut approximation. Holes belong to their nearest filled region. */
-export function separateVectorRegions(n:DesignNode,ids?:string[]):VectorSeparation{
+export function separateVectorRegions(n:DesignNode,ids?:string[]):VectorSeparation{refuseVariableWidthConversion(n);
  if(n.type!=='path'||n.booleanOp||n.mask||n.media||n.componentKey||n.componentMetadata)throw Error('Select a compound path without a mask, live boolean or component definition.');
  if(n.layout!=='none'||effectsFor(n).some(e=>e.visible))throw Error('Remove visible effects and automatic layout before separating this path.');
  if(n.width<=0||n.height<=0||!Number.isFinite(n.width)||!Number.isFinite(n.height)||n.width>1e6||n.height>1e6)throw Error('The compound path needs a finite, nonzero coordinate box.');

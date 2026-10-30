@@ -1,0 +1,31 @@
+# Per-anchor variable-width strokes
+
+UI-16-013, UI-16-014 and UI-18-029 have a working **partial** implementation. This is not complete Figma width-tool parity.
+
+Select a contour path, choose **Edit vector points**, then open **Per-anchor stroke widths**. Set one saved solid stroke to centered alignment, butt caps and bevel joins, and enable point widths. Choose an anchor and enter its full symmetric width, or enable **Width control handles** and drag either normal handle. Multiple anchors retain independent ratios. Control reduces pointer travel to 10%; widths clamp to the displayed numeric limits. The canvas shows the actual filled band while dragging and commits once on release. The numeric path is keyboard accessible. Escape, Space/navigation, pointer cancellation, window blur, camera/mode/source/selection changes cancel pending work.
+
+Each anchor stores optional `widthScale` relative to the base stroke weight. The stroke opts in with optional `variableWidth: "points"`. Global weight changes scale the profile; zero tip widths and a zero base weight are retained. A zero base weight hides the band and disables handle edits until the base weight becomes positive. A zero-distance click does not rewrite geometry/styles or create Undo history. Disable point widths to return to a uniform stroke; ratios remain saved until a later geometry conversion replaces those anchors.
+
+## Supported geometry and paint
+
+- One saved centered solid stroke, butt caps, bevel joins, no dashes or independent edge widths; existing fill remains a separate paint.
+- One to sixteen open straight contours, two or more distinct anchors each, at most 512 total anchors. No nonzero Bézier handles, closed contours or exact reversing corners.
+- Positive node/path coordinate boxes, at most 1,000,000 units per dimension; centerlines within ±995,000 local units. Purely horizontal/vertical paths whose editing conversion collapses a coordinate dimension need a nonzero coordinate box before enabling this profile.
+- Per-anchor ratio 0–64, maximum full local width 10,000. Interactions require a visible, unlocked, detached hierarchy with at most 64 ancestors and finite invertible transforms; UI scale and signed affine ancestry are included in hit testing.
+- No arrowheads, legacy blur/shadow, visible effects, or direct width/height animation tracks while a profile is active. Transform-scale animation remains available. Profile controls require Motion closed and mask inspection off. Entering mask inspection cancels pending handles and numeric drafts; retained callbacks cannot revive after an inspection cycle.
+
+Every edge is an exact tapered quadrilateral. Bevel joins add exact triangles. All pieces have consistent winding and render as **one nonzero filled path**, so overlapping pieces do not accumulate translucent alpha. Normal handles use the unit bisector at interior corners; widths remain perpendicular to each adjoining edge, and this handle convention does not assert arbitrary Figma corner/tool parity. Bézier envelopes, asymmetric widths, round/miter width joins, width points inserted between anchors, pressure input, brush profiles, arbitrary caps and editable Figma width-tool interchange remain unimplemented.
+
+## Persistence, layout and interchange
+
+Optional metadata is accepted by existing `.oui` versions 1 and 2 without migration. Import, clipboard and headless MCP transactions validate before mutation; malformed fields, incompatible style/topology changes and invalid batches reject atomically. Local component source changes propagate width metadata to managed copies. Managed copies and inherited locks remain read-only. Geometry-local profiles cannot be captured in or overwritten by a reusable stroke style; disabling the profile permits ordinary style workflows again. Scalar base-weight/color bindings continue through the existing design-system pipeline if the resulting profile is valid.
+
+Ordinary point moves and supported surviving-anchor deletion preserve ratios. Geometry normalization, smoothing, curve conversion, Boolean operations, group flattening, cutting, erasing, outlining, offsetting and region separation refuse active profiles before dropping width metadata. Entering/leaving point editing does not bake an active profile. Width/height auto-layout changes retain the original path basis; maximum profile radius participates in stroke-aware sibling spacing and hug measurement. Layout uses a conservative maximum radius, not a paint-tight tapered envelope.
+
+Canvas, SVG, PNG/JPEG/PDF raster consumers and alpha/vector/luminance mask source rendering use the same band geometry. Artwork and mask regions conservatively include off-box profile anchors plus their maximum radius. Padding can exceed the exact painted shape. Frame clipping, explicit layer/frame/slice viewports and export crops intentionally retain their normal crop semantics. Outline view continues to show the centerline. Approximate Dev CSS warns and omits the profile.
+
+Editable Figma Bridge import refuses active profiles **before creating Figma nodes**, with SVG/PNG guidance. Inactive saved ratios are validated and explicitly reported as omitted while transferring the uniform stroke. No binary `.fig` compatibility or real Figma desktop round trip is claimed by API-mock tests.
+
+## Verification
+
+Core checks cover exact band coordinates, profile validation, basis/affine mapping, zero-delta history, Undo/redo, `.oui` 1/2 save parsing, actual component inheritance, closed clipboard transfer, atomic headless MCP edits and SVG outlines, Bridge refusal/omission, style/conversion safety, stroke-aware layout siblings/hug bounds, and a 20,000-layer / 64-ancestor / 512-anchor activation operation-count budget. Browser checks exercise reachable inspector fields and canvas handles, source-preserving preview/release, actual save/reopen, reflected transforms at 125% UI scale, cancellation/context interruptions, inherited locks/nonprimary events, actual exported alpha at joins and affine mask-overhang pixels.

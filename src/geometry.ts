@@ -1,4 +1,5 @@
 import {smoothedBoxPath} from './corner-smoothing';
+import {refuseVariableWidthConversion} from './variable-width';
 import {roundedPolygonPath} from './basic-shapes';
 import paper from 'paper/dist/paper-core.js';
 import {bounds,descendants} from './model';
@@ -39,7 +40,7 @@ export function geometry(n:DesignNode):paper.PathItem {
 }
 export function pathProperties(p:paper.PathItem):Partial<DesignNode>{const b=p.bounds,x=b.x,y=b.y,width=Math.max(.001,b.width),height=Math.max(.001,b.height);p.translate(new scope.Point(-x,-y));return {type:'path',cornerSmoothing:undefined,x,y,width,height,pathWidth:width,pathHeight:height,path:p.pathData,points:[],contours:undefined,closed:undefined,rotation:0,flipX:false,flipY:false,motionScaleX:undefined,motionScaleY:undefined};}
 export function combineGeometry(nodes:DesignNode[],op:'union'|'subtract'|'intersect'|'exclude'){
- if(!nodes.length)throw Error('Select vector shapes.');let result=geometry(nodes[0]);
+ if(!nodes.length)throw Error('Select vector shapes.');for(const n of nodes)refuseVariableWidthConversion(n);let result=geometry(nodes[0]);
  for(const n of nodes.slice(1)){const other=geometry(n);const previous=result;result=op==='union'?result.unite(other,{insert:false}):op==='subtract'?result.subtract(other,{insert:false}):op==='intersect'?result.intersect(other,{insert:false}):result.exclude(other,{insert:false});previous.remove();other.remove();}
  return result;
 }
@@ -52,18 +53,18 @@ export function updateBooleans(nodes:DesignNode[]){
 export function geometricArea(n:DesignNode){const p=geometry(n);if(p.fillRule==='evenodd')p.reorient(false);const a=Math.abs((p as paper.Path|paper.CompoundPath).area);p.remove();return a;}
 export function pathContours(n:DesignNode):VectorContour[]{scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();const paths=p instanceof scope.CompoundPath?p.children as paper.Path[]:[p as paper.Path];return paths.map(path=>({closed:path.closed,points:path.segments.map(s=>({x:s.point.x,y:s.point.y,in:{x:s.handleIn.x,y:s.handleIn.y},out:{x:s.handleOut.x,y:s.handleOut.y},mode:'mirrored'}))}));}
 export function vectorOperation(n:DesignNode,operation:'smooth'|'simplify'|'reverse'|'close'|'open'|'flatten'){
- const p=geometry(n);if(operation==='smooth')p.smooth({type:'catmull-rom',factor:.5});if(operation==='simplify')p.simplify(1.5);if(operation==='reverse')p.reverse();if(operation==='flatten')p.flatten(.4);
+ refuseVariableWidthConversion(n);const p=geometry(n);if(operation==='smooth')p.smooth({type:'catmull-rom',factor:.5});if(operation==='simplify')p.simplify(1.5);if(operation==='reverse')p.reverse();if(operation==='flatten')p.flatten(.4);
  if(operation==='close'||operation==='open'){if(p instanceof scope.CompoundPath)for(const child of p.children as paper.Path[])child.closed=operation==='close';else (p as paper.Path).closed=operation==='close';}
  const props=pathProperties(p);p.remove();return props;
 }
-export function flattenGeometry(nodes:DesignNode[],selected:string[]){const ids=descendants(nodes,selected),operands=nodes.filter(n=>{if(!ids.includes(n.id)||['group','frame','section','component','instance'].includes(n.type))return false;let parent=nodes.find(a=>a.id===n.parentId);while(parent){if(parent.booleanOp&&ids.includes(parent.id))return false;parent=nodes.find(a=>a.id===parent!.parentId);}return true;});if(!operands.length)throw Error('Select vector layers.');
+export function flattenGeometry(nodes:DesignNode[],selected:string[]){const ids=descendants(nodes,selected),operands=nodes.filter(n=>{if(!ids.includes(n.id)||['group','frame','section','component','instance'].includes(n.type))return false;let parent=nodes.find(a=>a.id===n.parentId);while(parent){if(parent.booleanOp&&ids.includes(parent.id))return false;parent=nodes.find(a=>a.id===parent!.parentId);}return true;});if(!operands.length)throw Error('Select vector layers.');for(const n of operands)refuseVariableWidthConversion(n);
  scope.activate();const paths=operands.filter(n=>!n.booleanOp||selected.includes(n.id)).map(n=>geometry(n));const combined=new scope.CompoundPath({insert:false});for(const p of paths){if(p instanceof scope.CompoundPath)for(const child of [...p.children])combined.addChild(child);else combined.addChild(p);}
  const result=pathProperties(combined);combined.remove();return result;
 }
 export function normalizedRootSelection(nodes:DesignNode[],ids:string[]){return nodes.filter(n=>ids.includes(n.id)&&!ids.some(id=>id!==n.id&&descendants(nodes,[id]).includes(n.id)));}
 export function selectionBounds(nodes:DesignNode[]){return bounds(nodes);}
 
-export function insertVectorPoint(n:DesignNode,world:{x:number;y:number}){const p=geometry(n);const location=p.getNearestLocation(new scope.Point(world.x,world.y));if(!location)throw Error('No vector segment found.');location.path.divideAt(location);const props=pathProperties(p);p.remove();const converted={...n,...props};return {...props,contours:pathContours(converted)};}
+export function insertVectorPoint(n:DesignNode,world:{x:number;y:number}){refuseVariableWidthConversion(n);const p=geometry(n);const location=p.getNearestLocation(new scope.Point(world.x,world.y));if(!location)throw Error('No vector segment found.');location.path.divideAt(location);const props=pathProperties(p);p.remove();const converted={...n,...props};return {...props,contours:pathContours(converted)};}
 
 const scaledPaths=new Map<string,string>();
 export function scaledLocalPath(n:DesignNode){const data=localPath(n);if(!['path','line','arrow'].includes(n.type)||(!n.pathWidth&&!n.pathHeight))return data;const sx=n.width/(n.pathWidth||n.width||1),sy=n.height/(n.pathHeight||n.height||1);if(sx===1&&sy===1)return data;const key=data+'@'+sx+':'+sy;if(scaledPaths.has(key))return scaledPaths.get(key)!;scope.activate();const p=scope.PathItem.create(data||'M0 0');p.remove();p.scale(sx,sy,new scope.Point(0,0));const result=p.pathData;p.remove();if(scaledPaths.size>500)scaledPaths.clear();scaledPaths.set(key,result);return result;}

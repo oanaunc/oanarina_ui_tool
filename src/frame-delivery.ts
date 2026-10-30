@@ -1,8 +1,10 @@
+import {variableWidthBounds} from './variable-width';
 import type {DesignDocument,DesignNode,Page} from './model';
 import {effectiveVisible,isLocked,uid} from './model';
 import {managedLayer} from './layer-operations';
 import type {PrototypeFlow} from './prototype';
 import {effectsFor,effectPadding} from './effects';
+import {effectiveStrokeWidth} from './edge-strokes';
 import {strokesFor} from './paints';
 import {exportSelection,identity,inverseMatrix,multiply,nodeMatrix,point,visualBounds} from './transforms';
 import type {Matrix} from './transforms';
@@ -63,7 +65,8 @@ function geometry(page:Page,id:string){
  const inverse=inverseMatrix(matrix(frame));return {frame,map,matrix,inverse};
 }
 function box(n:DesignNode,m:Matrix,padding=0){
- const pts=[point(m,-padding,-padding),point(m,n.width+padding,-padding),point(m,n.width+padding,n.height+padding),point(m,-padding,n.height+padding)];
+ const band=variableWidthBounds(n),bx=band?.x??0,by=band?.y??0,w=band?.width??n.width,h=band?.height??n.height;
+ const pts=[point(m,bx-padding,by-padding),point(m,bx+w+padding,by-padding),point(m,bx+w+padding,by+h+padding),point(m,bx-padding,by+h+padding)];
  if(pts.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y)))throw Error('Frame content exceeds finite inspection bounds.');
  const x=Math.min(...pts.map(p=>p.x)),y=Math.min(...pts.map(p=>p.y)),width=Math.max(...pts.map(p=>p.x))-x,height=Math.max(...pts.map(p=>p.y))-y;
  if(!Number.isFinite(width)||!Number.isFinite(height))throw Error('Frame content exceeds finite inspection bounds.');return {x,y,width,height};
@@ -77,7 +80,7 @@ export function inspectFrameOverflow(page:Page,id:string){
  const entries:FrameOverflowEntry[]=[];
  for(const n of page.nodes){if(n.id===id||!owned.has(n.id)||!effectiveVisible(n,page.nodes)||n.type==='slice')continue;
   let parent=n.parentId?map.get(n.parentId):undefined,boolean=false;while(parent&&parent.id!==id){if(parent.booleanOp){boolean=true;break;}parent=parent.parentId?map.get(parent.parentId):undefined;}if(boolean)continue;
-  const stroke=Math.max(0,...strokesFor(n).filter(s=>s.visible&&s.paint.visible).map(s=>s.align==='inside'?0:s.width*(s.align==='center'?.5:1))),padding=stroke+effectPadding(effectsFor(n)),b=box(n,multiply(inverse,matrix(n)),padding);
+  const stroke=Math.max(0,...strokesFor(n).filter(s=>s.visible&&s.paint.visible).map(s=>s.align==='inside'?0:effectiveStrokeWidth(s,n)*(s.align==='center'?.5:1))),padding=stroke+effectPadding(effectsFor(n)),b=box(n,multiply(inverse,matrix(n)),padding);
   const values={left:Math.max(0,-b.x),top:Math.max(0,-b.y),right:Math.max(0,b.x+b.width-frame.width),bottom:Math.max(0,b.y+b.height-frame.height)};
   if(Object.values(values).some(v=>v>1e-6))entries.push({id:n.id,name:n.name,...values});
  }
