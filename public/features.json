@@ -3054,10 +3054,10 @@
     "category": "Basic shapes",
     "name": "Corner smoothing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Reachable rounded-box smoothing percent/reset, shared artwork/clips/masks/SVG and supported vector baking, component/clipboard/Undo/save and validated source MCP/Bridge metadata. Optional oui1/2 field; zero preserves legacy path. Independent MIT cubic/arc approximation with coordinate rounding; general path/polygon/star smoothing and exact Figma/native verification remain absent. docs/CORNER-SMOOTHING.md."
   },
   {
     "id": "UI-11-006",
@@ -4834,20 +4834,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Variable width strokes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Per-anchor width ratios form exact straight tapered bands, bevel triangles and exact round/square caps/round sectors, rendered as one nonzero filled path with correct single alpha. Numeric/normal-handle drafts, shared artwork/SVG/raster/masks/bounds, maximum-radius layout, Undo/save/components/clipboard/source MCP. One solid centered butt/round/square-cap, bevel/round-join stroke on bounded open straight contours; curves/closed/asymmetric/miter joins and editable Figma transfer absent. docs/VARIABLE-WIDTH-STROKES.md."
   },
   {
     "id": "UI-16-014",
     "category": "Freehand and Figma Draw",
     "name": "Width control points",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Reachable contour/anchor picker, full symmetric width field and signed-affine normal handles with precision modifier, zero-delta no-op, one Undo/reopening, retained-handler and interruption guards. Controls support existing straight-contour anchors; inserted independent width positions, asymmetric widths and arbitrary curved-path width tools remain absent. docs/VARIABLE-WIDTH-STROKES.md."
   },
   {
     "id": "UI-16-015",
@@ -4874,10 +4874,10 @@
     "category": "Freehand and Figma Draw",
     "name": "Stroke taper",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Existing per-anchor profile controls create exact linear tapers between straight anchors, including zero-width tips, with actual filled-band rendering, Undo/save/export and validated source MCP. This records the same width-profile workflow rather than a separate implementation. Curved envelopes, dedicated taper presets and brush taper behavior remain absent. docs/VARIABLE-WIDTH-STROKES.md."
   },
   {
     "id": "UI-16-018",
@@ -5004,10 +5004,10 @@
     "category": "Freehand and Figma Draw",
     "name": "Progressive blur",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Unreleased source: Real spatially varying nine-level Gaussian blend, start/end radii, projected direction/extents and actual shared Artwork/SVG/raster/masks, bounded subtree overflow, styles/components/clipboard/Undo/save/source MCP. Strict metadata/count/region budgets; Canvas drafts, geometry/text Motion, prototype state/Smart Animate and font-time bounds have explicit safe refusal/recovery; source/history remain unchanged. Exact continuous/native effect and Figma round-trip parity absent; Bridge refuses new effect. docs/PROGRESSIVE-BLUR.md; docs/PROGRESSIVE-FONT-SAFETY.md."
   },
   {
     "id": "UI-16-031",
@@ -5774,10 +5774,10 @@
     "category": "Strokes",
     "name": "Per-point stroke width",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Geometry-local optional stroke profile and per-anchor width scales, numeric/normal handles, shared filled-band artwork/export/masks/bounds and Undo/persistence. Straight open contours, bounded positive basis, one solid centered butt/round/square-cap, bevel/round-join stroke; unsupported geometry/style conversions refuse before discarding metadata. Editable Figma Bridge refuses active profiles; inactive ratios are reported omitted. docs/VARIABLE-WIDTH-STROKES.md."
   },
   {
     "id": "UI-18-030",
@@ -18887,7 +18887,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: explicit animated-frame preview uses the shared presenter and sampled Artwork, fixed authored viewport, retained signed ancestor transforms/clips/sibling masks, render-only namespaced IDs, Play/Pause/Restart/scrub, fullscreen/navigation, reduced-motion one-shot policy and source/context invalidation without document/history edits. Actual pixel/fullscreen/browser checks. Partial: scroll-overflow remains ordinary-prototype-only; unsafe ancestor-aware Smart Animate refuses while preserving the current frame; unsupported ancestor effects/nonrect clips/Boolean or mask-source isolation refuse. docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md. Native/reference acceptance pending."
+    "notes": "Unreleased source: Explicit sampled-frame presenter with authored viewport, retained signed ancestor transforms/clips/sibling masks, opt-in transport/fullscreen/navigation/reduced-motion policy; affine frame-local native scrolling includes negative origins, fixed/sticky roots, scroll-to/preserve/restart and keyboard access. Source/history unchanged. Advanced/scrolled Smart Animate, nested independent scrolling and inset/custom positioned behavior remain absent; repeated active frames and positioned roots inside progressive ancestors refuse explicitly. docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md; docs/MOTION-FRAME-SCROLLING.md. Native/reference acceptance pending."
   },
   {
     "id": "UI-56-051",
