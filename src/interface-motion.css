@@ -1,0 +1,5 @@
+/* Chrome-only policy. Never target artwork SVG, prototype/Slides presentation,
+   document animation or export surfaces through broad descendant selectors. */
+:root[data-interface-motion=reduce] :is(.topbar,.menubar,.toolbar,.sidebar-layout-controls,.main-menu,.document-title-menu,.tool-menu,.page-context-menu,.layer-context-menu,.page-thumbnail,.toast,.dialog,.dialog-header,.dialog-body,.preferences-editor,.home-file-menu,.home-dialog,.sidebar-layout-warning){animation:none!important;transition:none!important;scroll-behavior:auto!important}
+:root[data-interface-motion=reduce] :is(.topbar,.menubar,.toolbar,.sidebar-layout-controls,.main-menu,.document-title-menu,.tool-menu,.page-context-menu,.layer-context-menu,.page-thumbnail,.toast,.dialog-header,.preferences-editor,.home-file-menu,.home-dialog,.sidebar-layout-warning) :is(button,input,select,textarea,a,summary){animation:none!important;transition:none!important;scroll-behavior:auto!important}
+:root[data-interface-motion=reduce] :is(.pages-list,.layers-list,.dialog-body,.action-palette-results,.font-list,.sidebar-content,.home-files){scroll-behavior:auto!important}
