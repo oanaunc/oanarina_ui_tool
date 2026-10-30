@@ -4,9 +4,9 @@ import type {Matrix} from './transforms';
 export const CANVAS_NAME_LIMITS={layers:20000,labels:500,candidates:2000,units:256,characters:80,width:240,clips:64} as const;
 interface Clip {inverse:Matrix;width:number;height:number;radii:number[];parent:Clip|null;depth:number;}
 interface State {matrix:Matrix;visible:boolean;locked:boolean;suppressed:boolean;clips:Clip|null;labelClips:Clip|null;}
-export interface CanvasNameIndexEntry {id:string;type:'frame'|'component'|'section';name:string;title:string;x:number;top:number;locked:boolean;clips:Clip|null;}
+export interface CanvasNameIndexEntry {id:string;type:'frame'|'component'|'section';name:string;title:string;x:number;top:number;locked:boolean;clips:Clip|null;nested?:boolean;}
 export interface NameMetrics {width:number;left?:number;right?:number;ascent?:number;descent?:number;}
-export interface CanvasName {id:string;type:CanvasNameIndexEntry['type'];text:string;title:string;x:number;y:number;locked:boolean;}
+export interface CanvasName {id:string;type:CanvasNameIndexEntry['type'];text:string;title:string;x:number;y:number;locked:boolean;plate?:{x:number;y:number;width:number;height:number};}
 /** Cached world transforms, visibility and mask ownership; never recursively walk a legacy hierarchy. */
 export function canvasNameIndex(nodes:DesignNode[],excluded:ReadonlySet<string>=new Set()):CanvasNameIndexEntry[]{
  if(nodes.length>CANVAS_NAME_LIMITS.layers)return [];
@@ -28,7 +28,7 @@ export function canvasNameIndex(nodes:DesignNode[],excluded:ReadonlySet<string>=
   const x=Math.min(...corners.map(p=>p.x)),top=Math.min(...corners.map(p=>p.y));if(Math.max(...corners.map(p=>p.x))-x<1e-6||Math.max(...corners.map(p=>p.y))-top<1e-6)continue;
   let clip=s.labelClips,contained=true;while(clip){if(!corners.every(p=>inside(clip!,p))){contained=false;break;}clip=clip.parent;}if(!contained)continue;
   const title=n.name.slice(0,CANVAS_NAME_LIMITS.units).replace(/[\u0000-\u001f\u007f-\u009f]/g,' '),chars=Array.from(title),name=chars.slice(0,CANVAS_NAME_LIMITS.characters).join('')+(n.name.length>chars.slice(0,CANVAS_NAME_LIMITS.characters).join('').length?'…':'');
-  result.push({id:n.id,type:n.type as CanvasName['type'],name:name||n.type,title:title+(title.length<n.name.length?'…':''),x,top,locked:s.locked,clips:s.labelClips});
+  result.push({id:n.id,type:n.type as CanvasName['type'],name:name||n.type,title:title+(title.length<n.name.length?'…':''),x,top,locked:s.locked,clips:s.labelClips,nested:Boolean(n.parentId)});
  }
  return result;
 }
@@ -42,7 +42,7 @@ export function placeCanvasNames(index:CanvasNameIndexEntry[],zoom:number,option
   if(![m.width,m.left??0,m.right??m.width,m.ascent??11,m.descent??3].every(Number.isFinite)||m.width<0)continue;
   const x=n.x,y=n.top-14/zoom,left=x+((m.left??0)-2)/zoom,right=x+((m.right??m.width)+2)/zoom,top=y-((m.ascent??11)+2)/zoom,bottom=y+((m.descent??3)+2)/zoom,corners=[{x:left,y:top},{x:right,y:top},{x:right,y:bottom},{x:left,y:bottom}];
   let clip=n.clips,allowed=true;while(clip){if(!corners.every(p=>inside(clip!,p))){allowed=false;break;}clip=clip.parent;}if(!allowed)continue;
-  result.push({id:n.id,type:n.type,text,title:n.title,x,y,locked:n.locked});if(result.length>=CANVAS_NAME_LIMITS.labels)break;
+  result.push({id:n.id,type:n.type,text,title:n.title,x,y,locked:n.locked,...(n.nested?{plate:{x:(left-x)*zoom,y:(top-y)*zoom,width:(right-left)*zoom,height:(bottom-top)*zoom}}:{})});if(result.length>=CANVAS_NAME_LIMITS.labels)break;
  }
  return result;
 }
