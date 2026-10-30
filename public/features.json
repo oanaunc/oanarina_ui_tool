@@ -13724,40 +13724,40 @@
     "category": "Dev Mode and inspection",
     "name": "Developer links",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect → Developer resources attaches named file-local HTTP(S) links; explicit isolated open/copy, no automatic requests. Validated metadata, real Undo/save/reopen, locks and stale-context guards. Resource sites retain their own permissions. See docs/DEVELOPER-RESOURCES.md."
   },
   {
     "id": "UI-41-025",
     "category": "Dev Mode and inspection",
     "name": "Attach issue link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect → Developer resources → Issue accepts a named validated HTTP(S) issue URL, editable/removable/copyable with Undo/save/reopen. File-local attachment only; no issue-account authentication or status synchronization. See docs/DEVELOPER-RESOURCES.md."
   },
   {
     "id": "UI-41-026",
     "category": "Dev Mode and inspection",
     "name": "Attach documentation link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect → Developer resources → Documentation attaches a named validated HTTP(S) documentation URL with explicit open/copy, editing/removal, Undo and persistence. No remote content embedding or automatic fetch. See docs/DEVELOPER-RESOURCES.md."
   },
   {
     "id": "UI-41-027",
     "category": "Dev Mode and inspection",
     "name": "Attach repository link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect → Developer resources → Repository attaches a named validated HTTP(S) repository URL with explicit open/copy, editing/removal, Undo and persistence. No repository discovery, account access or code mapping. See docs/DEVELOPER-RESOURCES.md."
   },
   {
     "id": "UI-41-028",
@@ -13844,10 +13844,10 @@
     "category": "Dev Mode and inspection",
     "name": "Dev resource management",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect manages bounded resource lists (32/layer, 4,096/document): strict URL/shape validation, attach/edit/remove/open/copy, locks, context cancellation, component defaults/overrides/reset, library-update propagation, Undo/save/reopen and reports. Bridge explicitly omits links without flattening resource-only instance overrides; no Dev Resources API/hosted synchronization claim. See docs/DEVELOPER-RESOURCES.md."
   },
   {
     "id": "UI-42-001",
@@ -13974,20 +13974,20 @@
     "category": "Actions and keyboard",
     "name": "Used shortcut highlighting",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "Help → Keyboard shortcuts highlights bounded, session-only named editor keyboard dispatches; filter/reset and actual nudge/opacity/completed Space-pan checks. Menu/Actions/native callbacks without key provenance do not count; asynchronous file/clipboard requests may later cancel/fail. See docs/SHORTCUT-HELP-NAVIGATION.md."
   },
   {
     "id": "UI-42-014",
     "category": "Actions and keyboard",
     "name": "Shortcut category tabs",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "Keyboard shortcut help derives assigned commands/context notes, with searchable accessible category tabs, roving Left/Right/Home/End focus and linked result panel. Bounded session usage filtering/reset is independent of document Undo. See docs/SHORTCUT-HELP-NAVIGATION.md."
   },
   {
     "id": "UI-42-015",
@@ -14024,10 +14024,10 @@
     "category": "Actions and keyboard",
     "name": "Toolbar keyboard focus",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "Design tools toolbar supports roving Left/Right/Home/End focus, Up/Down submenus, semantic choices, scoped Space/Enter activation, Escape focus return and both Tab departure directions. Context changes invalidate menus; Pen drafts survive submenu Escape. Shared editor checked; native forwarding/reference parity pending. See docs/SHORTCUT-HELP-NAVIGATION.md."
   },
   {
     "id": "UI-42-019",

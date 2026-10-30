@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1275,"partial":223,"planned":524}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1283,"partial":223,"planned":516}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -1584,10 +1584,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-41-021 | Completed development status | planned | reference-verification-pending |
 | UI-41-022 | Handoff section list | planned | reference-verification-pending |
 | UI-41-023 | Handoff annotation display | planned | reference-verification-pending |
-| UI-41-024 | Developer links | planned | reference-verification-pending |
-| UI-41-025 | Attach issue link | planned | reference-verification-pending |
-| UI-41-026 | Attach documentation link | planned | reference-verification-pending |
-| UI-41-027 | Attach repository link | planned | reference-verification-pending |
+| UI-41-024 | Developer links | implemented | Inspect → Developer resources attaches named file-local HTTP(S) links; explicit isolated open/copy, no automatic requests. Validated metadata, real Undo/save/reopen, locks and stale-context guards. Resource sites retain their own permissions. See docs/DEVELOPER-RESOURCES.md. |
+| UI-41-025 | Attach issue link | implemented | Inspect → Developer resources → Issue accepts a named validated HTTP(S) issue URL, editable/removable/copyable with Undo/save/reopen. File-local attachment only; no issue-account authentication or status synchronization. See docs/DEVELOPER-RESOURCES.md. |
+| UI-41-026 | Attach documentation link | implemented | Inspect → Developer resources → Documentation attaches a named validated HTTP(S) documentation URL with explicit open/copy, editing/removal, Undo and persistence. No remote content embedding or automatic fetch. See docs/DEVELOPER-RESOURCES.md. |
+| UI-41-027 | Attach repository link | implemented | Inspect → Developer resources → Repository attaches a named validated HTTP(S) repository URL with explicit open/copy, editing/removal, Undo and persistence. No repository discovery, account access or code mapping. See docs/DEVELOPER-RESOURCES.md. |
 | UI-41-028 | Component playground | planned | reference-verification-pending |
 | UI-41-029 | Inspect variant properties | implemented | Read-only component-set variant values/description and nearest nested-instance main context. See docs/DEV-INSPECTION.md. |
 | UI-41-030 | Inspect instance overrides | implemented | Explicit root/descendant override values compared with source and component-property defaults; 2000-row budget, 200-row pages, redacted embedded assets and 1MB copy refusal. See docs/DEV-INSPECTION.md. |
@@ -1596,7 +1596,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-41-033 | Code Connect snippets | planned | reference-verification-pending |
 | UI-41-034 | Codegen plugin selection | planned | reference-verification-pending |
 | UI-41-035 | VS Code integration | planned | reference-verification-pending |
-| UI-41-036 | Dev resource management | planned | reference-verification-pending |
+| UI-41-036 | Dev resource management | implemented | Inspect manages bounded resource lists (32/layer, 4,096/document): strict URL/shape validation, attach/edit/remove/open/copy, locks, context cancellation, component defaults/overrides/reset, library-update propagation, Undo/save/reopen and reports. Bridge explicitly omits links without flattening resource-only instance overrides; no Dev Resources API/hosted synchronization claim. See docs/DEVELOPER-RESOURCES.md. |
 
 ## Actions and keyboard
 
@@ -1614,12 +1614,12 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-42-010 | Action result categories | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent. |
 | UI-42-011 | Action shortcut labels | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Palette searches registered commands and all current drawing/navigation tool actions, with categories/aliases, keyboard active results, shortcut labels and the last 20 distinct command IDs. External plugin/widget/library search remains absent. |
 | UI-42-012 | Keyboard shortcut reference | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-42-013 | Used shortcut highlighting | planned | reference-verification-pending |
-| UI-42-014 | Shortcut category tabs | planned | reference-verification-pending |
+| UI-42-013 | Used shortcut highlighting | implemented | Help → Keyboard shortcuts highlights bounded, session-only named editor keyboard dispatches; filter/reset and actual nudge/opacity/completed Space-pan checks. Menu/Actions/native callbacks without key provenance do not count; asynchronous file/clipboard requests may later cancel/fail. See docs/SHORTCUT-HELP-NAVIGATION.md. |
+| UI-42-014 | Shortcut category tabs | implemented | Keyboard shortcut help derives assigned commands/context notes, with searchable accessible category tabs, roving Left/Right/Home/End focus and linked result panel. Bounded session usage filtering/reset is independent of document Undo. See docs/SHORTCUT-HELP-NAVIGATION.md. |
 | UI-42-015 | Keyboard layout preference | planned | reference-verification-pending |
 | UI-42-016 | Custom shortcut mapping | planned | reference-verification-pending |
 | UI-42-017 | Shortcut conflict warning | planned | reference-verification-pending |
-| UI-42-018 | Toolbar keyboard focus | planned | reference-verification-pending |
+| UI-42-018 | Toolbar keyboard focus | implemented | Design tools toolbar supports roving Left/Right/Home/End focus, Up/Down submenus, semantic choices, scoped Space/Enter activation, Escape focus return and both Tab departure directions. Context changes invalidate menus; Pen drafts survive submenu Escape. Shared editor checked; native forwarding/reference parity pending. See docs/SHORTCUT-HELP-NAVIGATION.md. |
 | UI-42-019 | Panel keyboard navigation | planned | reference-verification-pending |
 | UI-42-020 | Layer keyboard traversal | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Accessible layer arrows and canvas-focused Enter/Shift-Enter/Tab/Shift-Tab. Inputs retain native keyboard behavior. |
 | UI-42-021 | Escape current tool | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
