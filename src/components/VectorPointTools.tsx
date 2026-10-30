@@ -4,6 +4,7 @@ import {isLocked} from '../model';
 import type {DesignNode} from '../model';
 import {transformVectorPoints,closeVectorContours,convertVectorSegment,vectorPointCoordinates,setVectorPointCoordinates,vectorEndpoint,roundVectorCorners,pasteVectorPathData,setVectorPointKind} from '../vector-operations';
 import {runCommand} from '../commands';
+import VectorBendControls from './VectorBendControls';
 export default function VectorPointTools({n}:{n:DesignNode}){
  const s=useEditor(),[scale,setScale]=useState('100'),[rotation,setRotation]=useState('0'),[radius,setRadius]=useState('8'),[data,setData]=useState('');
  const ns=s.doc.pages.find(p=>p.id===s.pageId)!.nodes,disabled=s.motionOpen||isLocked(n,ns)||!!n.instanceRootId;
@@ -13,6 +14,7 @@ export default function VectorPointTools({n}:{n:DesignNode}){
  let endpoint=false;try{if(s.vectorSelection.length===1){vectorEndpoint(n,s.vectorSelection[0]);endpoint=true;}}catch{/* Interior/closed points cannot continue. */}
  return <div className="vector-point-tools"><p className="inspector-note">{s.vectorSelection.length} selected points</p>{disabled&&<p className="inspector-note">Inspector geometry controls require an unlocked layer outside instances with Motion closed.{s.motionOpen&&!isLocked(n,ns)&&!n.instanceRootId&&' Canvas anchor and handle dragging changes the base contours at the current motion time.'}</p>}
  <fieldset disabled={disabled} style={{border:0,padding:0,margin:0}}>
+ <VectorBendControls n={n}/>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-join')}>Join</button><button className="outline-button" onClick={()=>runCommand('vector-smooth-join')}>Smooth join</button></div>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-split')}>Split at points</button><button className="outline-button" onClick={()=>runCommand('vector-heal')}>Delete and heal</button></div>
  <button className="outline-button" onClick={()=>apply(()=>closeVectorContours(n,s.vectorSelection))}>Close selected contours</button>
