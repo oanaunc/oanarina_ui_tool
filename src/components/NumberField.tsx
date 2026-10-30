@@ -1,6 +1,6 @@
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {useEditor} from '../store';
-import {isLocked} from '../model';
+import {selectionHasLocked} from '../layer-locks';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import type {ColorEditContext} from '../color-edit-context';
 import {scrubNumber} from '../numeric-scrub';
@@ -8,7 +8,7 @@ import {numericExpression} from '../guides';
 
 /** Arithmetic is parsed locally; input never reaches JavaScript evaluation. */
 export default function NumberField({label,value,onChange,min,max,step=1}:{label:string;value:number;onChange:(v:number)=>void;min?:number;max?:number;step?:number}){
- const state=useEditor(),nodes=state.doc.pages.find(p=>p.id===state.pageId)!.nodes,locked=!state.modal&&nodes.some(n=>state.selection.includes(n.id)&&isLocked(n,nodes));
+ const state=useEditor(),nodes=state.doc.pages.find(p=>p.id===state.pageId)!.nodes,locked=useMemo(()=>!state.modal&&selectionHasLocked(nodes,state.selection),[nodes,state.selection,state.modal]);
  const typing=useRef<ColorEditContext|null>(null);
  const drag=useRef<{pointerId:number;element:HTMLSpanElement;lastX:number;before:number;current:number;context:ColorEditContext}|null>(null),input=useRef<HTMLInputElement>(null);
  const display=(n:number)=>String(Number(n.toFixed(6))),[text,setText]=useState(display(value)),[error,setError]=useState('');

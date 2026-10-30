@@ -1,0 +1,4 @@
+import type {DesignNode} from './model';
+/** Resolve inherited locks once per immutable node snapshot, independent of array order. */
+export function layerLocks(nodes:readonly DesignNode[]){const byId=new Map(nodes.map(n=>[n.id,n])),resolved=new Map<string,boolean>();for(const n of nodes){if(resolved.has(n.id))continue;const chain:DesignNode[]=[],seen=new Set<string>();let current:DesignNode|undefined=n;while(current&&!resolved.has(current.id)){if(seen.has(current.id))throw Error('The layer hierarchy contains a cycle.');seen.add(current.id);chain.push(current);current=byId.get(current.parentId??'');}let locked=current?resolved.get(current.id)!:false;for(const item of chain.reverse()){locked=locked||item.locked;resolved.set(item.id,locked);}}return resolved;}
+export function selectionHasLocked(nodes:readonly DesignNode[],ids:readonly string[]){if(!ids.length)return false;const locks=layerLocks(nodes);return ids.some(id=>locks.get(id));}
