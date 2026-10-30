@@ -154,3 +154,32 @@ implemented for the explicit local scope. UI-29-013 remains partial due bounded
 preview/set/default/font limitations. UI-29-035 remains partial: conflicts are
 identified and safely refused, with no interactive merge. No claim for 019–025,
 032, permissions, analytics, organization approval or library-source replacement.
+
+## Automatic font reflow follow-up
+
+A late embedded font can legitimately change auto-sized text and hug component
+geometry after installation. `refreshFonts` now captures exactly clean cached
+component/set groups before its existing synchronous font/layout/component
+recalculation. A private, one-use receipt binds that immutable source document
+and unchanged library ownership/version/maps metadata. Only those previously
+clean groups receive the resulting derived baseline. Explicit edits, page moves,
+geometry edits and existing conflicts keep their original baselines; ordinary
+editing never invokes this path. No override tracking bypass or MCP capability
+is added.
+
+Pre-existing baselines must remain untouched during derivation, clean definitions
+must remain present, and metadata/project budgets are checked before publication.
+The existing refresh failure catch retains the live document and Undo history,
+bumps only the font revision and reports that text reflow could not be applied.
+The operation shares the existing 100,000 cumulative subtree visits / 20 MB
+canonical baseline budget, bounds ownership metadata inspection at 20 MB, and
+retains 12 MB aggregate baselines and the 50 MB project result limit.
+
+Four focused core checks cover clean versus edited baselines, page moves,
+geometry conflicts, normal editing, forged/reused/changed-ownership receipts and
+atomic bounded refusal. Two actual browser checks delay registration of an
+embedded open-license face: real text/hug widths change after loading, the clean
+main remains updateable, consumer overrides survive source v2 with one Undo/save,
+and an explicitly edited source remains conflicted. The 28 adjacent fonts,
+loading-context and local-library browser checks also pass. Native and Figma
+reference acceptance are unchanged.
