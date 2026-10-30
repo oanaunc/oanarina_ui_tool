@@ -1,0 +1,15 @@
+# Sidebar layout
+
+Design and Whiteboard have independent Layers and Properties collapse controls. A collapsed sidebar leaves a narrow restore button. View → Show / hide layers sidebar, Show / hide properties sidebar, and Reset sidebar layout are also available in Actions. Slides and Home keep their own layouts; these actions explain that the editor sidebars are unavailable there.
+
+On desktop, drag the separator between a sidebar and the canvas. Focus the separator and use Left/Right arrows to move that edge by 8 pixels, or Shift + Left/Right for 32 pixels. Home/End select the current minimum/maximum width. The adjacent reset button returns that sidebar's width to the responsive default. Reset sidebar layout resets both widths and collapse choices.
+
+Dragging previews locally and saves only after pointer release. Escape, pointer cancellation, lost capture, focus leaving the handle, window blur, viewport changes, or document/page/modal/compact-properties changes cancel the preview. Unmounting for Home or Slides also cancels it. Keyboard resizing commits each adjustment. Separator keys do not nudge selected artwork or invoke drawing tools.
+
+Explicit widths are bounded to 160–480 pixels for Layers and 200–480 pixels for Properties. At widths above 700 pixels, effective widths shrink as needed to retain at least 240 pixels of canvas. Temporary clamping does not overwrite the desired widths. Until a width is explicitly changed, the existing 232/251, 206/225, and 185/205 responsive defaults remain in use. Separators add six pixels on each visible desktop edge.
+
+At 700 pixels and below, desktop resizing is suspended. Layers retains its compact default of 151 pixels (clamped on very narrow windows) and can collapse. The existing top-bar Properties toggle controls a 240-pixel overlay, bounded to the viewport. Its open state is independent of the desktop Properties collapse choice. Hidden UI hides the sidebars, restore rails and separators; Show UI restores the editor. Resizing and collapse do not change canvas zoom/pan or run Fit.
+
+`oui-panel-layout` stores only a version, two optional desired widths and two collapse flags in local storage. These settings are outside `.oui`, document history, recovery and native dirty state. Each window keeps its live layout; later windows/reloads read the most recently saved choices. Existing windows are not synchronized, and concurrent writes use the last complete settings write. Corrupt, unsupported or unavailable storage uses defaults and shows a warning. Denied writes keep the current layout usable in that window and explicitly say it could not be saved; a later successful change clears the warning. No storage capability or native IPC permission was added.
+
+Core validation and browser checks cover bounds, defaults, clamping, persistence, pointer/keyboard cancellation, selected-artwork undo/save invariance, compact overlay, hidden UI, Home/Slides, and storage failure. Mac window acceptance remains pending an unlocked desktop; these browser checks do not claim native window acceptance or exact Figma reference verification.
