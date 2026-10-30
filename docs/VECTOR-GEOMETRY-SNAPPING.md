@@ -1,0 +1,11 @@
+# Vector anchor snapping — unreleased source
+
+Enable **Guides & snapping → Vector anchors and curves**, then drag one anchor in the existing single-path point editor. A canvas ring identifies a stationary anchor or a nearest cubic point. Anchors within six screen pixels take priority; otherwise the closest curve point within that distance wins. The same world-space delta moves the selected anchor and retains its relative handles, layer pose and path basis.
+
+The index is captured once from the immutable drag source. Cubic snapping checks endpoints and every real stationary point of squared distance, using a quintic polynomial. It does not flatten source curves. Signed affine parent transforms and intrinsic path scaling are included. The moving anchor and its adjacent source segments are excluded. Stationary anchors on the same path remain eligible.
+
+The optional `snapping.vectorPoints` preference defaults off for existing projects, validates before mutation and persists in .oui versions 1 and 2. Hold Command to bypass; Control's existing fine-drag behavior bypasses snapping and keeps the current snapped position when precision changes. The ordinary canvas drag transaction provides preview-only geometry, one Undo, saved reopening and interruption cancellation. Snapping controls invalidate retained handlers when their document, selection or editor context changes.
+
+Partial scope: one anchor at a time on existing contour paths, with Motion closed. Tangent, multivector, primitive-boundary, intersection, axis-only and network snapping are absent. Masked, clipped, hidden, transparent, live-boolean and managed hierarchies are conservatively excluded; locked targets may be snapped to. Limits: 20,000 page layers, 64 ancestors, 4,096 target anchors and 2,048 target segments. Exceeding an index budget preserves ordinary dragging and shows why snapping is unavailable.
+
+Validation includes eight new core checks, six actual browser workflows and the eleven existing pointer-precision browser regressions. The extracted polynomial helper retains the eraser's existing exported API and all 25 eraser geometry tests pass. Figma reference and native hardware acceptance remain pending. No release is generated.

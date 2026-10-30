@@ -1,3 +1,4 @@
+import {curvePolynomialRoots as eraserPolynomialRoots} from './curve-polynomial';
 import type {DesignNode,VectorContour,VectorPoint} from './model';
 import type {BendPoint} from './vector-bend-geometry';
 import {bendSegment,cubicPoint} from './vector-bend-geometry';
@@ -11,8 +12,7 @@ export const ERASER_LIMITS={samples:64,pairs:16384,resultPoints:2048,resultConto
 const mix=(a:BendPoint,b:BendPoint,t:number)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
 function split(c:BendPoint[],t:number){const a=mix(c[0],c[1],t),b=mix(c[1],c[2],t),d=mix(c[2],c[3],t),e=mix(a,b,t),f=mix(b,d,t),g=mix(e,f,t);return [[c[0],a,e,g],[g,f,d,c[3]]];}
 export function eraserSubcurve(c:BendPoint[],a:number,b:number){return a===0?(b===1?c:split(c,b)[0]):b===1?split(c,a)[1]:split(split(c,b)[0],a/b)[1];}
-/** Degree <=6 roots on [0,1], isolated by derivative roots, then bisection. No source flattening. */
-export function eraserPolynomialRoots(values:number[],evaluate?:(t:number)=>number):number[]{const max=Math.max(...values.map(Math.abs));if(!max)return [];const c=values.map(v=>v/max);while(c.length>1&&Math.abs(c.at(-1)!)<1e-14)c.pop();if(c.length===1)return [];if(c.length===2){const t=-c[0]/c[1];return t>=0&&t<=1?[t]:[];}const f=(t:number)=>evaluate?evaluate(t)/max:c.reduceRight((a,v)=>a*t+v,0),critical=eraserPolynomialRoots(c.slice(1).map((v,i)=>v*(i+1))),stops=[0,...critical.filter(t=>t>0&&t<1),1].sort((a,b)=>a-b),out:number[]=[];for(const t of stops)if(Math.abs(f(t))<1e-11)out.push(t);for(let i=1;i<stops.length;i++){let a=stops[i-1],b=stops[i],fa=f(a),fb=f(b);if(fa*fb>=0)continue;for(let j=0;j<48;j++){const m=(a+b)/2,fm=f(m);if(fa*fm<=0){b=m;fb=fm;}else{a=m;fa=fm;}}out.push((a+b)/2);}return out.sort((a,b)=>a-b).filter((t,i,a)=>!i||t-a[i-1]>1e-10);}
+export {curvePolynomialRoots as eraserPolynomialRoots} from './curve-polynomial';
 const coeff=(v:number[])=>[v[0],3*(v[1]-v[0]),3*(v[0]-2*v[1]+v[2]),-v[0]+3*v[1]-3*v[2]+v[3]];
 function circleRoots(c:BendPoint[],p:BendPoint,r:number){const x=coeff(c.map(v=>(v.x-p.x)/r)),y=coeff(c.map(v=>(v.y-p.y)/r)),v=Array(7).fill(0) as number[];v[0]=-1;for(let i=0;i<4;i++)for(let j=0;j<4;j++)v[i+j]+=x[i]*x[j]+y[i]*y[j];return eraserPolynomialRoots(v,t=>{const at=cubicPoint(c,t);return ((at.x-p.x)/r)**2+((at.y-p.y)/r)**2-1;});}
 const hull=(points:BendPoint[])=>{const p=points.slice().sort((a,b)=>a.x-b.x||a.y-b.y),cross=(a:BendPoint,b:BendPoint,c:BendPoint)=>(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x),half=(a:BendPoint[])=>{const h:BendPoint[]=[];for(const v of a){while(h.length>1&&cross(h[h.length-2],h.at(-1)!,v)<=0)h.pop();h.push(v);}return h;};return [...half(p).slice(0,-1),...half(p.reverse()).slice(0,-1)];};
