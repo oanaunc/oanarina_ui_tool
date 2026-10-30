@@ -16,7 +16,7 @@ Frame/component names and section names are independent device-local preferences
 - Final navigation production browser suite: 4 passed, including actual hand-tool dragging and modified-wheel zoom; 13 distinct browser cases passed across the two runs.
 - Synthetic fixtures only; no user project, Figma ID or private screenshot is included.
 
-Native integration: `Studio.accelerator(_:)` maps `←` and `→` to AppKit function-key Unicode scalars `0xF702` and `0xF703`. The universal candidate passes seven native navigation checks, including actual Option-Command-Left/Right menu dispatch and observed renderer camera restoration without dirtying the document. The accepted dev.10 artifact remains unchanged; see [combined validation](VALIDATION-v0.2-navigation-frames.md) for the new candidate.
+Native integration: `Studio.accelerator(_:)` maps `←` and `→` to AppKit function-key Unicode scalars `0xF702` and `0xF703`. The universal candidate passes seven native navigation checks, including actual Option-Command-Left/Right menu dispatch and observed renderer camera restoration without dirtying the document. These checks also pass on the accepted signed/stapled dev.11 app. See [combined validation](VALIDATION-v0.2-navigation-frames.md).
 
 Reference verification against Figma is pending. This is a bounded navigation improvement, not a claim of complete editor parity.
 

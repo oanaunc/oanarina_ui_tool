@@ -1,6 +1,6 @@
 # Canvas navigation and frame workflows — 0.2.0-dev.11
 
-This source candidate continues Forma's staged implementation. It is not a complete Figma clone. The register has 2,022 requirements: 1,070 implemented, 172 partial and 780 planned. Reference verification remains separate from implementation status.
+This preview continues Forma's staged implementation. It is not a complete Figma clone. The register has 2,022 requirements: 1,070 implemented, 172 partial and 780 planned. Reference verification remains separate from implementation status.
 
 ## Reachable behaviors
 
@@ -24,6 +24,14 @@ The native integration maps left/right arrows to AppKit function-key equivalents
 - Development-module repository browser checks: **2 passed**. Free local MCP: **39 tests passed**, with TypeScript check passed.
 - Universal native build: passed. Isolated native checks: standard renderer plus **7 navigation**, **37 lifecycle**, **29 clipboard** and **13 synthetic .fig import/save** checks passed; stderr empty.
 - First integrated production browser run: **275 passed, 1 failed**. A deterministic diagnostic proved that the eraser test read target coordinates before delayed startup fit, then clicked obsolete coordinates. Moving the actual Eraser selection before the bounds read fixed test synchronization without changing product timing; the focused suite passed eight repeated cases. The final clean complete production run passed **276/276** browser checks in 1.8 minutes.
-- The previous notarized Mac artifact is dev.10. This document does not label this candidate notarized before Apple acceptance, stapling and Gatekeeper checks.
+- The exact signed/stapled dev.11 app repeats the standard renderer, seven AppKit navigation, 37 lifecycle, 29 private-clipboard and 13 synthetic .fig import/save checks successfully, with empty stderr.
+
+## Accepted Mac package
+
+- `Forma-0.2.0-dev.11.dmg`, **32,319,485 bytes**.
+- SHA-256: `84106a2da66683797bcde07ed58d100f0cbe5474ddf2e2c09ce941f79dec48b3`.
+- App and DMG: Apple notarization **Accepted**, stapled successfully; Gatekeeper accepted both as **Notarized Developer ID**.
+- macOS 13+, universal Apple silicon/Intel binary; runtime checks were on Apple silicon. Physical Intel runtime validation remains pending.
+- Bundled source was commit `e4fc048`; final acceptance documentation does not change the packaged renderer. The previous accepted dev.10 app is preserved separately.
 
 The original user Figma source and private import screenshots are excluded. No document schema change or expanded native filesystem/network permissions were introduced.
