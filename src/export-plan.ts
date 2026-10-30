@@ -1,7 +1,6 @@
 import {getPreferences} from './preferences';
 import type {DesignDocument,DesignNode,Page} from './model';
 import {effectiveVisible,isLocked} from './model';
-import {managedLayer} from './layer-operations';
 import {exportSelection,identity,inverseMatrix,multiply,nodeMatrix,visualBounds} from './transforms';
 import type {Matrix} from './transforms';
 import {frameExportGeometry} from './frame-delivery';
@@ -12,7 +11,7 @@ export type ExportTargetMode='layers'|'frames'|'slices'|'configured';
 export function defaultLayerExportSetting(n:DesignNode):FrameExportSetting{const preferences=getPreferences(),format='defaultExportFormat' in preferences?preferences.defaultExportFormat:'svg';return {...defaultFrameExportSetting(),format:format==='png'||format==='jpg'?format:'svg',bounds:(n.type==='frame'||n.type==='slice'?'frame':'artwork') as FrameExportSetting['bounds']};}
 export function setLayerExportSettings(doc:DesignDocument,pageId:string,id:string,settings:FrameExportSetting[]){
  validateFrameExportSettings(settings);const page=doc.pages.find(p=>p.id===pageId),n=page?.nodes.find(n=>n.id===id);if(!page||!n)throw Error('The export layer is missing.');
- if(isLocked(n,page.nodes))throw Error('Unlock the layer and its ancestors before editing export settings.');if(n.type==='instance'||managedLayer(n,page.nodes))throw Error('Detach the instance before editing its managed layer export settings.');n.exportSettings=structuredClone(settings);
+ if(isLocked(n,page.nodes))throw Error('Unlock the layer and its ancestors before editing export settings.');n.exportSettings=structuredClone(settings);
 }
 export function validateLayerExportSettings(doc:DesignDocument,pageId:string,id:string,settings:FrameExportSetting[]){const n=doc.pages.find(p=>p.id===pageId)?.nodes.find(n=>n.id===id);if(!n||JSON.stringify(n.exportSettings)!==JSON.stringify(settings))throw Error('A managed layer overwrote these export profiles. Edit its main component or detach the instance.');}
 function layerWorldMatrix(page:Page,id:string){

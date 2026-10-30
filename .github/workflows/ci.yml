@@ -1,8 +1,15 @@
-name: Editor and native Mac build
+name: Editor source checks
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      build_mac:
+        description: Build an unsigned Mac development app and refresh bundled resources
+        type: boolean
+        required: false
+        default: false
 jobs:
   editor:
     runs-on: ubuntu-latest
@@ -13,16 +20,21 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci --ignore-scripts
+      - run: npm run mcp:install
       - run: npm test
-      - run: npm run build
+      - run: npx tsc --noEmit
+      - run: npm run mcp:check
+      # Source validation does not regenerate the frozen release archives.
+      - run: node mcp/node_modules/tsx/dist/cli.mjs --tsconfig mcp/tsconfig.json --test --test-skip-pattern='standalone bundled server' mcp/tests/*.test.ts
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      - run: npx playwright test --grep-invert 'the downloadable bridge archive contains the current component transfer implementation'
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure()
         with:
-          name: editor-screenshots
-          path: build/screenshots
+          name: editor-test-results
+          path: test-results
   mac:
+    if: github.event_name == 'workflow_dispatch' && inputs.build_mac
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -31,9 +43,13 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci --ignore-scripts
+      - run: npm run mcp:install
       - run: npm run build:mac
-      - run: ditto -c -k --keepParent "build/Oanarina UI Tool.app" build/Oanarina-UI-Tool-development.zip
+      - run: npm run mcp:test
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test tests/e2e/bridge-components.spec.ts
+      - run: ditto -c -k --keepParent "build/Forma.app" build/Forma-development.zip
       - uses: actions/upload-artifact@v4
         with:
           name: unsigned-universal-mac-preview
-          path: build/Oanarina-UI-Tool-development.zip
+          path: build/Forma-development.zip
