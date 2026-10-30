@@ -15,6 +15,7 @@ function editableFrame(nodes:DesignNode[],id:string,doc?:DesignDocument){
  return frame;
 }
 function checkedSize(n:DesignNode,width:number,height:number){if(!Number.isFinite(width)||!Number.isFinite(height)||width<1||height<1||width>1e6||height>1e6||width<(n.minWidth??0)||width>(n.maxWidth??1e6)||height<(n.minHeight??0)||height>(n.maxHeight??1e6))throw Error('The resulting frame size conflicts with its size limits.');}
+function finiteFitGeometry(width:number,height:number,matrix:Matrix){if(![width,height,...matrix].every(Number.isFinite))throw Error('This frame hierarchy has nonfinite world geometry. Reduce its nested scales before fitting.');}
 /** Direct visible unlocked children, in front-to-back layer order. Nested descendants are not included. */
 export function frameContentsSelection(nodes:DesignNode[],id:string){const frame=nodes.find(n=>n.id===id);if(!frame||frame.type!=='frame')throw Error('Select one frame.');return nodes.filter(n=>n.parentId===id&&effectiveVisible(n,nodes)&&!isLocked(n,nodes)).reverse().map(n=>n.id);}
 
@@ -30,12 +31,13 @@ export interface FrameFitPlan {nodes:DesignNode[];frameId:string;size:{width:num
 export function planFrameFit(nodes:DesignNode[],id:string,doc?:DesignDocument):FrameFitPlan{
  const frame=editableFrame(nodes,id,doc);if(frame.layout!=='none')throw Error('Fit to content is for free-layout frames. Use Hug contents for auto layout.');
  const children=nodes.filter(n=>n.parentId===id);if(!children.length)throw Error('Add content to the frame before fitting it.');
- const inverse=inverseMatrix(worldMatrix(frame,nodes)),corners=children.flatMap(n=>{const m=multiply(inverse,worldMatrix(n,nodes));return [[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(m,x,y));}),x=Math.min(...corners.map(p=>p.x)),y=Math.min(...corners.map(p=>p.y)),width=Math.max(...corners.map(p=>p.x))-x,height=Math.max(...corners.map(p=>p.y))-y;checkedSize(frame,width,height);
+ const frameWorld=worldMatrix(frame,nodes);finiteFitGeometry(frame.width,frame.height,frameWorld);
+ const inverse=inverseMatrix(frameWorld),corners=children.flatMap(n=>{const world=worldMatrix(n,nodes);finiteFitGeometry(n.width,n.height,world);const m=multiply(inverse,world);return [[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(m,x,y));}),x=Math.min(...corners.map(p=>p.x)),y=Math.min(...corners.map(p=>p.y)),width=Math.max(...corners.map(p=>p.x))-x,height=Math.max(...corners.map(p=>p.y))-y;checkedSize(frame,width,height);
  const owned=new Set(descendants(nodes,[id]));
  if(nodes.some(n=>owned.has(n.id)&&(n.type==='instance'||n.type==='component'||managedLayer(n,nodes))))throw Error('Fit a free frame without managed instances or main components.');
  const relevant=new Set(owned);let ancestor=nodes.find(n=>n.id===frame.parentId);while(ancestor&&!relevant.has(ancestor.id)){relevant.add(ancestor.id);ancestor=nodes.find(n=>n.id===ancestor!.parentId);}
  if(doc?.pages.some(p=>p.motion?.tracks.some(t=>relevant.has(t.nodeId))))throw Error('Remove motion tracks from this hierarchy before fitting its base geometry.');
- const preserved=new Map(nodes.filter(n=>n.id!==id&&owned.has(n.id)).map(n=>[n.id,{matrix:worldMatrix(n,nodes),width:n.width,height:n.height}])),next=structuredClone(nodes),result=next.find(n=>n.id===id)!,parent=next.find(n=>n.id===frame.parentId),oldLocal=nodeMatrix(frame,parent),newLocal=multiply(oldLocal,[1,0,0,1,x,y]);
+ const preserved=new Map(nodes.filter(n=>n.id!==id&&owned.has(n.id)).map(n=>{const matrix=worldMatrix(n,nodes);finiteFitGeometry(n.width,n.height,matrix);return [n.id,{matrix,width:n.width,height:n.height}];})),next=structuredClone(nodes),result=next.find(n=>n.id===id)!,parent=next.find(n=>n.id===frame.parentId),oldLocal=nodeMatrix(frame,parent),newLocal=multiply(oldLocal,[1,0,0,1,x,y]);
  Object.assign(result,{width,height,sizingX:'fixed',sizingY:'fixed'});
  Object.assign(result,transformFromMatrix(result,parent,newLocal));
  const nextInverse=inverseMatrix(worldMatrix(result,next));
@@ -45,7 +47,7 @@ export function planFrameFit(nodes:DesignNode[],id:string,doc?:DesignDocument):F
  const plan={nodes:next,frameId:id,size:{width,height},preserved,constraints};validateFrameFit(next,plan);return plan;
 }
 /** Run after the editor's layout/component pipeline so a refused fit remains a fully atomic edit. */
-export function validateFrameFit(nodes:DesignNode[],plan:FrameFitPlan){for(const [id,before] of plan.preserved){const n=nodes.find(n=>n.id===id);if(!n||Math.abs(n.width-before.width)>1e-6||Math.abs(n.height-before.height)>1e-6||worldMatrix(n,nodes).some((v,i)=>Math.abs(v-before.matrix[i])>1e-6))throw Error('This fit would change child artwork through constraints or generated layout. Use a free frame with fixed child geometry.');}const frame=nodes.find(n=>n.id===plan.frameId);if(!frame||Math.abs(frame.width-plan.size.width)>1e-6||Math.abs(frame.height-plan.size.height)>1e-6)throw Error('The frame layout changed its fitted size.');}
+export function validateFrameFit(nodes:DesignNode[],plan:FrameFitPlan){for(const [id,before] of plan.preserved){finiteFitGeometry(before.width,before.height,before.matrix);const n=nodes.find(n=>n.id===id);if(!n)throw Error('Frame content disappeared during layout.');const matrix=worldMatrix(n,nodes);finiteFitGeometry(n.width,n.height,matrix);if(Math.abs(n.width-before.width)>1e-6||Math.abs(n.height-before.height)>1e-6||matrix.some((v,i)=>Math.abs(v-before.matrix[i])>1e-6))throw Error('This fit would change child artwork through constraints or generated layout. Use a free frame with fixed child geometry.');}const frame=nodes.find(n=>n.id===plan.frameId);if(!frame)throw Error('The fitted frame disappeared during layout.');finiteFitGeometry(frame.width,frame.height,worldMatrix(frame,nodes));if(![plan.size.width,plan.size.height].every(Number.isFinite)||Math.abs(frame.width-plan.size.width)>1e-6||Math.abs(frame.height-plan.size.height)>1e-6)throw Error('The frame layout changed its fitted size.');}
 
 /** Temporarily suppress child constraints in the uncommitted candidate: this is an explicit geometry edit. */
 export function prepareFrameFitForEdit(plan:FrameFitPlan){for(const n of plan.nodes)if(plan.constraints.has(n.id)){n.constraintX='start';n.constraintY='start';}return plan.nodes;}
