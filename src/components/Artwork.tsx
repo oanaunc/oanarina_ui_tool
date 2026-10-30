@@ -1,4 +1,5 @@
-import {validateDocumentProgressiveBlur} from '../progressive-blur';
+import ProgressiveBlurRefusal from './ProgressiveBlurRefusal';
+import {isProgressiveBlurRegionError,validateDocumentProgressiveBlur} from '../progressive-blur';
 import {variableWidthPath} from '../variable-width';
 import {fontFamilyStack} from '../font-fallback';
 import {GradientPaintDefinition} from './GradientPaintDefinition';
@@ -43,8 +44,10 @@ function Stroke({n,s,id,maskVector=false}:{n:DesignNode;s:StrokeStyle;id:string;
  const props={fill:'none',stroke:maskVector?'#ffffff':paintValue(s.paint,id),strokeWidth:s.width*(alignment==='center'?1:2),opacity:1,strokeLinecap:s.cap,strokeLinejoin:s.join,strokeMiterlimit:s.miterLimit,strokeDasharray:s.dash.length?s.dash.join(' '):undefined,strokeDashoffset:s.dashOffset};
  return <g opacity={maskVector?1:s.paint.opacity} clipPath={alignment==='inside'?`url(#local-clip-${n.id})`:undefined} mask={alignment==='outside'?`url(#outside-mask-${n.id})`:undefined}><Shape n={n} {...props}/>{(()=>{if(arrowStyle(n,'start')==='none'&&arrowStyle(n,'end')==='none')return null;const tips=arrowTips(n);return tips&&(['start','end'] as const).map(end=>{const style=arrowStyle(n,end);if(style==='none')return null;const tip=tips[end],open=style==='open'||style==='bar',color=maskVector?'#ffffff':paintValue(s.paint,id);return <path data-arrowhead={end} key={end} d={orientedArrowheadPath(style,n.arrowSize??12,tip)} fill={open?'none':color} stroke={open?color:'none'} strokeWidth={s.width} strokeLinecap={s.cap} strokeLinejoin={s.join} strokeMiterlimit={s.miterLimit} opacity={1}/>;});})()}</g>;
 }
-export function Artwork({nodes,outlines=false,hyperlinks=false,onNode,onInteraction,mediaMode,maskOutlines}:{nodes:DesignNode[];mediaMode?:'editor'|'prototype';outlines?:boolean;maskOutlines?:{zoom:number};hyperlinks?:boolean;onNode?:(e:React.PointerEvent,id:string)=>void;onInteraction?:(e:React.SyntheticEvent,id:string,type:'click'|'pointerdown'|'pointerup'|'pointerenter'|'pointerleave')=>void}) {
- const progressiveRegions=validateDocumentProgressiveBlur({pages:[{nodes}]});
+export interface ArtworkProps {nodes:DesignNode[];live?:boolean;mediaMode?:'editor'|'prototype';outlines?:boolean;maskOutlines?:{zoom:number};hyperlinks?:boolean;onNode?:(e:React.PointerEvent,id:string)=>void;onInteraction?:(e:React.SyntheticEvent,id:string,type:'click'|'pointerdown'|'pointerup'|'pointerenter'|'pointerleave')=>void;}
+/** Live refusal is atomic: never paint a filtered/masked subtree without its effect. Exports stay strict. */
+export function Artwork(props:ArtworkProps){let progressiveRegions:ReturnType<typeof validateDocumentProgressiveBlur>;try{progressiveRegions=validateDocumentProgressiveBlur({pages:[{nodes:props.nodes}]});}catch(error){if(!props.live||!isProgressiveBlurRegionError(error))throw error;return <ProgressiveBlurRefusal message={error.message}/>;}return <ArtworkContent {...props} progressiveRegions={progressiveRegions}/>;}
+function ArtworkContent({nodes,outlines=false,hyperlinks=false,onNode,onInteraction,mediaMode,maskOutlines,progressiveRegions}:ArtworkProps&{progressiveRegions:ReturnType<typeof validateDocumentProgressiveBlur>}) {
  const outlineKinds=maskOutlines?maskOutlineKinds(nodes):undefined;
  const ids=new Set(nodes.map(n=>n.id)),children=new Map<string|null,DesignNode[]>();
  for(const n of nodes){const parent=n.parentId&&ids.has(n.parentId)?n.parentId:null;const list=children.get(parent)??[];list.push(n);children.set(parent,list);}

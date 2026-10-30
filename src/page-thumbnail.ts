@@ -1,3 +1,5 @@
+import {isProgressiveBlurRegionError} from './progressive-blur';
+import {bounds} from './model';
 import type {DesignNode} from './model';
 import {visualBounds} from './transforms';
 
@@ -16,7 +18,8 @@ export function thumbnailNodes(nodes:DesignNode[],scope:string,reservedNodes:Des
  return nodes.map(n=>({...n,id:ids.get(n.id)!,parentId:n.parentId?ids.get(n.parentId)??null:null}));
 }
 export function thumbnailBounds(nodes:DesignNode[]){
- const b=visualBounds(nodes),pad=Math.max(b.width,b.height)*.04;
+ let b;try{b=visualBounds(nodes);}catch(error){if(!isProgressiveBlurRegionError(error))throw error;b=bounds(nodes);}
+ const pad=Math.max(1,b.width,b.height)*.04;
  return {x:b.x-pad,y:b.y-pad,width:b.width+pad*2,height:b.height+pad*2};
 }
 export function thumbnailPlacement(anchor:{left:number;right:number;top:number},viewport:{width:number;height:number}){
