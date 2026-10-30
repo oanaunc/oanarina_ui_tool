@@ -37,7 +37,7 @@ export type NodeKind = 'frame'|'section'|'slice'|'rectangle'|'ellipse'|'line'|'a
 export type Tool = NodeKind|'move'|'hand'|'scale'|'pen'|'pencil'|'comment';
 export interface VectorPoint {x:number;y:number;in?:{x:number;y:number};out?:{x:number;y:number};mode?:'mirrored'|'aligned'|'independent';}
 export interface VectorContour {points:VectorPoint[];closed:boolean;}
-export interface DesignNode {
+export interface DesignNode {rotationOrigin?:{x:number;y:number};
   id:string; type:NodeKind; name:string; parentId:string|null;
   x:number; y:number; width:number; height:number; rotation:number;
   fill:string; paints?:Paint[]; strokes?:StrokeStyle[]; blendMode?:string; effects?:Effect[]; isolate?:boolean; stroke:string; strokeWidth:number; opacity:number; radius:number;

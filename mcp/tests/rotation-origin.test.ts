@@ -1,0 +1,8 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project';
+import {point,worldMatrix} from '../../src/transforms';
+test('MCP rotation origins compensate children, validate atomically and persist with Undo',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-origin-'));try{const file=path.join(dir,'origin.oui'),project=await Project.open(file,true),initial=await project.read(),pageId=initial.document.pages[0].id,created=await project.apply(initial.revision,[{op:'create_node',pageId,id:'group',type:'group',properties:{x:100,y:100,width:100,height:80,rotationOrigin:{x:0,y:0}}},{op:'create_node',pageId,id:'child',type:'rectangle',properties:{parentId:'group',x:120,y:130,width:20,height:10}}]);const updated=await project.apply(created.revision,[{op:'update_node',pageId,nodeId:'group',properties:{rotation:90}}]),ns=updated.document.pages[0].nodes,g=ns[0],c=ns[1],pivot=point(worldMatrix(g,ns),0,0),corner=point(worldMatrix(c,ns),0,0);assert.ok(Math.abs(pivot.x-100)<1e-7&&Math.abs(pivot.y-100)<1e-7);assert.ok(Math.abs(corner.x-70)<1e-7&&Math.abs(corner.y-120)<1e-7);assert.deepEqual((await project.read()).document.pages,updated.document.pages);const bytes=await fs.readFile(file,'utf8');await assert.rejects(project.apply(updated.revision,[{op:'rename_document',name:'No mutation'},{op:'update_node',pageId,nodeId:'group',properties:{rotationOrigin:{x:0,y:20}}}]));assert.equal(await fs.readFile(file,'utf8'),bytes);assert.deepEqual((await project.undo(updated.revision)).document.pages,created.document.pages);}finally{await fs.rm(dir,{recursive:true,force:true});}});

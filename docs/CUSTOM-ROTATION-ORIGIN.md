@@ -1,0 +1,9 @@
+# Custom rotation origin — unreleased source
+
+The single-layer Design inspector offers an optional rotation origin, nine presets and X/Y percentages. The canvas cross supports dragging and arrow-key placement (1%, or 10% with Shift). Moving the origin changes editing metadata without moving artwork. Numeric Rotation, canvas rotation and 90°/180° commands compensate the saved position to hold the chosen point fixed. Descendants follow their container. Each accepted origin gesture or rotation is one Undo operation.
+
+The optional normalized `rotationOrigin` field remains compatible with .oui versions 1 and 2; missing metadata retains legacy center rotation. Values from −10 to 10 permit external origins. Imports validate before mutation. Clipboard and component override paths preserve it. Source MCP supports validated origins and compensated rotations. Editable Figma Bridge validates and explicitly omits editing-origin metadata, retaining its existing pose-transfer limitations; SVG/PNG use the saved artwork pose.
+
+Editing the origin requires one unlocked, unmanaged Design layer with Motion closed. Canvas placement also requires Move/Scale, visible artwork and no competing vector, gradient, crop or mask mode. Group layers to share an origin. Multi-selection rotation retains the world-selection center. In-flow auto-layout children cannot use a compensated custom-origin rotation: make them absolute-positioned or use a free container. Explicit patches containing both rotation and position retain their authored pose. Coordinate/document limits still apply.
+
+Pointer previews are local until release. Escape, Space, camera/context changes, hidden windows and lost capture cancel them. Further pointers cannot replace an active gesture. Native and Figma reference acceptance remain pending; no release build is produced by these source checks.
