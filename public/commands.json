@@ -1,5 +1,17 @@
 [
   [
+    "document-outline",
+    "Document outline…",
+    "View",
+    "⌥⌘L"
+  ],
+  [
+    "keyboard-insert",
+    "Insert layer with keyboard…",
+    "Object",
+    "⌥⌘N"
+  ],
+  [
     "repeat-shape-tool",
     "Repeat last shape tool",
     "Tools",

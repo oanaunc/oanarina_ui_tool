@@ -5744,10 +5744,10 @@
     "category": "Strokes",
     "name": "Stroke style reuse",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Complete local stroke stack styles: create, assign, update, detach, folders/usages, Undo, .oui/library/clipboard and source MCP. Canonical legacy path caps/joins preserved. Bridge transfers literals and reports editable definitions omitted. See docs/STROKE-STYLES.md."
   },
   {
     "id": "UI-18-027",
@@ -5784,10 +5784,10 @@
     "category": "Strokes",
     "name": "Stroke variable binding",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Primary stroke color/width variable assignments render through the actual first stack entry, including aliases/modes and materialized removal. Other entries retain literals; independent per-entry bindings remain unfinished. See docs/STROKE-STYLES.md."
   },
   {
     "id": "UI-18-031",
@@ -6904,10 +6904,10 @@
     "category": "Typography",
     "name": "Paragraph-level styling",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Offset-anchored per-paragraph alignment, spacing, indentation and list settings through a reachable inspector; text edits/owned clipboard preserve paragraph identities, with Undo/save/MCP validation. See docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-21-035",
@@ -7037,7 +7037,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
+    "notes": "Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-22-012",
@@ -7047,17 +7047,17 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
+    "notes": "Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-22-013",
     "category": "Advanced typography",
     "name": "Nested lists",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Mixed bullet/decimal nesting levels 0–8, local numbering restart/start and hanging layout work in source text; Enter/Tab editing semantics, custom/Roman counters, cross-layer continuation and external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-22-014",
@@ -7067,7 +7067,7 @@
     "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
+    "notes": "Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-22-015",
@@ -7384,20 +7384,20 @@
     "category": "Advanced typography",
     "name": "Hanging list markers",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Hanging marker gutters keep wrapped continuation lines aligned to list text; mixed character ranges and per-paragraph alignment share layout/rendering. See docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-22-047",
     "category": "Advanced typography",
     "name": "List item spacing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "List-item spacing is distinct from paragraph spacing, editable for whole text or paragraph ranges, persists/undoes and participates in layout. See docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-22-048",
@@ -13524,20 +13524,20 @@
     "category": "Dev Mode and inspection",
     "name": "CSS units selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect px/rem controls with an explicit root pixel size; converted CSS and measurements, transient UI state. Other relative units need containing context. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-005",
     "category": "Dev Mode and inspection",
     "name": "CSS property list",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Read-only property rows, per-row/CSS/filtered-report copy, search and multi-selected-layer choice. Approximate CSS warnings; bounded metadata and copy. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-006",
@@ -13564,10 +13564,10 @@
     "category": "Dev Mode and inspection",
     "name": "Color code format",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect HEX/RGB/HSL formatting with alpha for supported CSS and metadata; transient selection. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-009",
@@ -13624,40 +13624,40 @@
     "category": "Dev Mode and inspection",
     "name": "Applied style inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Names, authored values and effective base values for linked paint/text/effect/stroke styles, plus guide style and missing-link labels. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-015",
     "category": "Dev Mode and inspection",
     "name": "Applied variable inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Bound field, actual variable, resolved value, effective base property, Web syntax and missing-reference retained literals. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-016",
     "category": "Dev Mode and inspection",
     "name": "Variable mode inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Effective local collection modes identify layer/ancestor/document/default provenance and per-alias default fallback. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-017",
     "category": "Dev Mode and inspection",
     "name": "Alias chain inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Named iterative alias traces include collection/mode/fallback, missing/cycle labels and visible 256-hop guard. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-018",
@@ -13774,20 +13774,20 @@
     "category": "Dev Mode and inspection",
     "name": "Inspect variant properties",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Read-only component-set variant values/description and nearest nested-instance main context. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-030",
     "category": "Dev Mode and inspection",
     "name": "Inspect instance overrides",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Explicit root/descendant override values compared with source and component-property defaults; 2000-row budget, 200-row pages, redacted embedded assets and 1MB copy refusal. See docs/DEV-INSPECTION.md."
   },
   {
     "id": "UI-41-031",
@@ -14574,50 +14574,50 @@
     "category": "Accessibility and localization",
     "name": "Accessible selection announcements",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Polite debounced page/selection/state/geometry live announcements for the shared Design/Whiteboard editor; DOM/browser validated, native VoiceOver acceptance pending. See docs/DOCUMENT-ACCESSIBILITY.md."
   },
   {
     "id": "UI-44-006",
     "category": "Accessibility and localization",
     "name": "Screen-reader document outline",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Accessible searchable hierarchy outline with cross-page keyboard navigation, inherited states, 100-row rendering and read-only selection. Native VoiceOver acceptance pending. See docs/DOCUMENT-ACCESSIBILITY.md."
   },
   {
     "id": "UI-44-007",
     "category": "Accessibility and localization",
     "name": "Keyboard-only layer creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Guarded keyboard insertion dialog for ten basic layer types, bounded geometry, Undo/save; freehand/pen/media and workspace-specific objects remain unfinished. See docs/DOCUMENT-ACCESSIBILITY.md."
   },
   {
     "id": "UI-44-008",
     "category": "Accessibility and localization",
     "name": "Keyboard-only selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Keyboard outline navigation/selection complements Layers and canvas parent/child/sibling paths, cross-page selection and hidden/locked inspection without mutation. See docs/DOCUMENT-ACCESSIBILITY.md."
   },
   {
     "id": "UI-44-009",
     "category": "Accessibility and localization",
     "name": "Keyboard-only transform",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Keyboard numerical move/resize/rotation fields and canvas nudge paths validated with Undo/save and inherited-lock refusal. See docs/DOCUMENT-ACCESSIBILITY.md."
   },
   {
     "id": "UI-44-010",

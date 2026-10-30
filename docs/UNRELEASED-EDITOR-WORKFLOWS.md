@@ -1,0 +1,22 @@
+# Stroke, paragraph, accessibility and inspection source continuation
+
+This continues the [typography/grid/assets source pass](UNRELEASED-TYPE-GRID-ASSETS.md). The register records **1,211 implemented, 185 partial and 626 planned requirements**, out of 2,022. Seventeen additional named requirements have reachable implementation paths; three gain explicitly partial paths. Reference verification is separate and pending. Forma remains an independent app under development, with substantial parity work remaining.
+
+| Area | Reachable source behavior | Limits |
+| --- | --- | --- |
+| [Stroke styles and tokens](STROKE-STYLES.md) | Capture/reuse/update/detach complete local stroke stacks, materialize legacy caps/joins, folders/usages, library and clipboard transfer, Undo/save and source MCP. Primary width/color tokens update actual strokes. | Variables bind the first stroke only. Independent per-entry tokens and advanced variable-width strokes remain unfinished. Bridge transfers literals and reports editable definitions omitted. |
+| [Paragraphs and lists](PARAGRAPH-TYPOGRAPHY.md) | Per-paragraph alignment, spacing, indents, list levels/restarts, hanging marker gutters, item gaps, shared rendering/measurement, owned rich clipboard, components, Undo/save and source MCP. | Automatic Enter/Tab list editing, arbitrary external HTML lists, custom/Roman/composite counters and cross-layer numbering remain unfinished. Bridge reports paragraph/list metadata omitted. |
+| [Document accessibility](DOCUMENT-ACCESSIBILITY.md) | Debounced selection announcements, searchable read-only keyboard outline, cross-page selection, basic keyboard insertion, numerical transforms, scoped focus handling and bounded hierarchy rendering. | Browser/DOM validated. Native VoiceOver/WKWebView acceptance is pending. Pen/freehand/media insertion and whole-app focus parity remain partial. |
+| [Developer inspection](DEV-INSPECTION.md) | Read-only CSS rows/copy/search, px/rem and HEX/RGB/HSL controls, actual style/token/mode/alias provenance, variants and instance overrides. Motion/base source selection is explicit. | CSS is approximate and warns on omitted appearance/layout. Alias traces, metadata rows, DOM pages and clipboard size are bounded. iOS/Android code generation and broader Dev workspace parity remain unfinished. |
+
+Document changes are additive and retain `.oui` version-one/version-two support. Imported paragraph and stroke metadata is validated before mutation. No native IPC or loopback resource-server permission is expanded. Source Bridge API mocks do not establish Figma desktop round-trip compatibility.
+
+Independent review found and corrected implicit path-cap loss in reusable stroke styles, terminal-newline clipboard formatting leaking into surviving text, uncommitted paragraph values following changed selection, and plain-text styles retaining prior list markers. Mixed-format centered/right-aligned text now stays in one SVG alignment chunk. Inspector metadata stops before constructing excessive override rows; its CSS warning recognizes the integrated paragraph fields.
+
+## Validation
+
+Integrated source validation on October 30, 2026 passes **1,050 core tests in 96 files**, **47 saved-file MCP source/protocol tests**, and both editor/MCP TypeScript checks. **513 distinct browser cases are validated**: the full run passed 512 cases; the new combined inspection case initially compared snapshots while an offline font was loading. Using a fixed system-font fixture removes that unrelated font-embedding race, and its targeted rerun passes. The production editor did not require a change for that test failure. Fixtures use generated data. Browser checks use separate loopback origins, leaving the user's open document intact. A fresh local `.oui` backup was retained before applying the source update.
+
+The downloadable Bridge/source archive comparison, standalone bundled MCP acceptance, production bundle, native/WKWebView smoke and real Figma reference checks remain deferred under the build/archive freeze. No deferred check is counted as passed. No app build, installer, notarization, distribution archive, version change or website deployment is generated; existing dev.12 downloads stay unchanged.
+
+Use `npm run dev` for this source. Installing the unchanged Mac download does not install these changes. The [feature register](FEATURE-REGISTER.md) retains all partial/planned requirements.

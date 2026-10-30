@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1194,"partial":182,"planned":646}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1211,"partial":185,"planned":626}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -671,11 +671,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-18-023 | Arrowhead color inheritance | implemented | Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending. |
 | UI-18-024 | Gradient stroke | implemented | v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. |
 | UI-18-025 | Image stroke | partial | Image paint controls/rendering exist; crop/tile edge cases and real Figma transfer still need visual coverage. |
-| UI-18-026 | Stroke style reuse | planned | reference-verification-pending |
+| UI-18-026 | Stroke style reuse | implemented | Complete local stroke stack styles: create, assign, update, detach, folders/usages, Undo, .oui/library/clipboard and source MCP. Canonical legacy path caps/joins preserved. Bridge transfers literals and reports editable definitions omitted. See docs/STROKE-STYLES.md. |
 | UI-18-027 | Outline stroke conversion | planned | reference-verification-pending |
 | UI-18-028 | Stroke scale behavior | planned | reference-verification-pending |
 | UI-18-029 | Per-point stroke width | planned | reference-verification-pending |
-| UI-18-030 | Stroke variable binding | planned | reference-verification-pending |
+| UI-18-030 | Stroke variable binding | partial | Primary stroke color/width variable assignments render through the actual first stack entry, including aliases/modes and materialized removal. Other entries retain literals; independent per-entry bindings remain unfinished. See docs/STROKE-STYLES.md. |
 | UI-18-031 | Shader stroke assignment | planned | reference-verification-pending |
 
 ## Effects and compositing
@@ -802,7 +802,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-21-031 | Text rotation | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-21-032 | Mixed text properties | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Select character ranges in the inspector; mixed styles render and persist with style-preserving clipboard. Paragraph-level styling is separate and absent. |
 | UI-21-033 | Character-level styling | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Select character ranges in the inspector; mixed styles render and persist with style-preserving clipboard. Paragraph-level styling is separate and absent. |
-| UI-21-034 | Paragraph-level styling | planned | reference-verification-pending |
+| UI-21-034 | Paragraph-level styling | implemented | Offset-anchored per-paragraph alignment, spacing, indentation and list settings through a reachable inspector; text edits/owned clipboard preserve paragraph identities, with Undo/save/MCP validation. See docs/PARAGRAPH-TYPOGRAPHY.md. |
 | UI-21-035 | Font fallback warning | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic font styles, missing-family badge and document-wide replacement. Style-specific missing-face auditing is incomplete. |
 | UI-21-036 | Missing font replacement | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. True italic font styles, missing-family badge and document-wide replacement. Style-specific missing-face auditing is incomplete. |
 
@@ -820,10 +820,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-22-008 | Small caps | implemented | Unreleased source after dev.12: Whole-layer and rich-range small caps, superscript and subscript with shared SVG/measurement, nominal-size HTML clipboard, component/style/MCP persistence and guarded editing. Small caps uses supporting browser/font shaping; positioned text uses 65% size and fixed baseline shifts, with browser glyph envelopes and approximate headless metrics. See docs/TYPE-VARIANTS.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged. |
 | UI-22-009 | Superscript | implemented | Unreleased source after dev.12: Whole-layer and rich-range small caps, superscript and subscript with shared SVG/measurement, nominal-size HTML clipboard, component/style/MCP persistence and guarded editing. Small caps uses supporting browser/font shaping; positioned text uses 65% size and fixed baseline shifts, with browser glyph envelopes and approximate headless metrics. See docs/TYPE-VARIANTS.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged. |
 | UI-22-010 | Subscript | implemented | Unreleased source after dev.12: Whole-layer and rich-range small caps, superscript and subscript with shared SVG/measurement, nominal-size HTML clipboard, component/style/MCP persistence and guarded editing. Small caps uses supporting browser/font shaping; positioned text uses 65% size and fixed baseline shifts, with browser glyph envelopes and approximate headless metrics. See docs/TYPE-VARIANTS.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged. |
-| UI-22-011 | Numbered lists | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
-| UI-22-012 | Bulleted lists | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
-| UI-22-013 | Nested lists | planned | reference-verification-pending |
-| UI-22-014 | List indentation | partial | Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned. |
+| UI-22-011 | Numbered lists | partial | Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md. |
+| UI-22-012 | Bulleted lists | partial | Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md. |
+| UI-22-013 | Nested lists | partial | Mixed bullet/decimal nesting levels 0–8, local numbering restart/start and hanging layout work in source text; Enter/Tab editing semantics, custom/Roman counters, cross-layer continuation and external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md. |
+| UI-22-014 | List indentation | partial | Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md. |
 | UI-22-015 | Text links | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
 | UI-22-016 | Link editing | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
 | UI-22-017 | OpenType ligatures | partial | Numeric OpenType tags and variable-axis settings affect supporting font files. Automatic feature discovery/previews, font-specific controls and native parity remain incomplete. |
@@ -855,8 +855,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-22-043 | Text vertical trim | planned | reference-verification-pending |
 | UI-22-044 | Balanced and pretty text wrapping | planned | reference-verification-pending |
 | UI-22-045 | Hanging quotation marks | planned | reference-verification-pending |
-| UI-22-046 | Hanging list markers | planned | reference-verification-pending |
-| UI-22-047 | List item spacing | planned | reference-verification-pending |
+| UI-22-046 | Hanging list markers | implemented | Hanging marker gutters keep wrapped continuation lines aligned to list text; mixed character ranges and per-paragraph alignment share layout/rendering. See docs/PARAGRAPH-TYPOGRAPHY.md. |
+| UI-22-047 | List item spacing | implemented | List-item spacing is distinct from paragraph spacing, editable for whole text or paragraph ranges, persists/undoes and participates in layout. See docs/PARAGRAPH-TYPOGRAPHY.md. |
 | UI-22-048 | Underline style control | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
 | UI-22-049 | Underline thickness | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
 | UI-22-050 | Underline offset | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Reachable selected-range text/link/underline controls and styled/plain clipboard. Exported SVG retains links; native underline rendering needs further visual acceptance. |
@@ -1564,20 +1564,20 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-41-001 | Dev Mode workspace | planned | reference-verification-pending |
 | UI-41-002 | Layer CSS generation | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-41-003 | Copy CSS | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-41-004 | CSS units selection | planned | reference-verification-pending |
-| UI-41-005 | CSS property list | planned | reference-verification-pending |
+| UI-41-004 | CSS units selection | implemented | Inspect px/rem controls with an explicit root pixel size; converted CSS and measurements, transient UI state. Other relative units need containing context. See docs/DEV-INSPECTION.md. |
+| UI-41-005 | CSS property list | implemented | Read-only property rows, per-row/CSS/filtered-report copy, search and multi-selected-layer choice. Approximate CSS warnings; bounded metadata and copy. See docs/DEV-INSPECTION.md. |
 | UI-41-006 | iOS property inspection | planned | reference-verification-pending |
 | UI-41-007 | Android property inspection | planned | reference-verification-pending |
-| UI-41-008 | Color code format | planned | reference-verification-pending |
+| UI-41-008 | Color code format | implemented | Inspect HEX/RGB/HSL formatting with alpha for supported CSS and metadata; transient selection. See docs/DEV-INSPECTION.md. |
 | UI-41-009 | Layer measurements | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-41-010 | Spacing inspection | planned | reference-verification-pending |
 | UI-41-011 | Padding inspection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-41-012 | Gap inspection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-41-013 | Typography inspection | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-41-014 | Applied style inspection | planned | reference-verification-pending |
-| UI-41-015 | Applied variable inspection | planned | reference-verification-pending |
-| UI-41-016 | Variable mode inspection | planned | reference-verification-pending |
-| UI-41-017 | Alias chain inspection | planned | reference-verification-pending |
+| UI-41-014 | Applied style inspection | implemented | Names, authored values and effective base values for linked paint/text/effect/stroke styles, plus guide style and missing-link labels. See docs/DEV-INSPECTION.md. |
+| UI-41-015 | Applied variable inspection | implemented | Bound field, actual variable, resolved value, effective base property, Web syntax and missing-reference retained literals. See docs/DEV-INSPECTION.md. |
+| UI-41-016 | Variable mode inspection | implemented | Effective local collection modes identify layer/ancestor/document/default provenance and per-alias default fallback. See docs/DEV-INSPECTION.md. |
+| UI-41-017 | Alias chain inspection | implemented | Named iterative alias traces include collection/mode/fallback, missing/cycle labels and visible 256-hop guard. See docs/DEV-INSPECTION.md. |
 | UI-41-018 | Download selected asset | planned | reference-verification-pending |
 | UI-41-019 | Automatic icon detection | planned | reference-verification-pending |
 | UI-41-020 | Ready-for-development status | planned | reference-verification-pending |
@@ -1589,8 +1589,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-41-026 | Attach documentation link | planned | reference-verification-pending |
 | UI-41-027 | Attach repository link | planned | reference-verification-pending |
 | UI-41-028 | Component playground | planned | reference-verification-pending |
-| UI-41-029 | Inspect variant properties | planned | reference-verification-pending |
-| UI-41-030 | Inspect instance overrides | planned | reference-verification-pending |
+| UI-41-029 | Inspect variant properties | implemented | Read-only component-set variant values/description and nearest nested-instance main context. See docs/DEV-INSPECTION.md. |
+| UI-41-030 | Inspect instance overrides | implemented | Explicit root/descendant override values compared with source and component-property defaults; 2000-row budget, 200-row pages, redacted embedded assets and 1MB copy refusal. See docs/DEV-INSPECTION.md. |
 | UI-41-031 | Compare design revisions | planned | reference-verification-pending |
 | UI-41-032 | Code Connect component mapping | planned | reference-verification-pending |
 | UI-41-033 | Code Connect snippets | planned | reference-verification-pending |
@@ -1684,11 +1684,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-44-002 | Accessible tool names | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-44-003 | Accessible menu items | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-44-004 | Accessible form labels | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
-| UI-44-005 | Accessible selection announcements | planned | reference-verification-pending |
-| UI-44-006 | Screen-reader document outline | planned | reference-verification-pending |
-| UI-44-007 | Keyboard-only layer creation | planned | reference-verification-pending |
-| UI-44-008 | Keyboard-only selection | planned | reference-verification-pending |
-| UI-44-009 | Keyboard-only transform | planned | reference-verification-pending |
+| UI-44-005 | Accessible selection announcements | implemented | Polite debounced page/selection/state/geometry live announcements for the shared Design/Whiteboard editor; DOM/browser validated, native VoiceOver acceptance pending. See docs/DOCUMENT-ACCESSIBILITY.md. |
+| UI-44-006 | Screen-reader document outline | implemented | Accessible searchable hierarchy outline with cross-page keyboard navigation, inherited states, 100-row rendering and read-only selection. Native VoiceOver acceptance pending. See docs/DOCUMENT-ACCESSIBILITY.md. |
+| UI-44-007 | Keyboard-only layer creation | partial | Guarded keyboard insertion dialog for ten basic layer types, bounded geometry, Undo/save; freehand/pen/media and workspace-specific objects remain unfinished. See docs/DOCUMENT-ACCESSIBILITY.md. |
+| UI-44-008 | Keyboard-only selection | implemented | Keyboard outline navigation/selection complements Layers and canvas parent/child/sibling paths, cross-page selection and hidden/locked inspection without mutation. See docs/DOCUMENT-ACCESSIBILITY.md. |
+| UI-44-009 | Keyboard-only transform | implemented | Keyboard numerical move/resize/rotation fields and canvas nudge paths validated with Undo/save and inherited-lock refusal. See docs/DOCUMENT-ACCESSIBILITY.md. |
 | UI-44-010 | Keyboard-only property editing | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-44-011 | Keyboard-only export | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-44-012 | Visible focus indicators | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
