@@ -1,0 +1,29 @@
+# Motion frame scrolling
+
+UI-56-050 remains partial. The explicit Motion inspector “Preview animation” presenter now supports authored horizontal/vertical/both overflow, native wheel/touch scrolling, scroll-to reactions, remembered semantic scroll positions, and fixed/sticky layers. Ordinary prototype presentation and Slides retain their existing behavior.
+
+## Coordinate convention
+
+The outer presentation viewport retains the authored frame width/height. Its scene keeps the complete sampled frame affine (rotation, reflection and scale), retained rectangular ancestor clips and external sibling masks. Scroll offsets are measured in the frame’s local units, carried by that sampled affine; they are not world-axis translations. The frame background, its original clip, and external ancestor/mask context do not scroll. All ordinary descendants receive one inherited translation. Fixed roots compensate through the inverse frame-relative parent matrix; nested positioned descendants travel with their outer positioned root. A collapsed root may render collapsed; a collapsed relative parent that cannot position a fixed/sticky root refuses explicitly.
+
+Sticky roots pin their top/left frame-axis bounds toward the viewport and stop at their actual transformed parent rectangle. The solver clips the possible compensation polygon against parent-local half-planes, including rotated/reflected/nonuniformly scaled parents, then selects the nearest feasible compensation. Authored children already outside their parent are allowed to remain there, without an initial forced jump farther outside. Nested positioned roots are intentionally not separately compensated.
+
+A native nonnegative scroll plane carries a sticky, viewport-sized SVG. Negative overflow is represented by an origin: `semantic = native + minimum`, so initial semantic zero can have positive native scrollLeft/Top. Extents round outward to integer frame units because Chromium rounds native offsets; authored zero therefore has no fractional-origin drift. Scroll-to resolves the sampled target’s frame-local box. Preserve-scroll stores semantic values; Restart returns to semantic zero. The native scrollbar is hidden in this Motion-only plane to keep authored viewport dimensions exact; native wheel/touch/programmatic scrolling remains available. Each overflow host is a focusable, labeled region; plain arrows, Page Up/Down, Home/End scroll that focused region, while authored prototype key reactions retain priority. Presentation frame-navigation shortcuts still work outside the scroll host. Hotspot hints reuse the same adjusted shared Artwork clip/mask hierarchy with independent SVG definition IDs.
+
+No document, timeline, authored loop setting, saved animation or Undo history changes during presentation. Source/page/mode/Motion-open invalidation and reduced-motion policy remain as documented in MOTION-TRACKS-AND-FRAME-PREVIEW.md.
+
+## Bounds and remaining work
+
+- Reaction visibility uses a source-order-preserving cached subtree pass. Presentation geometry caches retain only current and outgoing source frames, releasing historical full sampled pages. Cached frame-relative affine indexing supports pages up to 20,000 layers and 256 descendant levels. Before matrix feasibility/text-bound work, scrolling scenes enforce at most 512 independent positioned roots and 2 million summed hierarchy steps. Extents are limited to 10 million frame units per axis. Non-scrolling frames do not acquire positioned-root restrictions.
+- Scroll extents conservatively include source layout, text ink, curve control hulls, strokes and effects. Inner clipping/Boolean suppression can leave extra empty scroll space. This is not a pixel-tight overflow measurement.
+- Advanced Smart Animate with external ancestor/mask context or configured scrolling frames is explicitly refused before changing local prototype state. Instant, dissolve and directional transitions remain available. There is no automatic dissolve substitution. Faithful ancestor-aware and scrolling Smart Animate still needs a separate implementation.
+- Showing the same frame simultaneously as main and overlay (or in duplicate overlays) refuses explicitly before local state changes; scroll state is keyed by active source frame. Different overlay frames remain supported.
+- This stage does not add nested independent scroll containers, configurable sticky insets or independent compensation of positioned descendants inside another positioned root.
+- Mac WKWebView/native touchpad and real Figma reference verification remain pending. Chromium interaction and raster tests are source behavior checks, not those native/reference checks. No production/native/release build was made under the user’s build freeze.
+
+## Validation
+
+New `tests/motion-scroll.test.ts` checks origin conversion/targeting, fixed source and nested invariants through signed nonuniform containers, root affine independence, collapsed-parent refusal, sticky parent half-planes, preflight budgets and 20,000-layer cached performance. `tests/e2e/motion-scroll.spec.ts` exercises real wheel/pixels, negative origin, scroll-to, preserve-scroll/Restart, root animation/fullscreen at 125%, mask/hint SVG isolation, sticky parent limits/nesting, affine positioned DOM geometry and explicit Smart Animate refusal. Existing Motion/prototype/source-MCP checks are also run before commit.
+
+
+Final checks: full core **1,557 / 130 files**, editor TypeScript and source MCP TypeScript pass; **58 source MCP tests** pass. **44 focused real browser checks** pass across Motion scrolling (11 new), Motion presentation/tracks, Motion, Dev inspection and ordinary prototype regression suites. The final cache-retention cleanup is followed by the same 44-browser/TypeScript validation before commit. No build, native, release or archive command ran.

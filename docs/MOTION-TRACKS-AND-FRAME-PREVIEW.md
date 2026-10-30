@@ -54,13 +54,14 @@ Prototype/Slides saved motion policies and exported animation data are unchanged
 
 ## Remaining limits
 
-- Explicit Motion preview has a fixed authored frame viewport. Full prototype
-  scroll-overflow viewport behavior remains in ordinary prototype presentation.
+- Explicit Motion preview retains an authored viewport while native overflow,
+  fixed/sticky positioning and semantic scroll restoration now work as described
+  in [MOTION-FRAME-SCROLLING.md](MOTION-FRAME-SCROLLING.md).
 - Isolating a frame inside a live Boolean, mask-source, slice or video ancestor,
   nonrectangular ancestor clip, active ancestor effect or non-normal ancestor
   blending is refused with an explanation. Retained subtree effects still work.
 - The existing Smart Animate matcher normalizes frame subtrees. For frames with
-  external ancestor/mask context, Motion preview refuses that transition before
+  external ancestor/mask context or scrolling, Motion preview refuses that transition before
   changing local prototype state; the current correctly masked frame remains.
   Use instant/dissolve or ordinary prototype presentation. Safe isolated frame
   smart transitions still work, with separate SVG IDs.
