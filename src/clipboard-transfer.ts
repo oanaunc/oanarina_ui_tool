@@ -26,6 +26,7 @@ function closedReferences(doc:DesignDocument){
  const missing=()=>{throw Error('Clipboard contains an unresolved reference. Restore missing definitions or detach affected layers before copying.');};
  for(const n of nodes.values()){
   if(n.componentId&&nodes.get(n.componentId)?.type!=='component'||n.sourceId&&!nodes.has(n.sourceId)||n.instanceRootId&&nodes.get(n.instanceRootId)?.type!=='instance')missing();
+  for(const id of [...n.componentMetadata?.preferredInstances??[],...(n.componentMetadata?.properties??[]).flatMap(p=>p.preferredValues??[])])if(nodes.get(id)?.type!=='component')missing();
   for(const p of n.componentMetadata?.properties??[])if(!nodes.has(p.targetId)||p.type==='instance-swap'&&nodes.get(String(p.defaultValue))?.type!=='component')missing();
   for(const [id,value] of Object.entries(n.propertyValues??{})){const p=nodes.get(n.componentId??'')?.componentMetadata?.properties?.find(p=>p.id===id);if(!p||p.type==='instance-swap'&&nodes.get(String(value))?.type!=='component')missing();}
   if(Object.values(n.variableBindings??{}).some(id=>!variables.has(id!))||Object.entries(n.styleIds??{}).some(([kind,id])=>styles.get(id!)?.type!==kind)||n.layoutGuideStyleId&&!guides.has(n.layoutGuideStyleId)||Object.entries(n.variableModes??{}).some(([id,mode])=>!collections.get(id)?.modes.some(m=>m.id===mode)))missing();
