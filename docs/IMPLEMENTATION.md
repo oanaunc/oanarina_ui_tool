@@ -4,7 +4,7 @@ The register describes the target, not a completed clone. **Implemented** means 
 
 ## Current source versus public release
 
-The source is **0.2.0-dev.12**. The register records **1,075 implemented, 173 partial and 774 planned** requirements. Combined core/browser/build/MCP and native menu checks pass; the accepted signed/notarized public Mac preview remains **0.2.0-dev.11** until the next package completes release gates. See [dev.11 navigation/frame validation](VALIDATION-v0.2-navigation-frames.md), [import validation](VALIDATION-v0.2-fig-import.md), [canvas overview](CANVAS-OVERVIEW.md), [text search](TEXT-SEARCH.md) and [frame delivery](FRAME-DELIVERY.md). The feature register remains the authoritative count and keeps reference verification separate.
+The source is **0.2.0-dev.12**. The register records **1,075 implemented, 173 partial and 774 planned** requirements. Combined core/browser/build/MCP and native menu checks pass; the signed/notarized Mac preview is **0.2.0-dev.12**. Its exact signed app and installer pass the [current acceptance report](VALIDATION-v0.2-overview-text-frames.md). See [dev.11 navigation/frame validation](VALIDATION-v0.2-navigation-frames.md), [import validation](VALIDATION-v0.2-fig-import.md), [canvas overview](CANVAS-OVERVIEW.md), [text search](TEXT-SEARCH.md) and [frame delivery](FRAME-DELIVERY.md). The feature register remains the authoritative count and keeps reference verification separate.
 
 ## Working development workflows
 

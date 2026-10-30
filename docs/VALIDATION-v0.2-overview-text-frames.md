@@ -16,14 +16,22 @@ Three isolated implementation branches were reviewed by a separate agent. Review
 
 - Combined core suite: **707 tests across 70 files passed**.
 - Shared editor TypeScript/Vite production build: passed.
-- Free local MCP: **39 tests passed**, TypeScript check passed.
+- Free local MCP: **40 tests passed**, TypeScript check passed.
 - Development-module repository browser checks: **2 passed**.
 - Clean complete production browser rerun: **293/293 passed** in 1.9 minutes against frozen production output.
 - Universal native build: passed. Isolated standard native smoke passed its renderer checks, **7 camera/menu checks and 5 real Text-menu Find checks**, with empty stderr.
-- Exact signed app lifecycle/clipboard/import checks and app/DMG notarization: pending release acceptance.
+- Exact signed/stapled app: standard renderer, **7 camera/menu**, **5 Find**, **37 lifecycle**, **29 private-clipboard** and **13 synthetic .fig import/save** checks passed with empty stderr.
+- The new real SDK stdio regression passed against both source and the exact standalone MCP ZIP: saved export profiles survive transactions/Undo, invalid profiles reject without changing file bytes/revision or leaving lock/temp files, and validation returns the current revision. The ZIP is 475,639 bytes, SHA-256 `c050e97d33e058d59a39068234933854eb30c2aacf8dfeed1e0214bc6dbcfdaf`; server stderr was empty.
 
 The first browser run was invalidated by rebuilding its served output concurrently. Two canvas-startup failures occurred during that rebuild. A separate rotation test compared 270 with 269.9999999999999 exactly; its assertion now checks the two exact keyframe times and a tight numerical angle tolerance. Native readiness deliberately precedes the React mount: the standard smoke now waits for the actual canvas. Its new hidden-window Find check uses a bounded timer rather than waiting for suspended animation frames. These are test synchronization/assertion changes, not product timing changes.
 
 ## Release boundary
 
-The public accepted dev.11 package remains intact while dev.12 completes validation. A dev.12 artifact is not labeled notarized until app and DMG both receive Accepted results, stapling and Gatekeeper acceptance. Universal Intel compilation does not establish physical Intel runtime acceptance.
+- `Forma-0.2.0-dev.12.dmg`: **32,440,052 bytes**.
+- SHA-256: `04d603bf4ee76d44a978388eb2e9b078719ff4bedb631c275c2c916143c6a86a`.
+- App and DMG: Apple notarization **Accepted**, stapled successfully; both Gatekeeper assessments accepted **Notarized Developer ID**.
+- The mounted read-only installer contains an app matching the preserved accepted archive byte-for-byte across **312 files**; its signature and Gatekeeper assessment pass. The Applications link is present.
+- Universal arm64/x86_64, macOS 13+, native version 0.2.0/build 13. Runtime checks used Apple silicon; physical Intel acceptance remains pending.
+- Renderer source: `1b64b0a`; exact shared MCP archive committed in `a5146fb`. Later test/documentation commits do not change the packaged renderer. The accepted dev.11 package remains preserved separately.
+
+No private user design, Figma ID, screenshot or signing credential is included. The exact accepted app, native reports and checksum manifest are preserved locally under `build/dev12-accepted/`.
