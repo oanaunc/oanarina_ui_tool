@@ -1,3 +1,4 @@
+import {smoothedBoxPath} from './corner-smoothing';
 import {roundedPolygonPath} from './basic-shapes';
 import paper from 'paper/dist/paper-core.js';
 import {bounds,descendants} from './model';
@@ -27,7 +28,7 @@ export function localPath(n:DesignNode):string {
  if(n.type==='ellipse')return ellipsePath(n);
  if(n.type==='polygon'||n.type==='star')return n.radius>0?roundedPolygonPath(shapePoints(n),n.radius):contourPath(shapePoints(n),true);
  if(n.type==='line'||n.type==='arrow')return n.points.length?contourPath(n.points,false):`M0 0L${n.width} ${n.height}`;
- return cornerPath(n.width,n.height,n.corners??[n.radius,n.radius,n.radius,n.radius]);
+ return smoothedBoxPath(n)??cornerPath(n.width,n.height,n.corners??[n.radius,n.radius,n.radius,n.radius]);
 }
 export function geometry(n:DesignNode):paper.PathItem {
  if(['text','image','slice'].includes(n.type))throw Error('Convert text to outlines or select vector shapes for this operation.');
@@ -36,7 +37,7 @@ export function geometry(n:DesignNode):paper.PathItem {
  if(n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined)p.scale((n.flipX?-1:1)*(n.motionScaleX??1),(n.flipY?-1:1)*(n.motionScaleY??1),new scope.Point(n.width/2,n.height/2));
  p.translate(new scope.Point(n.x,n.y));if(n.rotation)p.rotate(n.rotation,new scope.Point(n.x+n.width/2,n.y+n.height/2));return p;
 }
-export function pathProperties(p:paper.PathItem):Partial<DesignNode>{const b=p.bounds,x=b.x,y=b.y,width=Math.max(.001,b.width),height=Math.max(.001,b.height);p.translate(new scope.Point(-x,-y));return {type:'path',x,y,width,height,pathWidth:width,pathHeight:height,path:p.pathData,points:[],contours:undefined,closed:undefined,rotation:0,flipX:false,flipY:false,motionScaleX:undefined,motionScaleY:undefined};}
+export function pathProperties(p:paper.PathItem):Partial<DesignNode>{const b=p.bounds,x=b.x,y=b.y,width=Math.max(.001,b.width),height=Math.max(.001,b.height);p.translate(new scope.Point(-x,-y));return {type:'path',cornerSmoothing:undefined,x,y,width,height,pathWidth:width,pathHeight:height,path:p.pathData,points:[],contours:undefined,closed:undefined,rotation:0,flipX:false,flipY:false,motionScaleX:undefined,motionScaleY:undefined};}
 export function combineGeometry(nodes:DesignNode[],op:'union'|'subtract'|'intersect'|'exclude'){
  if(!nodes.length)throw Error('Select vector shapes.');let result=geometry(nodes[0]);
  for(const n of nodes.slice(1)){const other=geometry(n);const previous=result;result=op==='union'?result.unite(other,{insert:false}):op==='subtract'?result.subtract(other,{insert:false}):op==='intersect'?result.intersect(other,{insert:false}):result.exclude(other,{insert:false});previous.remove();other.remove();}

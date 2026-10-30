@@ -1,4 +1,5 @@
 import {validateDocumentProgressiveBlur} from './progressive-blur';
+import {validateDocumentCornerSmoothing} from './corner-smoothing';
 import {validateDocumentRotationOrigins} from './rotation-origin';
 import {validateDocumentSurfaces} from './surface-paint';
 import {validateDocumentLayoutSettings} from './layout-settings';
@@ -16,6 +17,7 @@ const forbiddenControls=/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/;
 export function validateDocumentMetadata(document:{description?:unknown;pages?:unknown;componentSets?:unknown;styles?:unknown}){
  const value=document.description;
  if(value!==undefined&&(typeof value!=='string'||value.length>DOCUMENT_DESCRIPTION_LIMIT||forbiddenControls.test(value)))throw Error('File description must be plain text up to 10,000 characters, without disallowed control characters.');
+ validateDocumentCornerSmoothing(document);
  validateDocumentRotationOrigins(document);
  validateDocumentProgressiveBlur(document);
  validateDocumentSurfaces(document);

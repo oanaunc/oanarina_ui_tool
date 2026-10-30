@@ -1,3 +1,4 @@
+import CornerSmoothingControls from './CornerSmoothingControls';
 import RotationOriginControls from './RotationOriginControls';
 import MotionInspector from './MotionInspector';
 import {useMotionView} from '../motion-editor';
@@ -105,7 +106,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
  <>{sel.length>1&&<MultiVectorControls/>}<Section name={sel.length>1?`${sel.length} layers selected`:n.type[0].toUpperCase()+n.type.slice(1)}>
  <div className="alignment-bar">{[[AlignLeft,'left'],[AlignCenter,'center'],[AlignRight,'right'],[AlignStartVertical,'top'],[AlignCenterVertical,'middle'],[AlignEndVertical,'bottom']].map(([Icon,dir])=>{const I=Icon as typeof AlignLeft;return <button disabled={!sel.length||sel.some(n=>isLocked(n,page.nodes))||sel.length===1&&!n.parentId} key={String(dir)} title={'Align '+dir} onClick={e=>{try{s.align(String(dir),e.shiftKey?'parent':'auto');}catch(error){notifyError(error);}}}><I size={15}/></button>;})}</div>
  <div className="field-grid"><NumberField label="X" value={n.x} onChange={x=>patch({x})}/><NumberField label="Y" value={n.y} onChange={y=>patch({y})}/><NumberField label="W" value={n.width} min={1} onChange={width=>patch({width,sizingX:'fixed'})}/><NumberField label="H" value={n.height} min={1} onChange={height=>patch({height,sizingY:'fixed'})}/><NumberField label="Rotation" value={n.rotation} onChange={rotation=>patch({rotation})}/><NumberField label="Radius" value={n.radius} min={0} onChange={radius=>patch({radius})}/></div>
- {sel.length===1&&<RotationOriginControls key={'rotation-origin:'+n.id} n={n}/>}
+ {sel.length===1&&<RotationOriginControls key={'rotation-origin:'+n.id} n={n}/>}{sel.length===1&&<CornerSmoothingControls key={'corner-smoothing:'+n.id} n={n}/>}
  {containers.includes(n.type)&&<label className="check-row"><input type="checkbox" checked={n.clip} onChange={e=>patch({clip:e.target.checked})}/>Clip content</label>}
  </Section>
  {sel.length===1&&n.parentId&&<ResponsiveGuideBindings key={'responsive-guide:'+n.id} n={n}/>}
