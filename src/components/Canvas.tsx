@@ -87,7 +87,7 @@ export default function Canvas(){
  <defs><pattern id="dots" width={s.zoom*16} height={s.zoom*16} patternUnits="userSpaceOnUse" x={s.pan.x} y={s.pan.y}><circle cx="1" cy="1" r=".7" fill="#77717e"/></pattern></defs>
  {s.grid&&<rect width="100%" height="100%" fill="url(#dots)" pointerEvents="none"/>}
  <g transform={`translate(${s.pan.x} ${s.pan.y}) scale(${s.zoom})`}>
- {ns.filter(n=>['frame','section','component'].includes(n.type)&&!n.parentId&&n.visible).map(n=><text key={n.id} x={n.x} y={n.y-14/s.zoom} fill={n.type==='component'?'#b89af3':'#a29da9'} fontSize={11/s.zoom} onPointerDown={e=>begin(e,n.id)}>{n.type==='component'?'◇  ':'▦  '}{n.name}</text>)}
+ {ns.filter(n=>['frame','section','component'].includes(n.type)&&!n.parentId&&n.visible&&(n.type==='section'?prefs.showSectionNames:prefs.showFrameNames)).map(n=><text data-canvas-node-name={n.type} key={n.id} x={n.x} y={n.y-14/s.zoom} fill={n.type==='component'?'#b89af3':'#a29da9'} fontSize={11/s.zoom} onPointerDown={e=>begin(e,n.id)}>{n.type==='component'?'◇  ':'▦  '}{n.name}</text>)}
  <Artwork nodes={ns} outlines={s.outlines} onNode={(e,id)=>begin(e,id)}/>
  {s.mode==='prototype'&&<PrototypeConnections nodes={ns}/>}
  <GridOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>

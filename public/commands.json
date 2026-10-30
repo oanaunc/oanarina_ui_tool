@@ -516,6 +516,36 @@
     ""
   ],
   [
+    "previous-viewport",
+    "Previous viewport",
+    "View",
+    "⌥⌘←"
+  ],
+  [
+    "next-viewport",
+    "Next viewport",
+    "View",
+    "⌥⌘→"
+  ],
+  [
+    "find-selection",
+    "Find selected object on canvas",
+    "View",
+    "⌥⌘F"
+  ],
+  [
+    "frame-names",
+    "Show frame names",
+    "View",
+    ""
+  ],
+  [
+    "section-names",
+    "Show section names",
+    "View",
+    ""
+  ],
+  [
     "zoom-in",
     "Zoom in",
     "View",
