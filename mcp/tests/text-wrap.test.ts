@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project';
+test('wrapping modes validate atomically, preserve logical text, save and Undo',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-wrap-'));try{const file=path.join(dir,'text.oui'),project=await Project.open(file,true),initial=await project.read(),pageId=initial.document.pages[0].id,text='One two three\nאבג ABC 123',created=await project.apply(initial.revision,[{op:'create_node',pageId,id:'label',type:'text',properties:{text,textWrap:'balance',paragraphStyles:[{start:14,textWrap:'pretty'}]}}]);assert.equal(created.document.pages[0].nodes[0].text,text);const before=await fs.readFile(file,'utf8');for(const properties of [{textWrap:'bad'},{paragraphStyles:[{start:14,textWrap:null}]}]){await assert.rejects(project.apply(created.revision,[{op:'rename_document',name:'Do not write'},{op:'update_node',pageId,nodeId:'label',properties}]));assert.equal(await fs.readFile(file,'utf8'),before);}const updated=await project.apply(created.revision,[{op:'update_node',pageId,nodeId:'label',properties:{textWrap:'pretty'}}]),undone=await project.undo(updated.revision);assert.deepEqual(undone.document.pages,created.document.pages);}finally{await fs.rm(dir,{recursive:true,force:true});}});
