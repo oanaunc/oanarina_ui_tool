@@ -1,6 +1,7 @@
 import VariableWidthOverlay from './VariableWidthOverlay';
 import {useWidthView} from '../variable-width-actions';
 import {validateVariableWidthNode,refuseVariableWidthConversion} from '../variable-width';
+import {validateDocumentProgressiveBlur} from '../progressive-blur';
 import {vectorSnapIndex,snapVectorPoint} from '../vector-snapping';
 import type {VectorSnapIndex,VectorSnapHit} from '../vector-snapping';
 import RotationOriginOverlay from './RotationOriginOverlay';
@@ -58,11 +59,13 @@ interface Drag {vectorSnap?:VectorSnapIndex;vectorSnapIssue?:string;precision?:P
 export default function Canvas(){
  const widthView=useWidthView(),multi=useMultiVector(),lasso=useVectorLasso(),eraser=useVectorEraser(),cut=useVectorCut(),gradient=useCanvasGradient(),crop=useCanvasImageCrop(),s=useEditor(),prefs=usePreferences(),page=s.doc.pages.find(p=>p.id===s.pageId)!;
  const svg=useRef<SVGSVGElement>(null),drag=useRef<Drag|null>(null),space=useRef(false),updatePointer=useRef<((event:DrawingPointer)=>void)|null>(null);
- const [preview,setPreview]=useState<DesignNode[]|null>(null),[box,setBox]=useState<ReturnType<typeof bounds>|null>(null),[pen,setPen]=useState<VectorPoint[]>([]);
+ const [preview,setPreviewState]=useState<DesignNode[]|null>(null),[box,setBox]=useState<ReturnType<typeof bounds>|null>(null),[pen,setPen]=useState<VectorPoint[]>([]);
  const [vectorSnapHit,setVectorSnapHit]=useState<VectorSnapHit|null>(null);
  const [snapLines,setSnapLines]=useState<GuideLine[]>([]),[hoveredId,setHoveredId]=useState<string|undefined>(),[hoverOutlineId,setHoverOutlineId]=useState<string|undefined>(),[measuring,setMeasuring]=useState(false);
  const [continuation,setContinuation]=useState<{id:string;key:string;sourceNodes:DesignNode[]}|null>(null);
  const [editText,setEditText]=useState<string|null>(null),[context,setContext]=useState<{x:number;y:number;layerIds:string[]}|null>(null);
+ // Every local gesture and overlay draft crosses this boundary before shared Artwork sees it.
+ const setPreview=(nodes:DesignNode[]|null)=>{if(nodes)try{const live=useEditor.getState();validateDocumentProgressiveBlur({...live.doc,pages:live.doc.pages.map(p=>p.id===live.pageId?{...p,nodes}:p)});}catch(error){const d=drag.current;drag.current=null;setPreviewState(null);setBox(null);setSnapLines([]);setVectorSnapHit(null);setContinuation(null);if(d?.pointerId!==undefined&&svg.current?.hasPointerCapture(d.pointerId))svg.current.releasePointerCapture(d.pointerId);throw error;}setPreviewState(nodes);};
  useLayoutEffect(()=>{if(crop.context||gradient.context||cut.context||eraser.context||lasso.context||multi.context||widthView.context){drag.current=null;setPreview(null);setBox(null);setSnapLines([]);setPen([]);setContinuation(null);setEditText(null);setContext(null);}},[crop.context,gradient.context,cut.context,eraser.context,lasso.context,multi.context,widthView.context]);
  useEffect(()=>{const cancel=()=>{drag.current=null;setPreview(null);setBox(null);setSnapLines([]);setPen([]);setContinuation(null);};const w=useWidthView.subscribe(v=>{if(v.context)cancel();}),m=useMultiVector.subscribe(v=>{if(v.context)cancel();}),a=useVectorEraser.subscribe(v=>{if(v.context)cancel();}),b=useVectorLasso.subscribe(v=>{if(v.context)cancel();});return()=>{w();m();a();b();};},[]);
  const displayNodes=useMemo(()=>s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,[page.nodes,page.motion,s.motionOpen,s.motionTime]);
@@ -122,7 +125,7 @@ export default function Canvas(){
 
  };
  updatePointer.current=update;
- useEffect(()=>{const modifier=(event:KeyboardEvent)=>{const d=drag.current;if(d&&['create','move','resize','rotate','vector','marquee'].includes(d.kind)&&d.lastPointer&&['Alt','Shift','Meta','Control'].includes(event.key))updatePointer.current?.({...d.lastPointer,altKey:event.altKey,shiftKey:event.shiftKey,metaKey:event.metaKey,ctrlKey:event.ctrlKey});};window.addEventListener('keydown',modifier);window.addEventListener('keyup',modifier);return()=>{window.removeEventListener('keydown',modifier);window.removeEventListener('keyup',modifier);};},[]);
+ useEffect(()=>{const modifier=(event:KeyboardEvent)=>{const d=drag.current;if(d&&['create','move','resize','rotate','vector','marquee'].includes(d.kind)&&d.lastPointer&&['Alt','Shift','Meta','Control'].includes(event.key))try{updatePointer.current?.({...d.lastPointer,altKey:event.altKey,shiftKey:event.shiftKey,metaKey:event.metaKey,ctrlKey:event.ctrlKey});}catch(error){notifyError(error);}};window.addEventListener('keydown',modifier);window.addEventListener('keyup',modifier);return()=>{window.removeEventListener('keydown',modifier);window.removeEventListener('keyup',modifier);};},[]);
  const finish=(e:React.PointerEvent)=>{const d=drag.current;if(!d)return;drag.current=null;setSnapLines([]);setVectorSnapHit(null);if(svg.current?.hasPointerCapture(e.pointerId))svg.current.releasePointerCapture(e.pointerId);if(!currentGesture(d)){setPreview(null);setBox(null);return;}
  if(d.kind==='pen-handle')return;
  if(d.kind==='vector-marquee'){const original=d.nodes.find(n=>n.id===d.ids[0]),keys:string[]=[];if(box&&original?.contours)for(const [ci,c] of original.contours.entries())for(const [pi,p] of c.points.entries()){const point=canvasPathPoint(original,d.nodes,p);if(point.x>=box.x&&point.y>=box.y&&point.x<=box.x+box.width&&point.y<=box.y+box.height)keys.push(`${ci}:${pi}`);}s.set({selection:d.ids,vectorSelection:[...new Set([...(d.pointKeys??[]),...keys])]});}

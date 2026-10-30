@@ -1,3 +1,4 @@
+import PrototypeRenderBoundary from './PrototypeRenderBoundary';
 import {createPortal} from 'react-dom';
 import {useCallback,useEffect,useId,useMemo,useRef,useState} from 'react';
 import {motionFrameScene,useMotionPreview} from '../motion-presentation';
@@ -6,7 +7,7 @@ import type {DesignNode} from '../model';
 import MotionPreviewTransport,{usePresentedMotion} from './MotionPreviewTransport';
 import {useEditor} from '../store';
 import {descendants,effectiveVisible} from '../model';
-import {createPrototypeState,defaultPrototypeSettings,executeActions,keyMatches,prototypeDocument,prototypeFrames,prototypeScrollNodes,reactionsFor,smartAnimate,transitionProgress} from '../prototype';
+import {validatePrototypeStateChange,createPrototypeState,defaultPrototypeSettings,executeActions,keyMatches,prototypeDocument,prototypeFrames,prototypeScrollNodes,reactionsFor,smartAnimate,transitionProgress} from '../prototype';
 import type {PrototypeAction,PrototypeState,PrototypeTransition,PrototypeTrigger} from '../prototype';
 import {sampleMotion} from '../motion';
 import {modesFor,resolveVariable} from '../design-systems';
@@ -31,7 +32,8 @@ function motionStyle(t:PrototypeTransition,progress:number,w:number,h:number,out
  const moving=out?['move-out','push','slide-out'].includes(t.type):['move-in','push','slide-in'].includes(t.type);
  return moving?{transform:`translate(${v.x*(out?-progress:1-progress)}px,${v.y*(out?-progress:1-progress)}px)`}:{};
 }
-export default function PrototypePresentation(){
+export default function PrototypePresentation(){const s=useEditor();return <PrototypeRenderBoundary key={s.doc.id+':'+s.pageId} onClose={()=>s.set({modal:null})}><PrototypeSession/></PrototypeRenderBoundary>;}
+function PrototypeSession(){
  const s=useEditor(),request=useMotionPreview(v=>v.request),motionPreview=!!request&&request.doc===s.doc&&request.pageId===s.pageId,scope=useId(),sceneSerial=useRef(0),scrollScenes=useRef(new Map<string,MotionScrollScene>()),scenes=useRef<{nodes:DesignNode[];id:string;scene:MotionFrameScene}[]>([]),sourcePage=s.doc.pages.find(p=>p.id===s.pageId)!;
  const [state,setState]=useState(()=>createPrototypeState(sourcePage,motionPreview?request!.frameId:s.selection[0]));
  const stateRef=useRef(state);stateRef.current=state;
@@ -49,11 +51,12 @@ export default function PrototypePresentation(){
  useEffect(()=>{const el=stage.current;if(!el)return;const observer=new ResizeObserver(([entry])=>setSize({width:entry.contentRect.width-48,height:entry.contentRect.height-48}));observer.observe(el);return()=>observer.disconnect();},[]);
  useEffect(()=>{if(motionPreview&&!change)return;let id=0;const animate=(now:number)=>{setClock(now-started.current);id=requestAnimationFrame(animate);};id=requestAnimationFrame(animate);return()=>cancelAnimationFrame(id);},[motionPreview,change]);
  const install=useCallback((next:PrototypeState,transition?:PrototypeTransition)=>{
+  validatePrototypeStateChange(s.doc,s.pageId,stateRef.current,next,transition);
   const before=stateRef.current,frameChanged=before.frameId!==next.frameId,overlayChanged=!same(before.overlays,next.overlays),visualChanged=!same(before.variants,next.variants)||!same(before.values,next.values);
   const kind=frameChanged?'frame':overlayChanged?'overlay':'state',overlayTransition=next.overlays.at(-1)?.transition??before.overlays.at(-1)?.transition,t=transition??(overlayChanged?overlayTransition:undefined);
   if((frameChanged||overlayChanged||visualChanged)&&t&&t.type!=='instant'&&t.duration>0&&!reduced)setChange({kind,from:before,to:next,transition:t,start:performance.now()});else setChange(null);
   stateRef.current=next;setState(next);
- },[reduced]);
+ },[reduced,s.doc,s.pageId]);
  const perform=useCallback((actions:PrototypeAction[],transient=false)=>{
   try{
    const before=stateRef.current,result=executeActions(s.doc,s.pageId,before,actions);if(motionPreview){const previewPage=prototypeDocument(s.doc,result.state).pages.find(p=>p.id===s.pageId)!;const activeFrames=[result.state.frameId,...result.state.overlays.map(o=>o.frameId)],ids=new Set(activeFrames);if(ids.size!==activeFrames.length)throw Error('Motion preview cannot show the same frame in more than one active viewport. Choose a different overlay frame or open ordinary prototype presentation.');for(const id of ids){const scene=motionFrameScene(previewPage,id,'preflight');motionScrollScene(previewPage.nodes,id);if(result.transition?.type==='smart-animate'&&(!scene.smartTransitionSafe||previewPage.nodes.find(n=>n.id===id)?.prototypeScroll&&previewPage.nodes.find(n=>n.id===id)?.prototypeScroll!=='none'))throw Error('Smart transitions with external ancestor or mask context, or scrolling frames, are unavailable in Motion preview. Use an instant or dissolve transition, or open ordinary prototype presentation.');}if(result.transition?.type==='smart-animate'){const previousPage=prototypeDocument(s.doc,before).pages.find(p=>p.id===s.pageId)!;for(const id of new Set([before.frameId,...before.overlays.map(o=>o.frameId)]))if(!motionFrameScene(previousPage,id,'preflight-before').smartTransitionSafe||previousPage.nodes.find(n=>n.id===id)?.prototypeScroll&&previousPage.nodes.find(n=>n.id===id)?.prototypeScroll!=='none')throw Error('Smart transitions with external ancestor or mask context, or scrolling frames, are unavailable in Motion preview. Use an instant or dissolve transition, or open ordinary prototype presentation.');}}
@@ -67,17 +70,17 @@ export default function PrototypePresentation(){
    if(before.frameId!==result.state.frameId){started.current=performance.now();requestAnimationFrame(()=>{const remembered=result.preserveScroll?savedScroll.current.get(result.state.frameId):undefined;scrollToPosition(result.state.frameId,remembered??{x:0,y:0});setScrollPositions(v=>({...v,[result.state.frameId]:remembered??{x:0,y:0}}));});}
    for(const effect of result.effects){
     if(effect.type==='open-link'&&effect.url)window.open(effect.url,'_blank','noopener,noreferrer');
-    if(effect.type==='scroll-to')requestAnimationFrame(()=>{const current=prototypeDocument(s.doc,result.state).pages.find(p=>p.id===s.pageId)!,n=current.nodes.find(n=>n.id===effect.targetId);const host=[...result.state.overlays.map(o=>o.frameId).reverse(),result.state.frameId].find(id=>descendants(current.nodes,[id]).includes(effect.targetId??'')),f=current.nodes.find(n=>n.id===host);if(n&&f){const scene=motionPreview?scrollScenes.current.get(f.id):undefined;scrollToPosition(f.id,scene?motionScrollTarget(scene,n.id):{x:Math.max(0,n.x-f.x),y:Math.max(0,n.y-f.y)},effect.duration&&!reduced?'smooth':'instant');}});
+    if(effect.type==='scroll-to')requestAnimationFrame(()=>{try{const current=prototypeDocument(s.doc,result.state).pages.find(p=>p.id===s.pageId)!,n=current.nodes.find(n=>n.id===effect.targetId);const host=[...result.state.overlays.map(o=>o.frameId).reverse(),result.state.frameId].find(id=>descendants(current.nodes,[id]).includes(effect.targetId??'')),f=current.nodes.find(n=>n.id===host);if(n&&f){const scene=motionPreview?scrollScenes.current.get(f.id):undefined;scrollToPosition(f.id,scene?motionScrollTarget(scene,n.id):{x:Math.max(0,n.x-f.x),y:Math.max(0,n.y-f.y)},effect.duration&&!reduced?'smooth':'instant');}}catch(e){setError(e instanceof Error?e.message:String(e));}});
    }
   }catch(e){setError(e instanceof Error?e.message:String(e));}
  },[s.doc,s.pageId,install,reduced,motionPreview]);
  const activeRoot=state.overlays.at(-1)?.frameId??state.frameId,active=useMemo(()=>{if(motionPreview)return motionActiveNodes(page.nodes,activeRoot);const activeIds=new Set(descendants(page.nodes,[activeRoot]));return page.nodes.filter(n=>activeIds.has(n.id)&&effectiveVisible(n,page.nodes));},[page.nodes,activeRoot,motionPreview]);
- const trigger=useCallback((id:string,type:PrototypeTrigger)=>{
+ const trigger=useCallback((id:string,type:PrototypeTrigger)=>{try{
   const current=prototypeDocument(s.doc,stateRef.current).pages.find(p=>p.id===s.pageId)!,n=current.nodes.find(n=>n.id===id);if(!n)return;
   const reactions=reactionsFor(n).filter(r=>r.enabled&&r.trigger===type);if(!reactions.length)return;const actions=reactions.flatMap(r=>r.actions),transient=type==='hover'||type==='press';
   if(transient){if(temporary.current.some(t=>t.kind===type&&t.nodeId===id))return;if(!temporary.current.length)temporaryBase.current=clone(stateRef.current);temporary.current.push({kind:type,nodeId:id,actions:clone(actions)});}
   perform(actions,transient);
- },[s.doc,s.pageId,perform]);
+ }catch(e){setError(e instanceof Error?e.message:String(e));}},[s.doc,s.pageId,perform]);
  const restore=useCallback((kind:'hover'|'press',id?:string)=>{
   const remaining=temporary.current.filter(t=>!(t.kind===kind&&(!id||t.nodeId===id)));if(remaining.length===temporary.current.length||!temporaryBase.current)return;
   try{let restored=clone(temporaryBase.current);for(const entry of remaining)restored=executeActions(s.doc,s.pageId,restored,entry.actions).state;temporary.current=remaining;if(!remaining.length)temporaryBase.current=null;install(restored);}catch(e){temporary.current=[];temporaryBase.current=null;setError(e instanceof Error?e.message:String(e));}
@@ -100,7 +103,7 @@ export default function PrototypePresentation(){
  const navigate=(targetId:string)=>perform([{id:'toolbar-navigation',type:'navigate',targetId}]);
  const previous=()=>{const i=frames.findIndex(f=>f.id===stateRef.current.frameId);if(i>0)navigate(frames[i-1].id);};
  const next=()=>{const i=frames.findIndex(f=>f.id===stateRef.current.frameId);if(i>=0&&i<frames.length-1)navigate(frames[i+1].id);};
- const restart=(flowId?:string)=>{const next=createPrototypeState(sourcePage,flowId?undefined:s.selection[0],flowId);setState(next);stateRef.current=next;setChange(null);setError('');temporary.current=[];temporaryBase.current=null;savedScroll.current.clear();setScrollPositions({});started.current=performance.now();if(motionPreview){motionControl.setTime(0);motionControl.setPlaying(false);}scrollers.current.forEach((_,id)=>scrollToPosition(id,{x:0,y:0}));};
+ const restart=(flowId?:string)=>{try{const next=createPrototypeState(sourcePage,flowId?undefined:s.selection[0],flowId);install(next);setChange(null);setError('');temporary.current=[];temporaryBase.current=null;savedScroll.current.clear();setScrollPositions({});started.current=performance.now();if(motionPreview){motionControl.setTime(0);motionControl.setPlaying(false);}scrollers.current.forEach((_,id)=>scrollToPosition(id,{x:0,y:0}));}catch(e){setError(e instanceof Error?e.message:String(e));}};
  const elapsed=change?performance.now()-change.start:0,animating=!!change&&elapsed<change.transition.duration,progress=change?transitionProgress(change.transition,elapsed):1;
  useEffect(()=>{if(change&&performance.now()-change.start>=change.transition.duration)setChange(null);},[clock,change]);
  const width=frame?.width??390,height=frame?.height??844,border=settings.device==='none'?0:24,orientedWidth=settings.orientation==='landscape'?Math.max(width,height):width,orientedHeight=settings.orientation==='landscape'?Math.min(width,height):height;
@@ -134,7 +137,7 @@ export default function PrototypePresentation(){
  </div></div>:<p>Create a frame to present a prototype.</p>}</div>
  {motionPreview&&<MotionPreviewTransport control={motionControl} frameName={frame?.name??'Frame unavailable'} motion={page.motion}/>}
  <footer><button aria-label="Previous frame" disabled={frames.findIndex(f=>f.id===state.frameId)<=0} onClick={previous}>←</button><span>{frames.findIndex(f=>f.id===state.frameId)+1} / {frames.length}</span><button aria-label="Next frame" disabled={frames.findIndex(f=>f.id===state.frameId)>=frames.length-1} onClick={next}>→</button><button onClick={()=>perform([{id:'back',type:'back'}])} disabled={!state.history.length&&!state.overlays.length}>Back</button><button onClick={()=>restart()}>Restart flow</button><select aria-label="Presentation scale" value={scaleMode} onChange={e=>setScaleMode(e.target.value as typeof scaleMode)}><option value="fit">Fit to screen</option><option value="actual">Actual size</option><option value="fill">Fill screen</option></select><button onClick={()=>setHints(!hints)}>{hints?'Hide hotspot hints':'Show hotspot hints'}</button><button onClick={()=>setVariablesOpen(!variablesOpen)}>Variable state</button><span className="prototype-shortcuts">← → frames · R restart · Esc close</span></footer>
- {variablesOpen&&<aside className="prototype-variables"><strong>Prototype variables</strong>{doc.variables?.map(v=><p key={v.id}>{v.name}: {String(resolveVariable(doc,v.id,variableModes).value)}</p>)}<button onClick={()=>{const next={...stateRef.current,values:{}};stateRef.current=next;setState(next);}}>Reset variable state</button></aside>}
+ {variablesOpen&&<aside className="prototype-variables"><strong>Prototype variables</strong>{doc.variables?.map(v=><p key={v.id}>{v.name}: {String(resolveVariable(doc,v.id,variableModes).value)}</p>)}<button onClick={()=>{try{install({...stateRef.current,values:{}});setError('');}catch(e){setError(e instanceof Error?e.message:String(e));}}}>Reset variable state</button></aside>}
  {error&&<div className="prototype-error" role="alert">{error}<button aria-label="Dismiss prototype error" onClick={()=>setError('')}>×</button></div>}
  </div>;
  return motionPreview?createPortal(presentation,document.body):presentation;

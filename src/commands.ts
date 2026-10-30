@@ -1,4 +1,5 @@
 import {hasVariableWidth,refuseVariableWidthConversion} from './variable-width';
+import {prototypeDocument,createPrototypeState} from './prototype';
 import {rotateNodeAroundOrigin} from './rotation-origin';
 import {openRepeat} from './repeat-view';
 import {useMaskView} from './mask-view';
@@ -112,7 +113,7 @@ export function runCommand(id:string,event?:Event){if(event&&['copy','cut','past
  case 'layout-guides':s.edit(d=>{d.layoutGuidesVisible=!(d.layoutGuidesVisible??true);});break;case 'grid':s.set({grid:!s.grid});break;case 'snap':s.edit(d=>{d.snapping={...{enabled:true,pixel:'pixel',objects:true,centers:true,guides:true,frames:true,layout:true,spacing:true},...d.snapping,enabled:!(d.snapping?.enabled??true)};});break;case 'rulers':s.set({rulers:!s.rulers});break;case 'outlines':s.set({outlines:!s.outlines});break;case 'toggle-ui':s.set({uiHidden:!s.uiHidden});break;case 'theme':{const theme=s.theme==='dark'?'light':'dark';updateAppearance(theme);s.set({theme});break;}
  case 'page':s.addPage();break;case 'delete-page':s.deletePage();break;case 'home':s.set({home:true});break;
  case 'motion':s.set({motionOpen:!s.motionOpen,motionPlaying:false});break;
- case 'export':if(s.doc.workspace==='slides')window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:'export'}));else s.set({modal:'export'});break;case 'present':if(s.doc.workspace==='slides')window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:'present'}));else s.set({modal:'present'});break;case 'prototype':s.set({mode:'prototype'});break;case 'inspect':s.set({mode:s.mode==='inspect'?'design':'inspect'});break;
+ case 'export':if(s.doc.workspace==='slides')window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:'export'}));else s.set({modal:'export'});break;case 'present':if(s.doc.workspace==='slides')window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:'present'}));else{prototypeDocument(s.doc,createPrototypeState(currentPage(),s.selection[0]));s.set({modal:'present'});}break;case 'prototype':s.set({mode:'prototype'});break;case 'inspect':s.set({mode:s.mode==='inspect'?'design':'inspect'});break;
  default:if(commands.some(c=>c[0]===id)||id==='actions')s.set({modal:id});
  }}catch(e){notifyError(e);}
 }
