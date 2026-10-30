@@ -1,24 +1,37 @@
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useId,useRef,useState} from 'react';
+import {createPortal} from 'react-dom';
+import PageThumbnail from './PageThumbnail';
 import {MoreHorizontal,Search,X} from 'lucide-react';
 import {useEditor} from '../store';
+import type {DesignDocument} from '../model';
 import './page-list.css';
+
+type PreviewRequest={id:string;doc:DesignDocument;row:HTMLButtonElement;kind:'hover'|'focus'};
 
 export default function PageList(){
  const s=useEditor(),list=useRef<HTMLDivElement>(null),popup=useRef<HTMLDivElement>(null),search=useRef<HTMLInputElement>(null),previous=useRef({documentId:s.doc.id,modal:s.modal}),[query,setQuery]=useState(''),[focused,setFocused]=useState(s.pageId),[menu,setMenu]=useState<{id:string;x:number;y:number}|null>(null),[error,setError]=useState(''),[drag,setDrag]=useState<{id:string;docId:string}|null>(null),[drop,setDrop]=useState<{id:string;after:boolean}|null>(null);
+ const previewId=useId(),previewTimer=useRef<ReturnType<typeof setTimeout>|null>(null),previewRequest=useRef<PreviewRequest|null>(null),[preview,setPreview]=useState<{id:string;documentId:string;anchor:{left:number;right:number;top:number}}|null>(null);
+ const closePreview=()=>{if(previewTimer.current!==null){clearTimeout(previewTimer.current);previewTimer.current=null;}previewRequest.current=null;setPreview(null);};
+ const armPreview=(request:PreviewRequest)=>{previewRequest.current=request;previewTimer.current=setTimeout(()=>{previewTimer.current=null;previewRequest.current=null;const {row,id,doc,kind}=request,current=useEditor.getState();if(!row.isConnected||current.doc!==doc||current.modal||kind==='focus'&&document.activeElement!==row)return;const {left,right,top}=row.getBoundingClientRect();setPreview({id,documentId:doc.id,anchor:{left,right,top}});},180);};
+ const showPreview=(id:string,row:HTMLButtonElement,kind:'hover'|'focus'='hover')=>{if(s.modal||menu||drag)return;closePreview();armPreview({id,doc:s.doc,row,kind});};
+ useEffect(()=>{const clear=()=>closePreview(),scroll=()=>{const pending=previewRequest.current;closePreview();if(pending?.kind==='focus'&&pending.row.isConnected&&document.activeElement===pending.row){const r=pending.row.getBoundingClientRect(),box=list.current?.getBoundingClientRect();if(box&&r.top<Math.min(window.innerHeight,box.bottom)&&r.bottom>Math.max(0,box.top)&&r.right>0&&r.left<window.innerWidth)armPreview(pending);}};window.addEventListener('resize',clear);window.addEventListener('scroll',scroll,true);return()=>{if(previewTimer.current!==null)clearTimeout(previewTimer.current);previewRequest.current=null;window.removeEventListener('resize',clear);window.removeEventListener('scroll',scroll,true);};},[]);
+ useEffect(()=>closePreview(),[s.doc,s.modal,query]);
+ const previewPage=preview&&preview.documentId===s.doc.id&&!s.modal&&!menu&&!drag?s.doc.pages.find(p=>p.id===preview.id):undefined;
  const term=query.trim().toLocaleLowerCase(),visible=s.doc.pages.map((page,index)=>({page,index})).filter(({page})=>page.name.toLocaleLowerCase().includes(term)),visibleIds=new Set(visible.map(({page})=>page.id));
  const tabStop=visibleIds.has(focused)?focused:visibleIds.has(s.pageId)?s.pageId:visible[0]?.page.id;
  const focus=(id:string)=>{setFocused(id);requestAnimationFrame(()=>{const row=list.current?.querySelector<HTMLButtonElement>(`[data-page-id="${CSS.escape(id)}"]`)??list.current?.querySelector<HTMLButtonElement>('.page-row');if(row){setFocused(row.dataset.pageId!);row.focus();row.scrollIntoView({block:'nearest'});}else search.current?.focus();});};
  const restore=()=>{if(!useEditor.getState().modal)focus(useEditor.getState().pageId);};
- const close=(restoreFocus=false)=>{setMenu(null);setError('');if(restoreFocus)restore();};
+ const close=(restoreFocus=false)=>{closePreview();setMenu(null);setError('');if(restoreFocus)restore();};
  const perform=(fn:()=>void)=>{try{fn();close(true);}catch(e){setError(e instanceof Error?e.message:'Page action failed.');}};
- const openMenu=(id:string,x:number,y:number)=>{if(s.modal)return;s.selectPage(id);setFocused(id);setError('');setMenu({id,x:Math.max(8,Math.min(x,window.innerWidth-230)),y:Math.max(8,Math.min(y,window.innerHeight-280))});};
+ const openMenu=(id:string,x:number,y:number)=>{closePreview();if(s.modal)return;s.selectPage(id);setFocused(id);setError('');setMenu({id,x:Math.max(8,Math.min(x,window.innerWidth-230)),y:Math.max(8,Math.min(y,window.innerHeight-280))});};
  useEffect(()=>{if(!menu)return;popup.current?.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();const outside=(e:PointerEvent)=>{if(!popup.current?.contains(e.target as Node))close();};window.addEventListener('pointerdown',outside);return()=>window.removeEventListener('pointerdown',outside);},[menu]);
  useEffect(()=>{const old=previous.current;previous.current={documentId:s.doc.id,modal:s.modal};setMenu(null);setError('');setDrag(null);setDrop(null);setFocused(s.pageId);if(old.documentId!==s.doc.id)setQuery('');else if(old.modal==='rename-page'&&!s.modal)restore();},[s.doc.id,s.modal]);
  useEffect(()=>{if(menu&&!s.doc.pages.some(p=>p.id===menu.id))close();},[s.doc.pages,menu]);
  const move=(id:string,index:number)=>perform(()=>{s.reorderPage(id,index);focus(id);});
  return <><div className="page-search"><label className="page-search-field"><Search size={12} aria-hidden="true"/><input ref={search} type="search" aria-label="Search page names" aria-controls="page-list" placeholder="Search pages…" value={query} disabled={!!s.modal} onChange={e=>{setQuery(e.target.value);close();setDrag(null);setDrop(null);}} onKeyDown={e=>{if(e.key==='Escape'&&query){e.preventDefault();e.stopPropagation();setQuery('');}else if((e.key==='ArrowDown'||e.key==='ArrowUp')&&visible.length&&!e.metaKey&&!e.ctrlKey&&!e.altKey&&!e.shiftKey){e.preventDefault();e.stopPropagation();const id=(e.key==='ArrowDown'?visible[0]:visible.at(-1)!).page.id;s.selectPage(id);focus(id);}}}/>{query&&<button aria-label="Clear page search" disabled={!!s.modal} onClick={()=>{setQuery('');search.current?.focus();}}><X size={12}/></button>}</label>{term&&<p className="page-search-status" role="status">{visible.length} of {s.doc.pages.length} pages{!visibleIds.has(s.pageId)?' · Current page hidden':''}</p>}</div><div className="pages-list" id="page-list" ref={list} role="navigation" aria-label="Pages">{visible.map(({page:p,index},visibleIndex)=><div key={p.id} className={'page-list-item '+(drop?.id===p.id?(drop.after?'page-drop-after':'page-drop-before'):'')}>
-  <button data-page-id={p.id} aria-label={p.name} aria-current={p.id===s.pageId?'page':undefined} tabIndex={tabStop===p.id?0:-1} className={'page-row '+(p.id===s.pageId?'active':'')} disabled={!!s.modal} title="Arrow keys select visible pages. Option–Shift–Up/Down moves a page in the full document order. Shift–F10 opens page actions." draggable={!s.modal} onClick={()=>{s.selectPage(p.id);setFocused(p.id);}} onFocus={()=>setFocused(p.id)} onDoubleClick={()=>{s.selectPage(p.id);s.set({modal:'rename-page'});}} onContextMenu={e=>{e.preventDefault();e.stopPropagation();openMenu(p.id,e.clientX,e.clientY);}} onKeyDown={e=>{
+  <button data-page-id={p.id} aria-label={p.name} aria-current={p.id===s.pageId?'page':undefined} aria-describedby={previewPage?.id===p.id?previewId:undefined} tabIndex={tabStop===p.id?0:-1} className={'page-row '+(p.id===s.pageId?'active':'')} disabled={!!s.modal} title="Hover or focus to preview. Escape closes the preview. Arrow keys select visible pages. Option–Shift–Up/Down moves a page in the full document order. Shift–F10 opens page actions." draggable={!s.modal} onClick={()=>{closePreview();s.selectPage(p.id);setFocused(p.id);}} onPointerEnter={e=>showPreview(p.id,e.currentTarget)} onPointerLeave={closePreview} onFocus={e=>{setFocused(p.id);showPreview(p.id,e.currentTarget,'focus');}} onBlur={closePreview} onDoubleClick={()=>{s.selectPage(p.id);s.set({modal:'rename-page'});}} onContextMenu={e=>{e.preventDefault();e.stopPropagation();openMenu(p.id,e.clientX,e.clientY);}} onKeyDown={e=>{
    if(s.modal||e.target!==e.currentTarget)return;
+   if(e.key==='Escape'&&(preview||previewTimer.current!==null)){e.preventDefault();e.stopPropagation();closePreview();return;}
    if(e.key==='ContextMenu'||e.key==='F10'&&e.shiftKey){e.preventDefault();e.stopPropagation();const r=e.currentTarget.getBoundingClientRect();openMenu(p.id,r.left+24,r.bottom);return;}
    if(e.altKey&&e.shiftKey&&(e.key==='ArrowUp'||e.key==='ArrowDown')){e.preventDefault();e.stopPropagation();const next=index+(e.key==='ArrowUp'?-1:1);if(next>=0&&next<s.doc.pages.length)move(p.id,next);return;}
    if(e.metaKey||e.ctrlKey||e.altKey||e.shiftKey)return;
@@ -33,5 +46,5 @@ export default function PageList(){
   <button role="menuitem" title="Move one position in the full document order, including hidden pages." disabled={s.doc.pages.at(-1)?.id===menu.id} onClick={()=>move(menu.id,s.doc.pages.findIndex(p=>p.id===menu.id)+1)}>Move page down</button>
   <button role="menuitem" disabled={s.doc.pages.length<=1} onClick={()=>perform(()=>s.deletePage(menu.id))}>Delete page</button>
   <button role="menuitem" onClick={()=>close(true)}>Close page menu</button>{error&&<p role="alert">{error}</p>}
- </div>}</>;
+ </div>}{previewPage&&preview&&createPortal(<PageThumbnail page={previewPage} doc={s.doc} anchor={preview.anchor} id={previewId}/>,document.body)}</>;
 }
