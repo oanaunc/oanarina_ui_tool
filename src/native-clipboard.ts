@@ -62,3 +62,22 @@ export async function pasteEditorClipboard(parentId?:string,isCurrentTarget:()=>
  current.edit(d=>{Object.assign(d,candidate);});current.set({selection:ids,toast:['Layers pasted. Undo is available.',...payload.warnings].join(' ')});
  const committed=useEditor.getState().doc;try{await registerFonts(payload.project.fonts??[]);if(useEditor.getState().doc===committed)useEditor.getState().refreshFonts();}catch(error){notifyError(error);}
 }
+
+/** Copies a captured visual selection as SVG and plain XML, retaining Mac editable paste data. */
+export async function copyEditorSelectionAsSvg(){
+ const generation=++pngGeneration,before=useEditor.getState();
+ if(!before.selection.length)throw Error('Select artwork to copy as SVG.');
+ const svg=exportSvg(exportNodes());let written:boolean;
+ if(typeof window!=='undefined'&&window.desktop?.clipboardWrite){
+  const payload=makeDesignClipboard(before.doc,before.pageId,before.selection);payload.project.fonts=assetsForUsage(projectFontUsage(payload.project),payload.project.fonts);
+  const raw=JSON.stringify(payload);parseDesignClipboard(raw);
+  if(new TextEncoder().encode(raw+svg+svg).length>CLIPBOARD_LIMIT)throw Error('Clipboard representations exceed 20 MB. Copy fewer layers.');
+  written=await window.desktop.clipboardWrite({nodes:raw,svg,text:svg});
+  const current=useEditor.getState();if(written&&generation===pngGeneration&&current.doc===before.doc&&current.pageId===before.pageId&&current.selection.join('\0')===before.selection.join('\0'))localCopy={raw,document:before.doc};
+ }else{
+  if(typeof navigator==='undefined'||!navigator.clipboard?.writeText)throw Error('SVG clipboard access is unavailable. Export SVG instead.');
+  if(new TextEncoder().encode(svg).length>CLIPBOARD_LIMIT)throw Error('SVG clipboard content exceeds 20 MB.');
+  await navigator.clipboard.writeText(svg);written=true;
+ }
+ if(generation===pngGeneration)useEditor.getState().set({toast:written?'Selection copied as SVG markup.':'The clipboard was not updated.'});return written;
+}

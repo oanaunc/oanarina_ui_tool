@@ -1,5 +1,7 @@
+import {validateSvgExportSettings} from './svg-export-settings';
+import type {SvgExportSettings} from './svg-export-settings';
 export type ArtworkFormat='svg'|'png'|'jpg';
-export interface FrameExportSetting {id:string;format:ArtworkFormat;scale:number;suffix:string;bounds:'frame'|'artwork';includeGuides:boolean;quality?:number;sizing?:{axis:'width'|'height';value:number};}
+export interface FrameExportSetting {id:string;format:ArtworkFormat;scale:number;suffix:string;bounds:'frame'|'artwork';includeGuides:boolean;quality?:number;sizing?:{axis:'width'|'height';value:number};svg?:SvgExportSettings;includeHidden?:boolean;includeOverlaps?:boolean;}
 export const FRAME_EXPORT_SETTING_LIMIT=20;
 export function defaultFrameExportSetting(id='default'):FrameExportSetting{return {id,format:'svg',scale:1,suffix:'',bounds:'frame',includeGuides:false};}
 /** Saved profiles are data only. Validate them at both import and editor transaction boundaries. */
@@ -12,6 +14,7 @@ export function validateFrameExportSettings(value:unknown):asserts value is Fram
   if(typeof item.id!=='string'||!item.id.trim()||item.id.length>128||ids.has(item.id))throw Error('Export settings require distinct local IDs.');ids.add(item.id);
   if(!['svg','png','jpg'].includes(item.format)||!Number.isFinite(item.scale)||item.scale<.01||item.scale>64||!['frame','artwork'].includes(item.bounds)||typeof item.includeGuides!=='boolean')throw Error('Use SVG, PNG or JPG, a 0.01×–64× scale, and valid export bounds.');
   if(item.quality!==undefined&&(!Number.isFinite(item.quality)||item.quality<.1||item.quality>1))throw Error('JPEG quality must be between 10% and 100%.');
+  validateSvgExportSettings(item.svg);for(const key of ['includeHidden','includeOverlaps'])if(item[key]!==undefined&&typeof item[key]!=='boolean')throw Error('Export visibility and overlap options must be booleans.');
   if(item.sizing!==undefined&&(!item.sizing||typeof item.sizing!=='object'||Array.isArray(item.sizing)||!['width','height'].includes(item.sizing.axis)||!Number.isInteger(item.sizing.value)||item.sizing.value<1||item.sizing.value>16384||Object.keys(item.sizing).some(key=>!['axis','value'].includes(key))))throw Error('An export width or height must be a whole number from 1 to 16,384 pixels.');
   if(typeof item.suffix!=='string'||item.suffix.length>64||/[\u0000-\u001f\u007f-\u009f/\\<>:"|?*]/.test(item.suffix))throw Error('An export suffix supports up to 64 characters without filename separators or control characters.');
  }

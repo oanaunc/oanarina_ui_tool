@@ -1,8 +1,11 @@
+import {exportVisibility} from './svg-export-options';
+import type {SvgExportSettings} from './svg-export-options';
+import {getPreferences} from './preferences';
 import {effectiveVisible} from './model';
 import {zipSync} from 'fflate';
 import {useEditor} from './store';
 import {download,exportNodes,exportSvg} from './files';
-import {visualBounds} from './transforms';
+import {exportSelection,visualBounds} from './transforms';
 import {fillsFor,strokesFor} from './paints';
 import {sampleMotion} from './motion';
 import {frameExportFilename,exportFilename,validateFrameExportSettings} from './frame-export-settings';
@@ -18,15 +21,15 @@ function imageSources(nodes:ReturnType<typeof exportNodes>){
  return [...sources];
 }
 export function layerExportJob(id:string,setting:FrameExportSetting):ExportJob{
- validateFrameExportSettings([setting]);const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The export page is missing.');const nodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,n=nodes.find(n=>n.id===id);if(!n)throw Error('The export layer is missing.');const geometry=layerExportGeometry({...page,nodes},id,setting.bounds),size=exportDimensions(geometry.viewport.width,geometry.viewport.height,setting);
- return {name:frameExportFilename(n.name,setting),format:setting.format,quality:setting.quality,...size,images:imageSources(geometry.nodes),svg:exportSvg(geometry.nodes,geometry.viewport,setting.includeGuides,{transform:geometry.transform,scale:setting.format==='svg'?size.scale:1,dimensions:size})};
+ validateFrameExportSettings([setting]);const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The export page is missing.');const nodes=exportVisibility(s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,setting.includeHidden??getPreferences().exportHiddenLayers),n=nodes.find(n=>n.id===id);if(!n)throw Error('The export layer is missing.');const geometry=layerExportGeometry({...page,nodes},id,setting.bounds,setting.includeOverlaps),size=exportDimensions(geometry.viewport.width,geometry.viewport.height,setting);
+ return {name:frameExportFilename(n.name,setting),format:setting.format,quality:setting.quality,...size,images:imageSources(geometry.nodes),svg:exportSvg(geometry.nodes,geometry.viewport,setting.includeGuides,{transform:geometry.transform,scale:setting.format==='svg'?size.scale:1,dimensions:size,svg:setting.format==='svg'?setting.svg:undefined})};
 }
-export function combinedExportJob(format:FrameExportSetting['format'],scale=1,includeGuides=false,sizing?:FrameExportSetting['sizing'],quality=.95):ExportJob{
- const s=useEditor.getState(),nodes=exportNodes();if(!nodes.length||!nodes.some(n=>n.type!=='slice'&&!n.exportGhost&&effectiveVisible(n,nodes)))throw Error('Add visible artwork before exporting.');const bounds=visualBounds(nodes),size=exportDimensions(bounds.width,bounds.height,{id:'combined',format,scale,includeGuides,sizing,quality,suffix:'',bounds:'artwork'}),name=nodes.length===1?nodes[0].name:s.doc.name;
- return {name:exportFilename(name,'',format),format,quality,...size,images:imageSources(nodes),svg:exportSvg(nodes,bounds,includeGuides,{scale:format==='svg'?size.scale:1,dimensions:size})};
+export function combinedExportJob(format:FrameExportSetting['format'],scale=1,includeGuides=false,sizing?:FrameExportSetting['sizing'],quality=.95,options?:SvgExportSettings&{includeHidden?:boolean}):ExportJob{
+ const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId)!,nodes=exportSelection(exportVisibility(s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,options?.includeHidden??getPreferences().exportHiddenLayers),s.selection);if(!nodes.length||!nodes.some(n=>n.type!=='slice'&&!n.exportGhost&&effectiveVisible(n,nodes)))throw Error('Add visible artwork before exporting.');const bounds=visualBounds(nodes),size=exportDimensions(bounds.width,bounds.height,{id:'combined',format,scale,includeGuides,sizing,quality,suffix:'',bounds:'artwork'}),name=nodes.length===1?nodes[0].name:s.doc.name;
+ return {name:exportFilename(name,'',format),format,quality,...size,images:imageSources(nodes),svg:exportSvg(nodes,bounds,includeGuides,{scale:format==='svg'?size.scale:1,dimensions:size,svg:format==='svg'&&options?{textMode:options.textMode,includeLayerIds:options.includeLayerIds,preserveAttributes:options.preserveAttributes}:undefined})};
 }
 export async function exportPreparedJob(job:ExportJob,signal?:AbortSignal){const snapshot={...job},bytes=await renderExportJob(snapshot,signal);check(signal);return download(snapshot.name,new Blob([new Uint8Array(bytes).buffer],{type:snapshot.format==='svg'?'image/svg+xml':snapshot.format==='jpg'?'image/jpeg':'image/png'}));}
-export async function exportCombinedArtwork(format:FrameExportSetting['format'],scale=1,includeGuides=false,sizing?:FrameExportSetting['sizing'],signal?:AbortSignal,quality=.95){return exportPreparedJob(combinedExportJob(format,scale,includeGuides,sizing,quality),signal);}
+export async function exportCombinedArtwork(format:FrameExportSetting['format'],scale=1,includeGuides=false,sizing?:FrameExportSetting['sizing'],signal?:AbortSignal,quality=.95,options?:SvgExportSettings&{includeHidden?:boolean}){return exportPreparedJob(combinedExportJob(format,scale,includeGuides,sizing,quality,options),signal);}
 /** This function has no await: all artwork, fonts, images and filenames belong to one immutable snapshot. */
 export function prepareExportBatch(mode:ExportTargetMode,selection?:readonly string[]):ExportBatch{
  const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The export page is missing.');const plans=exportTargets(page,selection??s.selection,mode),jobs:ExportJob[]=[],used=new Set<string>(),key=(name:string)=>name.normalize('NFKC').toUpperCase().toLowerCase();let bytes=0;
