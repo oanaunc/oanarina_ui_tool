@@ -1,3 +1,4 @@
+import DocumentCoverDialog from './DocumentCoverDialog';
 import RepeatLayersDialog from './RepeatLayersDialog';
 import SliceManager from './SliceManager';
 import KeyboardSelectionBox from './KeyboardSelectionBox';
@@ -46,6 +47,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  if(modal==='text-search')return <TextSearch key={s.doc.id}/>;
  if(modal==='move-to-page')return <MoveLayersDialog/>;
  if(modal==='present')return <PrototypePresentation/>;
+ if(modal==='file-cover')return <DocumentCoverDialog/>;
  if(modal==='document-outline')return <DocumentOutline/>;
  if(modal==='slices')return <SliceManager/>;
  if(modal==='selection-box')return <KeyboardSelectionBox/>;

@@ -29,6 +29,8 @@ async function downloadFamily(family:string,task:ReturnType<typeof beginFontLoad
  if(!assets.length)throw Error('No font files available for this family.');task.phase('registering');await supplementFonts(assets,f.bundled?'bundled':'google');fullFamilies.add(family);await cache(family,assets);return true;
 }
 export async function loadFont(family:string){if(fullFamilies.has(family))return;if(pending.has(family))return pending.get(family);const status=beginFontLoad(family,'lookup'),task=downloadFamily(family,status).then(found=>{status.finish(found?'ready':'unavailable',found?undefined:'No downloadable catalog or cached family. It may be installed locally; otherwise text uses fallback.');}).catch(error=>{status.finish('failed',error instanceof Error?error.message:String(error));throw error;}).finally(()=>pending.delete(family));pending.set(family,task);return task;}
+/** Measurement proof only: callers must never embed assets with embeddable=false. */
+export function registeredFontAssetsForFamilies(families:string[]){return [...new Set(families)].flatMap(f=>loaded.get(f)??[]);}
 export function assetsForFamilies(families:string[]){return [...new Set(families)].flatMap(f=>(loaded.get(f)??[]).filter(a=>a.embeddable!==false));}
 function fontCss(assets:FontAsset[]){return assets.map(a=>`@font-face {font-family:${cssFontFamily(a.family)};font-weight:${a.weight};font-style:${a.style??'normal'};${a.unicodeRange?'unicode-range:'+a.unicodeRange+';':''}src:url('${a.data}');}`).join('\n');}
 export function fontCssForFamilies(families:string[]){return fontCss(assetsForFamilies(families));}

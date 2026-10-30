@@ -1,0 +1,14 @@
+import {memo,useId,useMemo,useState} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {Layers} from 'lucide-react';
+import type {DesignDocument} from '../model';
+import type {DocumentCover} from '../document-cover';
+import {COVER_BYTE_LIMIT,coverPreviewScene,coverFontAssets,coverByteLength} from '../document-cover-preview';
+import {registeredFontAssetsForFamilies,textFontUsage} from '../fonts';
+import {cssFontFamily} from '../font-data';
+import {useEditor} from '../store';
+import {Artwork} from './Artwork';
+import './document-cover.css';
+export function documentCoverImage(doc:DesignDocument,scope:string,choice=doc.fileCover){const scene=coverPreviewScene(doc,scope,choice);if(!scene)return undefined;const {nodes,viewport:v,transform,background}=scene,usage=textFontUsage(nodes),faces=coverFontAssets(nodes,doc.fonts??[],registeredFontAssetsForFamilies(usage.map(u=>u.family))),css=faces.map(a=>`@font-face{font-family:${cssFontFamily(a.family)};font-style:${a.style??'normal'};font-weight:${a.weight};${a.unicodeRange?'unicode-range:'+a.unicodeRange+';':''}src:url("${a.data}");}`).join('');if(coverByteLength(css)+coverByteLength(JSON.stringify(nodes))>COVER_BYTE_LIMIT)throw Error('The cover artwork and embedded fonts exceed the 4 MB preview limit.');const scale=Math.min(1,560/v.width,320/v.height),svg=renderToStaticMarkup(<svg xmlns="http://www.w3.org/2000/svg" width={Math.max(1,Math.ceil(v.width*scale))} height={Math.max(1,Math.ceil(v.height*scale))} viewBox={`${v.x} ${v.y} ${v.width} ${v.height}`}><style>{css}</style>{background?.visible&&<rect x={v.x} y={v.y} width={v.width} height={v.height} fill={background.color} opacity={background.opacity}/>}<g transform={`matrix(${transform.join(' ')})`}><Artwork nodes={nodes}/></g></svg>);if(coverByteLength(svg)>COVER_BYTE_LIMIT)throw Error('The rendered cover exceeds the 4 MB preview limit.');return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
+function DocumentCoverPreview({doc,choice=doc.fileCover}:{doc:DesignDocument;choice?:DocumentCover}){const scope=useId(),revision=useEditor(s=>s.fontRevision),[failed,setFailed]=useState(''),result=useMemo(()=>{try{return {image:documentCoverImage(doc,scope,choice)};}catch(e){return {error:(e as Error).message};}},[doc,choice?.pageId,choice?.frameId,scope,revision]),error=result.error||(failed===result.image?'This cover image could not be decoded. Open the file to inspect its artwork.':'');return error?<span className="file-cover-diagnostic" role="note"><strong>Cover unavailable</strong><span>{error}</span></span>:result.image?<img className="document-cover-image" src={result.image} alt={choice?'Frame viewport cover · includes visible page overlap':'First page preview'} onError={()=>setFailed(result.image!)}/>:<Layers size={36} aria-label="Empty file preview"/>;}
+export default memo(DocumentCoverPreview);
