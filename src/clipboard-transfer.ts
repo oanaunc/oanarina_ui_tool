@@ -42,7 +42,7 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  const page=source.pages.find(p=>p.id===pageId);if(!page)throw Error('The source page no longer exists.');
  const copied=copyWhiteboardSelection(source,pageId,selection);if(!copied.ids.length)throw Error('Select a layer to copy.');
  const primary=new Map(exportSelection(page.nodes,copied.ids).map(n=>[n.id,clone(n)])),dependencies=new Map<string,DesignNode>(),all=new Map(allNodes(source).map(n=>[n.id,n])),warnings:string[]=[];
- for(const n of primary.values())if(n.exportGhost){Object.assign(n,{componentId:null,sourceId:undefined,instanceRootId:undefined,overrideKeys:undefined,componentMetadata:undefined,propertyValues:undefined,variableBindings:undefined,styleIds:undefined,layoutGuideStyleId:undefined,layout:'none',sizingX:'fixed',sizingY:'fixed'});delete n.exportGhost;}
+ for(const n of primary.values())if(n.exportGhost){Object.assign(n,{developmentStatus:undefined,readyForDevelopment:undefined,componentId:null,sourceId:undefined,instanceRootId:undefined,overrideKeys:undefined,componentMetadata:undefined,propertyValues:undefined,variableBindings:undefined,styleIds:undefined,layoutGuideStyleId:undefined,layout:'none',sizingX:'fixed',sizingY:'fixed'});delete n.exportGhost;}
  const queue=[...primary.values()],visited=new Set<string>(),swapIds=swapPropertyIds(allNodes(source));
  for(let i=0;i<queue.length;i++){
   const n=queue[i];if(visited.has(n.id))continue;visited.add(n.id);if(visited.size>20000)throw Error('Clipboard supports at most 20,000 layers including dependencies.');

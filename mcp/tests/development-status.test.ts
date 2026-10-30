@@ -1,0 +1,8 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import {Project} from '../project';
+import {blankDocument,node} from '../../src/model';
+test('source MCP development status persists, undoes and refuses malformed or locked updates atomically',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-handoff-'));try{const file=path.join(dir,'handoff.oui'),d=blankDocument();d.pages[0].developmentStatus='ready';d.pages[0].nodes=[node('rectangle',{id:'normal'}),node('rectangle',{id:'locked',locked:true})];await fs.writeFile(file,JSON.stringify(d));const project=await Project.open(file),before=await project.read(),saved=await project.apply(before.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:'normal',properties:{developmentStatus:'completed'}}]);assert.equal(saved.document.pages[0].nodes[0].developmentStatus,'completed');assert.equal(saved.document.pages[0].developmentStatus,'ready');const raw=await fs.readFile(file,'utf8');for(const [id,status] of [['normal','invalid'],['locked','ready']] as const)await assert.rejects(project.apply(saved.revision,[{op:'rename_document',name:'Must roll back'},{op:'update_node',pageId:d.pages[0].id,nodeId:id,properties:{developmentStatus:status}}]));assert.equal(await fs.readFile(file,'utf8'),raw);const undone=await project.undo(saved.revision);assert.equal(undone.document.pages[0].nodes[0].developmentStatus,undefined);await assert.rejects(project.replace(undone.revision,{...undone.document,pages:[{...undone.document.pages[0],developmentStatus:null as any}]}),/Development status/);}finally{await fs.rm(dir,{recursive:true,force:true});}});

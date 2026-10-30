@@ -1,3 +1,4 @@
+import {effectiveDevelopmentStatus} from './development-status';
 import type {DesignDocument,DesignNode,Page} from './model';
 import {descendants,effectiveVisible,isLocked} from './model';
 import {managedLayer,planLayerMove} from './layer-operations';
@@ -5,11 +6,11 @@ import {identity,inverseMatrix,multiply,nodeMatrix,point} from './transforms';
 import type {Matrix} from './transforms';
 import {visibleLayerRows} from './selection';
 import type {NodeKind} from './model';
-export type LayerStatusFilter='all'|'exportable'|'ready'|'prototype'|'comments';
+export type LayerStatusFilter='all'|'exportable'|'ready'|'completed'|'prototype'|'comments';
 function section(page:Page,id:string){const n=page.nodes.find(n=>n.id===id);if(n?.type!=='section')throw Error('Choose an existing section.');return n;}
 function editable(page:Page,id:string){const n=section(page,id);if(isLocked(n,page.nodes))throw Error('Unlock the section and its ancestors first.');if(managedLayer(n,page.nodes))throw Error('Detach the instance before changing its managed sections.');return n;}
 export function renameSection(page:Page,id:string,title:string){const n=editable(page,id);if(typeof title!=='string'||!title.trim()||title.length>512||/[\u0000-\u001f\u007f]/.test(title))throw Error('Use a section title of 1–512 characters without control characters.');n.name=title;}
-export function setSectionReady(page:Page,id:string,ready:boolean){if(typeof ready!=='boolean')throw Error('Choose a valid development status.');const n=editable(page,id);if(ready)n.readyForDevelopment=true;else delete n.readyForDevelopment;}
+export function setSectionReady(page:Page,id:string,ready:boolean){if(typeof ready!=='boolean')throw Error('Choose a valid development status.');const n=editable(page,id);delete n.developmentStatus;if(ready)n.readyForDevelopment=true;else delete n.readyForDevelopment;}
 export function sectionContents(page:Page,id:string){section(page,id);return page.nodes.filter(n=>n.parentId===id&&effectiveVisible(n,page.nodes)&&!isLocked(n,page.nodes)).reverse().map(n=>n.id);}
 export function nestSection(doc:DesignDocument,pageId:string,id:string,parentId:string|null){const p=doc.pages.find(p=>p.id===pageId);if(!p)throw Error('The section page is missing.');const source=editable(p,id);if(parentId)section(p,parentId);const parent=p.nodes.find(n=>n.id===parentId),oldParent=p.nodes.find(n=>n.id===source.parentId);if(parent&&parent.layout!=='none'&&!source.ignoreLayout||oldParent&&oldParent.layout!=='none'&&!source.ignoreLayout)throw Error('Move sections outside auto layout or enable absolute positioning first.');const relevant=new Set(descendants(p.nodes,[id]));for(const root of [source,parent]){let current=root;const seen=new Set<string>();while(current&&!seen.has(current.id)){seen.add(current.id);relevant.add(current.id);current=p.nodes.find(n=>n.id===current!.parentId);}}if(p.motion?.tracks.some(t=>relevant.has(t.nodeId)))throw Error('Remove motion tracks from the section hierarchy before moving it.');if(doc.workspace&&doc.workspace!=='design')throw Error('Move sections using this control in Design files.');p.nodes=planLayerMove(p.nodes,[id],parentId,'inside',doc);}
 export function sectionLink(doc:DesignDocument,pageId:string,id:string){const p=doc.pages.find(p=>p.id===pageId);if(!p)throw Error('The section page is missing.');section(p,id);const value='forma-section:'+encodeURIComponent(JSON.stringify([doc.id,pageId,id]));if(value.length>4096)throw Error('These identifiers exceed the local section link size limit.');return value;}
@@ -22,7 +23,7 @@ export function layerStatusMatches(page:Page,status:LayerStatusFilter){
  const firstPin=(x:number)=>{let low=0,high=pins.length;while(low<high){const mid=(low+high)>>>1;if(pins[mid].x<x)low=mid+1;else high=mid;}return low;};
  for(const n of nodes){let match=false;
   if(status==='exportable')match=n.type==='slice'||!!n.exportSettings?.length;
-  else if(status==='ready')match=n.type==='section'&&n.readyForDevelopment===true;
+  else if(status==='ready'||status==='completed')match=effectiveDevelopmentStatus(n)===status;
   else if(status==='prototype')match=!!n.targetId||!!n.reactions?.some(r=>r.actions.length)||flowIds.has(n.id);
   else if(status==='comments'&&pins.length){try{const matrix=world(n),inverse=inverseMatrix(matrix),corners=[[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(matrix,x,y)),minX=Math.min(...corners.map(p=>p.x)),maxX=Math.max(...corners.map(p=>p.x)),minY=Math.min(...corners.map(p=>p.y)),maxY=Math.max(...corners.map(p=>p.y));for(let i=firstPin(minX);i<pins.length&&pins[i].x<=maxX;i++){const c=pins[i];if(c.y<minY||c.y>maxY)continue;const p=point(inverse,c.x,c.y);if(p.x>=-1e-7&&p.y>=-1e-7&&p.x<=n.width+1e-7&&p.y<=n.height+1e-7){match=true;break;}}}catch{/* Degenerate transforms contain no inspectable pin area. */}}
   if(match)ids.add(n.id);
