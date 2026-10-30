@@ -12,6 +12,10 @@ From the search field, **Down** selects/focuses the first match and **Up** the l
 
 The query is temporary interface state, separate from `.oui`, dirty state and Undo. Opening a different document clears it. It is not a global shortcut, content search or fuzzy/regular-expression search.
 
+## Page-specific prototype flows
+
+In the Prototype inspector, **Add starting flow** creates a flow owned by the current page. Edit its name, description and starting frame; the frame selector lists that page's frames. Switching pages shows the other page's own flows. Authoring changes support document Undo/Redo and portable saves. Presenting a page lists only its flows and starts from its saved frame when no selected frame takes precedence. The existing flow authoring/presentation path has a two-page saved-JSON, recovery reload, explicit .oui file-open and Undo regression; this is not hosted prototype sharing or a cross-page prototype link.
+
 ## Duplication and references
 
 Duplicate Page inserts a uniquely named copy immediately after its source. It preserves canvas background, artwork geometry and hierarchy, own/inherited variable-mode distinctions, comments, canvas/layout guides, prototype settings/flows/interactions and the motion timeline. Page/layer identities, component-set identities and owned comment/guide/flow/reaction/action/track/keyframe identities are regenerated. Internal node references follow the copied artwork; references to definitions on other pages retain their original identity. Shared fonts, styles, variables, collections, guide styles and animation styles remain shared within the document. Text, names, URLs, expressions and arbitrary metadata values are not rewritten merely because they happen to contain an ID string.
@@ -24,7 +28,7 @@ Whiteboard-owned stickies, tables, self-contained connectors, mind maps and draw
 
 Duplicate, reorder and delete are each one undoable document edit. Saving a portable `.oui` retains the resulting pages and order. Deletion removes the deleted page's owned component-set and whiteboard metadata; it refuses to proceed when surviving layers, component controls, prototype actions (including conditional branches), flows or motion tracks still reference its artwork. It never silently detaches those links. At least one page remains.
 
-Operations validate a cloned document before committing. The existing limits of **1,000 pages**, **20,000 layers per page** and **50 MB per project** apply; oversized changes fail before document mutation. New-page canvas background inheritance is preserved. Reordering and selection retain page IDs. Per-page saved canvas position/zoom, page thumbnails, page links, page sections and moving layers between pages remain separate work; these controls do not claim them or exact Figma reference parity.
+Operations validate a cloned document before committing. The existing limits of **1,000 pages**, **20,000 layers per page** and **50 MB per project** apply; oversized changes fail before document mutation. New-page canvas background inheritance is preserved. Reordering and selection retain page IDs. The [remembered page-view cache](PAGE-VIEWPORTS.md) stores pan/zoom locally outside the project. [Static page previews](PAGE-THUMBNAILS.md) appear on hover/keyboard focus. Page links, page sections and moving layers between pages remain separate work; these controls do not claim them or exact Figma reference parity.
 
 ## Validation
 

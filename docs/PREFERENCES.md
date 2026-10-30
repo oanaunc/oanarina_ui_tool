@@ -4,6 +4,14 @@ Open **File → Preferences…**, press **Command-comma**, or use the Mac applic
 
 Changes save immediately. **Reset preferences** restores the defaults below while preserving project data and existing artwork. Corrupt, unsupported-version or oversized stored data falls back to validated defaults. If local storage is blocked or full, the dialog reports the failure and does not claim the new value was saved.
 
+## Appearance
+
+**Interface appearance** offers Dark, Light and Follow system. The initial default remains Dark; an existing saved Light/Dark choice is preserved. Follow system responds immediately to the device's `prefers-color-scheme` changes. It colors the interface and the theme-based canvas backdrop; explicit page backgrounds and artwork colors keep their saved values. It does not rewrite `.oui`, dirty the document or add Undo entries.
+
+**View → Toggle light / dark theme** chooses the opposite explicit theme and leaves Follow system. The preference survives reopening and changes propagate between open editors on the same origin through storage events. Reset preferences returns appearance to Dark. A denied storage write reports an error and preserves the current choice. The legacy local key `oui-theme` stores only `light`, `dark` or `system`; no migration of project data is required.
+
+The media-query binding is shared browser code used by WKWebView. Browser emulation and real same-origin storage-event tests cover its behavior; final native window appearance acceptance remains pending while the Mac is locked. Accent colors, increased contrast and UI scaling are separate requirements.
+
 ## Movement and drawing
 
 - **Small nudge / Large nudge:** arrow keys use the small distance, while Shift-arrow uses the large distance. Defaults are 1 and 10 pixels. Both can be customized, including fractional distances.
@@ -33,4 +41,4 @@ These defaults affect caller-integrated creation paths, including canvas drawing
 
 `tests/preferences.test.ts` covers defaults, immutable snapshots, versioned persistence/reload, invalid/corrupt data, reset isolation, cross-window notifications, blocked storage and creation properties. `tests/e2e/preferences.spec.ts` exercises actual dialog controls and consumers: custom nudge, shape/frame/text defaults, retained tools, hover/dimension visibility, wheel speed/inversion, right-button pan and context menu behavior, custom Shift rotation, saved/reloaded settings, reset without changing project artwork, and recovery from corrupt stored preferences.
 
-This implements a defined local preference set. It is not a claim of complete Figma settings parity. Theme/accent controls, cursor choices, UI scaling/language, pressure/touchpad calibration, configurable native shortcuts and broader system integration remain separate requirements.
+This implements a defined local preference set. It is not a claim of complete Figma settings parity. Accent controls, cursor choices, UI scaling/language, pressure/touchpad calibration, configurable native shortcuts and broader system integration remain separate requirements.

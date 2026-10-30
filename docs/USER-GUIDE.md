@@ -76,3 +76,19 @@ See [responsive grid tracks and cells](GRID-LAYOUT.md), [local file organization
 Deselect all layers to edit **Page → Canvas color**, hex, opacity and visibility. New pages inherit the current background. **Use theme background** clears its override. Changes support Undo and portable saves, and do not recolor exported artwork. See [page backgrounds](CANVAS-BACKGROUND.md) for compositing and interchange limits.
 
 Expand **Color contrast checker** near the inspector's bottom to check foreground/background colors and foreground opacity. Results include AA/AAA thresholds for normal and large text. **Use selected paint** copies one visible solid paint into the calculator without changing the design. This checks an explicit color pair; automatic document/background analysis remains unfinished. See [contrast checking](CONTRAST.md).
+
+## Page organization and Mac image paste in 0.2.0-dev.9
+
+Preferences now offers **Interface appearance → Follow system**. It responds to light/dark changes on this device; explicit Light/Dark choices and the View theme toggle remain available. The choice is saved locally outside projects. See [preferences](PREFERENCES.md#appearance).
+
+Right-click a page or open its Page actions button to duplicate, rename, move or delete it. With a page focused, Up/Down/Home/End select pages; Option–Shift–Up/Down reorders them; Shift–F10 opens its action menu. Duplication preserves supported page artwork and metadata with fresh internal IDs, while shared libraries remain linked. Deletion refuses surviving references. These changes support Undo and portable saves. Active presentation deck pages use their own slide controls. See [page scope](PAGES.md).
+
+Use **Search page names** to filter by a case-insensitive name substring. Filtering keeps the current canvas open; arrows navigate the visible matches and ordering actions use the full document order. Clear the query with Escape or the clear button. Search is temporary interface state and is not written to your project.
+
+Each Design/Whiteboard page remembers its pan and zoom on this device. Reopening restores its last valid local page choice; camera settings stay outside project files and Undo. New pages start fresh and duplicated pages copy the source view. Hover over or keyboard-focus a page to see one static artwork preview without switching the canvas. See [remembered views](PAGE-VIEWPORTS.md) and [previews](PAGE-THUMBNAILS.md).
+
+In the native Mac app, Command–V can paste PNG or TIFF image data from another app as an embedded editable image. TIFF uses its first oriented frame. Paste supports one-step Undo and saved pixels, including inside the active slide. Encoded data is limited to 20 MB, 8192 pixels per side and 16 million pixels; larger images must be resized before copying. See [raster paste](RASTER-CLIPBOARD.md).
+
+The development source also adds **Edit → Copy as PNG**, **Shift Command C**, for a transparent 2× snapshot of selected artwork. It uses the same pixel limits and does not add an Undo entry. Browser use points to file export. Browser/Windows system image clipboard remains unfinished; the new Mac PNG-copy path still requires final native window acceptance before release. See [Copy as PNG scope](COPY-AS-PNG.md).
+
+Saved-file MCP adds `duplicate_page` and `reorder_page` inside `apply_operations`. Reorder uses the final zero-based page position; duplicate returns its new page ID. Both share the editor's page-reference guards. Read the latest revision before writing, then reopen the saved file in Forma. See [MCP examples and limits](../mcp/README.md#page-operations).

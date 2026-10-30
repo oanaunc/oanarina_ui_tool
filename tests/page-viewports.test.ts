@@ -13,6 +13,7 @@ describe('device-local page view cache',()=>{
  });
  it('evicts older cameras and page choices independently at a fixed bound',()=>{
   vi.useFakeTimers();const disk=storage();let time=10;const cache=new PageViewportCache(()=>disk,()=>time++);for(let i=0;i<MAX_PAGE_VIEWS+5;i++)cache.rememberCamera('doc'+i,'page',camera());cache.flush();const data=JSON.parse(disk.data.get(PAGE_VIEWPORT_KEY)!);expect(data.views).toHaveLength(MAX_PAGE_VIEWS);expect(data.lastPages).toHaveLength(MAX_PAGE_VIEWS);expect(data.views.some((r:any)=>r.documentId==='doc0')).toBe(false);expect(data.views[0].documentId).toBe('doc1004');
+  cache.rememberCamera('doc5','page',camera(4));cache.rememberCamera('doc1005','page',camera());cache.flush();const reopened=new PageViewportCache(()=>disk,()=>time);expect(reopened.camera('doc5','page')).toEqual(camera(4));expect(reopened.camera('doc6','page')).toBeUndefined();
  });
  it('debounces changes, keeps tuple identities distinct and does not write merely from reading or lifecycle flush',()=>{
   vi.useFakeTimers();const disk=storage(),cache=new PageViewportCache(()=>disk,()=>10);expect(cache.camera('a','b')).toBeUndefined();cache.flush();expect(disk.writes).toHaveLength(0);cache.rememberCamera('a|b','c',camera(2));cache.rememberCamera('a','b|c',camera(3));vi.advanceTimersByTime(249);expect(disk.writes).toHaveLength(0);vi.advanceTimersByTime(1);expect(disk.writes).toHaveLength(1);const reopened=new PageViewportCache(()=>disk,()=>10);expect(reopened.camera('a|b','c')!.zoom).toBe(2);expect(reopened.camera('a','b|c')!.zoom).toBe(3);

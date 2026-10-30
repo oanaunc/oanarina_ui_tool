@@ -210,6 +210,12 @@
     "⌘C"
   ],
   [
+    "copy-as-png",
+    "Copy as PNG",
+    "Edit",
+    "⇧⌘C"
+  ],
+  [
     "paste",
     "Paste",
     "Edit",

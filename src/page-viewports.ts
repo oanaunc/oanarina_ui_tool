@@ -10,6 +10,7 @@ const key=(documentId:string,pageId:string)=>JSON.stringify([documentId,pageId])
 const safeId=(id:unknown):id is string=>typeof id==='string'&&!!id.trim()&&id.length<=256&&!/[\u0000-\u001f\u007f]/.test(id);
 export function validPageCamera(value:unknown):value is PageCamera {const v=value as PageCamera;return !!v&&typeof v==='object'&&Number.isFinite(v.zoom)&&v.zoom>=.05&&v.zoom<=8&&!!v.pan&&Number.isFinite(v.pan.x)&&Number.isFinite(v.pan.y)&&Math.abs(v.pan.x)<=1e7&&Math.abs(v.pan.y)<=1e7;}
 const latest=<T extends {updatedAt:number}>(values:T[])=>values.sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,MAX_PAGE_VIEWS);
+const bounded=<K,T extends {updatedAt:number}>(records:Map<K,T>)=>records.size<=MAX_PAGE_VIEWS?records:new Map([...records].sort((a,b)=>b[1].updatedAt-a[1].updatedAt).slice(0,MAX_PAGE_VIEWS));
 const empty=():PageViewportData=>({version:1,views:[],lastPages:[]});
 /** Only camera primitives and bounded identifiers survive decoding. */
 export function parsePageViewports(raw:string|null,now=Date.now()):PageViewportData {
@@ -37,7 +38,7 @@ export class PageViewportCache {
   for(const r of data.lastPages){const old=this.choices.get(r.documentId);if(!old||old.updatedAt<r.updatedAt)this.choices.set(r.documentId,r);}
   this.trim();
  }
- private trim(){this.views=new Map(latest([...this.views.values()]).map(r=>[key(r.documentId,r.pageId),r]));this.choices=new Map(latest([...this.choices.values()]).map(r=>[r.documentId,r]));this.dirtyViews=new Map(latest([...this.dirtyViews.values()]).map(r=>[key(r.documentId,r.pageId),r]));this.dirtyChoices=new Map(latest([...this.dirtyChoices.values()]).map(r=>[r.documentId,r]));}
+ private trim(){this.views=bounded(this.views);this.choices=bounded(this.choices);this.dirtyViews=bounded(this.dirtyViews);this.dirtyChoices=bounded(this.dirtyChoices);}
  private schedule(){if(this.timer!==undefined)clearTimeout(this.timer);this.timer=setTimeout(()=>{this.timer=undefined;this.flush();},this.delay);}
  camera(documentId:string,pageId:string):PageCamera|undefined {this.merge(this.durable());const r=this.views.get(key(documentId,pageId));return r?{zoom:r.zoom,pan:{...r.pan}}:undefined;}
  lastPage(documentId:string):string|undefined {this.merge(this.durable());return this.choices.get(documentId)?.pageId;}
