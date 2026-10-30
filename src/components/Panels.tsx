@@ -1,5 +1,6 @@
 import {applyLayoutSettings} from '../layout-settings';
 
+import ComponentAssets from './ComponentAssets';
 import InspectPanel from './InspectPanel';
 import VideoInspector from './VideoInspector';
 import {ConstraintGuideControls} from './ConstraintGuides';
@@ -11,7 +12,7 @@ import type {LayerStatusFilter} from '../section-workflows';
 import LineShapeControls from './LineShapeControls';
 import PageBackground from './PageBackground';
 import {FrameExportSettings} from './FrameDelivery';
-import FrameActions,{FramePresetList} from './FrameActions';
+import FrameActions from './FrameActions';
 import PageList from './PageList';
 import ContrastChecker from './ContrastChecker';
 import LayerTreeActions from './LayerTreeActions';
@@ -28,22 +29,20 @@ import VectorPointTools from './VectorPointTools';
 import NumberField from './NumberField';
 import PrototypeEditor from './PrototypeEditor';
 import {LayoutGuideInspector,GuideSettings,GuideExportOption} from './LayoutGuides';
-import {Artwork} from './Artwork';
-import {exportSelection,visualBounds} from '../transforms';
 import {sampleMotion} from '../motion';
 import {DesignSystemInspector} from './DesignSystemsEditor';
 import {ComponentInspector} from './ComponentEditor';
 import {useEffect,useId,useMemo,useRef,useState} from 'react';
 import {layerClickSelection} from '../selection';
-import {CircleDashed,Scan,ArrowDown,ArrowRight,ArrowUp,ChevronDown,ChevronRight,Component,Eye,EyeOff,Frame,Grid2X2,Layers,Lock,Plus,Search,Settings2,Square,Type,Unlock,X,AlignLeft,AlignCenter,AlignRight,AlignStartVertical,AlignCenterVertical,AlignEndVertical,ExternalLink} from 'lucide-react';
+import {CircleDashed,Scan,ArrowDown,ArrowRight,ChevronDown,ChevronRight,Component,Eye,EyeOff,Frame,Grid2X2,Layers,Lock,Plus,Search,Settings2,Square,Type,Unlock,X,AlignLeft,AlignCenter,AlignRight,AlignStartVertical,AlignCenterVertical,AlignEndVertical,ExternalLink} from 'lucide-react';
 import {AdvancedLayoutEditor,SizingEditor} from './LayoutEditor';
 import {EffectsEditor} from './EffectsEditor';
 import {FillEditor,StrokeEditor} from './PaintEditor';
 import {useEditor} from '../store';
 import type {DesignNode,NodeKind} from '../model';
 import {containers,isLocked} from '../model';
-import {createInstance,exportArtwork,notifyError} from '../files';
-import {insertBasicCard,insertPreset,runCommand} from '../commands';
+import {exportArtwork,notifyError} from '../files';
+import {insertPreset,runCommand} from '../commands';
 export function LeftPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===s.pageId)!,[query,setQuery]=useState(''),[collapsed,setCollapsed]=useState<string[]>([]),[pagesOpen,setPagesOpen]=useState(true),[typeFilter,setTypeFilter]=useState<NodeKind|'all'>('all'),[statusFilter,setStatusFilter]=useState<LayerStatusFilter>('all'),[layerError,setLayerError]=useState(''),[dragIds,setDragIds]=useState<string[]>([]),[drop,setDrop]=useState<{id:string|null;placement:LayerPlacement;allowed:boolean}|null>(null),[menu,setMenu]=useState<{x:number;y:number;ids:string[]}|null>(null);
  const maskDescriptionPrefix=useId(),maskIndicators=useMemo(()=>maskLayerIndicators(page.nodes),[page.nodes]),maskIndices=useMemo(()=>new Map([...maskIndicators.keys()].map((id,i)=>[id,i])),[maskIndicators]);
  const anchor=useRef<{pageId:string;id:string}|null>(null),lastTreeSelection=useRef(''),[focusedId,setFocusedId]=useState<string|undefined>(),visibleRows=useMemo(()=>filterStatusLayerRows(page,collapsed,query,typeFilter,statusFilter),[page,collapsed,query,typeFilter,statusFilter]),visibleIds=new Set(visibleRows.map(n=>n.id)),tabStop=focusedId&&visibleIds.has(focusedId)?focusedId:s.selection.find(id=>visibleIds.has(id))??visibleRows[0]?.id;
@@ -54,7 +53,7 @@ export function LeftPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===
  const showMenu=(x:number,y:number,ids=s.selection)=>setMenu({x:Math.max(8,Math.min(x,window.innerWidth-230)),y:Math.max(8,Math.min(y,window.innerHeight-400)),ids});
  const moveLayers=(ids:string[],id:string|null,placement:LayerPlacement)=>{try{s.edit(d=>{const p=d.pages.find(p=>p.id===s.pageId)!;p.nodes=planLayerMove(p.nodes,ids,id,placement,d);});if(placement==='inside'&&id)setCollapsed(previous=>previous.filter(value=>value!==id));setLayerError('');}catch(error){setLayerError(error instanceof Error?error.message:'Layer move failed.');}setDragIds([]);setDrop(null);};
  const droppedIds=(e:React.DragEvent)=>{try{const value=JSON.parse(e.dataTransfer.getData('application/x-oanarina-layer-ids'));return Array.isArray(value)&&value.every(id=>typeof id==='string')?value as string[]:dragIds;}catch{return dragIds;}};
- const assetCard=(n:DesignNode,label=n.name)=>{const source=s.doc.pages.find(p=>p.nodes.some(c=>c.id===n.id))!,nodes=exportSelection(source.nodes,[n.id]),b=visualBounds(nodes);return <button className="asset-card" key={label+n.id} onClick={()=>createInstance(n.id)}><div className="asset-preview"><svg role="img" aria-label={label+' component preview'} viewBox={`${b.x} ${b.y} ${b.width} ${b.height}`}><Artwork nodes={nodes}/></svg></div><span>{label}</span><small>Click to insert an instance</small></button>;};
+
  const row=(n:DesignNode,depth:number):React.ReactNode=>{const kids=page.nodes.filter(c=>c.parentId===n.id).reverse(),closed=!query&&typeFilter==='all'&&statusFilter==='all'&&collapsed.includes(n.id),Icon=n.type==='text'?Type:n.type==='component'||n.type==='instance'?Component:containers.includes(n.type)?Frame:Square;
  const maskIndicator=maskIndicators.get(n.id),maskDescriptionId=maskDescriptionPrefix+'-'+maskIndices.get(n.id);
  if(!visibleIds.has(n.id))return null;
@@ -72,14 +71,7 @@ export function LeftPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===
  {s.leftTab==='layers'?<><div className="section-title"><button onClick={()=>setPagesOpen(!pagesOpen)}><ChevronDown size={12} style={{transform:pagesOpen?'':'rotate(-90deg)'}}/>Pages</button><button aria-label="Add page" title={s.doc.pages.length>=1000?'A project can contain up to 1,000 pages.':'Add page'} disabled={s.doc.pages.length>=1000} onClick={s.addPage}><Plus size={14}/></button></div>
  {pagesOpen&&<PageList/>}
  <div className="section-title layer-title"><span>Layers</span><button title="Layer actions" onClick={e=>{const r=e.currentTarget.getBoundingClientRect();showMenu(r.left,r.bottom);}}><Settings2 size={13}/></button></div>
- <div className="layer-tree-tools"><label>Layer status<select aria-label="Filter layers by status" value={statusFilter} onChange={e=>setStatusFilter(e.target.value as LayerStatusFilter)}>{[['all','All statuses'],['exportable','Export settings or slices'],['ready','Ready for development'],['prototype','Prototype connections'],['comments','Contains comment pins']].map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>{statusFilter==='comments'&&<p className="inspector-note">Canvas pins inside layer geometry, including resolved comments. Pins are not attached to layers.</p>}<label>Layer type<select aria-label="Filter layers by type" value={typeFilter} onChange={e=>setTypeFilter(e.target.value as NodeKind|'all')}><option value="all">All types</option>{[...new Set(page.nodes.map(n=>n.type))].sort().map(type=><option key={type} value={type}>{type}</option>)}</select></label><div><button onClick={()=>changeExpanded(page.nodes.filter(n=>!n.parentId).map(n=>n.id),true)}>Expand all</button><button onClick={()=>changeExpanded(page.nodes.filter(n=>!n.parentId).map(n=>n.id),false)}>Collapse all</button></div></div>{layerError&&<p className="layer-tree-error" role="alert">{layerError}</p>}<div className="layers-list" role="tree" aria-label="Layers" aria-multiselectable="true">{page.nodes.filter(n=>!n.parentId).slice().reverse().map(n=>row(n,0))}{!page.nodes.length&&<div className="empty-small"><Frame size={26}/><p>A blank canvas.<br/>A world of possibilities.</p><span>Press F to draw your first frame.</span></div>}</div></>:<div className="assets-list">
- <div className="section-title"><button onClick={()=>s.set({modal:'components'})}>Local components</button><button title="Create component from selection" onClick={()=>runCommand('component')}><Plus size={14}/></button></div>
- {s.doc.componentSets?.filter(set=>set.name.toLowerCase().includes(query.toLowerCase())).map(set=>{const n=s.doc.pages.flatMap(p=>p.nodes).find(n=>n.id===set.defaultComponentId);return n?assetCard(n,set.name):null;})}
- {s.doc.pages.flatMap(p=>p.nodes).filter(n=>n.type==='component'&&!s.doc.componentSets?.some(set=>set.variants.some(v=>v.componentId===n.id))&&n.name.toLowerCase().includes(query.toLowerCase())).map(n=>assetCard(n))}
-
- <div className="section-title"><span>Quick start</span></div><button className="asset-card" onClick={insertBasicCard}><div className="asset-preview card-preview">A fresh idea <ArrowUp size={18}/></div><span>Simple card</span><small>Editable frame & text</small></button>
- <div className="section-title"><span>Frame presets</span></div><FramePresetList query={query}/>
- </div>}
+ <div className="layer-tree-tools"><label>Layer status<select aria-label="Filter layers by status" value={statusFilter} onChange={e=>setStatusFilter(e.target.value as LayerStatusFilter)}>{[['all','All statuses'],['exportable','Export settings or slices'],['ready','Ready for development'],['prototype','Prototype connections'],['comments','Contains comment pins']].map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>{statusFilter==='comments'&&<p className="inspector-note">Canvas pins inside layer geometry, including resolved comments. Pins are not attached to layers.</p>}<label>Layer type<select aria-label="Filter layers by type" value={typeFilter} onChange={e=>setTypeFilter(e.target.value as NodeKind|'all')}><option value="all">All types</option>{[...new Set(page.nodes.map(n=>n.type))].sort().map(type=><option key={type} value={type}>{type}</option>)}</select></label><div><button onClick={()=>changeExpanded(page.nodes.filter(n=>!n.parentId).map(n=>n.id),true)}>Expand all</button><button onClick={()=>changeExpanded(page.nodes.filter(n=>!n.parentId).map(n=>n.id),false)}>Collapse all</button></div></div>{layerError&&<p className="layer-tree-error" role="alert">{layerError}</p>}<div className="layers-list" role="tree" aria-label="Layers" aria-multiselectable="true">{page.nodes.filter(n=>!n.parentId).slice().reverse().map(n=>row(n,0))}{!page.nodes.length&&<div className="empty-small"><Frame size={26}/><p>A blank canvas.<br/>A world of possibilities.</p><span>Press F to draw your first frame.</span></div>}</div></>:<ComponentAssets key={s.doc.id} query={query} onNavigate={()=>{setQuery('');setTypeFilter('all');setStatusFilter('all');}}/>}
  {s.leftTab==='layers'&&<button disabled={!s.selection.length} onClick={()=>moveLayers(s.selection,null,'inside')} className={'layer-root-drop '+(drop?.id===null?'layer-drop-inside'+(drop.allowed?'':' layer-drop-invalid'):'')} onDragOver={e=>{if(dragIds.length){e.preventDefault();let allowed=true;try{planLayerMove(page.nodes,dragIds,null,'inside',s.doc);setLayerError('');}catch(error){allowed=false;setLayerError(error instanceof Error?error.message:'Invalid root destination.');}setDrop({id:null,placement:'inside',allowed});e.dataTransfer.dropEffect=allowed?'move':'none';}}} onDrop={e=>{e.preventDefault();moveLayers(droppedIds(e),null,'inside');}}>Drop here to move to page root</button>}
  {s.leftTab==='layers'&&<OpenSectionLink onNavigate={()=>{setQuery('');setTypeFilter('all');setStatusFilter('all');}}/>}
  <LayerTreeActions menu={menu} onClose={()=>setMenu(null)} onExpand={changeExpanded}/>
