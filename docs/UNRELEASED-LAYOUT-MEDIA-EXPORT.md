@@ -1,5 +1,7 @@
 # Layout, media and SVG source implementation
 
+This report records the preceding source pass. See the [typography, grids, local assets and export continuation](UNRELEASED-TYPE-GRID-ASSETS.md) for the current register and later validation. Counts below are the snapshot for this pass.
+
 This continues the [preceding editor implementation](UNRELEASED-IMPLEMENTATION.md) after dev.12. The source register now has **1,183 implemented, 180 partial and 659 planned requirements**, out of 2,022 individually named requirements. Twenty-three more requirements have working implementation paths in this pass; three moved from partial and twenty from planned. Exact Figma reference verification remains pending. Forma is still an independent app in staged implementation, with substantial parity work unfinished.
 
 No Mac app, production bundle, installer, notarization submission, downloadable Bridge/MCP ZIP, version change or website deployment was created. Existing dev.12 downloads remain unchanged. Automatic source CI does not package a Mac app; that workflow still requires an explicit manual build input.

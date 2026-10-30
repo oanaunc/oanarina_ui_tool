@@ -7004,30 +7004,30 @@
     "category": "Advanced typography",
     "name": "Small caps",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Whole-layer and rich-range small caps, superscript and subscript with shared SVG/measurement, nominal-size HTML clipboard, component/style/MCP persistence and guarded editing. Small caps uses supporting browser/font shaping; positioned text uses 65% size and fixed baseline shifts, with browser glyph envelopes and approximate headless metrics. See docs/TYPE-VARIANTS.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-22-009",
     "category": "Advanced typography",
     "name": "Superscript",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Whole-layer and rich-range small caps, superscript and subscript with shared SVG/measurement, nominal-size HTML clipboard, component/style/MCP persistence and guarded editing. Small caps uses supporting browser/font shaping; positioned text uses 65% size and fixed baseline shifts, with browser glyph envelopes and approximate headless metrics. See docs/TYPE-VARIANTS.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-22-010",
     "category": "Advanced typography",
     "name": "Subscript",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Whole-layer and rich-range small caps, superscript and subscript with shared SVG/measurement, nominal-size HTML clipboard, component/style/MCP persistence and guarded editing. Small caps uses supporting browser/font shaping; positioned text uses 65% size and fixed baseline shifts, with browser glyph envelopes and approximate headless metrics. See docs/TYPE-VARIANTS.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-22-011",
@@ -7224,30 +7224,30 @@
     "category": "Advanced typography",
     "name": "Text style creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Existing local text style creation/application/detachment are now exercised through real editor save/Undo/reopen. Update from selection preserves style identity and copies shared fields, rejects non-text/stale sources, and resets rejected drafts. Detach preserves effective values; remote library editing remains separate. See docs/ASSET-USAGE.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-22-031",
     "category": "Advanced typography",
     "name": "Text style editing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Existing local text style creation/application/detachment are now exercised through real editor save/Undo/reopen. Update from selection preserves style identity and copies shared fields, rejects non-text/stale sources, and resets rejected drafts. Detach preserves effective values; remote library editing remains separate. See docs/ASSET-USAGE.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-22-032",
     "category": "Advanced typography",
     "name": "Text style detachment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Existing local text style creation/application/detachment are now exercised through real editor save/Undo/reopen. Update from selection preserves style identity and copies shared fields, rejects non-text/stale sources, and resets rejected drafts. Detach preserves effective values; remote library editing remains separate. See docs/ASSET-USAGE.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-22-033",
@@ -8064,10 +8064,10 @@
     "category": "Auto layout fundamentals",
     "name": "Stroke included in layout",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Unreleased source: explicit stroke inclusion in local axis-aligned linear/grid sizing, gaps, padding, fill and wrap. Arbitrary transformed bounds and miter/cap/arrow extrema remain unfinished; shadows excluded. See docs/AUTO-LAYOUT-COMPLETION.md."
+    "notes": "Unreleased source: explicit stroke inclusion in local axis-aligned linear/grid sizing, gaps, padding, fill and wrap. Arbitrary transformed bounds and miter/cap/arrow extrema remain unfinished; shadows excluded. See docs/AUTO-LAYOUT-COMPLETION.md. Register correction: this bounded working path is partial, rather than planned; arbitrary transformed/extrema coverage remains unfinished."
   },
   {
     "id": "UI-24-030",
@@ -8324,10 +8324,10 @@
     "category": "Auto layout grid and wrap",
     "name": "Grid track ordering",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Grid row/column and contiguous-block ordering moves definitions and occupied cell assignments together. Visible automatic objects become explicit; hidden automatic axes stay unset. Split spans and affected locked/managed children are refused atomically. Undo, persistence and source MCP use the same solver; arbitrary noncontiguous groups/drag handles remain outside this workflow. See docs/GRID-TRACK-ORDERING.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-25-020",
@@ -9474,10 +9474,10 @@
     "category": "Libraries and design systems",
     "name": "Local layout guide styles",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Local layout guide style creation, application, editing, update, detachment and deletion have reachable frame/manager paths. Browser checks verify linked consumer updates and retained guide values after detach. See docs/ASSET-USAGE.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-29-006",
@@ -9694,10 +9694,10 @@
     "category": "Libraries and design systems",
     "name": "Style naming folders",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete."
+    "notes": "Unreleased source after dev.12: Slash-separated style names have exact-segment folder filtering and breadcrumbs, root/nested navigation and ordinary rename with Undo/persistence. Naming folders have no separate folder-object identity; library conflict resolution remains separate. See docs/ASSET-USAGE.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-29-028",
@@ -9754,20 +9754,20 @@
     "category": "Libraries and design systems",
     "name": "Token usage search",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Reachable local linked-asset audit indexes variables/all-mode aliases, prototype AST references, styles, guide styles and components with cross-page locations, search and reports. Dynamic lookup, unknown property dependencies and capped work remain uncertain. Unreferenced candidates are conservative saved-file results; external/literal/font/motion consumers are not inferred and there is no delete-unused action. See docs/ASSET-USAGE.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-29-034",
     "category": "Libraries and design systems",
     "name": "Unused asset detection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Reachable local linked-asset audit indexes variables/all-mode aliases, prototype AST references, styles, guide styles and components with cross-page locations, search and reports. Dynamic lookup, unknown property dependencies and capped work remain uncertain. Unreferenced candidates are conservative saved-file results; external/literal/font/motion consumers are not inferred and there is no delete-unused action. See docs/ASSET-USAGE.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-29-035",
@@ -13154,10 +13154,10 @@
     "category": "Export and delivery",
     "name": "Export PDF",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: Real Design PDF export covers combined artwork or frame pages, shared transformed/overlap crops, hidden snapshots, guides, fixed physical page size, image resolution, preflight bounds and cancellable immutable rendering. PDF pages are flattened raster imagery; vector objects and live hyperlinks remain unfinished. See docs/DESIGN-PDF-AND-PNG.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-40-008",
@@ -13384,10 +13384,10 @@
     "category": "Export and delivery",
     "name": "PNG color profile",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "partial-implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source after dev.12: PNG profiles and combined exports offer browser-default, explicit sRGB metadata or untagged sRGB pixels. Bounded CRC-checked chunk rewriting retains exact image/alpha data, saved settings and batch checksums. Display P3/custom ICC/CMYK and broader document color management remain unfinished. See docs/DESIGN-PDF-AND-PNG.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
   },
   {
     "id": "UI-40-031",
