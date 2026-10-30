@@ -4,6 +4,7 @@ import {blankDocument,node} from '../src/model';
 import {useEditor} from '../src/store';
 import {DesktopDocumentTracker} from '../src/desktop-lifecycle';
 import {commands,matchesShortcut} from '../src/commands';
+import {setKeyframe} from '../src/motion';
 const camera=(x:number)=>({zoom:1,pan:{x,y:0}});
 afterEach(()=>vi.useRealTimers());
 describe('bounded ephemeral camera navigation',()=>{
@@ -18,6 +19,9 @@ describe('bounded ephemeral camera navigation',()=>{
  });
  it('never mixes document/page loads or adds document edits/native dirty state',()=>{
   const d=blankDocument();d.pages.push({id:'other',name:'Other',nodes:[],comments:[]});useEditor.getState().load(d);const tracker=new DesktopDocumentTracker();tracker.mark(d);const s=()=>useEditor.getState();s().setCamera(camera(10));s().setCamera(camera(20));s().navigateViewport(-1);expect(s().pan.x).toBe(10);expect(s().nextViewport).toBe(true);s().selectPage('other');expect(s().previousViewport).toBe(false);expect(s().nextViewport).toBe(false);s().navigateViewport(-1);expect(s().pan.x).toBe(12);s().setCamera(camera(30));s().load(structuredClone(d));expect(s().previousViewport).toBe(false);expect(s().nextViewport).toBe(false);expect(s().doc).toEqual(d);expect(s().past).toEqual([]);expect(s().future).toEqual([]);expect(tracker.state(s().doc).dirty).toBe(false);s().newDocument();expect(s().previousViewport).toBe(false);
+ });
+ it('finds the currently sampled motion position while keeping base artwork and native state unchanged',()=>{
+  const d=blankDocument(),n=node('rectangle',{x:0,y:0,width:100,height:100});d.pages[0].nodes=[n];setKeyframe(d.pages[0],n.id,'x',0,0);setKeyframe(d.pages[0],n.id,'x',2,10000);useEditor.getState().load(d);const tracker=new DesktopDocumentTracker();tracker.mark(d);const s=()=>useEditor.getState();s().set({selection:[n.id],motionOpen:true,motionTime:2});s().setCamera({zoom:1});s().findSelection();expect(s().pan).toEqual({x:-9550,y:325});expect(s().doc).toEqual(d);expect(s().past).toEqual([]);expect(s().future).toEqual([]);expect(tracker.state(s().doc).dirty).toBe(false);s().navigateViewport(-1);expect(s().pan).toEqual({x:12,y:16});s().set({motionOpen:false});s().findSelection();expect(s().pan).toEqual({x:450,y:325});
  });
  it('finds transformed nested selections without magnifying or modifying geometry',()=>{
   const d=blankDocument(),frame=node('frame',{x:5000,y:-2000,width:1000,height:1000,rotation:90}),child=node('rectangle',{parentId:frame.id,x:5100,y:-1900,width:80,height:40});d.pages[0].nodes=[frame,child];useEditor.getState().load(d);const s=()=>useEditor.getState();s().set({selection:[child.id]});s().setCamera({zoom:.5});s().findSelection();expect(s().zoom).toBe(.5);expect(s().pan).not.toEqual({x:12,y:16});expect(s().doc).toEqual(d);expect(s().past).toEqual([]);s().set({selection:[]});expect(()=>s().findSelection()).toThrow(/visible layer/);
