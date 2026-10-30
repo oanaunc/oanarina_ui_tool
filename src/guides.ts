@@ -1,3 +1,4 @@
+import {validateLayoutGuideBindings} from './responsive-guides';
 import type {DesignDocument,DesignNode,Page} from './model';
 import {point,worldMatrix} from './transforms';
 export interface LayoutGuide {id:string;type:'grid'|'columns'|'rows';visible:boolean;color:string;opacity:number;size:number;count:number;gutter:number;margin:number;alignment:'stretch'|'start'|'center'|'end';offset:number;}
@@ -20,7 +21,7 @@ export function validateGuides(doc:GuideDocument){
  if(doc.layoutGuidesVisible!==undefined&&typeof doc.layoutGuidesVisible!=='boolean')throw Error('Invalid guide visibility.');
  if(doc.snapping!==undefined){for(const k of ['enabled','objects','centers','guides','frames','layout','spacing'] as const)if(typeof doc.snapping[k]!=='boolean')throw Error('Invalid snapping preference.');if(!['none','pixel','half'].includes(doc.snapping.pixel))throw Error('Invalid pixel snapping.');}
  for(const p of doc.pages as GuidePage[]){for(const k of ['guidesLocked','guidesVisible'] as const)if(p[k]!==undefined&&typeof p[k]!=='boolean')throw Error('Invalid canvas guide setting.');if(p.guides!==undefined){if(!Array.isArray(p.guides)||p.guides.length>1000)throw Error('Invalid canvas guides.');const set=new Set<string>();for(const g of p.guides){if(typeof g.id!=='string'||set.has(g.id)||!['x','y'].includes(g.axis)||!Number.isFinite(g.position)||Math.abs(g.position)>1e6)throw Error('Invalid canvas guide.');set.add(g.id);}}
- for(const n of p.nodes as GuideNode[]){if(n.layoutGuides!==undefined)list(n.layoutGuides);if(n.layoutGuideStyleId!==undefined&&typeof n.layoutGuideStyleId!=='string')throw Error('Invalid layout guide style reference.');}}
+ for(const n of p.nodes as GuideNode[]){validateLayoutGuideBindings(n.layoutGuideBindings);if(n.layoutGuides!==undefined)list(n.layoutGuides);if(n.layoutGuideStyleId!==undefined&&typeof n.layoutGuideStyleId!=='string')throw Error('Invalid layout guide style reference.');}}
 }
 export function applyGuideStyles(doc:GuideDocument){for(const p of doc.pages)for(const n of p.nodes as GuideNode[]){const style=doc.layoutGuideStyles?.find(s=>s.id===n.layoutGuideStyleId);if(style)n.layoutGuides=structuredClone(style.guides);}}
 export function layoutGuideCells(g:LayoutGuide,width:number,height:number):GuideCell[]{

@@ -38,13 +38,13 @@ export function duplicateDocumentPage(input:DesignDocument,pageId:string):{docum
  if(hasSplitSet(doc,ids))throw Error('This page shares a component set with another page. Move the complete set onto one page before duplicating.');
  if(hasSplitMindMap(doc,ids))throw Error('This page shares a mind map with another page. Move the complete map onto one page before duplicating.');
  page.id=fresh();page.name=copyName(doc.pages,source.name);
- page.nodes=remapCopiedNodes(source.nodes,map,swapPropertyIds(allNodes(doc)));
+ page.nodes=remapCopiedNodes(source.nodes,map,swapPropertyIds(allNodes(doc)));const guideCopies=new Map<string,string>();
  // Remap only schema references; user strings, URLs, expressions, variable IDs
  // and unrecognized metadata containing an "id" key are ordinary data.
  for(let i=0;i<page.nodes.length;i++){
   const original=source.nodes[i],copy=page.nodes[i];
   if(original.reactions)copy.reactions=mapReactions(original.reactions,map);
-  if(original.layoutGuides)copy.layoutGuides=original.layoutGuides.map(g=>({...clone(g),id:fresh()}));
+  if(original.layoutGuides)copy.layoutGuides=original.layoutGuides.map(g=>{const id=original.layoutGuideStyleId&&doc.layoutGuideStyles?.some(s=>s.id===original.layoutGuideStyleId)?g.id:fresh();guideCopies.set(copy.id+'\0'+g.id,id);return {...clone(g),id};});
   if(original.sourceId&&!map.has(original.sourceId)){
    const keys=new Set(copy.overrideKeys??[]);
    if(original.targetId&&map.has(original.targetId))keys.add('targetId');
@@ -58,6 +58,7 @@ export function duplicateDocumentPage(input:DesignDocument,pageId:string):{docum
    if(typeof value==='string'&&map.has(value))copy.propertyValues={...copy.propertyValues,[prop.id]:map.get(value)!};
   }
  }
+ for(const copy of page.nodes)for(const binding of Object.values(copy.layoutGuideBindings??{}))binding.guideId=guideCopies.get(binding.ownerId+'\0'+binding.guideId)??binding.guideId;
  page.comments=source.comments.map(c=>({...clone(c),id:fresh()}));
  if(source.guides)page.guides=source.guides.map(g=>({...clone(g),id:fresh()}));
  if(source.flows)page.flows=source.flows.map(f=>({...clone(f),id:fresh(),frameId:map.get(f.frameId)??f.frameId}));

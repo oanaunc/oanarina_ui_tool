@@ -11,7 +11,7 @@ export interface ConstraintGuide {axis:'x'|'y';mode:Constraint;from:{x:number;y:
 export function constraintGuides(n:DesignNode,nodes:DesignNode[]):ConstraintGuide[]{
  const parent=constraintParent(n,nodes);if(!parent)return [];
  const matrix=worldMatrix(parent,nodes),left=n.x-parent.x,top=n.y-parent.y,result:ConstraintGuide[]=[];
- for(const axis of ['x','y'] as const){const mode=(axis==='x'?n.constraintX:n.constraintY)??'start',start=axis==='x'?left:top,size=axis==='x'?n.width:n.height,end=start+size,total=axis==='x'?parent.width:parent.height,cross=axis==='x'?top+n.height/2:left+n.width/2;
+ for(const axis of ['x','y'] as const){if(n.layoutGuideBindings?.[axis])continue;const mode=(axis==='x'?n.constraintX:n.constraintY)??'start',start=axis==='x'?left:top,size=axis==='x'?n.width:n.height,end=start+size,total=axis==='x'?parent.width:parent.height,cross=axis==='x'?top+n.height/2:left+n.width/2;
   const line=(a:number,b:number)=>{const from=axis==='x'?point(matrix,a,cross):point(matrix,cross,a),to=axis==='x'?point(matrix,b,cross):point(matrix,cross,b);if([from.x,from.y,to.x,to.y].every(Number.isFinite))result.push({axis,mode,from,to});};
   if(mode==='start'||mode==='stretch'||mode==='scale')line(0,start);
   if(mode==='end'||mode==='stretch'||mode==='scale')line(end,total);

@@ -6,7 +6,7 @@ import {effectiveVisible} from '../model';
 export function ConstraintGuideControls({n}:{n:DesignNode}){
  const s=useEditor(),view=useConstraintGuides(),nodes=s.doc.pages.find(p=>p.id===s.pageId)!.nodes,parent=constraintParent(n,nodes);
  if(!parent)return null;
- return <section className="inspector-section" aria-label="Constraint guides"><label className="check-row"><input type="checkbox" checked={view.visible} onChange={e=>view.setVisible(e.currentTarget.checked)}/>Show constraint guides</label><p className="inspector-note">Horizontal: {n.constraintX??'start'} · Vertical: {n.constraintY??'start'}. Guides connect the layout box to {parent.name} in its own axes, before this layer’s rotation. Dashed pairs indicate proportional scaling. View only.</p></section>;
+ return <section className="inspector-section" aria-label="Constraint guides"><label className="check-row"><input type="checkbox" checked={view.visible} onChange={e=>view.setVisible(e.currentTarget.checked)}/>Show constraint guides</label><p className="inspector-note">Horizontal: {n.layoutGuideBindings?.x?'column guide binding':n.constraintX??'start'} · Vertical: {n.layoutGuideBindings?.y?'row guide binding':n.constraintY??'start'}. Guides connect the layout box to {parent.name} in its own axes, before this layer’s rotation. Dashed pairs indicate proportional scaling. Bound axes use their layout guides instead of ordinary constraint lines. View only.</p></section>;
 }
 export function ConstraintGuideOverlay({nodes,selection,zoom}:{nodes:DesignNode[];selection:string[];zoom:number}){
  const visible=useConstraintGuides(s=>s.visible);if(!visible||selection.length!==1)return null;

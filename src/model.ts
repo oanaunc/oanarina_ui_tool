@@ -19,6 +19,7 @@ import type {FontAsset} from './font-data';
 import {validatePrototype} from './prototype';
 import type {PrototypeReaction,PrototypeFlow,PrototypeSettings} from './prototype';
 import {validateGuides} from './guides';
+import type {LayoutGuideBindings} from './responsive-guides';
 import type {LayoutGuide,LayoutGuideStyle,CanvasGuide,SnapPreferences} from './guides';
 import {validateMotionStyles,validateTimeline} from './motion';
 import type {MotionStyle,Timeline} from './motion';
@@ -50,7 +51,7 @@ export interface DesignNode {
   sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch'|'baseline';wrap?:boolean;layoutStacking?:'last-on-top'|'first-on-top';layoutIncludeStroke?:boolean;wrapDirection?:'forward'|'reverse';wrapAlign?:import('./layout-settings').WrapAlignment;
   variableBindings?:Partial<Record<BindingField,string>>;variableModes?:Record<string,string>;styleIds?:Partial<Record<StyleKind,string>>;
   sourceId?:string;instanceRootId?:string;overrideKeys?:string[];componentKey?:string;componentMetadata?:ComponentMetadata;propertyValues?:Record<string,string|boolean>;
-  layoutGuides?:LayoutGuide[];layoutGuideStyleId?:string;reactions?:PrototypeReaction[];prototypeScroll?:'none'|'horizontal'|'vertical'|'both';prototypePosition?:'normal'|'fixed'|'sticky';
+  layoutGuideBindings?:LayoutGuideBindings;layoutGuides?:LayoutGuide[];layoutGuideStyleId?:string;reactions?:PrototypeReaction[];prototypeScroll?:'none'|'horizontal'|'vertical'|'both';prototypePosition?:'normal'|'fixed'|'sticky';
   clip:boolean; componentId:string|null; targetId:string|null; gradient:boolean;
 }
 export interface Comment {id:string; x:number;y:number; text:string; resolved:boolean;}

@@ -2,6 +2,7 @@ import {applyLayoutSettings} from '../layout-settings';
 
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import type {ColorEditContext} from '../color-edit-context';
+import ResponsiveGuideBindings from './ResponsiveGuideBindings';
 import FrameRelativePosition from './FrameRelativePosition';
 import ComponentAssets from './ComponentAssets';
 import InspectPanel from './InspectPanel';
@@ -99,8 +100,9 @@ export function RightPanel(){const exportPreferences=usePreferences(),s=useEdito
  <div className="field-grid"><NumberField label="X" value={n.x} onChange={x=>patch({x})}/><NumberField label="Y" value={n.y} onChange={y=>patch({y})}/><NumberField label="W" value={n.width} min={1} onChange={width=>patch({width,sizingX:'fixed'})}/><NumberField label="H" value={n.height} min={1} onChange={height=>patch({height,sizingY:'fixed'})}/><NumberField label="Rotation" value={n.rotation} onChange={rotation=>patch({rotation})}/><NumberField label="Radius" value={n.radius} min={0} onChange={radius=>patch({radius})}/></div>
  {containers.includes(n.type)&&<label className="check-row"><input type="checkbox" checked={n.clip} onChange={e=>patch({clip:e.target.checked})}/>Clip content</label>}
  </Section>
+ {sel.length===1&&n.parentId&&<ResponsiveGuideBindings key={'responsive-guide:'+n.id} n={n}/>}
  {sel.length===1&&<FrameRelativePosition key={'frame-relative:'+n.id} id={n.id}/>}
- {['frame','component','instance'].includes(n.type)&&<LayoutGuideInspector n={n}/>}<details><summary>Guides & snapping</summary><GuideSettings/></details>
+ {['frame','component','instance'].includes(n.type)&&<LayoutGuideInspector key={'guide-owner:'+n.id} n={n}/>}<details><summary>Guides & snapping</summary><GuideSettings/></details>
  {sel.length===1&&n.type==='frame'&&<FrameActions key={n.id} id={n.id}/>} {sel.length===1&&n.type==='section'&&<SectionActions key={n.id+':'+n.name+':'+n.parentId} id={n.id}/>}{sel.length===1&&n.type==='group'&&!n.booleanOp&&<GroupBounds key={n.id} id={n.id}/>}<fieldset className="layout-controls" disabled={Boolean(layoutLocked)}><AspectLockControl n={n} patch={patchLayout}/></fieldset><MaskInspector nodes={page.nodes} selection={s.selection}/><fieldset className="layout-controls" disabled={Boolean(layoutLocked)}><Section name="Resizing"><SizingEditor key={n.id} n={n} parent={page.nodes.find(p=>p.id===n.parentId)} patch={patchLayout}/></Section></fieldset>{sel.length===1&&<ConstraintGuideControls n={n}/>}
  {n.booleanOp&&<Section name="Boolean group"><select aria-label="Boolean operation" value={n.booleanOp} onChange={e=>patch({booleanOp:e.target.value as DesignNode['booleanOp']})}>{['union','subtract','intersect','exclude'].map(op=><option key={op}>{op}</option>)}</select><p className="inspector-note">Edit the operands in Layers; the result updates live.</p><div className="button-row"><button className="outline-button" onClick={()=>runCommand('release-boolean')}>Release</button><button className="outline-button" onClick={()=>runCommand('flatten')}>Flatten</button></div></Section>}
  {['rectangle','frame','component','instance'].includes(n.type)&&<Section name="Independent corners"><div className="field-grid">{['Top left','Top right','Bottom right','Bottom left'].map((label,i)=><NumberField key={label} label={label} value={n.corners?.[i]??n.radius} min={0} onChange={value=>{const corners:[number,number,number,number]=n.corners?[...n.corners]:[n.radius,n.radius,n.radius,n.radius];corners[i]=value;patch({corners});}}/>)}</div><button className="text-button" onClick={()=>patch({corners:undefined})}>Use uniform radius</button></Section>}

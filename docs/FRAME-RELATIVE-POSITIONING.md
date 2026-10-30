@@ -1,5 +1,7 @@
 # Frame-relative positioning and retained constraints
 
+Subsequent source work adds durable direct-parent column/row spans; see [Responsive layout guide bindings](RESPONSIVE-GUIDE-BINDINGS.md). The guide-binding statuses below record this earlier stage.
+
 The Design inspector now offers Frame X and Frame Y for a single layer inside a frame, main component or instance. The nearest such ancestor is shown as the reference. These coordinates describe the layer's **layout origin before its own rotation, reflection and scale**, expressed in the reference frame's axes through any intervening transformed groups. They are not the rotated artwork's bounding-box corner.
 
 ## Status recommendations
