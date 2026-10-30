@@ -1,5 +1,6 @@
 import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
+import {validateDocumentAnnotations} from './layer-annotations';
 import {validateDocumentDevelopmentStatuses} from './development-status';
 import {validateLibraryMetadata} from './local-library-metadata';
 import {validateDocumentCover} from './document-cover';
@@ -23,6 +24,7 @@ const forbiddenControls=/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/;
 export function validateDocumentMetadata(document:{fileCover?:unknown;description?:unknown;pages?:unknown;componentSets?:unknown;styles?:unknown;libraryPublication?:unknown;componentLibraries?:unknown}){
  validateDocumentCommentThreads(document);
  validateLibraryMetadata(document);
+ validateDocumentAnnotations(document);
  validateDocumentDevelopmentStatuses(document);
  validateDocumentCover(document);
  validateDocumentDeveloperResources(document);

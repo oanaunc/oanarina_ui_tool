@@ -1,0 +1,9 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project';
+import {exportPageSvg} from '../svg';
+import {blankDocument,node} from '../../src/model';
+test('source project annotations validate/persist/Undo without leaking into SVG and refuse locked or malformed changes',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-annotations-'));try{const file=path.join(dir,'notes.oui'),d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('rectangle',{id:'owner'}),node('rectangle',{id:'locked',locked:true})];await fs.writeFile(file,JSON.stringify(d));const project=await Project.open(file),before=await project.read(),annotations={categories:[],items:[{id:'note',kind:'developer-note',text:'PRIVATE source annotation fixture'}]},saved=await project.apply(before.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:'owner',properties:{annotations}}]);assert.equal(saved.document.pages[0].nodes[0].annotations!.items[0].text,annotations.items[0].text);assert(!exportPageSvg(saved.document,d.pages[0].id).svg.includes(annotations.items[0].text));const raw=await fs.readFile(file,'utf8');await assert.rejects(project.apply(saved.revision,[{op:'rename_document',name:'Must roll back'},{op:'update_node',pageId:d.pages[0].id,nodeId:'locked',properties:{annotations}}]),/Unlock/);await assert.rejects(project.apply(saved.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:'owner',properties:{annotations:{...annotations,items:[{id:'bad',kind:'property',text:'',property:'constructor'}]}}}]),/property/);assert.equal(await fs.readFile(file,'utf8'),raw);const undone=await project.undo(saved.revision);assert.equal(undone.document.pages[0].nodes[0].annotations,undefined);}finally{await fs.rm(dir,{recursive:true,force:true});}});

@@ -1,3 +1,4 @@
+import {remapAnnotations} from './layer-annotations';
 import {explicitFontFamilies} from './font-fallback';
 import {blankDocument,isLocked,node,parseDocument} from './model';
 import type {DesignDocument,DesignNode} from './model';
@@ -42,7 +43,7 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  const page=source.pages.find(p=>p.id===pageId);if(!page)throw Error('The source page no longer exists.');
  const copied=copyWhiteboardSelection(source,pageId,selection);if(!copied.ids.length)throw Error('Select a layer to copy.');
  const primary=new Map(exportSelection(page.nodes,copied.ids).map(n=>[n.id,clone(n)])),dependencies=new Map<string,DesignNode>(),all=new Map(allNodes(source).map(n=>[n.id,n])),warnings:string[]=[];
- for(const n of primary.values())if(n.exportGhost){Object.assign(n,{developmentStatus:undefined,readyForDevelopment:undefined,componentId:null,sourceId:undefined,instanceRootId:undefined,overrideKeys:undefined,componentMetadata:undefined,propertyValues:undefined,variableBindings:undefined,styleIds:undefined,layoutGuideStyleId:undefined,layout:'none',sizingX:'fixed',sizingY:'fixed'});delete n.exportGhost;}
+ for(const n of primary.values())if(n.exportGhost){Object.assign(n,{annotations:undefined,developmentStatus:undefined,readyForDevelopment:undefined,componentId:null,sourceId:undefined,instanceRootId:undefined,overrideKeys:undefined,componentMetadata:undefined,propertyValues:undefined,variableBindings:undefined,styleIds:undefined,layoutGuideStyleId:undefined,layout:'none',sizingX:'fixed',sizingY:'fixed'});delete n.exportGhost;}
  const queue=[...primary.values()],visited=new Set<string>(),swapIds=swapPropertyIds(allNodes(source));
  for(let i=0;i<queue.length;i++){
   const n=queue[i];if(visited.has(n.id))continue;visited.add(n.id);if(visited.size>20000)throw Error('Clipboard supports at most 20,000 layers including dependencies.');
@@ -58,6 +59,7 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  const doc:DesignDocument={...blankDocument(),id:source.id,name:'Copied layers',pages:[{id:page.id,name:'Copied layers',nodes:selected,comments:[]}],componentSets:clone(source.componentSets?.filter(s=>[...primary.keys(),...dependencies.keys()].includes(s.containerId)&&s.variants.every(v=>primary.has(v.componentId)||dependencies.has(v.componentId)))??[])};
  if(deps.length)doc.pages.push({id:crypto.randomUUID(),name:'Clipboard component dependencies',nodes:deps,comments:[]});
  const nodes=allNodes(doc),ids=new Set(nodes.map(n=>n.id)),styleIds=new Set(nodes.flatMap(n=>Object.values(n.styleIds??{}))),guideIds=new Set(nodes.map(n=>n.layoutGuideStyleId)),variableIds=new Set(nodes.flatMap(n=>Object.values(n.variableBindings??{})));
+ const annotationIds=new Map([...ids].map(id=>[id,id]));for(const n of nodes)if(n.annotations){if(n.annotations.items.some(a=>a.kind==='distance'&&a.targetId&&!ids.has(a.targetId)))warnings.push('Annotation distance targets outside copied layers were marked unavailable.');n.annotations=remapAnnotations(n.annotations,annotationIds,'unavailable');}
  doc.styles=clone(source.styles?.filter(s=>styleIds.has(s.id))??[]);doc.layoutGuideStyles=clone(source.layoutGuideStyles?.filter(s=>guideIds.has(s.id))??[]);
  let added=true;while(added){added=false;for(const v of source.variables??[])if(variableIds.has(v.id))for(const value of Object.values(v.values))if(typeof value==='object'&&!variableIds.has(value.alias)){variableIds.add(value.alias);added=true;}}
  doc.variables=clone(source.variables?.filter(v=>variableIds.has(v.id))??[]);const collections=new Set(doc.variables.map(v=>v.collectionId));doc.variableCollections=clone(source.variableCollections?.filter(c=>collections.has(c.id))??[]);
