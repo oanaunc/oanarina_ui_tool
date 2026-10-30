@@ -1,0 +1,29 @@
+# Suggest auto layout
+
+**UI-25-029 — Suggest auto layout: implemented as a local, deterministic preview/apply workflow.** Select a free-layout frame, group or main component, then open Resizing → Suggest auto layout → Analyze auto layout. Nothing in the document changes during analysis. A proposed row or stack includes its actual inferred gap, four edge paddings, cross-axis alignment, reading order and measured movement. If both directions are plausible, candidates are ranked by the movement produced by the shared layout solver.
+
+The inference uses saved layout boxes in the selected container's axes. It sorts children by position, measures the median gap between adjacent boxes, takes padding from content-to-container edges, and selects start/center/end cross alignment with the smallest squared displacement. A row/stack requires non-overlapping main-axis boxes. Two-dimensional arrangements that overlap on both axes get a clear refusal directing the user to explicit grid, wrap or nested layouts. This is not an AI service, automatic nested-layout reconstruction or a claim of exact reference-app suggestion behavior.
+
+Each proposal has a read-only SVG wireframe preview: dashed original boxes and purple proposed boxes. The preview uses the shared layout/component/text derivation rather than a second hand-drawn positioning algorithm. A position list and mean/largest movement numbers make substantial changes reviewable before applying. The preview deliberately represents layout boxes, not full painted artwork, text shaping, strokes or effects. Root reading order changes are explicitly disclosed because overlapping effects can paint differently.
+
+Apply changes ordinary saved layout metadata through one guarded editor transaction. The container and participating children use fixed current dimensions, wrapping is off, strokes do not contribute to the inferred box spacing, and the container preserves its current size. A group becomes a frame with its existing ID, geometry, fill, clipping, effects, opacity and blending retained. Main components keep their component type. Linked instance child roots remain linked; their generated content remains owned by its instance. Hidden direct children remain hidden and are not placed into the inferred flow. Individual nested parent relationships are preserved when direct roots are reordered.
+
+A final post-derivation check requires every proposed direct child position **and dimension** to match its preview, as well as the container size and direction. A source/text/workspace controller changing those results refuses the whole transaction. Preview analysis also refuses a controller that changes the measured child dimensions. Undo/Redo and normal `.oui` save/reopen use existing metadata; no document field, migration, file version or MCP protocol was added.
+
+## Guards and limits
+
+The workflow requires one current Design selection, Motion closed, visible UI and no modal. A preview captures the document/page/selection/mode context and expires on changes, including a native Motion transition away and back. Apply recomputes and validates the proposal from the current source rather than trusting editable preview settings. A stale geometry fingerprint cannot commit through the headless helper.
+
+The selected container must be free layout and outside managed instances. If its own parent is auto layout, it must be absolute first. Every affected hierarchy lock is respected. Direct mask/boolean results, child guide bindings, visible absolute children, sections/slices, rotated/reflected/scaled direct child boxes and boxes outside the container refuse analysis. The container's own transform is supported because inference stays in its local axes. Internal masks within an otherwise ordinary nested child are not reordered. Gap/padding variable bindings must be detached before replacing those values with inferred ones.
+
+Analysis is bounded to 20,000 project layers, 2,000 layers in the selected hierarchy, 200 visible direct children and 256 selected-container ancestor entries. Direct child dimensions must be positive and finite. Cycles, missing ancestors and derived geometry beyond the document coordinate range refuse before an edit can be committed. At most two direction candidates are simulated; previews contain at most 200 before/after boxes.
+
+The workflow does not infer a new wrapper from an arbitrary multi-selection, reorganize a multi-row grid, introduce responsive guide bindings, choose hug/fill policies, measure painted-effect extents, or replace existing auto layouts. Those remain explicit editing decisions. Reference verification remains pending; this local workflow does not establish complete Figma parity.
+
+## Validation
+
+Core checks cover exact row inference, unequal stack gaps, center alignment, ranking diagonal alternatives, read-only analysis, root ordering and nested ownership, transformed group conversion without changed paint/clip metadata, instance roots, hidden children, one Undo/Redo, save/reopen, stale/forged requests, post-derived position/dimension refusal, ambiguous overlaps, lock/managed/workspace/guide/mask/transform/flow guards, numeric validation and work limits.
+
+Actual browser checks use reachable inspector controls to verify read-only previews, settings and wireframe boxes, applying and saving, Undo/Redo/reopen, actual Canvas geometry for the corrected stack, group paint/path/clipping preservation, explicit root ordering, native context cancellation, Motion refusal and actionable locked/ambiguous-content errors. TypeScript validation emits no files.
+
+No build, bundle, native app package, archive, version, website, central feature-register update or push is included. Native/reference verification remains outside this source-only change under the user's build freeze.
