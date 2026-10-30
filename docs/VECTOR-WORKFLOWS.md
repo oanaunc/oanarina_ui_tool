@@ -18,7 +18,7 @@ Select a vector shape and choose **Edit vector points** in the Vector inspector.
 
 ## Safety and limits
 
-New inspector geometry operations require an unlocked layer outside managed instance children, with Motion closed. Direct `edit-vector` / `vector-*` commands enforce the same requirements. Component/workspace derivation that would overwrite a proposed contour edit causes an atomic refusal. Persistent edits have Undo/Redo and retain .oui compatibility.
+New inspector geometry operations and direct `vector-*` topology commands require an unlocked layer outside managed instance children, with Motion closed. In Motion, **Edit vector points** can enter and leave an existing contour-based path without modifying the document or normalizing its base dimensions. Canvas anchor and tangent dragging uses the displayed sampled width, height and ancestor transforms, then commits only the base contours. This edits the shape across all animation times; it does not create contour keyframes. Existing base dimensions, path coordinate dimensions, transforms and animation tracks remain intact, and Undo restores the original contours. Primitive conversion, raw SVG-path conversion, continuation and point deletion remain blocked while Motion is open. Component/workspace derivation that would overwrite a proposed contour edit causes an atomic refusal. Persistent edits have Undo/Redo and retain .oui compatibility.
 
 Vector gestures cancel when the document/page/source nodes, selection, tool, motion state/time, editing layer, modal, Home state, interface visibility, workspace mode or camera changes. Window blur, hidden-document visibility, Escape and pointer cancellation also discard the gesture. Armed continuation resets when its source or context changes. The existing native resource and IPC permissions are unchanged.
 
@@ -48,3 +48,7 @@ Partial: UI-14-032 Round vector corners, limited to straight adjoining segments.
 - `npm run build`: TypeScript and production bundle validation; no installer or app package is created.
 - Production browser checks: 14 passed (10 new and 4 existing). They cover real inspector controls, transformed point marquee, layer switching, click/drag continuation, modal/blur/camera/source interruption, Undo/Redo, saved files and recovery reload, SVG replacement and winding. Exported SVG is rasterized to verify that even-odd holes clip inside strokes correctly.
 - Independent review reproduced and verified fixes for modal-interrupted continuation and even-odd inside-stroke clipping.
+
+### Motion regression validation
+
+Source-only repair: TypeScript validation, all 868 core tests and 29 related browser interactions pass without generating release packages. Browser coverage includes unchanged sampled-width/ancestor-scale anchor dragging, tangent editing, read-only entry/exit, saved-file preservation of base dimensions and tracks, Undo, and cancellation on time/camera/modal/blur/Escape changes. Topology controls and point deletion remain blocked in Motion.

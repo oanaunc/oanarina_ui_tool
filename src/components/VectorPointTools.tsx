@@ -11,7 +11,7 @@ export default function VectorPointTools({n}:{n:DesignNode}){
  const transform=(options:{scaleX?:number;scaleY?:number;rotation?:number})=>apply(()=>transformVectorPoints(n,s.vectorSelection,options));
  let position:{x:number;y:number}|undefined;try{if(s.vectorSelection.length===1)position=vectorPointCoordinates(n,s.vectorSelection[0]);}catch{/* A stale point selection is reset by the next canvas interaction. */}
  let endpoint=false;try{if(s.vectorSelection.length===1){vectorEndpoint(n,s.vectorSelection[0]);endpoint=true;}}catch{/* Interior/closed points cannot continue. */}
- return <div className="vector-point-tools"><p className="inspector-note">{s.vectorSelection.length} selected points</p>{disabled&&<p className="inspector-note">Geometry controls require an unlocked layer outside instances with Motion closed.</p>}
+ return <div className="vector-point-tools"><p className="inspector-note">{s.vectorSelection.length} selected points</p>{disabled&&<p className="inspector-note">Inspector geometry controls require an unlocked layer outside instances with Motion closed.{s.motionOpen&&!isLocked(n,ns)&&!n.instanceRootId&&' Canvas anchor and handle dragging changes the base contours at the current motion time.'}</p>}
  <fieldset disabled={disabled} style={{border:0,padding:0,margin:0}}>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-join')}>Join</button><button className="outline-button" onClick={()=>runCommand('vector-smooth-join')}>Smooth join</button></div>
  <div className="button-row"><button className="outline-button" onClick={()=>runCommand('vector-split')}>Split at points</button><button className="outline-button" onClick={()=>runCommand('vector-heal')}>Delete and heal</button></div>
