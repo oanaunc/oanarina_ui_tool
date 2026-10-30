@@ -29,3 +29,5 @@ Ordinary `.oui` saves, whole-file duplication and authorized source MCP project 
 Reusable library publication removes private annotations/related override keys before computing source fingerprints and emits one generic warning. Incoming reusable snapshots with annotations are refused. Installed consumer-library policies and normal whole-project saves remain intact. This stage adds no network service, filesystem permission, paid requirement, global category sharing or code-completion verification.
 
 The dedicated pointer annotation tool, document-global category manager, arbitrary property types, edge-gap/dimensional constraint annotations and native/reference-app acceptance remain partial or unverified rather than being represented as complete.
+
+Combined delivery also strips file-local comment threads before serializing Export for Figma. The ordinary editable .oui keeps both comments and annotations; the source document and Undo history are unchanged by delivery preparation.
