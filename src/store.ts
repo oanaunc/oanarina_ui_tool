@@ -1,4 +1,5 @@
 import {constrainAspectPatch} from './transform-controls';
+import {defaultPageCamera,PageViewportCache} from './page-viewports';
 import {duplicateDocumentPage,reorderDocumentPage,removeDocumentPage} from './pages';
 import {arrangeNodes} from './arrange';
 import type {ArrangeReference} from './arrange';
@@ -28,11 +29,12 @@ import {updateTextMetrics} from './text-layout';
 import {sampleDocument} from './sample';
 const clone=<T,>(a:T):T=>structuredClone(a);
 interface EditorState {
- doc:DesignDocument;pageId:string;selection:string[];tool:Tool;zoom:number;pan:{x:number;y:number};
+ doc:DesignDocument;pageId:string;selection:string[];tool:Tool;zoom:number;pan:{x:number;y:number};viewportRestored:boolean;
  past:DesignDocument[];future:DesignDocument[];clipboard:DesignNode[];clipboardWhiteboard?:WhiteboardClipboard;clipboardOrigin?:{x:number;y:number};clipboardWorld?:Record<string,Matrix>;clipboardSwapProperties?:Record<string,string[]>;clipboardComponentSets?:ComponentSet[];clipboardSlideRoles?:Record<string,SlideRole>;savedAt:string;toast:string;
  motionOpen:boolean;motionTime:number;motionPlaying:boolean;autoKey:boolean;recoveryAt:string;fontRevision:number;grid:boolean;snap:boolean;outlines:boolean;rulers:boolean;uiHidden:boolean;mode:'design'|'prototype'|'inspect';
  vectorEditId:string|null;vectorSelection:string[];modal:string|null;leftTab:'layers'|'assets';home:boolean;search:string;theme:'dark'|'light';
  set:(p:Partial<EditorState>)=>void;edit:(fn:(doc:DesignDocument)=>void)=>void;
+ enablePageViewports:()=>void;disablePageViewports:()=>void;
  undo:()=>void;redo:()=>void;patch:(ids:string[],p:Partial<DesignNode>)=>void;
  add:(type:NodeKind,props?:Partial<DesignNode>)=>string;remove:()=>void;duplicate:()=>void;copy:()=>void;paste:(parentId?:string,preserveParents?:boolean)=>void;
  group:(type?:NodeKind)=>void;ungroup:()=>void;align:(dir:string,reference?:ArrangeReference)=>void;order:(dir:string)=>void;
@@ -40,9 +42,21 @@ interface EditorState {
  select:(id:string,extend?:boolean)=>void;fit:(selected?:boolean)=>void;move:(dx:number,dy:number)=>void;
 }
 let timer:ReturnType<typeof setTimeout>;
-export const useEditor=create<EditorState>((set,get)=>{
+export const useEditor=create<EditorState>((commit,get)=>{
+ const viewports=new PageViewportCache();let viewportTracking=false,detachViewports:(()=>void)|undefined;
+ const loadPage=(d:DesignDocument)=>{if(d.workspace==='slides'&&d.slides)return d.slides.pageId;const id=viewports.lastPage(d.id);return d.pages.some(p=>p.id===id)?id!:d.pages[0].id;};
+ const set=(update:Partial<EditorState>|((state:EditorState)=>Partial<EditorState>),restore=false)=>{
+  const before=get(),delta=typeof update==='function'?update(before):{...update},next={...before,...delta};
+  if(!next.doc.pages.some(p=>p.id===next.pageId)){next.pageId=loadPage(next.doc);delta.pageId=next.pageId;}
+  const changedPage=next.doc.id!==before.doc.id||next.pageId!==before.pageId;
+  if(restore||changedPage){const camera=next.doc.workspace==='slides'?undefined:viewports.camera(next.doc.id,next.pageId);Object.assign(delta,camera??defaultPageCamera(),{viewportRestored:!!camera});if(viewportTracking&&!restore&&next.doc.workspace!=='slides')viewports.rememberPage(next.doc.id,next.pageId);}
+  else if(viewportTracking&&next.doc.workspace!=='slides'&&(next.zoom!==before.zoom||next.pan.x!==before.pan.x||next.pan.y!==before.pan.y))viewports.rememberCamera(next.doc.id,next.pageId,{zoom:next.zoom,pan:next.pan});
+  commit(delta);
+ };
  const doc=sampleDocument();
- return {doc,pageId:doc.pages[0].id,selection:[],tool:'move',zoom:.7,pan:{x:12,y:16},past:[],future:[],clipboard:[],savedAt:'',toast:'',motionOpen:false,motionTime:0,motionPlaying:false,autoKey:false,recoveryAt:'',fontRevision:0,grid:false,snap:true,outlines:false,rulers:false,uiHidden:false,mode:'design',vectorEditId:null,vectorSelection:[],modal:null,leftTab:'layers',home:false,search:'',theme:'dark',
+ return {doc,pageId:doc.pages[0].id,selection:[],tool:'move',zoom:.7,pan:{x:12,y:16},viewportRestored:false,past:[],future:[],clipboard:[],savedAt:'',toast:'',motionOpen:false,motionTime:0,motionPlaying:false,autoKey:false,recoveryAt:'',fontRevision:0,grid:false,snap:true,outlines:false,rulers:false,uiHidden:false,mode:'design',vectorEditId:null,vectorSelection:[],modal:null,leftTab:'layers',home:false,search:'',theme:'dark',
+ enablePageViewports:()=>{if(viewportTracking)return;viewportTracking=true;if(typeof window!=='undefined')detachViewports=viewports.attach(window);},
+ disablePageViewports:()=>{viewportTracking=false;detachViewports?.();detachViewports=undefined;viewports.flush();},
  set:(p)=>{set(p);if(p.toast){clearTimeout(timer);timer=setTimeout(()=>set({toast:''}),4000);}},
  edit:(fn)=>{const s=get(),d=clone(s.doc);const previous=hydrateLegacyInstances(d)?clone(d):s.doc;fn(d);reconcileRichText(previous,d);const richBase=clone(d);d.pages.forEach(p=>validateTimeline(p.motion));validateMotionStyles(d.motionStyles);validatePrototype(d);validateGuides(d);validateDesignSystems(d);trackOverrides(previous,d);applyGuideStyles(d);applyDesignSystems(d);reconcileRichText(richBase,d);deriveEditableLayout(d,previous);synchronizeComponents(d);const constraintBase=new Map(d.pages.map(p=>[p.id,clone(p.nodes)]));applyGuideStyles(d);applyDesignSystems(d);reconcileRichText(richBase,d);d.pages.forEach(p=>{applyConstraints(p.nodes,constraintBase.get(p.id)??[]);updateTextMetrics(p.nodes);reflow(p.nodes);updateBooleans(p.nodes);});const boardText=clone(d);updateWhiteboard(d);reconcileRichText(boardText,d);d.pages.forEach(p=>updateTextMetrics(p.nodes));validateWhiteboard(d);validateSlides(d);validateRichTextDocument(d);validateMasks(d);if(JSON.stringify(d)===JSON.stringify(s.doc))return;d.updatedAt=new Date().toISOString();set({doc:d,past:[...s.past.slice(-99),s.doc],future:[]});},
  undo:()=>{const s=get();if(!s.past.length)return;const d=s.past.at(-1)!;set({doc:d,pageId:d.pages.some(p=>p.id===s.pageId)?s.pageId:d.pages[0].id,past:s.past.slice(0,-1),future:[s.doc,...s.future],selection:[]});},
@@ -61,11 +75,11 @@ export const useEditor=create<EditorState>((set,get)=>{
  order:(dir)=>{const s=get();s.edit(d=>{const p=d.pages.find(p=>p.id===s.pageId)!,selected=new Set(normalizedRootSelection(p.nodes,s.selection).map(n=>n.id)),groups=new Map<string|null,DesignNode[]>();for(const n of p.nodes){const a=groups.get(n.parentId)??[];a.push(n);groups.set(n.parentId,a);}for(const [parent,items] of groups){if(dir==='front')groups.set(parent,[...items.filter(n=>!selected.has(n.id)),...items.filter(n=>selected.has(n.id))]);else if(dir==='back')groups.set(parent,[...items.filter(n=>selected.has(n.id)),...items.filter(n=>!selected.has(n.id))]);else if(dir==='forward'){for(let i=items.length-2;i>=0;i--)if(selected.has(items[i].id)&&!selected.has(items[i+1].id))[items[i],items[i+1]]=[items[i+1],items[i]];}else{for(let i=1;i<items.length;i++)if(selected.has(items[i].id)&&!selected.has(items[i-1].id))[items[i],items[i-1]]=[items[i-1],items[i]];}}
  const sorted:DesignNode[]=[];const append=(parent:string|null)=>{for(const n of groups.get(parent)??[]){sorted.push(n);append(n.id);}};append(null);p.nodes=sorted;});},
  refreshFonts:()=>{const s=get(),d=clone(s.doc),before=JSON.stringify(d.pages.map(p=>p.nodes.map(n=>[n.x,n.y,n.width,n.height])));d.pages.forEach(p=>{updateTextMetrics(p.nodes);reflow(p.nodes);});synchronizeComponents(d);d.pages.forEach(p=>{updateTextMetrics(p.nodes);reflow(p.nodes);});const boardText=clone(d);updateWhiteboard(d);reconcileRichText(boardText,d);d.pages.forEach(p=>updateTextMetrics(p.nodes));if(JSON.stringify(d.pages.map(p=>p.nodes.map(n=>[n.x,n.y,n.width,n.height])))!==before){d.updatedAt=new Date().toISOString();set({doc:d,fontRevision:s.fontRevision+1});}else set({fontRevision:s.fontRevision+1});},
- newDocument:(sample=false)=>{const d=sample?sampleDocument():blankDocument();set({doc:d,pageId:d.pages[0].id,selection:[],motionTime:0,motionPlaying:false,vectorEditId:null,vectorSelection:[],past:[],future:[],home:false,savedAt:'',pan:{x:12,y:16},zoom:.7});},
- load:(d)=>set({doc:d,pageId:d.pages[0].id,selection:[],motionTime:0,motionPlaying:false,vectorEditId:null,vectorSelection:[],past:[],future:[],home:false,savedAt:'',pan:{x:12,y:16},zoom:.7}),
+ newDocument:(sample=false)=>{const d=sample?sampleDocument():blankDocument();set({doc:d,pageId:d.pages[0].id,selection:[],motionTime:0,motionPlaying:false,vectorEditId:null,vectorSelection:[],past:[],future:[],home:false,savedAt:''},true);},
+ load:(d)=>set({doc:d,pageId:loadPage(d),selection:[],motionTime:0,motionPlaying:false,vectorEditId:null,vectorSelection:[],past:[],future:[],home:false,savedAt:''},true),
  addPage:()=>{if(get().doc.pages.length>=1000)throw Error('A project can contain up to 1,000 pages.');const id=uid(),background=get().doc.pages.find(p=>p.id===get().pageId)?.background;get().edit(d=>d.pages.push({...(background?{background:structuredClone(background)}:{}),id,name:`Page ${d.pages.length+1}`,nodes:[],comments:[]}));get().selectPage(id);},
  selectPage:(id)=>{if(!get().doc.pages.some(p=>p.id===id))throw Error('This page no longer exists.');set({pageId:id,selection:[],vectorEditId:null,vectorSelection:[],motionPlaying:false,motionTime:0});},
- duplicatePage:(id=get().pageId)=>{const s=get(),result=duplicateDocumentPage(s.doc,id);s.edit(d=>Object.assign(d,result.document));get().selectPage(result.pageId);},
+ duplicatePage:(id=get().pageId)=>{const s=get(),result=duplicateDocumentPage(s.doc,id),camera=id===s.pageId?{zoom:s.zoom,pan:s.pan}:viewports.camera(s.doc.id,id)??defaultPageCamera();s.edit(d=>Object.assign(d,result.document));if(viewportTracking&&s.doc.workspace!=='slides')viewports.rememberCamera(s.doc.id,result.pageId,camera);get().selectPage(result.pageId);},
  reorderPage:(id,index)=>{const s=get(),doc=reorderDocumentPage(s.doc,id,index);if(doc!==s.doc)s.edit(d=>Object.assign(d,doc));},
  deletePage:(id=get().pageId)=>{const s=get();if(s.doc.pages.length<=1)return;const index=s.doc.pages.findIndex(p=>p.id===id),doc=removeDocumentPage(s.doc,id);s.edit(d=>Object.assign(d,doc));get().selectPage(id===s.pageId?doc.pages[Math.min(index,doc.pages.length-1)].id:s.pageId);},
  select:(id,extend=false)=>set(s=>({selection:extend?s.selection.includes(id)?s.selection.filter(a=>a!==id):[...s.selection,id]:[id]})),
