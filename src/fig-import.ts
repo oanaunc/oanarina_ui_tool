@@ -3,6 +3,7 @@ import {mapFigScene,validateFigSceneRasters} from './fig-scene';
 import type {FigImportIssue} from './fig-scene';
 import type {DesignDocument} from './model';
 import {parseDocument} from './model';
+import {serializeFontDocument} from './font-data';
 
 export interface FigImportResult {document:DesignDocument;issues:FigImportIssue[];complete:boolean;fontFamilies:string[];}
 /** Selected bytes only. No network access, source paths, or document mutation. */
@@ -13,7 +14,8 @@ export async function importFigBytes(bytes:Uint8Array,name:string,signal?:AbortS
  const result=mapFigScene(decoded,name.replace(/\.fig$/i,'').slice(0,120)||'Imported Figma file');
  await validateFigSceneRasters(result.document,signal);
  if(signal?.aborted)throw new DOMException('Figma import cancelled.','AbortError');
- const raw=JSON.stringify(result.document);
+ // Apply the same readable-file byte budget used by Save, before accepting it.
+ const raw=serializeFontDocument(result.document,result.document.fonts??[]);
  if(new TextEncoder().encode(raw).byteLength>=50_000_000)throw Error('The converted project exceeds the 50 MB project limit.');
  return {...result,document:parseDocument(raw)};
 }

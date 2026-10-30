@@ -9,7 +9,7 @@ After import, review **Figma import report**, then edit the converted project. S
 ## Supported subset and reductions
 
 - Public Design pages, supported shapes/frames/groups, local transforms, order, opacity, visibility and supported paints, strokes and effects.
-- Referenced embedded static PNG/JPEG assets. Images are checked before allocation and decoded before import acceptance, with an 8,192-pixel edge limit, 16-million-pixel surface limit and 20 MB encoded-image limit. Unsupported, corrupt or excessively large assets can refuse the import.
+- Referenced embedded static PNG/JPEG assets. Encoded dimensions are checked before pixel decoding, and pixels are decoded before import acceptance, with an 8,192-pixel edge limit, 16-million-pixel surface limit and 20 MB encoded-image limit. Unsupported, corrupt or excessively large assets can refuse the import.
 - Editable text with supported font and paragraph properties. When source glyph geometry is available and supported, an additive saved outline preserves its original appearance. Editing text, typography, rich-text styling or text layout invalidates that preserved outline and uses the actual editable text with available fonts. Moving the layer and changing its overall color/opacity remain ordinary edits.
 - Main components and instances can become detached editable frames, with supported current property/slot values applied. Live library linkage and complete override semantics are not preserved.
 - Supported native annotation blocks can retain their own embedded visual snapshots as image layers. Their native rich-document editing and CRDT content are not imported as equivalent editable annotations.
