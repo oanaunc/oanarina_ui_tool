@@ -1,3 +1,4 @@
+import {validateDocumentMetadata} from './document-metadata';
 import {validateGrids} from './grid';
 import type {GridTrack,GridAlignment} from './grid';
 import {validateMasks} from './masks';
@@ -48,7 +49,7 @@ export interface DesignNode {
 }
 export interface Comment {id:string; x:number;y:number; text:string; resolved:boolean;}
 export interface Page {background?:{color:string;opacity:number;visible:boolean};id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;flows?:PrototypeFlow[];prototypeSettings?:PrototypeSettings;guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
-export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides';whiteboard?:WhiteboardData;slides?:SlideDeck;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
+export interface DesignDocument {format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides';whiteboard?:WhiteboardData;slides?:SlideDeck;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
 export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
@@ -78,6 +79,7 @@ export function parseDocument(raw:string):DesignDocument {
   const d=JSON.parse(raw);
   if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file or a Figma Bridge .oui file. Direct .fig files are not supported yet.');
   if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
+  validateDocumentMetadata(d);
   if(d.pages.length>1000)throw Error('Too many pages.');
   const ids=new Set<string>();
   for(const p of d.pages){if(typeof p.id!=='string'||ids.has(p.id)||typeof p.name!=='string'||!Array.isArray(p.nodes)||!Array.isArray(p.comments)||p.nodes.length>20000)throw Error('Invalid page.');ids.add(p.id);
