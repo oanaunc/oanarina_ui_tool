@@ -2364,10 +2364,10 @@
     "category": "Layer tree",
     "name": "Layer preview thumbnails",
     "priority": "must",
-    "status": "implemented",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "Unreleased source: on-demand hover/keyboard layer artwork thumbnails use isolated shared-export SVG images, ancestor clips/transforms and relevant masks, real slice crops, viewport placement and readonly history/save behavior. Bounded to 500 context layers/64 ancestors; slice previews up to 500 page layers; hidden/oversized artwork reports a reason. Evidence and limits: docs/LAYER-THUMBNAILS.md; tests/layer-thumbnail.test.ts; tests/e2e/layer-thumbnails.spec.ts. Exact Figma reference and native visual acceptance remain pending."
+    "notes": "Unreleased source: on-demand hover/keyboard thumbnails render real shared-export SVG artwork, ancestor transforms, supported clips/masks and slice crops without document/history mutation. Partial: mask sources, descendants of live Boolean/mask/slice/media owners and nonrectangular ancestor clips refuse with an explanation; complete Boolean results and supported nested masks remain previewable. Bounded to 500 context layers/64 ancestors, or 500 page layers for slices. Hidden/oversized targets explain refusal. docs/LAYER-THUMBNAILS.md; tests/layer-thumbnail.test.ts; tests/e2e/layer-thumbnails.spec.ts. Native and exact Figma reference acceptance pending."
   },
   {
     "id": "UI-08-027",
@@ -2605,9 +2605,9 @@
     "name": "Frame overflow inspection",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Selected-frame Design inspector provides a read-only rendered overflow preview with that frame clip disabled, sampled motion and conservative painted descendant bounds with candidate reveal/selection. Nested clips/masks/occlusion may conceal candidates; exact pixel overflow proof remains unfinished. docs/FRAME-DELIVERY.md; core and production pixel/Undo/save checks; reference verification pending."
+    "notes": "Selected-frame inspector provides a bounded, isolated shared-export SVG image with the frame clip disabled, sampled motion and conservative painted descendant bounds with candidate reveal/selection. Imported ownership and unsupported ancestor clip contexts refuse explicitly. Nested clips/masks/occlusion may conceal candidates; exact pixel overflow proof remains unfinished. docs/FRAME-DELIVERY.md; docs/RESPONSIVE-RESIZE-PREVIEW.md; core/browser pixel/Undo/save checks. Native and reference acceptance pending."
   },
   {
     "id": "UI-09-021",
@@ -4454,10 +4454,10 @@
     "category": "Vector pen and editing",
     "name": "Slice vectors into separate layers",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: Vector menu, actions and point tools separate closed disjoint solid-filled compound regions into editable path children in one identity-preserving group. Holes, islands, cubic handles, transforms, opacity, references and component propagation survive preview/Apply/Undo/save. Partial: no arbitrary knife cuts, networks, crossing/touching/open contours, visible strokes, gradient/image paints, effects, masks or animation tracks. Child coordinate boxes are not tightened. Bounded topology and strict derived-state validation refuse atomically. docs/VECTOR-SEPARATION.md; tests/vector-separation.test.ts; tests/e2e/vector-separation.spec.ts. Native and reference acceptance pending."
   },
   {
     "id": "UI-14-044",
@@ -7454,10 +7454,10 @@
     "category": "Advanced typography",
     "name": "OpenType feature previews",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Unreleased source: OpenType tab/disclosure compares actual source or example text using matching run fonts, styles, axes and sizes with one candidate tag changed. Bounded embedded TTF/OTF GSUB/GPOS declaration inspection distinguishes unknown metadata from absent declarations; no glyph applicability guarantee. Explicit guarded range Apply preserves unrelated effective run features, with Undo/save/reopen and stale context/draft protection. Source fragment capped at 512 UTF-16 units, declared menu at 256; WOFF2/native metadata unknown; font fallback and isolated shaping context explained. docs/OPENTYPE-FEATURE-PREVIEWS.md; core and real Lato ligature pixel/browser checks. Native and reference acceptance pending."
   },
   {
     "id": "UI-22-054",
@@ -7774,10 +7774,10 @@
     "category": "Constraints and resizing",
     "name": "Responsive resize preview",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
+    "notes": "Unreleased source: independently resizable Design frames preview requested or preset sizes through the shared layout, constraints, guides, text and component derivation. Real isolated before/after SVG artwork, optional overflow reveal, descendant and linked box-change summaries precede explicit Apply/Undo/save/reopen. Locked frames preview read-only. Managed/controller-owned sizes and unsupported imported hierarchy refuse; stale document/selection/mode/font contexts invalidate. Complete project payload cap 16 MB; 500 scene layers/64 ancestors; solver stability and final geometry/policy signature required. docs/RESPONSIVE-RESIZE-PREVIEW.md; core/browser pixels, grid/guide/aspect/text checks. Overflow candidates remain conservative; native and reference acceptance pending."
   },
   {
     "id": "UI-24-001",

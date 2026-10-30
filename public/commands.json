@@ -1,5 +1,11 @@
 [
   [
+    "vector-separate",
+    "Separate vector regions…",
+    "Vector",
+    ""
+  ],
+  [
     "vector-outline-stroke",
     "Outline vector stroke…",
     "Vector",
