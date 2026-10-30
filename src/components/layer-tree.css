@@ -3,3 +3,5 @@
 .layer-mask-indicator{display:inline-flex;align-items:center;gap:1px;flex:none;color:var(--muted);padding:2px;border-radius:3px}.mask-source-indicator{color:var(--accent,#c8a5f2);background:#b593df17}.layer-mask-indicator small{font-size:8px;line-height:1}.layer-mask-description{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}.mask-target-indicator{opacity:.85}
 
 .section-link-open{margin:4px 12px 10px;flex-shrink:0;border-top:1px solid var(--line);padding-top:8px;font-size:10px}.section-link-open summary{cursor:pointer;color:var(--muted)}.section-link-open label{display:block;margin:8px 0;font-size:9px}.section-link-open input{margin-top:4px}.section-link-open p{font-size:9px;line-height:1.5}.section-link-open>button{width:100%}
+/* A logical row remains 31px under sidebar CSS zoom; full hierarchy is conveyed by ARIA. */
+.virtual-layer-space{position:relative;width:100%;min-width:0}.virtual-layer-tree .layer-row{height:31px;min-height:31px;max-height:31px;box-sizing:border-box;white-space:nowrap;overflow:hidden}.layer-tree-notice{padding:0 12px}.layers-list{overflow-anchor:none}

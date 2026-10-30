@@ -1,5 +1,6 @@
 import type {LayerAnnotationSet} from './layer-annotations';
 import type {DevelopmentStatus} from './development-status';
+import {validateLayerParentPaths} from './layer-parent-validation';
 import type {ComponentLibrary,LibraryPublication} from './local-library-metadata';
 import type {DocumentCover} from './document-cover';
 import {validateDocumentSurfaces} from './surface-paint';
@@ -129,8 +130,7 @@ export function parseDocument(raw:string):DesignDocument {
     }
     validateTimeline(p.motion);
     for(const c of p.comments)if(typeof c.id!=='string'||typeof c.text!=='string'||typeof c.resolved!=='boolean'||!Number.isFinite(c.x)||!Number.isFinite(c.y))throw Error('Invalid comment.');
-    for(const n of p.nodes){if(!(n.parentId===null||typeof n.parentId==='string')||!['none','horizontal','vertical','grid'].includes(n.layout)||!['left','center','right','justify'].includes(n.textAlign))throw Error('Invalid layer settings.');for(const k of ['visible','locked','clip','gradient','shadow'] as const)if(typeof n[k]!=='boolean')throw Error('Invalid layer flag.');
-      const seen=new Set([n.id]);let id=n.parentId;while(id){if(seen.has(id))throw Error('Cyclic layer hierarchy.');seen.add(id);const parent=p.nodes.find((a:DesignNode)=>a.id===id);if(!parent)throw Error('Missing parent layer.');id=parent.parentId;}}
+    validateLayerParentPaths<DesignNode>(p.nodes,n=>{if(!(n.parentId===null||typeof n.parentId==='string')||!['none','horizontal','vertical','grid'].includes(n.layout)||!['left','center','right','justify'].includes(n.textAlign))throw Error('Invalid layer settings.');for(const k of ['visible','locked','clip','gradient','shadow'] as const)if(typeof n[k]!=='boolean')throw Error('Invalid layer flag.');});
   }
   if(!Array.isArray(d.colors)||d.colors.some((c:{name:string;value:string})=>typeof c.name!=='string'||!/^#[0-9a-f]{6}$/i.test(c.value)))throw Error('Invalid color styles.');
   if(d.fonts!==undefined){if(!Array.isArray(d.fonts)||d.fonts.length>500)throw Error('Invalid embedded fonts.');d.fonts.forEach(validateFontAsset);}
