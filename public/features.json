@@ -74,70 +74,70 @@
     "category": "Mac application",
     "name": "Native application menu",
     "priority": "must",
-    "status": "partial",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Application menu has About, Preferences, system Services, Hide, Hide Others, Show All and Quit; smoke-checked on real NSMenu."
   },
   {
     "id": "UI-01-009",
     "category": "Mac application",
     "name": "Native File menu",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "File menu has registry commands plus Open Recent, Reopen Closed, Revert To, Share and Print."
   },
   {
     "id": "UI-01-010",
     "category": "Mac application",
     "name": "Native Edit menu",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Edit items enable from real history and selection, and stay enabled while a text field has focus."
   },
   {
     "id": "UI-01-011",
     "category": "Mac application",
     "name": "Native View menu",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "View has Show Tab Bar, Enter Full Screen and check marks from editor state."
   },
   {
     "id": "UI-01-012",
     "category": "Mac application",
     "name": "Native Object menu",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Object menu is generated from the registry; the Group action was exercised through AppKit into the document."
   },
   {
     "id": "UI-01-013",
     "category": "Mac application",
     "name": "Native Window menu",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "System window list with tab commands, Close and Bring All to Front."
   },
   {
     "id": "UI-01-014",
     "category": "Mac application",
     "name": "Native Help menu",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "System Help menu with Forma Guide; the guide item opens the public page in the browser only when chosen."
   },
   {
     "id": "UI-01-015",
@@ -155,9 +155,9 @@
     "name": "Application preferences",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Native Application Preferences and Command-comma open working local drawing/navigation settings. Full Figma settings parity and system theme/scale/notification/helper controls remain incomplete."
+    "notes": "Web File menu and Command-comma tested with theme, scale and the new groups. Notification and helper controls remain absent."
   },
   {
     "id": "UI-01-017",
@@ -234,10 +234,10 @@
     "category": "Mac application",
     "name": "Window tabbing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Native tabs with shared tabbing identity: merge, move, next, and close-one-tab are smoke-tested. Tab groups persist in window sessions; regrouping was tested by simulation, not a real relaunch."
   },
   {
     "id": "UI-01-025",
@@ -304,10 +304,10 @@
     "category": "Mac system integration",
     "name": "Menu accelerator labels",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "All registry shortcuts appear: 49 as real key equivalents, 22 single-key ones as display-only labels. Shortcuts a person adds in keyboard preferences do not appear in native menus."
   },
   {
     "id": "UI-02-002",
@@ -324,10 +324,10 @@
     "category": "Mac system integration",
     "name": "Font installation detection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Core Text and NSFont change notifications refresh the font list and Missing Fonts without reopening. Tested with process-scope register and unregister only, not Font Book."
   },
   {
     "id": "UI-02-004",
@@ -344,10 +344,10 @@
     "category": "Mac system integration",
     "name": "Trackpad pinch zoom",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Safari gesture events zoom the canvas around the pointer with the wheel path's limits. Tested with synthetic DOM events on real WKWebView; no physical trackpad."
   },
   {
     "id": "UI-02-006",
@@ -405,9 +405,9 @@
     "name": "System clipboard images",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.9: Explicit native PNG/TIFF paste creates an editable embedded image with orientation-aware first-frame normalization, predecode 20 MB/8192-edge/16 MP limits and one Undo/save. Actual named-pasteboard/WKWebView tests; browser/Windows image clipboard remains unfinished; Copy as PNG also passes actual WK/native command acceptance. docs/COPY-AS-PNG.md. docs/RASTER-CLIPBOARD.md."
+    "notes": "Adds explicit JPEG paste with bounded PNG normalization; bytes must match the declared type. Browser and Windows image clipboard remain unfinished."
   },
   {
     "id": "UI-02-012",
@@ -464,10 +464,10 @@
     "category": "Mac system integration",
     "name": "macOS document versions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Save stores the replaced bytes via NSFileVersion; File → Revert To restores one as an undoable, unsaved edit. Not NSDocument, no Browse All Versions UI, and versions are recorded only on Save."
   },
   {
     "id": "UI-02-018",
@@ -484,20 +484,20 @@
     "category": "Mac system integration",
     "name": "macOS print dialog",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Print presents the real macOS print sheet (PMPrintPanelView) and a real job produced PDF pages. Output is flattened 2× raster, so text is not vector."
   },
   {
     "id": "UI-02-020",
     "category": "Mac system integration",
     "name": "Export through system share sheet",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Share opens the system picker with a private temporary 2× PNG or PDF, and macOS proposes services. No service carried through to delivery; no format choice."
   },
   {
     "id": "UI-02-021",
@@ -514,10 +514,10 @@
     "category": "Mac system integration",
     "name": "System appearance following",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.9: Shared editor follows system light/dark preference via live media-query binding with explicit override, reset and local persistence; browser emulation and cross-window checks pass. Actual Mac WKWebView appearance acceptance is pending while the Mac is locked; broader system accessibility settings are separate. docs/PREFERENCES.md."
+    "notes": "Actual WKWebView and editor theme follow an appearance change while running, in both directions. Driven by NSApp.appearance, not by changing System Settings."
   },
   {
     "id": "UI-02-023",
@@ -704,10 +704,10 @@
     "category": "Home and file browser",
     "name": "Sort files by owner",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Owner · A–Z sort persists, ties break by name, unrecorded owners sort last, pinned files stay first."
   },
   {
     "id": "UI-03-011",
@@ -797,7 +797,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: opaque file identity references with explicit review/open. Matches the open file or unchanged untrashed same-origin browser repository file; dirty current recovery must succeed before replacement. Native cross-file opening explicitly refuses; open matching .oui first. No hosted sharing, OS URL handler or access permissions. See docs/LOCAL-NAVIGATION-LINKS.md. Source core/type/browser checks; native/reference acceptance pending."
+    "notes": "Copy file link added to the file browser menu, in addition to Local links. Earlier limits stand: no hosted sharing, no OS handler, and native cross-file opening still refuses. Clipboard failure shows an error."
   },
   {
     "id": "UI-03-020",
@@ -864,10 +864,10 @@
     "category": "Home and file browser",
     "name": "File ownership display",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Not implemented in this preview."
+    "notes": "Local owner label from src/local-profile.ts, stored in file metadata and never in .oui. Stamped on first local save and on duplicate; opened or imported files and files saved with no profile name show Owner not recorded until set, with Undo. No accounts or access control, and profile renames do not update labels."
   },
   {
     "id": "UI-03-027",
@@ -894,10 +894,10 @@
     "category": "Home and file browser",
     "name": "Open file in new tab",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Browser only: opens through a fragment that is cleared after load, and refuses files already open in this or another tab (BroadcastChannel, 150 ms). The Mac app uses separate windows, not tabs."
   },
   {
     "id": "UI-03-030",
@@ -1084,10 +1084,10 @@
     "category": "Navigation and editor shell",
     "name": "Draw mode switch",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Draw switches the toolbelt to direct Pen, Pencil and Brush buttons plus shapes and Text, via toolbar or View → Draw mode. View state only: no saved state, no history entry, no separate Draw inspector."
   },
   {
     "id": "UI-04-019",
@@ -1135,9 +1135,9 @@
     "name": "File save status",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Native titles show document edited state, and the inspector distinguishes pending/saved local recovery. Complete web saved/unsaved/path status UI and cloud sync status are unfinished."
+    "notes": "Top bar label shows Saving…, Saved locally, Saved to .oui or Not saved from editor timestamps. No path is shown because the renderer receives none, and no cloud status exists."
   },
   {
     "id": "UI-04-024",
@@ -1174,10 +1174,10 @@
     "category": "Navigation and editor shell",
     "name": "Inline error messages",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Persistent inline alert for recovery write failures with Retry recovery and Save .oui file, in addition to existing field-level errors. Other failures still use toasts."
   },
   {
     "id": "UI-04-028",
@@ -1204,10 +1204,10 @@
     "category": "Navigation and editor shell",
     "name": "Connection state indicator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Label reflects navigator.onLine with live online/offline updates and states what offline affects. It reports the device network only; no server or sync connection exists."
   },
   {
     "id": "UI-05-001",
@@ -1444,30 +1444,30 @@
     "category": "Pages and document structure",
     "name": "Document color profile",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "File information sets the profile with Undo, and it persists in .oui. Changing it assigns only: saved values stay the same, and there is no convert action that preserves appearance."
   },
   {
     "id": "UI-05-025",
     "category": "Pages and document structure",
     "name": "sRGB document profile",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "sRGB is the default. It is stored as absence of the key, so legacy files and output are unchanged."
   },
   {
     "id": "UI-05-026",
     "category": "Pages and document structure",
     "name": "Display P3 document profile",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Canvas uses CSS color(display-p3); PNG and JPG are rendered on a P3 canvas and tagged. SVG uses CSS P3 colors. PDF is converted to sRGB (pixel-tested), and GIF, video, clipboard and slides use the same default without a color test. In WebKit, pattern and feImage paints clip to sRGB. Panel swatches stay sRGB previews."
   },
   {
     "id": "UI-05-027",
@@ -5464,30 +5464,30 @@
     "category": "Fills and colors",
     "name": "Shader fill assignment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Shader option in the fill type menu, using WebGL 1 and 10 original bundled shaders. Undo and persistence covered, with real pixel tests. Falls back to a static gradient when WebGL or the shader is unavailable."
   },
   {
     "id": "UI-17-038",
     "category": "Fills and colors",
     "name": "Shader fill parameter controls",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Number and color parameters, seed, poster time and reset. Saved values are clamped at render time."
   },
   {
     "id": "UI-17-039",
     "category": "Fills and colors",
     "name": "Shader fill stacking",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Shader fills reorder and composite with opacity in the existing paint stack (pixel-tested)."
   },
   {
     "id": "UI-18-001",
@@ -5794,10 +5794,10 @@
     "category": "Strokes",
     "name": "Shader stroke assignment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Shared paint controls. The texture extends under the stroke so it doesn't wrap at the box edge. In a Display P3 file, WebKit clips shader strokes to sRGB."
   },
   {
     "id": "UI-19-001",
@@ -6164,50 +6164,50 @@
     "category": "Effects and compositing",
     "name": "Shader effect assignment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Overlay and Displace effects run through the SVG filter stack. Shaders generate a texture and cannot sample layer pixels in GLSL; Displace bends the layer with feDisplacementMap."
   },
   {
     "id": "UI-19-038",
     "category": "Effects and compositing",
     "name": "Shader effect parameter controls",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Parameters plus mode, blend, opacity and displacement, pixel-tested."
   },
   {
     "id": "UI-19-039",
     "category": "Effects and compositing",
     "name": "Shader effect stacking",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Effects chain and reorder in the existing stack. Order is persistence-tested only, with no pixel test that reordering changes the output."
   },
   {
     "id": "UI-19-040",
     "category": "Effects and compositing",
     "name": "Shader texture clipping to layer",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Clip to layer uses layer alpha; turning it off draws the full box with an optional outset. Pixel-tested on an ellipse."
   },
   {
     "id": "UI-19-041",
     "category": "Effects and compositing",
     "name": "Shader version update indicator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Layers stay pinned to their version until Update shader is pressed, with an indicator for bundled and file shaders. Superseded source is retained, so pinned pixels don't change."
   },
   {
     "id": "UI-20-001",
@@ -13385,9 +13385,9 @@
     "name": "PNG color profile",
     "priority": "must",
     "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source after dev.12: PNG profiles and combined exports offer browser-default, explicit sRGB metadata or untagged sRGB pixels. Bounded CRC-checked chunk rewriting retains exact image/alpha data, saved settings and batch checksums. Display P3/custom ICC/CMYK and broader document color management remain unfinished. See docs/DESIGN-PDF-AND-PNG.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
+    "notes": "Adds a Display P3 PNG option with cICP, a generated iCCP v4 profile, gAMA and cHRM, verified through real decoders. sRGB choices convert and clip. Custom ICC and CMYK remain absent."
   },
   {
     "id": "UI-40-031",
@@ -13914,10 +13914,10 @@
     "category": "Actions and keyboard",
     "name": "Search widgets",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "The Actions Widgets tab searches installed local widgets by name, description and ID, and inserts by keyboard or pointer. It searches the local catalog only, as no remote catalog exists."
   },
   {
     "id": "UI-42-008",
@@ -14394,90 +14394,90 @@
     "category": "Plugins widgets and extensions",
     "name": "Widget insertion",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Import, review and install of a Forma-specific JSON package, then insert from the manager, whiteboard toolbar or Actions. Install never runs code. This is not Figma Widget API compatibility and has no remote catalog."
   },
   {
     "id": "UI-43-026",
     "category": "Plugins widgets and extensions",
     "name": "Widget state synchronization",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "State is validated JSON (32 KB) saved on the frame and kept in step with its generated layers through Undo, duplicate and .oui save/reopen; stale run results are refused. Nothing syncs between people or windows."
   },
   {
     "id": "UI-43-027",
     "category": "Plugins widgets and extensions",
     "name": "Widget resizing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Canvas handles and size fields resize within package limits, and host layout regenerates the layers from the saved view. Guest code gets the new size on its next event, not on each resize, and text layout is estimated."
   },
   {
     "id": "UI-43-028",
     "category": "Plugins widgets and extensions",
     "name": "Widget interaction",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Host-owned hit targets over generated buttons send only an action name to a fresh sandboxed worker per event, using the same guardian as plugins with no guest DOM. Each event is one Undo step. Input fields, hover and timers are absent, and hit targets use the bounding box of a rotated widget."
   },
   {
     "id": "UI-43-029",
     "category": "Plugins widgets and extensions",
     "name": "Widget property menu",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Selecting a widget shows a host-rendered panel with validated action, toggle and choice items (at most 12), plus refresh, console and convert-to-layers. Guests cannot render custom controls."
   },
   {
     "id": "UI-43-030",
     "category": "Plugins widgets and extensions",
     "name": "Widget permissions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Packages declare selection:read and/or page:read; grants are per package, session-only, revocable, cleared on replace and never saved, and refused reads surface an error. Write and network permissions do not exist."
   },
   {
     "id": "UI-43-031",
     "category": "Plugins widgets and extensions",
     "name": "Shader discovery and filtering",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Local browser with search, kind and tag filters. This is the bundled catalog and file shaders only: no community or hosted library."
   },
   {
     "id": "UI-43-032",
     "category": "Plugins widgets and extensions",
     "name": "Shader source filtering",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Filters between Forma bundled and This file. No team, community or account sources exist."
   },
   {
     "id": "UI-43-033",
     "category": "Plugins widgets and extensions",
     "name": "Shader code inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Read-only source, per-version view, uniform table and shared prelude. File shaders can also be edited, with compiler errors shown and bad source refused."
   },
   {
     "id": "UI-43-034",
@@ -14954,10 +14954,10 @@
     "category": "Preferences and document settings",
     "name": "Recovery retention",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Keep files in Trash: until removed, or 7, 30 or 90 days. Expired Trash files and their named versions are permanently removed when the file browser opens, with no Undo; open files and files outside Trash are kept. See docs/EDITOR-SHELL.md."
   },
   {
     "id": "UI-45-014",
@@ -14974,20 +14974,20 @@
     "category": "Preferences and document settings",
     "name": "Export destination preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Browser downloads or a save prompt per export, where showSaveFilePicker exists; covers Export dialog files and asset ZIPs. Cancel exports nothing and an expired prompt falls back visibly. The Mac app always uses its save panel, so the choice is not offered there."
   },
   {
     "id": "UI-45-016",
     "category": "Preferences and document settings",
     "name": "Export naming preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Three fixed patterns: layer, file - layer, page - layer. Applied to Export dialog files and files inside asset ZIPs, with suffixes last; animation, PDF and Slides exports keep their own names. No custom templates."
   },
   {
     "id": "UI-45-017",
@@ -15174,10 +15174,10 @@
     "category": "Preferences and document settings",
     "name": "Hide UI during property changes preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Off by default. Selection outlines and handles hide while a number field is scrubbed, a slider or color control is dragged, or an inspector field receives input, and return after 800 ms. Artwork, selection and history are unaffected."
   },
   {
     "id": "UI-45-036",
@@ -15187,17 +15187,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: existing opt-in local Smart quotes and symbols checkbox in rich-text inspector information/all tabs. Single-character English quote/apostrophe, ellipsis, dash and copyright/registered/trademark substitution retains formatting/caret and normal Undo; paste/import/composition preserve source. Canvas text and multilingual/system-wide rules are outside this subset. Reconciles existing tested source, not new substitution code. See docs/UNRELEASED-SELECTION-FRAMES-TEXT.md and src/smart-text.ts. Native/reference acceptance pending."
+    "notes": "Toggle now also appears in Preferences, and substitution also applies to inline canvas text. Text on path, paste and composition keep their source; rules remain English only."
   },
   {
     "id": "UI-45-037",
     "category": "Preferences and document settings",
     "name": "Flip objects while resizing preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Off by default. Dragging past the opposite edge mirrors the layer through flipX/flipY with Undo, for single layers and multi-selections. Text, groups, the Scale tool, Motion and multi-selections containing text or a group keep the 1 px stop."
   },
   {
     "id": "UI-45-038",
@@ -15254,10 +15254,10 @@
     "category": "Preferences and document settings",
     "name": "Command-Option rotation preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Off by default. Command-Option drag rotates the selection with Move or Scale, with Shift snapping and Undo; locked selections refuse. Mac Command binding only. Forma's own reading of the setting; the reference meaning is unverified."
   },
   {
     "id": "UI-45-044",
@@ -15957,17 +15957,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Help and current-tool entries open opt-in local guidance plus a measured six-control focus-only canvas tour for Design-mode Design/Whiteboard. No artwork, camera, tool or document/history changes; missing targets and stale focus/source receipts are handled. No automatic startup tutorial or tutorial files. See docs/EDITOR-LEARNING.md."
+    "notes": "Adds the first-run offer to existing opt-in guidance. Other limits unchanged."
   },
   {
     "id": "UI-47-026",
     "category": "Community and resources",
     "name": "First-run canvas tour",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "A manually started focus-only canvas tour exists under onboarding. First-run detection, triggering and first-run lifecycle behavior remain unimplemented; no automatic startup behavior was added. See docs/EDITOR-LEARNING.md."
+    "notes": "Empty library gets an inline menu-bar offer once, with a persisted receipt. It does not auto-start, take focus or cover the canvas. Existing libraries are never offered it. Hidden below 1000 px, and clearing storage with no projects re-offers it."
   },
   {
     "id": "UI-47-027",
@@ -16094,10 +16094,10 @@
     "category": "FigJam whiteboarding",
     "name": "Eraser",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whole-stroke eraser, three-shape palette, persisted local timer/voting and ephemeral local laser work. General partial-stroke erasing, full FigJam shapes and shared sessions remain absent."
+    "notes": "Drag erasing cuts real marker/highlighter paths into separate drawing layers with exact cuts along the centerline, one Undo, a size control and a whole-stroke mode, and it also handles rotated and resized strokes. Stored curves become straight segments once cut; locked strokes and non-drawing artwork are left alone."
   },
   {
     "id": "UI-48-010",
@@ -16105,9 +16105,9 @@
     "name": "Shape palette",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whole-stroke eraser, three-shape palette, persisted local timer/voting and ephemeral local laser work. General partial-stroke erasing, full FigJam shapes and shared sessions remain absent."
+    "notes": "The palette has 22 shapes (rectangle, ellipse and diamond plus 19 closed vector shapes) with editable text and Undo. It has not been compared item by item with FigJam, and resizing a catalog shape does not resize its text box."
   },
   {
     "id": "UI-48-011",
@@ -16264,10 +16264,10 @@
     "category": "FigJam whiteboarding",
     "name": "Emoji reactions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "React floats a chosen emoji locally for 1.8 seconds, with no document or Undo change. Nobody else can see it, as there is no shared session."
   },
   {
     "id": "UI-48-027",
@@ -16294,10 +16294,10 @@
     "category": "FigJam whiteboarding",
     "name": "Music session",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Music plays a user-chosen PCM WAV (60 seconds, 8 MB) through PrototypePcmPlayer, with play, pause, stop, loop and volume. It runs on this device only, the clip is memory-only and never saved, and there is no shared session."
   },
   {
     "id": "UI-48-030",
@@ -16314,10 +16314,10 @@
     "category": "FigJam whiteboarding",
     "name": "Whiteboard widgets",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Whiteboard toolbar Widgets inserts sandboxed local widgets as generated ordinary layers with saved state. Local packages only; no catalog or other participants."
   },
   {
     "id": "UI-48-032",
@@ -16344,10 +16344,10 @@
     "category": "FigJam whiteboarding",
     "name": "Link previews",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "No-fetch link cards use only the URL, title, description and optional local image the user supplies, and Forma never requests the address (a test asserts zero requests). There are no automatic previews, and only http/https addresses without credentials are accepted."
   },
   {
     "id": "UI-48-035",
@@ -16574,30 +16574,30 @@
     "category": "Figma Slides presentations",
     "name": "Prototype embeds",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Slides Prototype… embeds a validated snapshot of a Design .oui (16 MB each, 16 per deck, 32 MB total) that plays on the slide while presenting. It starts at the first flow and runs click and press reactions only, without transition animation; hover, drag, delay, key and scroll triggers do not run, and the snapshot has no live link to its source."
   },
   {
     "id": "UI-49-022",
     "category": "Figma Slides presentations",
     "name": "Video embeds",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Video… embeds a local MP4/WebM up to 20 MB, with playback controls while presenting, loop/mute/autoplay inspector, Undo and .oui persistence. Hosted video URLs are unsupported; PDF, PNG and PowerPoint exports use the poster."
   },
   {
     "id": "UI-49-023",
     "category": "Figma Slides presentations",
     "name": "Live polls",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Polls work for one local presenter session only: the presenter tallies with buttons or number keys, generated bars show in Presenter and audience views, counts persist, and each count is an Undo step. There is no audience link, join flow or network."
   },
   {
     "id": "UI-49-024",
@@ -16635,9 +16635,9 @@
     "name": "Slide export PDF",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working locally generated PDF has one page per visible slide, using rendered 1.5x slide images. Vector/text PDF editability is not implemented."
+    "notes": "The PDF stays rendered 1.5× page images, now with an invisible searchable and copyable text layer plus real URI link annotations, validated by pdf.js extraction. Text outside WinAnsi Helvetica is skipped in that layer, and vector or editable PDF objects remain absent."
   },
   {
     "id": "UI-49-028",
@@ -16654,10 +16654,10 @@
     "category": "Figma Slides presentations",
     "name": "PowerPoint interchange",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Real .pptx writer and reader using fflate, with Export and Import in Slides and Undo on import. Round trips text runs, links, simple shapes, custom geometry, PNG/JPEG/GIF images, notes, hidden state, transitions and solid fills; effects and gradients flatten to PNG on export. Charts and SmartArt are omitted with notices. Validated by unzip and part checks, handwritten foreign packages and Quick Look, not yet opened in PowerPoint or Keynote. See docs/POWERPOINT-INTERCHANGE.md."
   },
   {
     "id": "UI-49-030",
@@ -16974,200 +16974,200 @@
     "category": "Figma Buzz assets",
     "name": "Create branded asset project",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "File → New brand project and a Files screen tile create a local project with Assets and Templates pages; the template gallery adds a Campaign starter. Stored as optional .oui data; older builds open it as a Design file without enforcing locks."
   },
   {
     "id": "UI-51-002",
     "category": "Figma Buzz assets",
     "name": "Brand template gallery",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Search and category filter over this project's templates, plus one built-in original starter. No team or community gallery; other projects get templates through a package file or a personal starter kit."
   },
   {
     "id": "UI-51-003",
     "category": "Figma Buzz assets",
     "name": "Template locking",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "The store and MCP refuse changes to locked layers, including paste, reorder, grouping and delete; published template frames are frozen until unpublished. Files edited outside Forma are flagged by lock digest, not refused, and pasted copies of an asset become plain layers."
   },
   {
     "id": "UI-51-004",
     "category": "Figma Buzz assets",
     "name": "Editable content slots",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text slots allow content only, with optional brand color, brand font and character limit, enforced on panel, canvas and MCP paths. Slots freeze while In review or Approved."
   },
   {
     "id": "UI-51-005",
     "category": "Figma Buzz assets",
     "name": "Editable image slots",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Image slots accept replacement embedded PNG, JPEG, WebP or GIF images through the panel and refuse a change to a different fill type. Replacing resets the crop."
   },
   {
     "id": "UI-51-006",
     "category": "Figma Buzz assets",
     "name": "Brand color constraints",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Refuse or Flag mode covers fills, strokes, gradient stops, shadows and text range colors on the Assets page, with a Publish gate on templates. Draft templates are flagged only; image pixels and other pages are not checked."
   },
   {
     "id": "UI-51-007",
     "category": "Figma Buzz assets",
     "name": "Brand font constraints",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Refuse or Flag mode matches font family names on the Assets page, including text ranges, with a Publish gate. Names only; fallback fonts are not checked and no font files are bundled."
   },
   {
     "id": "UI-51-008",
     "category": "Figma Buzz assets",
     "name": "Bulk text replacement",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Literal find and replace, or set a slot, across checked or all assets as one Undo step. Frozen and over-length results are skipped and reported."
   },
   {
     "id": "UI-51-009",
     "category": "Figma Buzz assets",
     "name": "Bulk image replacement",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "One image for all targets, or exactly one per editable target in list order, as one Undo step. Frozen assets are skipped; a change past the 50 MB project limit is refused."
   },
   {
     "id": "UI-51-010",
     "category": "Figma Buzz assets",
     "name": "Asset spreadsheet input",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Strict CSV and TSV by paste or file, up to 5 MB, 500 rows and 64 columns, with a column mapping and per-row review before any write. No .xlsx or live sheet connection; image cells name attached local files and web addresses are never fetched."
   },
   {
     "id": "UI-51-011",
     "category": "Figma Buzz assets",
     "name": "Social size presets",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Eight reference size presets as batch sizes or per-asset size variations with exact frame dimensions. Layout is a proportional fit, not smart reflow; variations need the current published revision."
   },
   {
     "id": "UI-51-012",
     "category": "Figma Buzz assets",
     "name": "Marketing batch variations",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Rows × sizes produce real locked, editable assets in one edit, so one Undo removes the batch. Batches are filterable and export normally."
   },
   {
     "id": "UI-51-013",
     "category": "Figma Buzz assets",
     "name": "Asset approval workflow",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Local status flow Draft, In review, Changes needed, Approved with timestamps; the store enforces the slot freeze. Single-user only: no reviewers, notifications or assignment."
   },
   {
     "id": "UI-51-014",
     "category": "Figma Buzz assets",
     "name": "Asset version history",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Compares one asset against the file's named local versions and restores its slot content with Undo. Named versions only (20 per file); no per-asset automatic history."
   },
   {
     "id": "UI-51-015",
     "category": "Figma Buzz assets",
     "name": "Bulk asset export",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "One ZIP with manifest and checksums through the shared delivery pipeline: PNG, JPG or SVG at 1x to 3x, optionally approved only. Limits are 200 assets and 100 MB per archive."
   },
   {
     "id": "UI-51-016",
     "category": "Figma Buzz assets",
     "name": "Campaign asset folders",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Campaign folders are the local file browser's folders, set from the Kit tab or Files screen, with a Brand projects filter. They group whole projects, not individual assets, and stay on this device."
   },
   {
     "id": "UI-51-017",
     "category": "Figma Buzz assets",
     "name": "Shared brand library",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A .formabrand.json package carries the kit and published templates, with strict validation, review and an additive merge. Sharing means passing the file by hand with no sync; local component libraries and starter kits also work."
   },
   {
     "id": "UI-51-018",
     "category": "Figma Buzz assets",
     "name": "Template duplication",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Duplicates a template as an independent draft with remapped slots, with Undo."
   },
   {
     "id": "UI-51-019",
     "category": "Figma Buzz assets",
     "name": "Template publishing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Publish gate, revisions and frozen published frames within a project; published templates also export in the package. No team publishing or update notifications."
   },
   {
     "id": "UI-51-020",
     "category": "Figma Buzz assets",
     "name": "Brand asset search",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Project search covers asset and template names, category, status, size, batch, text slot content and kit values; the Files screen also matches this content. Image contents are not searched."
   },
   {
     "id": "UI-52-001",
@@ -18034,10 +18034,10 @@
     "category": "Oanarina improvements after parity",
     "name": "Local automation API",
     "priority": "after-parity",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": null,
-    "notes": ""
+    "notes": "mcp/automation.ts is a source-checkout JSON CLI using the same transactions, validators and locks as MCP. No installed binary, stable API promise or in-app scripting host."
   },
   {
     "id": "UI-54-028",
@@ -18994,30 +18994,30 @@
     "category": "Motion workspace and timeline",
     "name": "Animated shader preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Shaders advance on the Motion canvas (384 px cap while playing), in the inspector preview, and in animation export via sampled copies (GIF tested). Motion frame preview needs ordinary keyframes, so a layer with only shader time won't open it."
   },
   {
     "id": "UI-56-062",
     "category": "Motion workspace and timeline",
     "name": "Interactive shader preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Pointer drives the inspector preview and, through an opt-in toggle, the Motion canvas. It is transient and never exported. It doesn't reach frame preview or prototypes."
   },
   {
     "id": "UI-56-063",
     "category": "Motion workspace and timeline",
     "name": "Shader parameter keyframes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Number and color parameter tracks with Undo and persistence; values are edited through the timeline Value field. Shader tracks are left out of portable animation styles. Parameters can only be keyframed from the Motion inspector buttons, not the timeline's property picker."
   },
   {
     "id": "UI-57-001",
@@ -19374,20 +19374,20 @@
     "category": "Live interface verification additions",
     "name": "Vertical navigation rail",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Vertical tablist inside the left sidebar: canvas position unchanged, existing tabs kept, one Tab stop with Up, Down, Home and End. Hidden with a collapsed left sidebar and below 850 px."
   },
   {
     "id": "UI-58-002",
     "category": "Live interface verification additions",
     "name": "File navigation rail entry",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Selects the existing File panel through leftTab."
   },
   {
     "id": "UI-58-003",
@@ -19404,50 +19404,50 @@
     "category": "Live interface verification additions",
     "name": "Assets navigation rail entry",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Selects the existing Assets panel through leftTab."
   },
   {
     "id": "UI-58-005",
     "category": "Live interface verification additions",
     "name": "Tools navigation rail entry",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Panel lists existing local dialogs: Actions, fonts, icons, templates, components, styles, colors, asset usage, MCP and local plugins."
   },
   {
     "id": "UI-58-006",
     "category": "Live interface verification additions",
     "name": "Variables navigation rail entry",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Panel lists the file's collections, mode counts and default values, read-only, and opens Variables and modes. Bounded at 200 rows."
   },
   {
     "id": "UI-58-007",
     "category": "Live interface verification additions",
     "name": "Toolbelt mode selector",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Design and Draw radio group in the toolbar with roving keyboard focus. Refuses while Motion is open. Hidden below 1000 px, where View → Draw mode still works. Dev Mode stays a separate button."
   },
   {
     "id": "UI-58-008",
     "category": "Live interface verification additions",
     "name": "Text tool dropdown",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Dropdown with Text, Text on path (with Undo, refuses other selections) and Find and replace text. Keyboard accessible."
   },
   {
     "id": "UI-58-009",
@@ -19514,10 +19514,10 @@
     "category": "Live interface verification additions",
     "name": "Prototype view dropdown",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Menu beside Present: present from selection or first frame, present any saved flow on the page, or open Prototype mode. Read-only; not shown in Slides."
   },
   {
     "id": "UI-58-016",
@@ -19564,10 +19564,10 @@
     "category": "Live interface verification additions",
     "name": "Motion timeline accessibility summary",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Text summary referenced by aria-describedby, plus Timeline as text listing up to 100 tracks. It does not announce playback or edits."
   },
   {
     "id": "UI-59-001",
@@ -19874,40 +19874,40 @@
     "category": "Free local MCP integration",
     "name": "Live editor document synchronization",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": ""
+    "notes": "The Mac shell reloads a clean window within about 1-4 s after a saved-file change, honoring the MCP lock, as one Undo step that keeps surviving selection. Dirty windows keep their edits and Save still asks; sync is one way, so MCP cannot see unsaved state. docs/MCP-LIVE-CONTEXT.md."
   },
   {
     "id": "UI-59-032",
     "category": "Free local MCP integration",
     "name": "Live editor selection access",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": ""
+    "notes": "read_live_editor returns page, selection and viewport from an opt-in per-window sidecar beside the saved project, resolved against the saved file. Read-only, shows the latest publication, needs a saved file and an open window; source-only tool."
   },
   {
     "id": "UI-59-033",
     "category": "Free local MCP integration",
     "name": "Live editor screenshot capture",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": ""
+    "notes": "read_live_screenshot returns an actual WKWebView snapshot of the whole window, including panels, up to 1,600 px wide. Republished on change rather than on demand; a minimized window or background tab has none."
   },
   {
     "id": "UI-59-034",
     "category": "Free local MCP integration",
     "name": "MCP raster artwork export",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": ""
+    "notes": "export_live_artwork_png returns the selection or page rendered by the open editor at 1×, longest side 4,096 px. There is no headless raster export, because the server has no renderer."
   },
   {
     "id": "UI-59-035",
@@ -19924,10 +19924,10 @@
     "category": "Free local MCP integration",
     "name": "MCP installed-font query",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": ""
+    "notes": "list_installed_fonts reads name tables in fixed OS font folders, returns no paths or bytes, and can compare with document fonts. macOS on-demand and .dfont fonts are not listed; runtime tested on macOS only and not cross-checked against NSFontManager's list."
   },
   {
     "id": "UI-59-037",
@@ -19944,10 +19944,10 @@
     "category": "Free local MCP integration",
     "name": "Durable MCP undo history",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": "Last twenty transaction snapshots support undo in the running server; they are not persisted across restarts."
+    "notes": "Last 20 transactions, up to 250 MB, persist across restarts in a private hidden folder beside the project, with read_undo_history and clear_undo_history. Undo is refused after any external change; no Redo; the folder keeps older content until cleared. docs/MCP-LOCAL-AUTOMATION.md."
   },
   {
     "id": "UI-60-001",
