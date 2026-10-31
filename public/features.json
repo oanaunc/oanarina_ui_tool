@@ -1404,10 +1404,10 @@
     "category": "Pages and document structure",
     "name": "Page section organization",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Partial: real selectable page dividers use the documented blank leading-hyphen convention, with guarded create/convert/restore and ordinary one-Undo/save/reopen name/order edits. Local collapse/search retain canonical ordering and active-hidden notice; page keyboard/drag/context/thumbnail paths and permanent source/local/focus receipts are validated. Content-bearing legacy hyphen pages stay ordinary; later artwork restores ordinary behavior. No new schema, hidden controller or nested page folders; native/exact sidebar reference parity remains pending. See docs/PAGE-SECTIONS.md."
   },
   {
     "id": "UI-05-021",
@@ -5974,10 +5974,10 @@
     "category": "Effects and compositing",
     "name": "Pass-through blend mode",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: explicit pass-through controls require eligible independent unpainted containers at 100% opacity with isolation off and bounded static source ownership. Actual SVG nonisolated child blending, guarded opacity/isolation recovery, mixed-selection atomicity, no-op binding preservation and Undo/save are validated. Legacy absence/normal already stays nonisolated unless isolation is enabled; no new default-compositor claim. Complete original context required for exports/previews; affected Motion/presentation, components, reduced group opacity and broader masking/effect semantics remain unsupported. Prototype derived copies validate all pages before publication. Supported Bridge outgoing API mock only; native round trip pending. See docs/PASS-THROUGH-BLENDING.md."
   },
   {
     "id": "UI-19-019",
@@ -12554,10 +12554,10 @@
     "category": "History and recovery",
     "name": "Version link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: Version history copies an opaque verified local snapshot reference and previews a pasted link with the matching file open. Actual saved snapshot ownership/data is revalidated before clipboard dispatch or read-only preview; current artwork/Undo/save remain unchanged. Permanent source/local-target receipts cancel queued storage reads and stale callbacks; fresh rendered recovery is validated. Current device/browser snapshots only, IDs only, bounded strict format; ordinary .oui files do not include history. No public URL, sharing permission, automatic foreign-file load or OS protocol handler. Clipboard adapter/native/reference limits remain explicit. See docs/LOCAL-VERSION-LINKS.md."
   },
   {
     "id": "UI-38-024",
