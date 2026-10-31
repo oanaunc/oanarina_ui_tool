@@ -2,7 +2,7 @@
 
 A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Forma includes a vector canvas, pages, layers, editable typography, responsive layout, local components and variables, prototypes, whiteboards, slides, animation, saved project files and local automation. It is free, and the application code is MIT licensed.
 
-**Current Mac preview: 0.2.0-dev.15. This is not a complete design suite.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced parity remains substantial work. Some Mac integration and reliability requirements are our own requirements. Remaining reference checks are explicit.
+**Current Mac release: 1.0.0. This is not a complete design suite.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced parity remains substantial work. Some Mac integration and reliability requirements are our own requirements. Remaining reference checks are explicit.
 
 The register currently records **1,320 implemented, 317 partial and 385 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
 

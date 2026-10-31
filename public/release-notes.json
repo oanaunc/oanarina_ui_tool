@@ -3,6 +3,26 @@
   "asOf": "2026-10-31",
   "releases": [
     {
+      "version": "1.0.0",
+      "channel": "preview",
+      "title": "Forma 1.0",
+      "notes": [
+        "A rebuilt right panel with Position, Layout, Appearance, Typography, Fill, Stroke, Effects and Export sections.",
+        "Blue selection, frame labels, default shortcuts, the toolbar and the left panel now follow the conventions designers already know. A click reaches the object on a frame, and hovering a row in Layers outlines it on the canvas.",
+        "Pressing F or choosing the Frame tool lists sizes for phones, tablets, desktops, presentations, watches, paper and social media.",
+        "Zoom and pan stay smooth, and a mouse wheel moves a clear step.",
+        "Text sits properly in its line height, double-click puts the caret where you click, and mixed styles stay visible while editing.",
+        "Quick Look previews and Spotlight search for .oui files, plus deeper import, drawing, typography, design systems, plugins, prototypes, slides and sites."
+      ],
+      "limits": [
+        "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
+        "Importing .fig and Sketch files is tested on self-authored files only, so some content may arrive reduced or as an image, and the import report says what happened. Binary .fig export is not available.",
+        "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
+        "VoiceOver, physical trackpad, printer and tablet use, Intel Macs and older macOS versions are not fully verified.",
+        "Open limits are listed per requirement in the Feature register."
+      ]
+    },
+    {
       "version": "0.2.0-dev.15",
       "channel": "preview",
       "title": "Everyday design flow, richer import and a redo fix",
