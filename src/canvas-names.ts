@@ -1,6 +1,7 @@
 import type {DesignNode} from './model';
 import {identity,inverseMatrix,multiply,nodeMatrix,point} from './transforms';
 import type {Matrix} from './transforms';
+const COMPONENT_NAME_MARK='◇  ';
 export const CANVAS_NAME_LIMITS={layers:20000,labels:500,candidates:2000,units:256,characters:80,width:240,clips:64} as const;
 interface Clip {inverse:Matrix;width:number;height:number;radii:number[];parent:Clip|null;depth:number;}
 interface State {matrix:Matrix;visible:boolean;locked:boolean;suppressed:boolean;clips:Clip|null;labelClips:Clip|null;}
@@ -37,14 +38,14 @@ function inside(clip:Clip,p:{x:number;y:number}){const q=point(clip.inverse,p.x,
 export function placeCanvasNames(index:CanvasNameIndexEntry[],zoom:number,options:{frames:boolean;sections:boolean},measure:(text:string)=>NameMetrics):CanvasName[]{
  if(!Number.isFinite(zoom)||zoom<=0)return [];const result:CanvasName[]=[];let candidates=0;
  for(const n of index){if(n.type==='section'?!options.sections:!options.frames)continue;if(++candidates>CANVAS_NAME_LIMITS.candidates)break;
-  const prefix=n.type==='component'?'◇  ':'▦  ';let text=prefix+n.name,m=measure(text);
+  const prefix=n.type==='component'?COMPONENT_NAME_MARK:'';let text=prefix+n.name,m=measure(text);
   if(m.width>CANVAS_NAME_LIMITS.width){const chars=Array.from(n.name);let lo=0,hi=chars.length;while(lo<hi){const mid=Math.ceil((lo+hi)/2);if(measure(prefix+chars.slice(0,mid).join('')+'…').width<=CANVAS_NAME_LIMITS.width)lo=mid;else hi=mid-1;}text=prefix+chars.slice(0,lo).join('')+'…';m=measure(text);}
   if(![m.width,m.left??0,m.right??m.width,m.ascent??11,m.descent??3].every(Number.isFinite)||m.width<0)continue;
-  const x=n.x,y=n.top-14/zoom,left=x+((m.left??0)-2)/zoom,right=x+((m.right??m.width)+2)/zoom,top=y-((m.ascent??11)+2)/zoom,bottom=y+((m.descent??3)+2)/zoom,corners=[{x:left,y:top},{x:right,y:top},{x:right,y:bottom},{x:left,y:bottom}];
+  const x=n.x,y=n.top-6/zoom,left=x+((m.left??0)-2)/zoom,right=x+((m.right??m.width)+2)/zoom,top=y-((m.ascent??11)+2)/zoom,bottom=y+((m.descent??3)+2)/zoom,corners=[{x:left,y:top},{x:right,y:top},{x:right,y:bottom},{x:left,y:bottom}];
   let clip=n.clips,allowed=true;while(clip){if(!corners.every(p=>inside(clip!,p))){allowed=false;break;}clip=clip.parent;}if(!allowed)continue;
   result.push({id:n.id,type:n.type,text,title:n.title,x,y,locked:n.locked,...(n.nested?{plate:{x:(left-x)*zoom,y:(top-y)*zoom,width:(right-left)*zoom,height:(bottom-top)*zoom}}:{})});if(result.length>=CANVAS_NAME_LIMITS.labels)break;
  }
  return yieldToNeighbors(result,zoom,measure);
 }
 /** Names on one row stop short of the next name. A name with no room left for even one letter steps aside. */
-function yieldToNeighbors(names:CanvasName[],zoom:number,measure:(text:string)=>NameMetrics){const rows=new Map<number,CanvasName[]>();for(const n of names){const key=Math.round(n.y*zoom/6),row=rows.get(key)??[];row.push(n);rows.set(key,row);}const dropped=new Set<string>();for(const row of rows.values()){row.sort((a,b)=>a.x-b.x);for(let i=0;i+1<row.length;i++){const a=row[i],next=row[i+1],room=(next.x-a.x)*zoom-8,shown=measure(a.text);if(next.x<=a.x||(shown.right??shown.width)<=room)continue;const prefix=Array.from(a.text).slice(0,3).join(''),chars=Array.from(a.text).slice(3).filter((c,at,all)=>!(c==='…'&&at===all.length-1));let lo=0,hi=chars.length;while(lo<hi){const mid=Math.ceil((lo+hi)/2),m=measure(prefix+chars.slice(0,mid).join('')+'…');if((m.right??m.width)<=room)lo=mid;else hi=mid-1;}if(!lo){dropped.add(a.id);continue;}a.text=prefix+chars.slice(0,lo).join('')+'…';if(a.plate){const m=measure(a.text);a.plate={...a.plate,width:(m.right??m.width)-(m.left??0)+4};}}}return dropped.size?names.filter(n=>!dropped.has(n.id)):names;}
+function yieldToNeighbors(names:CanvasName[],zoom:number,measure:(text:string)=>NameMetrics){const rows=new Map<number,CanvasName[]>();for(const n of names){const key=Math.round(n.y*zoom/6),row=rows.get(key)??[];row.push(n);rows.set(key,row);}const dropped=new Set<string>();for(const row of rows.values()){row.sort((a,b)=>a.x-b.x);for(let i=0;i+1<row.length;i++){const a=row[i],next=row[i+1],room=(next.x-a.x)*zoom-8,shown=measure(a.text);if(next.x<=a.x||(shown.right??shown.width)<=room)continue;const mark=a.text.startsWith(COMPONENT_NAME_MARK)?COMPONENT_NAME_MARK.length:0,prefix=Array.from(a.text).slice(0,mark).join(''),chars=Array.from(a.text).slice(mark).filter((c,at,all)=>!(c==='…'&&at===all.length-1));let lo=0,hi=chars.length;while(lo<hi){const mid=Math.ceil((lo+hi)/2),m=measure(prefix+chars.slice(0,mid).join('')+'…');if((m.right??m.width)<=room)lo=mid;else hi=mid-1;}if(!lo){dropped.add(a.id);continue;}a.text=prefix+chars.slice(0,lo).join('')+'…';if(a.plate){const m=measure(a.text);a.plate={...a.plate,width:(m.right??m.width)-(m.left??0)+4};}}}return dropped.size?names.filter(n=>!dropped.has(n.id)):names;}

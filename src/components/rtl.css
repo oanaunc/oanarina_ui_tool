@@ -21,7 +21,7 @@
 [dir=rtl] .main-menu{left:auto;right:0}
 [dir=rtl] .tool-menu{left:auto;right:-7px}
 [dir=rtl] .help-fab{right:auto;left:17px}
-[dir=rtl] .canvas-learning-button{right:auto;left:16px}
+[dir=rtl] .canvas-learning-button{right:auto;left:50px}
 [dir=rtl] .canvas-learning-button span{margin-left:0;margin-right:5px}
 [dir=rtl] .restore-ui{left:auto;right:12px}
 [dir=rtl] .canvas-bottom{left:20px;right:auto}
@@ -36,4 +36,4 @@
 [dir=rtl] .home-files-list .home-file-badges{right:auto;left:54px}
 [dir=rtl] .sidebar-layout-controls svg{transform:scaleX(-1)}
 [dir=rtl] .app :is(.page-row.active,.home>aside>button.active,.systems-sidebar .active,[role=option][aria-selected=true],[role=tab][aria-selected=true]){box-shadow:inset -3px 0 0 var(--focus-ring)}
-[dir=rtl] .layer-row.selected{box-shadow:inset -2px 0 #bc9bde}
+[dir=rtl] .layer-row.selected{box-shadow:inset -2px 0 var(--selection)}

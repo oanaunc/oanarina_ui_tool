@@ -5,7 +5,7 @@
 .canvas-scrollbar-thumb{position:absolute;min-width:1px;min-height:1px;background:#b79bd17a;border:1px solid #b79bd18a;border-radius:6px;pointer-events:none}
 .horizontal .canvas-scrollbar-thumb{top:1px;bottom:1px}.vertical .canvas-scrollbar-thumb{left:1px;right:1px}
 .canvas-scrollbar:focus-visible,.canvas-overview-map:focus-visible{outline:2px solid #d8b5fa;outline-offset:2px}
-.canvas-scrollbar:hover .canvas-scrollbar-thumb{background:#b79bd1}
+.canvas-scrollbar:hover .canvas-scrollbar-thumb{background:var(--selection)}
 .canvas-overview{position:absolute;z-index:15;right:14px;bottom:86px;width:202px;max-width:calc(100% - 28px);background:var(--panel);border:1px solid var(--line);border-radius:7px;box-shadow:0 4px 20px #0003;overflow:hidden}
 .canvas-overview.with-scrollbars{right:22px}
 .canvas-overview header{display:flex;justify-content:space-between;padding:7px 9px;font-size:10px;color:var(--text)}

@@ -1,6 +1,6 @@
 /* Focus indicators: one token, every focusable control, and at least 3:1 against panels in both themes. */
-.app{--focus-ring:#bf9ce9;--accent-fill:#d4b5d3;--on-accent:#392e40}
-.app.theme-light{--focus-ring:#6d4a96;--accent-fill:#6d4a96;--on-accent:#fff}
+.app{--focus-ring:#0d99ff;--accent-fill:#0a78cf;--on-accent:#fff}
+.app.theme-light{--focus-ring:#0a78cf;--accent-fill:#0a78cf;--on-accent:#fff}
 .app :is(button,a,summary,[tabindex],[role=button],[role=tab],[role=option],[role=treeitem],[role=menuitem]):focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
 .app :is(input,select,textarea):focus-visible{outline:2px solid var(--focus-ring);outline-offset:-1px}
 .app .canvas-text-editor:focus-visible{outline:none}
@@ -25,20 +25,20 @@
 .app [aria-pressed=true]:not(.toolbar *,.action-palette-modes *){box-shadow:inset 0 -2px 0 currentColor}
 
 /* Accent choices keep the same 4.5:1 text and 3:1 indicator guarantees as the default; see tests/interface-contrast.test.ts. */
-:root[data-accent=blue] .app{--accent:#9cc4ff;--focus-ring:#9cc4ff;--accent-fill:#9cc4ff;--on-accent:#10233f}
-:root[data-accent=blue] .app.theme-light{--accent:#1d5fc7;--focus-ring:#1d5fc7;--accent-fill:#1d5fc7;--on-accent:#fff}
-:root[data-accent=purple] .app{--accent:#c9a6ff;--focus-ring:#c9a6ff;--accent-fill:#c9a6ff;--on-accent:#2a1650}
-:root[data-accent=purple] .app.theme-light{--accent:#6a35c9;--focus-ring:#6a35c9;--accent-fill:#6a35c9;--on-accent:#fff}
-:root[data-accent=pink] .app{--accent:#ff9fd0;--focus-ring:#ff9fd0;--accent-fill:#ff9fd0;--on-accent:#4d1030}
-:root[data-accent=pink] .app.theme-light{--accent:#b8236f;--focus-ring:#b8236f;--accent-fill:#b8236f;--on-accent:#fff}
-:root[data-accent=red] .app{--accent:#ff9c94;--focus-ring:#ff9c94;--accent-fill:#ff9c94;--on-accent:#4d120d}
-:root[data-accent=red] .app.theme-light{--accent:#c0271b;--focus-ring:#c0271b;--accent-fill:#c0271b;--on-accent:#fff}
-:root[data-accent=orange] .app{--accent:#ffb46b;--focus-ring:#ffb46b;--accent-fill:#ffb46b;--on-accent:#472500}
-:root[data-accent=orange] .app.theme-light{--accent:#a84e00;--focus-ring:#a84e00;--accent-fill:#a84e00;--on-accent:#fff}
-:root[data-accent=green] .app{--accent:#7fd99b;--focus-ring:#7fd99b;--accent-fill:#7fd99b;--on-accent:#0c3319}
-:root[data-accent=green] .app.theme-light{--accent:#1f7a3f;--focus-ring:#1f7a3f;--accent-fill:#1f7a3f;--on-accent:#fff}
-:root[data-accent=graphite] .app{--accent:#c8c8cd;--focus-ring:#c8c8cd;--accent-fill:#c8c8cd;--on-accent:#1f1f22}
-:root[data-accent=graphite] .app.theme-light{--accent:#55555b;--focus-ring:#55555b;--accent-fill:#55555b;--on-accent:#fff}
+:root[data-accent=blue] .app{--accent:#9cc4ff;--focus-ring:#9cc4ff;--accent-fill:#9cc4ff;--on-accent:#10233f;--selection:#9cc4ff;--on-selection:#10233f}
+:root[data-accent=blue] .app.theme-light{--accent:#1d5fc7;--focus-ring:#1d5fc7;--accent-fill:#1d5fc7;--on-accent:#fff;--selection:#1d5fc7;--on-selection:#fff}
+:root[data-accent=purple] .app{--accent:#c9a6ff;--focus-ring:#c9a6ff;--accent-fill:#c9a6ff;--on-accent:#2a1650;--selection:#c9a6ff;--on-selection:#2a1650}
+:root[data-accent=purple] .app.theme-light{--accent:#6a35c9;--focus-ring:#6a35c9;--accent-fill:#6a35c9;--on-accent:#fff;--selection:#6a35c9;--on-selection:#fff}
+:root[data-accent=pink] .app{--accent:#ff9fd0;--focus-ring:#ff9fd0;--accent-fill:#ff9fd0;--on-accent:#4d1030;--selection:#ff9fd0;--on-selection:#4d1030}
+:root[data-accent=pink] .app.theme-light{--accent:#b8236f;--focus-ring:#b8236f;--accent-fill:#b8236f;--on-accent:#fff;--selection:#b8236f;--on-selection:#fff}
+:root[data-accent=red] .app{--accent:#ff9c94;--focus-ring:#ff9c94;--accent-fill:#ff9c94;--on-accent:#4d120d;--selection:#ff9c94;--on-selection:#4d120d}
+:root[data-accent=red] .app.theme-light{--accent:#c0271b;--focus-ring:#c0271b;--accent-fill:#c0271b;--on-accent:#fff;--selection:#c0271b;--on-selection:#fff}
+:root[data-accent=orange] .app{--accent:#ffb46b;--focus-ring:#ffb46b;--accent-fill:#ffb46b;--on-accent:#472500;--selection:#ffb46b;--on-selection:#472500}
+:root[data-accent=orange] .app.theme-light{--accent:#a84e00;--focus-ring:#a84e00;--accent-fill:#a84e00;--on-accent:#fff;--selection:#a84e00;--on-selection:#fff}
+:root[data-accent=green] .app{--accent:#7fd99b;--focus-ring:#7fd99b;--accent-fill:#7fd99b;--on-accent:#0c3319;--selection:#7fd99b;--on-selection:#0c3319}
+:root[data-accent=green] .app.theme-light{--accent:#1f7a3f;--focus-ring:#1f7a3f;--accent-fill:#1f7a3f;--on-accent:#fff;--selection:#1f7a3f;--on-selection:#fff}
+:root[data-accent=graphite] .app{--accent:#c8c8cd;--focus-ring:#c8c8cd;--accent-fill:#c8c8cd;--on-accent:#1f1f22;--selection:#c8c8cd;--on-selection:#1f1f22}
+:root[data-accent=graphite] .app.theme-light{--accent:#55555b;--focus-ring:#55555b;--accent-fill:#55555b;--on-accent:#fff;--selection:#55555b;--on-selection:#fff}
 :root[data-accent] .toolbar .active{background:var(--accent-fill)!important;color:var(--on-accent)!important}
 :root[data-accent] .panel-tabs>button.active:after{background:var(--accent-fill)}
 :root[data-accent] .layer-row.selected{background:color-mix(in srgb,var(--accent-fill) 16%,transparent);box-shadow:inset 2px 0 var(--accent-fill)}
@@ -47,8 +47,8 @@
 :root[data-accent] :is(input,textarea,select):focus{border-color:var(--focus-ring)}
 
 /* Increased contrast: strong text, visible control boundaries (3:1) and heavier focus. */
-:root[data-contrast=more] .app{--panel:#1b1a1e;--field:#26252b;--canvas:#131216;--text:#fff;--muted:#dcd8e2;--line:#ffffff80;--hover:#ffffff24;--focus-ring:#fff;--accent:#e6d4ff;--accent-fill:#e6d4ff;--on-accent:#1e1030}
-:root[data-contrast=more] .app.theme-light{--panel:#fff;--field:#fff;--canvas:#f2f0f4;--text:#000;--muted:#37323d;--line:#00000099;--hover:#0000001f;--focus-ring:#000;--accent:#4a2a78;--accent-fill:#4a2a78;--on-accent:#fff}
+:root[data-contrast=more] .app{--panel:#181818;--field:#262626;--canvas:#101010;--text:#fff;--muted:#dcdcdc;--line:#ffffff80;--hover:#ffffff24;--focus-ring:#fff;--accent:#9fd8ff;--accent-fill:#9fd8ff;--on-accent:#04223a;--selection:#9fd8ff;--on-selection:#04223a;--component:#d4b5ff;--measure:#ff8fa3;--on-measure:#3a0410}
+:root[data-contrast=more] .app.theme-light{--panel:#fff;--field:#fff;--canvas:#f2f2f2;--text:#000;--muted:#333333;--line:#00000099;--hover:#0000001f;--focus-ring:#000;--accent:#084f8a;--accent-fill:#084f8a;--on-accent:#fff;--selection:#084f8a;--on-selection:#fff;--component:#6a22c9;--measure:#c0112e;--on-measure:#fff}
 :root[data-contrast=more] :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea,.number-field,.outline-button){border:1px solid var(--line)}
 :root[data-contrast=more] :is(button,a,summary,input,select,textarea,[tabindex],[role=button]):focus-visible{outline-width:3px}
 :root[data-contrast=more] .toolbar .active{background:var(--accent-fill)!important;color:var(--on-accent)!important}
