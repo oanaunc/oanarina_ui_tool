@@ -1,0 +1,15 @@
+# File-local comment reactions
+
+Open **View → Comments**, enter a local display name, and choose **Add reaction** below a thread or reply. Eight choices are available: thumbs up, heart, celebration, eyes, check, idea, clap and thinking. Saved chips show counts, expose local names through their accessible description and tooltip, and toggle the current name on or off. Reactions also work on resolved threads.
+
+Names are shared file-local labels, matching the existing comment workflow. They are not authenticated accounts: identical labels share one toggle, changing the local name selects another label, and anyone editing the file can change its review data. No notifications, remote sessions, identity verification, arbitrary Unicode picker or full Figma reaction parity are implemented. Requirement UI-36-018 remains partial. FigJam's separate canvas reaction requirement is unchanged.
+
+Each toggle is a single Undoable document edit. Original comment/reply authors, body text and edit timestamps stay unchanged. Optional `reactions: [{emoji, authors}]` metadata survives `.oui` version-one and version-two parsing, save/reopen, page duplication and history. Removing the final name removes the reaction group; removing the final group restores absent metadata. Untouched legacy comments retain their original fields. Adding reactions to unsupported legacy thread identities/text refuses before mutation.
+
+Validation permits eight known distinct emoji groups per message, 50 distinct trimmed display names of up to 120 characters per group, 2,000 reaction names across a thread and its replies, 20,000 groups and 100,000 names per file. Unknown fields, unsupported emoji, empty lists, duplicate names/groups and control characters refuse before document publication. Existing extended-thread/reply/text limits remain in force. The picker renders only the current bounded thread/reply pages.
+
+Inspect, Motion and ambiguous legacy threads are read-only. Captured handlers cannot revive after document/page/mode/selection context cycles, local-name or filter changes, reply-page changes, picker closure or unmount. Immutable local receipts force fresh controls after repeated same-error cycles. Unrelated recovery/toast updates do not invalidate the stable document-context proof. Native Enter and Space activate ordinary buttons; compact controls wrap within short windows at 125% UI scale.
+
+Reactions remain private review metadata in the original project. Layer clipboard payloads, SVG artwork and reusable local library snapshots omit threads and reaction labels. Figma Bridge source validates the metadata before creating pages and reports its generic omission without private names. The downloadable Bridge archive is frozen; source API mocks do not establish a real Figma plugin round trip. No native IPC, filesystem/resource scope, network service or app package changes.
+
+Validation: 23 focused comment core checks and all 24 new/adjacent comment browser checks pass, along with editor/MCP TypeScript checks. Combined source checks are recorded by the aggregate checkpoint report. No app/native build, signing, release or archive refresh is performed.
