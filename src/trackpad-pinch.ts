@@ -1,4 +1,4 @@
-import {liveCamera,moveCamera} from './canvas-camera';
+import {liveCamera,moveCamera,settleCamera} from './canvas-camera';
 
 export const PINCH_ZOOM_LIMITS={min:.05,max:8} as const;
 export interface PinchEvent {scale:number;clientX:number;clientY:number;}
@@ -13,7 +13,7 @@ export function bindTrackpadPinch(target:Element){
  let start:number|undefined;
  const begin=(event:Event)=>{event.preventDefault();start=liveCamera().zoom;};
  const change=(event:Event)=>{event.preventDefault();if(start===undefined)return;const {scale,clientX,clientY}=event as unknown as PinchEvent,box=target.getBoundingClientRect(),next=pinchCamera(start,liveCamera(),scale,clientX-box.left,clientY-box.top);if(next)moveCamera(target as SVGElement,next);};
- const end=(event:Event)=>{event.preventDefault();start=undefined;};
+ const end=(event:Event)=>{event.preventDefault();start=undefined;settleCamera();};
  target.addEventListener('gesturestart',begin);target.addEventListener('gesturechange',change);target.addEventListener('gestureend',end);
  return ()=>{target.removeEventListener('gesturestart',begin);target.removeEventListener('gesturechange',change);target.removeEventListener('gestureend',end);};
 }
