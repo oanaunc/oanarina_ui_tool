@@ -14,6 +14,6 @@ Every position whose paints are one kind has **Edit settings on N layers**, the 
 
 When selected strokes differ, the stroke section becomes the same position list. Each position can be shown, hidden, removed, reordered, given an opacity, width and position, converted to solid, or edited through shared paint settings; a stroke stack can be added to, cleared, or replaced from a selected layer. Selected strokes that already match keep the ordinary stroke editor, whose edits apply to all of them. Dashes, caps and joins remain ordinary stroke editor settings, reachable by selecting one layer or matching the stacks first.
 
-Category-wide Figma and native reference acceptance is not claimed.
+Native reference acceptance is not claimed.
 
 Validation: pure/store checks cover summaries, absent positions, independent IDs, per-slot preservation, input/count/depth bounds, inherited ownership, source propagation and instance reset, no-op styles/variable bindings, exact Undo/parse persistence and post-derive refusal. Actual Chromium checks exercise reachable controls, shared SVG RGBA pixels for solid/gradient/image fills, saved reopening, retained blur/button callbacks after same-event context cycles, single-layer inspector preservation, and a short 125% interface viewport. Related existing paint/color/range workflows remain part of focused acceptance.
