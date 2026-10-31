@@ -3,7 +3,7 @@ import {getFigImportReport} from '../fig-import';
 import type {FigImportSummary} from '../fig-scene';
 import {useEditor} from '../store';
 import {formatNumber,t} from '../i18n';
-function figImportKept(s?:FigImportSummary){if(!s)return [];const line=(count:number,text:Parameters<typeof t>[0])=>count>0?[t(text,{count:formatNumber(count)})]:[];return [...line(s.instances,'{count} live instances'),...line(s.detachedInstances,'{count} instances stayed as plain layers'),...line(s.componentSets,'{count} variant sets'),...line(s.autoLayouts,'{count} auto layout frames'),...line(s.reducedLayouts,'{count} auto layout frames stayed positioned'),...line(s.variables,'{count} variables'),...line(s.styles,'{count} styles'),...line(s.reactions,'{count} prototype interactions'),...line(s.editablePaths,'{count} vectors with editable anchors')];}
+function figImportKept(s?:FigImportSummary){if(!s)return [];const line=(count:number,text:Parameters<typeof t>[0])=>count>0?[t(text,{count:formatNumber(count)})]:[];return [...line(s.instances,'Live instances: {count}'),...line(s.detachedInstances,'Instances kept as plain layers: {count}'),...line(s.componentSets,'Variant sets: {count}'),...line(s.autoLayouts,'Auto layout frames: {count}'),...line(s.reducedLayouts,'Auto layout frames kept positioned: {count}'),...line(s.variables,'Variables: {count}'),...line(s.styles,'Styles: {count}'),...line(s.reactions,'Prototype interactions: {count}'),...line(s.editablePaths,'Vectors with editable anchors: {count}')];}
 export default function FigImportReport(){
  const report=getFigImportReport(),button=useRef<HTMLButtonElement>(null);
  useEffect(()=>{button.current?.focus();},[]);

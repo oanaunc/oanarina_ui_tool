@@ -157,6 +157,6 @@ export const messages=[
  'Knife',
 
  // Import fidelity batch
- 'Converting layers and components','{count} layers converted','Kept live in Forma','{count} live instances','{count} instances stayed as plain layers','{count} variant sets','{count} auto layout frames','{count} auto layout frames stayed positioned','{count} variables','{count} styles','{count} prototype interactions','{count} vectors with editable anchors',
+ 'Converting layers and components','{count} layers converted','Kept live in Forma','Live instances: {count}','Instances kept as plain layers: {count}','Variant sets: {count}','Auto layout frames: {count}','Auto layout frames kept positioned: {count}','Styles: {count}','Prototype interactions: {count}','Vectors with editable anchors: {count}',
 ] as const;
 export type Message=typeof messages[number];
