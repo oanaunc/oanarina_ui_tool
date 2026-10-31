@@ -3,6 +3,7 @@ import type {Page} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {blankDocument,node,parseDocument} from '../../src/model';
 import {createEffect} from '../../src/effects';
+import {openTextOptions} from './inspector-helpers';
 const k=.5522847;
 const circle=(c:number,r:number)=>({closed:true,points:[{x:c,y:c-r,in:{x:-r*k,y:0},out:{x:r*k,y:0}},{x:c+r,y:c,in:{x:0,y:-r*k},out:{x:0,y:r*k}},{x:c,y:c+r,in:{x:r*k,y:0},out:{x:-r*k,y:0}},{x:c-r,y:c,in:{x:0,y:r*k},out:{x:0,y:-r*k}}]});
 function fixture(extra:Record<string,unknown>={}){const d=blankDocument();d.pages[0].nodes=[node('text',{id:'t',name:'Curved',x:100,y:100,width:300,height:300,pathWidth:300,pathHeight:300,text:'AROUND THE WORLD',fontFamily:'Inter',fontSize:32,fontWeight:700,fill:'#111111',strokes:[],textResize:'fixed',textDirection:'auto',textPath:{startOffset:0},contours:[circle(150,120)],points:[],...extra})];return d;}
@@ -22,7 +23,7 @@ test('text longer than one lap stops at the end of the lap instead of overprinti
 });
 test('rich ranges render on the baseline, can be formatted from the inspector, and Undo and save keep them',async({page})=>{
  await load(page,fixture({text:'Bold plain text'}));const past=await page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts');return useEditor.getState().past.length;});
- const editor=page.getByLabel('Rich text content',{exact:true});await editor.evaluate((el:HTMLTextAreaElement)=>{el.focus();el.setSelectionRange(0,4);el.dispatchEvent(new Event('select',{bubbles:true}));document.dispatchEvent(new Event('selectionchange'));});
+ await openTextOptions(page);const editor=page.getByLabel('Rich text content',{exact:true});await editor.evaluate((el:HTMLTextAreaElement)=>{el.focus();el.setSelectionRange(0,4);el.dispatchEvent(new Event('select',{bubbles:true}));document.dispatchEvent(new Event('selectionchange'));});
  const applied=await page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts'),{formatTextRange}=await import('/src/rich-text.ts');const s=useEditor.getState(),n=s.doc.pages[0].nodes[0];s.patch([n.id],{textRuns:formatTextRange(n,0,4,{fill:'#ff0000',fontSize:48})});return useEditor.getState().doc.pages[0].nodes[0].textRuns;});expect(applied).toHaveLength(1);expect(await page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts');return useEditor.getState().past.length;})).toBe(past+1);await expect(page.locator('#forma-design-canvas text[data-text-path] tspan[data-text-range]')).not.toHaveCount(0);const sizes=await page.locator('#forma-design-canvas text[data-text-path] tspan[data-text-range]').evaluateAll(list=>list.map(el=>getComputedStyle(el).fontSize));expect(sizes[0]).toBe('48px');const g=await glyphs(page);expect(g.points[1]!.rotation).not.toBeNaN();expect(rendered(g.points)).toBe(15);
  const svg=await page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts'),{exportSvg}=await import('/src/files.tsx');return exportSvg(useEditor.getState().doc.pages[0].nodes,{x:0,y:0,width:500,height:500});});expect(svg).toContain('fill="#ff0000"');expect(svg).toContain('data-text-range');const saved=await save(page);expect(saved.pages[0].nodes[0].textRuns).toEqual(applied);await page.keyboard.press('Meta+z');await expect.poll(async()=>(await read(page)).pages[0].nodes[0].textRuns?.length??0).toBe(0);
 });

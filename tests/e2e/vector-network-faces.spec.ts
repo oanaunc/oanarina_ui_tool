@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import {blankDocument,node,parseDocument} from '../../src/model';
 import {createPaint,createStroke} from '../../src/paints';
 import {canvasPathPoint} from '../../src/canvas-geometry';
+import {openSection} from './inspector-helpers';
 const square=(x:number,y:number,w:number)=>[{x,y},{x:x+w,y},{x:x+w,y:y+w},{x,y:y+w}];
 function fixture(contours=[{closed:true,points:square(40,40,240)},{closed:true,points:[...square(110,110,100)].reverse()}]){const d=blankDocument();d.pages[0].nodes=[node('path',{id:'network',name:'Faces',x:80,y:80,width:320,height:320,pathWidth:320,pathHeight:320,fill:'#4477cc',paints:[createPaint('#4477cc')],strokes:[{...createStroke('#111111'),width:4,cap:'round',join:'round'}],contours,points:[],path:''})];return d;}
 async function load(page:Page,d=fixture()){page.on('filechooser',()=>{});await page.addInitScript(doc=>localStorage.setItem('oui-active',JSON.stringify(doc)),d);await page.goto('/');await page.getByRole('treeitem',{name:'Faces',exact:true}).click();}
@@ -14,7 +15,7 @@ async function at(page:Page,local:{x:number;y:number}){const d=await read(page),
 async function pixelsOf(page:Page,svgs:string[]){return page.evaluate(async list=>{const out:number[][]=[];for(const svg of list){const img=new Image();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);await img.decode();const c=document.createElement('canvas');c.width=500;c.height=500;const ctx=c.getContext('2d')!;ctx.drawImage(img,0,0);out.push([...ctx.getImageData(0,0,500,500).data]);}return out;},svgs);}
 const pixel=(data:number[],x:number,y:number)=>data.slice((y*500+x)*4,(y*500+x)*4+4);
 const exported=(page:Page)=>page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts'),{exportSvg}=await import('/src/files.tsx');return exportSvg(useEditor.getState().doc.pages[0].nodes,{x:0,y:0,width:500,height:500});});
-async function convert(page:Page){await page.getByRole('button',{name:'Convert to stroke network',exact:true}).click();await expect(page.locator('[data-vector-network-tool]')).toHaveCount(1);}
+async function convert(page:Page){await openSection(page,'Vector');await page.getByRole('button',{name:'Convert to stroke network',exact:true}).click();await expect(page.locator('[data-vector-network-tool]')).toHaveCount(1);}
 test('nested contours convert to a real hole: canvas pick, per-face paint, Undo, save and SVG pixels',async({page})=>{
  await load(page);const before=await read(page);await convert(page);const start=await read(page),g=start.pages[0].nodes[0].vectorNetwork;expect(g.version).toBe(3);expect(g.regions).toHaveLength(2);expect(start.pages[0].nodes[0].paints).toEqual([]);const ring=g.regions.find((r:any)=>r.loops.length===2),island=g.regions.find((r:any)=>r.loops.length===1);expect(ring.paints[0].color).toBe('#4477cc');expect(island.paints).toBeUndefined();
  let [converted]=await pixelsOf(page,[await exported(page)]);expect(pixel(converted,240,150)).toEqual([68,119,204,255]);expect(pixel(converted,240,240)).toEqual([0,0,0,0]);

@@ -5,8 +5,9 @@ import {blankDocument,node,parseDocument} from '../../src/model';
 import type {DesignDocument} from '../../src/model';
 import {createStroke} from '../../src/paints';
 import {insertInstance,synchronizeComponents} from '../../src/components-model';
+import {openSection} from './inspector-helpers';
 function fixture(){const d=blankDocument();d.fonts=[];d.snapping={enabled:false,pixel:'none',objects:false,centers:false,guides:false,frames:false,layout:false,spacing:false};d.pages[0].nodes=[node('rectangle',{id:'shape',name:'Scaling stroke',x:100,y:100,width:100,height:50,fill:'none',stroke:'#ff0000',strokeWidth:10})];return d;}
-async function load(page:Page,d=fixture()){page.on('filechooser',()=>{});await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await page.getByRole('treeitem',{name:d.pages[0].nodes[0].name,exact:true}).click();await page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts');useEditor.getState().setCamera({zoom:1,pan:{x:80,y:80}});});return d;}
+async function load(page:Page,d=fixture()){page.on('filechooser',()=>{});await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await page.getByRole('treeitem',{name:d.pages[0].nodes[0].name,exact:true}).click();await page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts');useEditor.getState().setCamera({zoom:1,pan:{x:80,y:80}});});await openSection(page,'Stroke scaling');return d;}
 const policy=(page:Page)=>page.getByRole('combobox',{name:'Stroke width during authored scaling',exact:true});
 async function state(page:Page){return page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts'),s=useEditor.getState();return {doc:s.doc,past:s.past.length};});}
 async function save(page:Page){const wait=page.waitForEvent('download');await page.evaluate(()=>window.dispatchEvent(new CustomEvent('command',{detail:'save'})));return parseDocument(await fs.readFile((await(await wait).path())!,'utf8'));}
