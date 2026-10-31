@@ -1,10 +1,10 @@
 import {validatePluginParameters} from './local-plugin-parameters';
 import type {PluginParameter} from './local-plugin-parameters';
-export const PLUGIN_LIMITS={packageBytes:200000,codeBytes:100000,installed:8,installedBytes:1000000,sourceBytes:20000000,sourceNodes:5000,requests:100,requestBytes:200000,cumulativeBytes:1000000,operations:100,logs:50,logLength:1000,readRows:200,readText:10000,runMs:15000,extendedRequests:1000,extendedRequestBytes:8000000,extendedCumulativeBytes:32000000,uiMessages:1000,uiSessionMs:600000,uiHtmlBytes:100000,networkOrigins:8,networkRequests:25} as const;
+export const PLUGIN_LIMITS={packageBytes:200000,codeBytes:100000,installed:8,installedBytes:1000000,sourceBytes:20000000,sourceNodes:5000,requests:100,requestBytes:200000,cumulativeBytes:1000000,operations:100,logs:50,logLength:1000,readRows:200,readText:10000,runMs:15000,commits:20,extendedRequests:1000,extendedRequestBytes:8000000,extendedCumulativeBytes:32000000,uiMessages:1000,uiSessionMs:600000,uiHtmlBytes:100000,networkOrigins:8,networkRequests:25} as const;
 export const PLUGIN_PERMISSIONS=['selection:read','page:read','document:write','ui:show','fonts:read','image:read','image:write','export:read','storage:local','network:fetch','codegen:run'] as const;
 export type PluginPermission=typeof PLUGIN_PERMISSIONS[number];
 /** Closed set shared with the guardian's independent method check. */
-export const PLUGIN_METHODS=['selection','page','propose','log','parameters','ui.show','ui.post','ui.resize','fonts.list','fonts.load','images.create','images.read','export','storage.get','storage.set','storage.delete','storage.keys','fetch','codegen.input','codegen.result'] as const;
+export const PLUGIN_METHODS=['selection','page','propose','commit','log','parameters','ui.show','ui.post','ui.resize','fonts.list','fonts.load','images.create','images.read','export','storage.get','storage.set','storage.delete','storage.keys','fetch','codegen.input','codegen.result'] as const;
 export interface PluginUi {html:string;width:number;height:number;}
 export interface PluginNetwork {allowedOrigins:string[];}
 export interface PluginCodegen {languages:{id:string;label:string}[];}
