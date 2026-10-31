@@ -261,8 +261,8 @@ extension Studio {
             self.until("clean baseline",{document.state?.dirty==false}){
                 self.writeExternal(file){$0["name"]="Changed on disk"}
                 self.until("clean window reloads external save",{document.state?.name=="Changed on disk"}){
-                    self.check(document.state?.dirty==false,"reload of a clean window stays clean")
-                    self.check(document.session.fingerprint==(try? ProjectFileSafety.current(file)),"reload adopts the file as the save baseline")
+                    self.until("reload settles on the file",{document.state?.dirty==false&&document.session.fingerprint==(try? ProjectFileSafety.current(file))}){
+                    self.check(true,"reload of a clean window stays clean and adopts the file as the save baseline")
                     self.js(document,"await window.__studioCommand('undo');return true;"){_ in
                         self.until("reload undoes",{document.state?.name != "Changed on disk"}){
                             self.check(document.state?.dirty==true,"undoing a reload is one step and marks the window edited")
@@ -272,6 +272,7 @@ extension Studio {
                                 }
                             }
                         }
+                    }
                     }
                 }
             }

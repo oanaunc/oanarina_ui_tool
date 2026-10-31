@@ -732,7 +732,7 @@ extension Studio {
         let emoji=menuItem(integrationMenu("Edit"),"Emoji & Symbols")
         check(emoji.action==#selector(NSApplication.orderFrontCharacterPalette(_:)) && NSApp.responds(to:emoji.action!),"Edit offers the system Emoji & Symbols panel")
         loadDocument(document,acceptanceDocument("accept-keys","Keys")){
-            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();document.querySelector('[aria-label=\"Zoom in\"]').focus();window.__tabs=[];document.addEventListener('focusin',e=>window.__tabs.push(e.target.tagName),true);return true;"){_ in
+            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();document.querySelector('[aria-label=\"Canvas zoom\"]').focus();window.__tabs=[];document.addEventListener('focusin',e=>window.__tabs.push(e.target.tagName),true);return true;"){_ in
                 document.window.makeFirstResponder(document.web)
                 func press(_ left:Int){
                     if left>0{self.key(document,"\t",48);self.later(0.08){press(left-1)};return}
