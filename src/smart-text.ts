@@ -1,5 +1,6 @@
 import type {DesignNode} from './model';
 import {replaceRichText,replaceTextRange} from './rich-text';
+import type {TextField} from './text-surface';
 /** Opt-in English punctuation for a single typed ASCII character, never bulk input. */
 export function smartTypingEdit(n:DesignNode,text:string,cursor:number,options:{enabled:boolean;inputType:string;composing:boolean}){
  const plain=replaceRichText(n,text),unchanged={patch:plain,cursor,substituted:false};
@@ -14,4 +15,4 @@ export function smartTypingEdit(n:DesignNode,text:string,cursor:number,options:{
  return {patch,cursor:start+replacement.length,substituted:true};
 }
 /** Canvas text stays uncontrolled until blur, so one typed character is substituted directly in the live field. */
-export function smartCanvasInput(n:DesignNode,field:HTMLTextAreaElement,before:string,input:{inputType?:string;isComposing?:boolean},enabled:boolean){const result=smartTypingEdit({...n,text:before,textRuns:undefined},field.value,field.selectionStart,{enabled,inputType:input.inputType??'',composing:!!input.isComposing});if(result.substituted){field.value=result.patch.text;field.setSelectionRange(result.cursor,result.cursor);}return field.value;}
+export function smartCanvasInput(n:DesignNode,field:TextField,before:string,input:{inputType?:string;isComposing?:boolean},enabled:boolean){const result=smartTypingEdit({...n,text:before,textRuns:undefined},field.value,field.selectionStart,{enabled,inputType:input.inputType??'',composing:!!input.isComposing});if(result.substituted){field.value=result.patch.text;field.setSelectionRange(result.cursor,result.cursor);}return field.value;}

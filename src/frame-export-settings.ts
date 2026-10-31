@@ -25,9 +25,11 @@ export function validateDocumentExportSettings(document:{pages?:unknown}){
  if(!Array.isArray(document.pages))return;
  for(const page of document.pages)if(page&&Array.isArray(page.nodes))for(const n of page.nodes)if(n&&typeof n==='object')validateFrameExportSettings(n.exportSettings);
 }
+/** A raster larger than 1x says so in its name, so 1x and 2x files of one layer cannot collide. An explicit suffix wins, and fixed pixel sizes have no scale to name. */
+export function scaleSuffix(format:ArtworkFormat,scale:number,sizing?:FrameExportSetting['sizing']){return format==='svg'||sizing||!(scale>1)?'':'@'+Math.round(scale*100)/100+'x';}
 export function frameExportFilename(name:string,setting:FrameExportSetting){
  validateFrameExportSettings([setting]);
- return exportFilename(name,setting.suffix,setting.format,'Frame');
+ return exportFilename(name,setting.suffix||scaleSuffix(setting.format,setting.scale,setting.sizing),setting.format,'Frame');
 }
 /** Portable UTF-8 names are bounded for the Mac save panel and ZIP extraction. */
 export function exportFilename(name:string,suffix='',extension='zip',fallback='Artwork'){
