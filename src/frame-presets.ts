@@ -1,12 +1,37 @@
-export type FramePresetCategory='Desktop'|'Phone & tablet'|'Social'|'Watch'|'Paper'|'Presentation'|'Foldable'|'Archive';
+export const framePresetCategories=['Phone','Tablet','Desktop','Presentation','Watch','Paper','Social media','Foldable','Archive'] as const;
+export type FramePresetCategory=typeof framePresetCategories[number];
 export interface FramePreset {id:string;category:FramePresetCategory;name:string;width:number;height:number;description?:string;foldableState?:'closed'|'open';pairId?:string;}
 /** Dimensions are logical canvas pixels. Paper is rounded from physical size at 96 CSS pixels/inch. */
-export const framePresets:readonly FramePreset[]=[
+const presetRows:readonly FramePreset[]=[
  {id:'desktop',category:'Desktop',name:'Desktop',width:1440,height:1024},
  {id:'macbook-air',category:'Desktop',name:'MacBook Air',width:1440,height:900},
- {id:'phone',category:'Phone & tablet',name:'iPhone',width:393,height:852},
- {id:'tablet',category:'Phone & tablet',name:'iPad',width:834,height:1194},
- {id:'social-square',category:'Social',name:'Social square',width:1080,height:1080},
+ {id:'macbook-pro-14',category:'Desktop',name:'MacBook Pro 14"',width:1512,height:982},
+ {id:'macbook-pro-16',category:'Desktop',name:'MacBook Pro 16"',width:1728,height:1117},
+ {id:'tv',category:'Desktop',name:'TV',width:1280,height:720},
+ {id:'phone',category:'Phone',name:'iPhone',width:393,height:852},
+ {id:'iphone-17-pro',category:'Phone',name:'iPhone 17 Pro',width:402,height:874},
+ {id:'iphone-17-pro-max',category:'Phone',name:'iPhone 17 Pro Max',width:440,height:956},
+ {id:'iphone-air',category:'Phone',name:'iPhone Air',width:420,height:912},
+ {id:'iphone-16',category:'Phone',name:'iPhone 16',width:393,height:852},
+ {id:'iphone-16-plus',category:'Phone',name:'iPhone 16 Plus',width:430,height:932},
+ {id:'iphone-14-15-pro',category:'Phone',name:'iPhone 14 & 15 Pro',width:393,height:852},
+ {id:'iphone-14-15-pro-max',category:'Phone',name:'iPhone 14 & 15 Pro Max',width:430,height:932},
+ {id:'iphone-13-14',category:'Phone',name:'iPhone 13 & 14',width:390,height:844},
+ {id:'iphone-14-plus',category:'Phone',name:'iPhone 14 Plus',width:428,height:926},
+ {id:'android-compact',category:'Phone',name:'Android Compact',width:412,height:917},
+ {id:'android-medium',category:'Phone',name:'Android Medium',width:700,height:840},
+ {id:'tablet',category:'Tablet',name:'iPad',width:834,height:1194},
+ {id:'ipad-mini',category:'Tablet',name:'iPad mini',width:744,height:1133},
+ {id:'ipad-pro-11',category:'Tablet',name:'iPad Pro 11"',width:834,height:1194},
+ {id:'ipad-pro-12-9',category:'Tablet',name:'iPad Pro 12.9"',width:1024,height:1366},
+ {id:'android-expanded',category:'Tablet',name:'Android Expanded',width:1280,height:800},
+ {id:'social-square',category:'Social media',name:'Social square',width:1080,height:1080},
+ {id:'instagram-portrait',category:'Social media',name:'Instagram portrait',width:1080,height:1350},
+ {id:'story',category:'Social media',name:'Story or reel',width:1080,height:1920},
+ {id:'facebook-post',category:'Social media',name:'Facebook post',width:1200,height:630},
+ {id:'linkedin-post',category:'Social media',name:'LinkedIn post',width:1200,height:627},
+ {id:'x-post',category:'Social media',name:'X post',width:1200,height:675},
+ {id:'youtube-thumbnail',category:'Social media',name:'YouTube thumbnail',width:1280,height:720},
  {id:'watch-small',category:'Watch',name:'Watch small',width:184,height:224},
  {id:'watch-large',category:'Watch',name:'Watch large',width:198,height:242},
  {id:'watch-ultra',category:'Watch',name:'Watch extra large',width:205,height:251},
@@ -28,4 +53,5 @@ export const framePresets:readonly FramePreset[]=[
  {id:'archive-ipad-air-2',category:'Archive',name:'iPad Air 2',width:768,height:1024,description:'Archived Apple UIKit size in points, mapped one-to-one to canvas pixels.'},
  {id:'archive-ipad-pro-12-9-2',category:'Archive',name:'iPad Pro 12.9-inch (2nd generation)',width:1024,height:1366,description:'Archived Apple UIKit size in points, mapped one-to-one to canvas pixels.'},
 ];
+export const framePresets:readonly FramePreset[]=framePresetCategories.flatMap(category=>presetRows.filter(p=>p.category===category));
 export function matchingFramePresets(query:string,category:FramePresetCategory|'all'='all'){const tokens=query.trim().toLocaleLowerCase().replace(/(\d)\s*[×x]\s*(\d)/g,'$1 $2').replace(/\b(?:px|pixels)\b/g,' ').split(/\s+/).filter(Boolean);return framePresets.filter(p=>(category==='all'||p.category===category)&&tokens.every(token=>`${p.category} ${p.name} ${p.width} ${p.height} ${p.foldableState??''}`.toLocaleLowerCase().includes(token)));}

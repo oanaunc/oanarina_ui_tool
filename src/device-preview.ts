@@ -5,7 +5,7 @@ import type {FramePreset} from './frame-presets';
 /** Read-only side-by-side device reflow. Each slot derives its own private copy through the shared resize preview, so nothing here reaches the document. */
 export const DEVICE_SLOT_LIMIT=6;
 export interface DeviceSlot {id:string;name:string;width:number;height:number;}
-export const deviceCatalog:readonly FramePreset[]=framePresets.filter(p=>['Desktop','Phone & tablet','Foldable','Watch','Archive'].includes(p.category));
+export const deviceCatalog:readonly FramePreset[]=framePresets.filter(p=>['Desktop','Phone','Tablet','Foldable','Watch','Archive'].includes(p.category));
 export const slotFromPreset=(p:FramePreset):DeviceSlot=>({id:p.id,name:p.name,width:p.width,height:p.height});
 export const defaultDeviceSlots=():DeviceSlot[]=>['phone','tablet','desktop'].flatMap(id=>{const p=framePresets.find(p=>p.id===id);return p?[slotFromPreset(p)]:[];});
 export function validateDeviceSlot(slot:DeviceSlot){if(!slot||typeof slot.name!=='string'||![slot.width,slot.height].every(v=>Number.isFinite(v)&&v>=1&&v<=1e6))throw Error('Enter a device size from 1 to 1,000,000 px.');return slot;}
