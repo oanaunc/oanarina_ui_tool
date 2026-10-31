@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project.ts';
+import {blankDocument} from '../../src/model.ts';
+import {regionNode} from '../../tests/helpers/vector-network-region-fixture.ts';
+import {createPaint} from '../../src/paints.ts';
+test('source MCP retains valid v2 region geometry/paint and rejects forged cache, unsupported paint and direct topology patches atomically',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-region-'));try{const d=blankDocument(),n=regionNode();d.pages[0].nodes=[n];const file=path.join(dir,'region.oui');await fs.writeFile(file,JSON.stringify(d));const project=await Project.open(file),before=await project.read(),moved=await project.apply(before.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:n.id,properties:{x:80,width:400}}]);assert.deepEqual(moved.document.pages[0].nodes[0].vectorNetwork,n.vectorNetwork);assert.equal(moved.document.pages[0].nodes[0].path,n.path);const raw=await fs.readFile(file,'utf8');for(const properties of [{path:'M0 0L100 100'},{paints:[createPaint('#445566','linear')]},{vectorNetwork:n.vectorNetwork}]){await assert.rejects(project.apply(moved.revision,[{op:'rename_document',name:'Must not publish'},{op:'update_node',pageId:d.pages[0].id,nodeId:n.id,properties}]));assert.equal(await fs.readFile(file,'utf8'),raw);}const undone=await project.undo(moved.revision);assert.deepEqual(undone.document.pages,before.document.pages);}finally{await fs.rm(dir,{recursive:true,force:true});}});

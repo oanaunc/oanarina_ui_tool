@@ -1,14 +1,15 @@
+import {withNetworkRegion} from './vector-network-region';
 import {networkMatrix} from './vector-network-space';
 import {point} from './transforms';
 import type {DesignNode} from './model';
-import {fillsFor,strokesFor,validateStrokeStack} from './paints';
+import {fillsFor,strokesFor,validateStrokeStack,validatePaint} from './paints';
 import {effectsFor} from './effects';
-import {networkPath,networkContours,validateNetworkGeometry,validateNetworkShape} from './vector-network-geometry';
+import {networkFallbackPath,networkContours,validateNetworkGeometry,validateNetworkShape} from './vector-network-geometry';
 import type {VectorNetwork,NetworkGeometryBudget} from './vector-network-geometry';
 export function validateNetworkNode(n:DesignNode,budget?:NetworkGeometryBudget){if(n.vectorNetwork===undefined)return;validateNetworkShape(n.vectorNetwork);
- if(n.type!=='path'||n.contours!==undefined||!Array.isArray(n.points)||n.points.length||n.path!==networkPath(n.vectorNetwork)||n.closed||n.booleanOp||n.mask||n.clip||n.layout!=='none'||n.media||n.componentId||n.instanceRootId||n.componentMetadata||n.sourceId)throw Error('Vector networks require independent leaf paths with canonical graph geometry and its exact generated path fallback. Flatten the network before editing ordinary path data.');
+ if(n.type!=='path'||n.contours!==undefined||!Array.isArray(n.points)||n.points.length||n.path!==networkFallbackPath(n.vectorNetwork)||n.closed||n.booleanOp||n.mask||n.clip||n.layout!=='none'||n.media||n.componentId||n.instanceRootId||n.componentMetadata||n.sourceId)throw Error('Vector networks require independent leaf paths with canonical graph geometry and its exact generated path fallback. Flatten the network before editing ordinary path data.');
  if(![n.width,n.height,n.pathWidth??n.width,n.pathHeight??n.height].every(v=>Number.isFinite(v)&&v>0&&v<=1e6))throw Error('Vector networks need a positive finite path coordinate box.');
- if(fillsFor(n).some(p=>p.visible&&p.opacity>0)||effectsFor(n).some(e=>e.visible))throw Error('Vector network fills and effects are not implemented. Keep a stroke-only path.');
+ const paints=fillsFor(n),fills=paints.filter(p=>p.visible&&p.opacity>0);if(effectsFor(n).some(e=>e.visible)||n.vectorNetwork.version===1&&fills.length||n.vectorNetwork.version===2&&(paints.length>1||paints.some(p=>p.type!=='solid')))throw Error('Vector networks support one solid region fill only on a version 2 cycle, without effects.');for(const p of n.vectorNetwork.version===2?paints:fills)validatePaint(p);
  const strokes=strokesFor(n),s=strokes[0];if(strokes.length!==1||!s.visible||!s.paint.visible||s.paint.type!=='solid'||!Number.isFinite(s.width)||s.width<=0||s.width>10000||s.align!=='center'||s.cap!=='round'||s.join!=='round'||s.dash.length||s.edgeWidths||s.variableWidth||s.dynamic||s.calligraphic||n.arrowStart&&n.arrowStart!=='none'||n.arrowEnd&&n.arrowEnd!=='none')throw Error('Vector networks support one positive solid centered round-cap/round-join stroke without profiles, dashes or arrowheads.');
  validateStrokeStack(strokes);const sx=n.width/(n.pathWidth??n.width),sy=n.height/(n.pathHeight??n.height);for(const c of networkContours(n.vectorNetwork))for(const p of c.points)for(const q of [p,...(p.in?[{x:p.x+p.in.x,y:p.y+p.in.y}]:[]),...(p.out?[{x:p.x+p.out.x,y:p.y+p.out.y}]:[])])if(Math.abs(q.x*sx)+s.width/2>1e6||Math.abs(q.y*sy)+s.width/2>1e6)throw Error('The vector network stroke envelope exceeds ±1,000,000 local units.');
  validateNetworkGeometry(n.vectorNetwork,budget);
@@ -27,14 +28,14 @@ export function validateDocumentNetworks(d:{pages?:unknown;styles?:unknown;works
 }
 export function contoursToNetwork(n:DesignNode,id:()=>string=()=>crypto.randomUUID()):VectorNetwork {
  if(n.vectorNetwork)throw Error('This layer is already a vector network.');const contours=n.contours;
- if(!contours?.length||contours.length>128||contours.some(c=>c.closed||c.points.length<2))throw Error('Convert open contour paths only; closed regions are not supported.');
+ if(!contours?.length||contours.length>128||contours.some(c=>c.points.length<(c.closed?3:2))||contours.filter(c=>c.closed).length>1)throw Error('Convert open contours or one simple closed contour with optional open trees; holes and multiple regions are not supported.');
  let count=0;for(const c of contours)if((count+=c.points.length)>256)throw Error('Vector networks support at most 256 source anchors.');
  const vertices:VectorNetwork['vertices']=[],edges:VectorNetwork['edges']=[];
- for(const c of contours){const ids=c.points.map(p=>{const vertex={id:id(),x:p.x,y:p.y};vertices.push(vertex);return vertex.id;});for(let i=1;i<c.points.length;i++){const from=c.points[i-1].out,to=c.points[i].in;edges.push({id:id(),from:ids[i-1],to:ids[i],...(from?{fromHandle:{...from}}:{}),...(to?{toHandle:{...to}}:{})});}}
- const graph={version:1 as const,vertices,edges};validateNetworkGeometry(graph);return graph;
+ for(const c of contours){const ids=c.points.map(p=>{const vertex={id:id(),x:p.x,y:p.y};vertices.push(vertex);return vertex.id;});for(let i=1;i<c.points.length+(c.closed?1:0);i++){const index=i%c.points.length,from=c.points[i-1].out,to=c.points[index].in;edges.push({id:id(),from:ids[i-1],to:ids[index],...(from?{fromHandle:{...from}}:{}),...(to?{toHandle:{...to}}:{})});}}
+ const graph:VectorNetwork=contours.some(c=>c.closed)?withNetworkRegion({vertices,edges},id()):{version:1,vertices,edges};validateNetworkGeometry(graph);return graph;
 }
-export function networkNodePatch(n:DesignNode,graph:VectorNetwork):Partial<DesignNode>{const patch={vectorNetwork:graph,points:[],contours:undefined,path:networkPath(graph),closed:undefined};validateNetworkNode({...n,...patch});return patch;}
-export function flattenNetworkPatch(n:DesignNode):Partial<DesignNode>{if(!n.vectorNetwork)throw Error('Select one vector network.');validateNetworkNode(n);return {vectorNetwork:undefined,contours:networkContours(n.vectorNetwork),points:[],path:'',closed:undefined};}
+export function networkNodePatch(n:DesignNode,graph:VectorNetwork):Partial<DesignNode>{if(n.vectorNetwork?.version===2&&graph.version===1&&fillsFor(n).some(p=>p.visible&&p.opacity>0))throw Error('Remove region fill before deleting a boundary edge.');const patch={vectorNetwork:graph,points:[],contours:undefined,path:networkFallbackPath(graph),closed:undefined};validateNetworkNode({...n,...patch});return patch;}
+export function flattenNetworkPatch(n:DesignNode):Partial<DesignNode>{if(!n.vectorNetwork)throw Error('Select one vector network.');validateNetworkNode(n);if(n.vectorNetwork.version===2&&fillsFor(n).some(p=>p.visible&&p.opacity>0))throw Error('Remove region fill before flattening this network to ordinary contours.');return {vectorNetwork:undefined,contours:networkContours(n.vectorNetwork),points:[],path:'',closed:undefined};}
 
 /** Motion sampling must refuse affected graphs before copying/applying any keyframes. */
 export function validateNetworkMotion(nodes:DesignNode[],motion:{tracks:{nodeId:string;keyframes:unknown[]}[]}|undefined){if(!motion?.tracks.length||!nodes.some(n=>n.vectorNetwork))return;const animated=new Set(motion.tracks.filter(t=>t.keyframes.length).map(t=>t.nodeId)),lookup=new Map(nodes.map(n=>[n.id,n]));for(const n of nodes){if(!n.vectorNetwork)continue;let owner:DesignNode|undefined=n;const seen=new Set<string>();while(owner){if(seen.has(owner.id)||seen.size>=64)throw Error('Invalid vector network hierarchy.');seen.add(owner.id);if(animated.has(owner.id))throw Error('Flatten vector networks before using affected Motion tracks.');if(owner.parentId&&!lookup.has(owner.parentId))throw Error('A vector network ancestor is missing.');owner=owner.parentId?lookup.get(owner.parentId):undefined;}}}
