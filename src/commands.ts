@@ -98,7 +98,7 @@ function executeCommand(id:string,event?:Event){if(event&&['copy','cut','paste',
  case 'main-component':{const main=sel[0]?goToMain(s.doc,sel[0].id):undefined;if(main){s.set({pageId:main.page.id,selection:[main.node.id]});if(typeof document!=='undefined')s.fit(true);}else s.set({toast:'The main component is missing.'});break;}
  case 'variants':s.edit(d=>combineVariants(d,s.pageId,s.selection));s.set({modal:'components'});break;
  case 'component-properties':s.set({modal:'components'});break;
- case 'auto-layout':if(sel.length!==1||!['frame','component','group'].includes(sel[0].type))s.group('frame');s.patch(useEditor.getState().selection,{layout:'horizontal'});break;
+ case 'auto-layout':if(sel.length!==1||!['frame','component','group'].includes(sel[0].type))s.group('frame','horizontal');else s.patch(s.selection,{layout:'horizontal'});break;
  case 'front':case 'back':case 'forward':case 'backward':s.order(id);break;case 'lock':if(sel[0])s.patch(s.selection,{locked:!sel[0].locked});break;case 'hide':if(sel[0])s.patch(s.selection,{visible:!sel[0].visible});break;
  case 'parent-left':case 'parent-center':case 'parent-right':case 'parent-top':case 'parent-middle':case 'parent-bottom':s.align(id.slice(7),'parent');break;case 'left':case 'center':case 'right':case 'top':case 'middle':case 'bottom':case 'distribute-x':case 'distribute-y':s.align(id);break;
  case 'text-find':if(s.modal==='text-search'&&typeof document!=='undefined'){const input=document.querySelector<HTMLInputElement>('.text-search-dialog input[type=search]');input?.focus();input?.select();}else if(!s.modal){if(typeof document!=='undefined')(document.activeElement as HTMLElement|null)?.blur();useEditor.getState().set({modal:'text-search'});}break;
