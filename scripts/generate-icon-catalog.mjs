@@ -5,6 +5,7 @@ const require=createRequire(import.meta.url),pkg=require('lucide-react/package.j
 if(pkg.version!=='0.577.0')throw Error('Review the Lucide version/license before updating this catalog.');
 const {default:loaders}=await import('lucide-react/dynamicIconImports.mjs'),icons=[];
 for(const name of Object.keys(loaders).sort()){
+ if(/fig(?:ma|jam)/i.test(name))continue;
  const {__iconNode:paths}=await loaders[name]();if(!Array.isArray(paths)||!paths.length||paths.length>100)throw Error('Invalid Lucide geometry: '+name);
  icons.push({name,paths:paths.map(([tag,attributes])=>[tag,Object.fromEntries(Object.entries(attributes).filter(([key])=>key!=='key'))])});
 }
