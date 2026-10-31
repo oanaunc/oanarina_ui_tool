@@ -13794,10 +13794,10 @@
     "category": "Dev Mode and inspection",
     "name": "Compare design revisions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Partial: File > Version history compares named local saved revisions with the current file by stable layer/page identities, value-free field summaries, complete 50-row pagination and kind/name/page/field filters. Shows separately fitted saved/current exact-page artwork, with missing-page diagnostics. Read-only, bounded, no pixel diff, synchronized viewport, branch comparison or per-edit author attribution. See docs/LOCAL-VERSION-REVIEW.md. Eleven focused core and thirteen browser checks plus editor TypeScript; independent read review clear. Native/reference acceptance pending."
   },
   {
     "id": "UI-41-032",
@@ -14694,20 +14694,20 @@
     "category": "Accessibility and localization",
     "name": "Larger UI scaling",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: existing local Interface scale preference reaches 125% with persisted 85/100/110/125% choices, scoped chrome layout and canvas-coordinate correction across tested interactions/short windows. Artwork/presentation/export scale stays separate; no unrestricted OS text sizing or complete assistive-technology acceptance. This reconciles an already implemented and browser-tested path, not new scaling code. See docs/PREFERENCES.md and UI-45-004. Native/reference acceptance pending."
   },
   {
     "id": "UI-44-018",
     "category": "Accessibility and localization",
     "name": "Reduced motion mode",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: existing Follow system / Reduce / Allow interface-motion setting persists locally, responds to OS/storage changes and scopes chrome effects/scrolling. Editor Motion pauses when reduction activates; explicit Play remains authored preview without loop. Prototype/Slides system/file playback rules and exports remain separate. This reconciles existing validated behavior, not new motion code. See docs/INTERFACE-MOTION.md and UI-02-023. Broader/native/reference acceptance pending."
   },
   {
     "id": "UI-44-019",
@@ -15184,10 +15184,10 @@
     "category": "Preferences and document settings",
     "name": "Smart quotes and symbols preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: existing opt-in local Smart quotes and symbols checkbox in rich-text inspector information/all tabs. Single-character English quote/apostrophe, ellipsis, dash and copyright/registered/trademark substitution retains formatting/caret and normal Undo; paste/import/composition preserve source. Canvas text and multilingual/system-wide rules are outside this subset. Reconciles existing tested source, not new substitution code. See docs/UNRELEASED-SELECTION-FRAMES-TEXT.md and src/smart-text.ts. Native/reference acceptance pending."
   },
   {
     "id": "UI-45-037",
