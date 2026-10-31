@@ -35,6 +35,17 @@ New text has configurable color, family, size, numeric weight, normal/italic sty
 
 These defaults affect caller-integrated creation paths, including canvas drawing and the editor's node-add helper. Explicit properties supplied by templates or other insertion actions take precedence. Existing layers keep their properties when preferences change or reset. A palette/template may intentionally specify its own design values.
 
+## Trackpad, outlines, notifications and the local helper
+
+These are stored with the workspace preferences, outside `.oui`.
+
+- **Pinch to zoom** and **Pinch speed** control the Mac app's trackpad pinch. Speed is an exponent on the gesture's scale, so pinching out and back returns to where it began. No physical trackpad was exercised.
+- **Outline rendering** is Layer shapes or Legacy bounding boxes for View → Outlines. Mask outlines keep their shapes.
+- **Status messages stay for** sets how long a message stays at the bottom of the window. Forma posts nothing to Notification Center.
+- **Allow live context for the local MCP helper** stops every window sharing and disables Resources → Share Live Editor Context with MCP when cleared.
+
+Forma runs no background helper, so there are no helper accessibility settings: it asks macOS for no Accessibility permission.
+
 ## Validation and implementation
 
 `src/preferences.ts` exposes a frozen typed snapshot through `getPreferences`/`usePreferences`, plus `updatePreferences`, `resetPreferences`, `reloadPreferences`, subscriptions and `drawingDefaults(type)`. The local key is `oui-preferences`, with a version-one envelope. Booleans, color syntax, font strings, finite numeric bounds and known keys are validated before a write. Unknown keys and prototype-pollution fields cannot become settings. Browser storage events refresh subscribed views across windows of the same origin.

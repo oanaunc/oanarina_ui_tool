@@ -40,7 +40,13 @@ Default `--muted` changed to meet 4.5:1: `#99949f` to `#a39ea9` in dark, and `#8
 
 Preferences → **Accent and contrast** stores two device values outside `.oui`: `oui-interface-accent` and `oui-interface-contrast`.
 
-- Accent has eight presets. Each passes the same ratio checks in both themes. It recolors focus, selection and active controls. Some older chrome uses fixed violet values that do not follow it. The macOS system accent color is not read.
+- Accent has eight presets, each passing the same ratio checks in both themes, and in the Mac app **macOS accent color**. The shell sends the system color and sends it again when it changes. It moves toward white or black until it clears 4.5:1 on every surface of each theme, and text on it picks black or white the same way. Accents recolor focus, selection and active controls. Some older chrome and canvas selection overlays use fixed violet values that do not follow them.
 - Interface contrast offers Follow system, Increase contrast and Standard. Follow system reads `prefers-contrast: more`, live. Increased contrast strengthens text, control borders and focus rings. Canvas selection keeps its own **High-contrast selection outlines** option.
 
 Reset preferences clears both, along with the language.
+
+## Error announcements
+
+`notifyError` and any toast worded as a failure speak through one assertive live region, once. `isFailureMessage` in `src/error-announcements.ts` decides from the wording, because toasts carry no type. `tests/platform-preferences.test.ts` holds it to the failure toasts in the app today.
+
+`tests/e2e/interface-contrast.spec.ts` also measures rendered text in 21 more dialogs and while hovering menu items and toolbar buttons, in both themes.

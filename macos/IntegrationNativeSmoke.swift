@@ -135,9 +135,20 @@ extension Studio {
                 self.js(document,"return (await window.desktop.fonts()).includes('Fxrmax');"){value in
                     self.check(value as? Bool==true,"native font list includes the new family")
                     CTFontManagerUnregisterFontsForURL(url as CFURL,.process,nil)
-                    self.clipboardWait(document,"document.querySelector('[aria-label=\"Resolve missing fonts\"]')?.title.includes('Fxrmax')"){self.check(true,"renderer reports removal of an installed family");done()}
+                    self.clipboardWait(document,"document.querySelector('[aria-label=\"Resolve missing fonts\"]')?.title.includes('Fxrmax')"){self.check(true,"renderer reports removal of an installed family");self.integrationUserFont(document,url,done)}
                 }
             }
+        }
+    }
+    /** A file placed in the user font folder is what Font Book's install does, and it reaches this process from fontd, not from itself. */
+    func integrationUserFont(_ document:DocumentWindow,_ source:URL,_ done:@escaping()->Void){
+        let folder=FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Fonts",isDirectory:true),file=folder.appendingPathComponent("FormaSmokeProbe.ttf")
+        try? FileManager.default.removeItem(at:file)
+        do{try FileManager.default.createDirectory(at:folder,withIntermediateDirectories:true);try FileManager.default.copyItem(at:source,to:file)}catch{smokeFail(error.localizedDescription)}
+        clipboardWait(document,"!document.querySelector('[aria-label=\"Resolve missing fonts\"]')?.title.includes('Fxrmax')"){
+            self.check(true,"a font file installed in the user font folder clears the missing font without reopening")
+            try? FileManager.default.removeItem(at:file)
+            self.clipboardWait(document,"document.querySelector('[aria-label=\"Resolve missing fonts\"]')?.title.includes('Fxrmax')"){self.check(true,"removing it from the folder reports it missing again");done()}
         }
     }
     func integrationPinch(_ document:DocumentWindow,_ done:@escaping()->Void){

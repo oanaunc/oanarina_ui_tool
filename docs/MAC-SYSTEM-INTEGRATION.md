@@ -36,7 +36,7 @@ The preview image in the Export dialog can be dragged to Finder. WebKit makes th
 
 The Font style select lists an installed family's own faces by name. Width variants such as Condensed are left out, because CSS weight alone cannot reach them. Names and weights come from Core Text; no file or path is exposed.
 
-The shell listens for Core Text registered-font changes and `NSFont` font-set changes, then the editor refreshes its installed list, text metrics, the Missing Fonts control and an open Font Library, without reopening the project. The acceptance run registers and unregisters a uniquely named font in process scope; installing through Font Book was not exercised.
+The shell listens for Core Text registered-font changes and `NSFont` font-set changes, then the editor refreshes its installed list, text metrics, the Missing Fonts control and an open Font Library, without reopening the project. The integration run registers and unregisters a uniquely named font in process scope, then places the same font file in `~/Library/Fonts` and removes it, which is what Font Book's install does, so that change arrives from the system font service rather than from this process. Font Book's own interface was not driven.
 
 ## Trackpad pinch
 
@@ -46,13 +46,23 @@ WKWebView reports a pinch as Safari `gesturestart/gesturechange/gestureend` even
 
 Save first stores the bytes it is about to replace in the system document version store through `NSFileVersion`. **File → Revert To** lists up to 20 versions by date. Choosing one replaces the window's content as one Undo step and leaves the saved file alone until Save. **Last Saved File** returns to the file on disk, also as one Undo step, and is clean.
 
-Limits: this is not `NSDocument` and does not offer the full-screen Browse All Versions interface. Versions are recorded only by Save, so autosaved recovery states and MCP transactions are not separate versions, although a transaction's result is stored when a later Save replaces it. Storage follows macOS rules and failure to record a version never blocks Save. It is separate from Forma's own version history.
+**File → Revert To → Browse All Versions…** opens a sheet that lists the same versions, previews the selected one from its own bytes with the Quick Look renderer, and restores it as one Undo step.
+
+Limits: this is not `NSDocument`, so it is Forma's own sheet rather than the system's full-screen browser, and its preview is the simplified one. Versions are recorded only by Save, so autosaved recovery states and MCP transactions are not separate versions, although a transaction's result is stored when a later Save replaces it. Storage follows macOS rules and failure to record a version never blocks Save. It is separate from Forma's own version history.
 
 ## Print and Share
 
 **File → Print…** shows the macOS print dialog as a sheet for the selection, or for each outermost frame of the page, or the page artwork when there are no frames. Slides print each visible slide. Pages are flattened 2× raster PDFs from the editor's PDF path, so printed text is not vector.
 
-**File → Share…** prepares a private temporary file, a 2× PNG of a selection or otherwise the same PDF, and shows the system share picker. The file is removed on the next share or when the window closes. The acceptance run confirms the picker opens and proposes services; no service was carried through to delivery. There is no format choice.
+**File → Share…** prepares a private temporary file, a 2× PNG of a selection or otherwise the same PDF, and shows the system share picker. **File → Share As** chooses PNG, PDF or the Forma project itself; a shared project passes the same validation as Save. The file is removed on the next share or when the window closes. The acceptance run confirms the picker opens and proposes services; no service was carried through to delivery. 
+
+## Export destination
+
+**File → Export Destination** is Ask Every Time or Choose Folder…. With a folder chosen, exports from every window go there with no panel. A repeat takes the next free name and never overwrites. If the folder is gone or refuses the write, the save panel returns. The folder lives in the shell's own defaults and the renderer is told only that an export finished. Saving a `.oui` is unaffected.
+
+## Version links
+
+Forma registers the `forma-version:` scheme, so a link copied from Version history opens from Finder, Notes or `open`. The shell reads the document id and refuses anything else. If that project is open its window comes forward. If not, up to ten recent files are checked for that id. Otherwise an alert asks you to open the project. The renderer then checks the whole reference against its own document and shows the read-only preview, with the same restore rules as a pasted link. Saved versions stay in this Mac's local storage, so a link does nothing on another Mac.
 
 ## Appearance and clipboard images
 
@@ -61,9 +71,27 @@ Setting the application appearance while running changes the actual WKWebView's 
 ## Not done
 
 - **Dragging canvas layers to Finder**: starting a native drag from the canvas needs a new renderer-to-shell message, which the current rule against broadening IPC excludes. Needs a decision. The Export dialog preview can be dragged.
-- **App Sandbox**: not adopted. It needs entitlements, security-scoped bookmarks for session restoration and sibling access for the lock, MCP history and live files. It changes release signing, so it needs a decision.
+- **App Sandbox**: not adopted. A copy under a separate bundle identifier, with the sandbox, network server, network client, print and user-selected file entitlements, passed `--smoke-test` and the save, export and drop acceptance groups, so the 127.0.0.1:51981 server, WKWebView, the clipboard and panels work. It failed `--integration-smoke-test` at the MCP checks, which spawn `node`, and it cannot ship for three reasons those runs do not reach, because their files sit inside the container. Save takes a sibling `.oanarina-mcp.lock` next to the project, and live context writes a sibling `.oanarina-live.json`, neither of which a user-selected file grants. Window restoration stores paths, which need security-scoped bookmarks. And WebKit's data store moves into the container, so every existing person's local files, recovery copies and versions would disappear unless a container migration is built and tested against real data.
 - **Update checks and release notes**: there is no release feed to read. They need one published first.
-- **Quick Look and Spotlight**: these need app extensions.
+
+## Quick Look and Spotlight
+
+Finder previews and thumbnails come from two sandboxed app extensions in `Contents/PlugIns`, `FormaQuickLook` and `FormaThumbnail`. Spotlight search comes from a classic importer, `Contents/Library/Spotlight/FormaImporter.mdimporter`. `scripts/build-mac-extensions.sh` builds all three, `build-mac.sh` runs it and `package-mac.sh` signs them inside out, before the app.
+
+All three share `macos/extensions/OuiProject.swift`, which keeps the app's 50 MB ceiling and format check, reads with no-follow and holds no path. Preview and thumbnail draw with `OuiRenderer.swift`, a Core Graphics simplification of the editor: solid, linear and radial paints, strokes, opacity, clipping, shapes, paths, embedded images and plain text. Effects, masks, blend modes, rich runs, conic paints and shaders are not drawn, and only inline raster data loads, so nothing is fetched. Text uses installed fonts and otherwise a system fallback, since the bundled fonts are not in the extension. A file that fails validation falls back to the system's generic view and is indexed with no project data.
+
+The Spotlight importer gives the title, description, page and layer names, fonts, page count, the Forma creator and up to 256 KB of authored text to the on-device index. Nothing is sent anywhere.
+
+Things this Mac taught, kept here because each one looked like something else:
+
+- `qlmanage -p` aborts on macOS 27 inside `EXConcreteExtension` with a nil dictionary key, for Apple's own Icon Composer extension as well. It says nothing about ours. A real `QLPreviewView` works, which is what the smoke uses.
+- Spotlight never called a `CSImportExtension` on macOS 27, though `mdimport -e` listed it, so the importer is the classic bundle.
+- Extensions are refused or skipped when ad-hoc signed. `build-mac.sh` therefore signs with the release identity when this Mac has it. A sandboxed extension's container belongs to its signer: an ad-hoc run followed by a signed one left `secinitd` waiting on a consent prompt, which looks like a hang. The first attempts used the identifiers `com.oanarinaldi.uitool.quicklook`, `.thumbnail` and `.spotlight`, whose containers are stuck that way on this Mac, so they are not reused.
+- `.oui` is now `com.oanarinaldi.forma.project`. The earlier identifier, `com.oanarinaldi.ui-document`, stays declared with no file extension, conforming to the new one. Thumbnails never reached the extension under the earlier identifier, while any other identifier worked with the same declaration, and Spotlight keeps resolving `.oui` to it after it is gone, so the importer claims both. The file format did not change.
+- macOS lists a third-party importer only for an app registered in `/Applications`, and registration takes several seconds to reach Spotlight.
+- Extensions in `/Applications` are enabled by default. A build elsewhere needs `pluginkit -a` and `pluginkit -e use`.
+
+To verify, install a signed copy in `/Applications`, wait a few seconds, then run `scripts/smoke-mac-extensions.sh /Applications/Forma.app`. It proves the thumbnail by its shape and pixels through `QLThumbnailGenerator`, the preview through a real `QLPreviewView` and the extension's own log line, the importer with `mdimport -t`, and the real index with `mdls` and `mdfind`, plus refusal of future, truncated, oversized and symbolic-link input. Finder's own Space-bar panel and icon drawing were not exercised directly: they use these same services.
 
 ## Validation
 

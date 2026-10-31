@@ -31,3 +31,11 @@ for(const theme of ['dark','light'])for(const contrast of [undefined,'more'])tes
  expect(results.reduce((sum,r)=>sum+r.checked,0)).toBeGreaterThan(200);
  expect([...new Set(results.flatMap(r=>r.failures))]).toEqual([]);
 });
+for(const theme of ['dark','light'])test(`${theme}: rendered text meets 4.5:1 across other dialogs and on hover`,async({page})=>{
+ test.setTimeout(120_000);await setup(page,theme);const results=[];
+ for(const name of ['export','history','storage','branches','keyboard-insert','shortcuts','icons','fonts','styles','variables','components','colors','templates','resource-library','mcp','local-plugins','release-notes','document-outline','selection-box','snapshot','slices']){await modal(page,name);await expect(page.locator('[role=dialog]').last()).toBeVisible();await page.waitForTimeout(120);const r=await audit(page);results.push({...r,failures:r.failures.map(f=>name+': '+f)});await modal(page,'');}
+ await page.getByRole('menuitem',{name:'File',exact:true}).click();const items=page.locator('.menu [role^=menuitem]');for(let i=0;i<Math.min(8,await items.count());i++){await items.nth(i).hover();results.push(await audit(page));}await page.keyboard.press('Escape');
+ for(const button of await page.getByRole('toolbar').first().getByRole('button').all()){await button.hover();results.push(await audit(page));if(results.length>42)break;}
+ expect(results.reduce((sum,r)=>sum+r.checked,0)).toBeGreaterThan(300);
+ expect([...new Set(results.flatMap(r=>r.failures))]).toEqual([]);
+});

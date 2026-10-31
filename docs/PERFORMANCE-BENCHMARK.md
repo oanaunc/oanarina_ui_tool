@@ -32,6 +32,8 @@ A page with at least 3,000 layers in view mounts complete root subtrees in batch
 
 Batches stay until the render list changes, then the page returns to the single-pass scene, and a browser check confirms matching pixels. Batching does not apply to a page where one root owns nearly everything, to scenes the viewport culler keeps whole (root masks, background blur, pass-through blending), during drafts, or to Motion and other non-Design views. A later edit on a dense page still re-renders it in one pass. The whole document is still parsed and held in memory, so this is progressive *mounting*, not on-demand page data.
 
-## Not built, from these measurements
+## Image decode scheduling
 
-Image decode scheduling is not implemented. The fixture above showed no long task that a decode queue would address in Chromium, so a scheduler had no measured problem to solve. WKWebView was not measured, so this remains open rather than settled.
+`src/image-decode-queue.ts` decodes a page's embedded raster images when it opens, two at a time, nearest the view first, up to 256, and stops when the page changes. Decoded images stay held until then, so the canvas finds them ready. It reads only inline data and changes no artwork.
+
+The fixture above showed no long task a queue would address in Chromium, so no speedup is claimed. This spreads decoding out and orders it; WebKit can still decode an image synchronously if it paints before the queue reaches it, and pixels are not held back until decoded.

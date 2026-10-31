@@ -7,6 +7,7 @@ import {usePreferences} from '../preferences';
 import {useMaskView} from '../mask-view';
 import {cullViewportRoots,indexViewportRoots} from '../viewport-culling';
 import {progressiveBatches} from '../progressive-page';
+import {decodeImage,decodeOrder,runDecodeQueue} from '../image-decode-queue';
 import MaskCanvasArtwork from './MaskCanvasArtwork';
 import './progressive-page.css';
 const ProgressiveBatch=memo(MaskCanvasArtwork);
@@ -23,5 +24,8 @@ export default function ViewportCanvasArtwork({nodes,canvasRef,activeId,drafting
  if(session.current&&session.current.source!==result.nodes)session.current=null;
  const live=session.current,total=live?.batches.length??0,shown=live?.shown??0,loading=shown<total;
  useEffect(()=>{if(!loading)return;const frame=requestAnimationFrame(()=>{if(session.current)session.current.shown++;advance();});return()=>cancelAnimationFrame(frame);});
- return <g data-viewport-culling={enabled?'enabled':'disabled'} data-culled-root-count={result.omittedRoots} data-culled-node-count={result.omittedNodes} data-retained-uncertain-roots={result.retainedUncertain} data-culling-fallback={result.fallback||undefined} data-progressive-page={live?loading?'loading':'complete':undefined} data-progressive-shown={live?shown:undefined} data-progressive-total={live?total:undefined}>{live?live.batches.slice(0,shown).map((batch,i)=><ProgressiveBatch key={i} nodes={batch} mediaMode={s.motionOpen?undefined:'editor'} outlines={s.outlines} zoom={s.zoom} onNode={onNode}/>):<MaskCanvasArtwork nodes={result.nodes} mediaMode={s.motionOpen?undefined:'editor'} outlines={s.outlines} zoom={s.zoom} onNode={onNode}/>}{loading&&createPortal(<div className="page-loading" role="status">Loading page… {Math.round(shown/total*100)}%</div>,document.body)}</g>;
+ // One pass per opened page: the first view decides the order, and later edits reuse images already decoded.
+ const [decoding,setDecoding]=useState('');
+ useEffect(()=>{if(!size.width||s.home)return;const held:HTMLImageElement[]=[],urls=decodeOrder(nodes,useEditor.getState(),size);if(!urls.length){setDecoding('');return;}setDecoding('decoding');const run=runDecodeQueue(urls,src=>decodeImage(src,held),()=>setDecoding('decoded'));return()=>{run.cancel();held.length=0;};},[pageKey,size.width>0,s.home]);
+ return <g data-image-decode={decoding||undefined} data-viewport-culling={enabled?'enabled':'disabled'} data-culled-root-count={result.omittedRoots} data-culled-node-count={result.omittedNodes} data-retained-uncertain-roots={result.retainedUncertain} data-culling-fallback={result.fallback||undefined} data-progressive-page={live?loading?'loading':'complete':undefined} data-progressive-shown={live?shown:undefined} data-progressive-total={live?total:undefined}>{live?live.batches.slice(0,shown).map((batch,i)=><ProgressiveBatch key={i} nodes={batch} mediaMode={s.motionOpen?undefined:'editor'} outlines={s.outlines} zoom={s.zoom} onNode={onNode}/>):<MaskCanvasArtwork nodes={result.nodes} mediaMode={s.motionOpen?undefined:'editor'} outlines={s.outlines} zoom={s.zoom} onNode={onNode}/>}{loading&&createPortal(<div className="page-loading" role="status">Loading page… {Math.round(shown/total*100)}%</div>,document.body)}</g>;
 }
