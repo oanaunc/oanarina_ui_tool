@@ -1,5 +1,6 @@
 import FigmaRestReview from './FigmaRestReview';
 import FigmaRestImportButton from './FigmaRestImportButton';
+import LocalNavigationLinks from './LocalNavigationLinks';
 import VersionHistory from './VersionHistory';
 import SaveVersion from './SaveVersion';
 import DocumentCoverDialog from './DocumentCoverDialog';
@@ -46,6 +47,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
  if(modal==='figma-rest-review')return <FigmaRestReview key={s.doc.id}/>;
+ if(modal==='local-links')return <LocalNavigationLinks key={s.doc.id}/>;
  if(modal==='icons')return <IconLibrary key={s.doc.id}/>;
  if(modal==='templates')return <TemplateGallery key={s.doc.id}/>;
  if(modal==='comments'||modal.startsWith('comment:'))return <LocalCommentsDialog key={s.doc.id+':'+modal}/>;

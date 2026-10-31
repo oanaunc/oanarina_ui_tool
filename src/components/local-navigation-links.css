@@ -1,0 +1,7 @@
+.local-navigation-links{width:min(620px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
+.local-navigation-links .dialog-body{overflow:auto;min-height:0;display:grid;gap:18px}
+.local-navigation-links section{display:grid;gap:8px;min-width:0;border-top:1px solid var(--line);padding-top:12px}
+.local-navigation-links label{display:grid;gap:5px;min-width:0}
+.local-navigation-links input,.local-navigation-links select{width:100%;min-width:0}
+.local-navigation-links p,.local-navigation-links strong{overflow-wrap:anywhere}
+.local-navigation-review{border:1px solid var(--line);padding:12px;border-radius:8px}
