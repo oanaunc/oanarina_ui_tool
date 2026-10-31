@@ -29,7 +29,7 @@ test('Open works from an image numeric field, commits its draft and reopens the 
  const opacity=page.getByRole('spinbutton',{name:'Fill 1 opacity %',exact:true});await opacity.fill('55');
  let event=page.waitForEvent('filechooser');await page.keyboard.press('Meta+o');await(await event).setFiles([]);
  const saved=await save(page);expect(saved.pages[0].nodes[0].paints![0].opacity).toBe(.55);
- await page.getByRole('spinbutton',{name:'Fill 1 image angle',exact:true}).fill('25');event=page.waitForEvent('filechooser');await page.keyboard.press('Meta+o');await(await event).setFiles({name:'focused-image.oui',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});
+ await page.getByRole('spinbutton',{name:'Fill 1 image angle',exact:true}).fill('25');event=page.waitForEvent('filechooser');await page.keyboard.press('Meta+o');await(await event).setFiles({name:'focused-image.oui',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});await expect(page.getByRole('region',{name:'File import',exact:true})).toHaveCount(0);
  await page.getByRole('treeitem',{name:'Asset',exact:true}).click();await expect(opacity).toHaveValue('55');await expect(page.getByRole('spinbutton',{name:'Fill 1 image angle',exact:true})).toHaveValue('0');expect((await save(page)).pages[0].nodes[0].paints).toEqual(saved.pages[0].nodes[0].paints);
 });
 for(const [key,value] of [['exposure',50],['contrast',50],['saturation',-100],['temperature',100],['tint',100],['highlights',-100],['shadows',100]] as const)test(`image ${key} changes exported pixels independently and resets to the source`,async({page})=>{
