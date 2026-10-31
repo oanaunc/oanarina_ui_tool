@@ -584,20 +584,20 @@
     "category": "Mac system integration",
     "name": "App update checking",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so update checks over the network are out of scope."
   },
   {
     "id": "UI-02-030",
     "category": "Mac system integration",
     "name": "Update release notes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so update checks over the network are out of scope."
   },
   {
     "id": "UI-02-031",
@@ -634,10 +634,10 @@
     "category": "Home and file browser",
     "name": "Team files view",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so team files are out of scope."
   },
   {
     "id": "UI-03-004",
@@ -1114,10 +1114,10 @@
     "category": "Navigation and editor shell",
     "name": "Share button",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so hosted sharing is out of scope; export files instead."
   },
   {
     "id": "UI-04-022",
@@ -9644,20 +9644,20 @@
     "category": "Libraries and design systems",
     "name": "Library permissions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so shared library permissions are out of scope."
   },
   {
     "id": "UI-29-023",
     "category": "Libraries and design systems",
     "name": "Organization library approval",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so organization approval is out of scope."
   },
   {
     "id": "UI-29-024",
@@ -11554,10 +11554,10 @@
     "category": "Prototype presentation",
     "name": "Prototype access permissions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so per-person access is out of scope; an exported prototype can use a password."
   },
   {
     "id": "UI-35-026",
@@ -11744,10 +11744,10 @@
     "category": "Comments and annotations",
     "name": "Mention collaborator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so mentioning other people is out of scope."
   },
   {
     "id": "UI-36-009",
@@ -11824,10 +11824,10 @@
     "category": "Comments and annotations",
     "name": "Comment notification",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so notifications from other people are out of scope."
   },
   {
     "id": "UI-36-017",
@@ -11874,10 +11874,10 @@
     "category": "Comments and annotations",
     "name": "Comment permissions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so shared comment permissions are out of scope."
   },
   {
     "id": "UI-36-022",
@@ -11974,360 +11974,360 @@
     "category": "Collaboration",
     "name": "Live multiplayer document",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-002",
     "category": "Collaboration",
     "name": "Remote cursor display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-003",
     "category": "Collaboration",
     "name": "Remote cursor name",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-004",
     "category": "Collaboration",
     "name": "Collaborator avatar",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-005",
     "category": "Collaboration",
     "name": "Collaborator selection outline",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-006",
     "category": "Collaboration",
     "name": "Follow collaborator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-007",
     "category": "Collaboration",
     "name": "Stop following collaborator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-008",
     "category": "Collaboration",
     "name": "Multiplayer text editing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-009",
     "category": "Collaboration",
     "name": "Conflict-free shape editing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-010",
     "category": "Collaboration",
     "name": "Remote changes propagation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-011",
     "category": "Collaboration",
     "name": "Presence status",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-012",
     "category": "Collaboration",
     "name": "Join file notification",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-013",
     "category": "Collaboration",
     "name": "Leave file notification",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-014",
     "category": "Collaboration",
     "name": "Audio collaboration",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-015",
     "category": "Collaboration",
     "name": "Audio mute",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-016",
     "category": "Collaboration",
     "name": "Audio captions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-017",
     "category": "Collaboration",
     "name": "Canvas spotlight",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-018",
     "category": "Collaboration",
     "name": "Observation mode",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-019",
     "category": "Collaboration",
     "name": "Invite by email",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-020",
     "category": "Collaboration",
     "name": "Invite by link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-021",
     "category": "Collaboration",
     "name": "Viewer permission",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-022",
     "category": "Collaboration",
     "name": "Editor permission",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-023",
     "category": "Collaboration",
     "name": "Owner permission",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-024",
     "category": "Collaboration",
     "name": "Copy collaboration link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-025",
     "category": "Collaboration",
     "name": "Link access settings",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-026",
     "category": "Collaboration",
     "name": "Remove collaborator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-027",
     "category": "Collaboration",
     "name": "Request edit access",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-028",
     "category": "Collaboration",
     "name": "Approve edit request",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-029",
     "category": "Collaboration",
     "name": "Reject edit request",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-030",
     "category": "Collaboration",
     "name": "Offline edits queue",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-031",
     "category": "Collaboration",
     "name": "Reconnect synchronization",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-032",
     "category": "Collaboration",
     "name": "Conflict recovery",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-033",
     "category": "Collaboration",
     "name": "Collaborator activity history",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-034",
     "category": "Collaboration",
     "name": "Session recovery",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-035",
     "category": "Collaboration",
     "name": "Shared selection visibility",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-37-036",
     "category": "Collaboration",
     "name": "Multiplayer undo isolation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope."
   },
   {
     "id": "UI-38-001",
@@ -13064,20 +13064,20 @@
     "category": "Import and Figma interchange",
     "name": "Figma API file retrieval",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so the Figma web API is out of scope; use local .fig files or JSON."
   },
   {
     "id": "UI-39-039",
     "category": "Import and Figma interchange",
     "name": "Figma asset retrieval",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so the Figma web API is out of scope; use local .fig files or JSON."
   },
   {
     "id": "UI-39-040",
@@ -14484,50 +14484,50 @@
     "category": "Plugins widgets and extensions",
     "name": "Generate shader fill with agent",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-43-035",
     "category": "Plugins widgets and extensions",
     "name": "Generate shader effect with agent",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-43-036",
     "category": "Plugins widgets and extensions",
     "name": "Edit shader with agent",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-43-037",
     "category": "Plugins widgets and extensions",
     "name": "Generative plugin creation with agent",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-43-038",
     "category": "Plugins widgets and extensions",
     "name": "Generative plugin prompt editing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-44-001",
@@ -15054,20 +15054,20 @@
     "category": "Preferences and document settings",
     "name": "Comment notification preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so notifications from other people are out of scope."
   },
   {
     "id": "UI-45-024",
     "category": "Preferences and document settings",
     "name": "Multiplayer cursor preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so multiplayer cursors are out of scope."
   },
   {
     "id": "UI-45-025",
@@ -15094,20 +15094,20 @@
     "category": "Preferences and document settings",
     "name": "Crash report opt-in",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so crash report sending is out of scope; Forma sends no telemetry."
   },
   {
     "id": "UI-45-028",
     "category": "Preferences and document settings",
     "name": "Usage analytics opt-in",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so usage analytics are out of scope; Forma sends no telemetry."
   },
   {
     "id": "UI-45-029",
@@ -15264,10 +15264,10 @@
     "category": "Preferences and document settings",
     "name": "AI audio notification preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI features are out of scope."
   },
   {
     "id": "UI-45-045",
@@ -15284,10 +15284,10 @@
     "category": "Preferences and document settings",
     "name": "Show Agents navigation preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-45-047",
@@ -15354,520 +15354,520 @@
     "category": "Teams accounts and administration",
     "name": "Account sign-in",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-002",
     "category": "Teams accounts and administration",
     "name": "Account sign-out",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-003",
     "category": "Teams accounts and administration",
     "name": "Account profile",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-004",
     "category": "Teams accounts and administration",
     "name": "Account avatar",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-005",
     "category": "Teams accounts and administration",
     "name": "Team creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-006",
     "category": "Teams accounts and administration",
     "name": "Team renaming",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-007",
     "category": "Teams accounts and administration",
     "name": "Team deletion",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-008",
     "category": "Teams accounts and administration",
     "name": "Team member invitation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-009",
     "category": "Teams accounts and administration",
     "name": "Team member removal",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-010",
     "category": "Teams accounts and administration",
     "name": "Team role changes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-011",
     "category": "Teams accounts and administration",
     "name": "Project creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-012",
     "category": "Teams accounts and administration",
     "name": "Project renaming",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-013",
     "category": "Teams accounts and administration",
     "name": "Project archiving",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-014",
     "category": "Teams accounts and administration",
     "name": "Project permissions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-015",
     "category": "Teams accounts and administration",
     "name": "Organization creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-016",
     "category": "Teams accounts and administration",
     "name": "Organization settings",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-017",
     "category": "Teams accounts and administration",
     "name": "Workspace switching",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-018",
     "category": "Teams accounts and administration",
     "name": "Seat assignment",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-019",
     "category": "Teams accounts and administration",
     "name": "Viewer seats",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-020",
     "category": "Teams accounts and administration",
     "name": "Developer seats",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-021",
     "category": "Teams accounts and administration",
     "name": "Full editor seats",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-022",
     "category": "Teams accounts and administration",
     "name": "Billing settings",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-023",
     "category": "Teams accounts and administration",
     "name": "Subscription plan display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-024",
     "category": "Teams accounts and administration",
     "name": "Payment history",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-025",
     "category": "Teams accounts and administration",
     "name": "Domain verification",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-026",
     "category": "Teams accounts and administration",
     "name": "Single sign-on",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-027",
     "category": "Teams accounts and administration",
     "name": "SCIM provisioning",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-028",
     "category": "Teams accounts and administration",
     "name": "Audit log",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-029",
     "category": "Teams accounts and administration",
     "name": "Security policy",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-030",
     "category": "Teams accounts and administration",
     "name": "Guest management",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-031",
     "category": "Teams accounts and administration",
     "name": "Content ownership transfer",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-032",
     "category": "Teams accounts and administration",
     "name": "Export restriction",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-033",
     "category": "Teams accounts and administration",
     "name": "Public link restriction",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-034",
     "category": "Teams accounts and administration",
     "name": "Data retention policy",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-035",
     "category": "Teams accounts and administration",
     "name": "Regional data residency",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-46-036",
     "category": "Teams accounts and administration",
     "name": "Account deletion",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope."
   },
   {
     "id": "UI-47-001",
     "category": "Community and resources",
     "name": "Community file browsing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-002",
     "category": "Community and resources",
     "name": "Community search",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-003",
     "category": "Community and resources",
     "name": "Community category filter",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-004",
     "category": "Community and resources",
     "name": "Community file preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-005",
     "category": "Community and resources",
     "name": "Community file duplication",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-006",
     "category": "Community and resources",
     "name": "Community creator profiles",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-007",
     "category": "Community and resources",
     "name": "Community file likes",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-008",
     "category": "Community and resources",
     "name": "Community bookmarks",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-009",
     "category": "Community and resources",
     "name": "Community collections",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-010",
     "category": "Community and resources",
     "name": "Publish community file",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-011",
     "category": "Community and resources",
     "name": "Community file description",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-012",
     "category": "Community and resources",
     "name": "Community cover image",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-013",
     "category": "Community and resources",
     "name": "Community version update",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-014",
     "category": "Community and resources",
     "name": "Community comments",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-015",
     "category": "Community and resources",
     "name": "Community license display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-016",
     "category": "Community and resources",
     "name": "Report community content",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-47-017",
@@ -16004,10 +16004,10 @@
     "category": "Community and resources",
     "name": "Feedback submission",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope."
   },
   {
     "id": "UI-48-001",
@@ -16274,10 +16274,10 @@
     "category": "FigJam whiteboarding",
     "name": "Cursor chat",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so shared cursor chat is out of scope."
   },
   {
     "id": "UI-48-028",
@@ -16614,20 +16614,20 @@
     "category": "Figma Slides presentations",
     "name": "Collaborator presentation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so shared presenting is out of scope."
   },
   {
     "id": "UI-49-026",
     "category": "Figma Slides presentations",
     "name": "Deck sharing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so hosted deck sharing is out of scope."
   },
   {
     "id": "UI-49-027",
@@ -16854,40 +16854,40 @@
     "category": "Figma Sites publishing",
     "name": "Staging preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so hosted staging is out of scope; Sites export static files."
   },
   {
     "id": "UI-50-020",
     "category": "Figma Sites publishing",
     "name": "Publish website",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so hosted publishing is out of scope; Sites export static files."
   },
   {
     "id": "UI-50-021",
     "category": "Figma Sites publishing",
     "name": "Unpublish website",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so hosted publishing is out of scope; Sites export static files."
   },
   {
     "id": "UI-50-022",
     "category": "Figma Sites publishing",
     "name": "Custom domain",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so hosted domains are out of scope; Sites export static files."
   },
   {
     "id": "UI-50-023",
@@ -16964,10 +16964,10 @@
     "category": "Figma Sites publishing",
     "name": "Site analytics",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so hosted analytics are out of scope."
   },
   {
     "id": "UI-51-001",
@@ -17174,300 +17174,300 @@
     "category": "Figma Make and AI workflows",
     "name": "Generate interface from prompt",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-002",
     "category": "Figma Make and AI workflows",
     "name": "Edit generated interface by prompt",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-003",
     "category": "Figma Make and AI workflows",
     "name": "Attach design reference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-004",
     "category": "Figma Make and AI workflows",
     "name": "Attach selected frame context",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-005",
     "category": "Figma Make and AI workflows",
     "name": "Inspect generated code",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-006",
     "category": "Figma Make and AI workflows",
     "name": "Edit generated code",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-007",
     "category": "Figma Make and AI workflows",
     "name": "Run generated preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-008",
     "category": "Figma Make and AI workflows",
     "name": "Preview responsive layout",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-009",
     "category": "Figma Make and AI workflows",
     "name": "Revert generated edit",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-010",
     "category": "Figma Make and AI workflows",
     "name": "Version generated project",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-011",
     "category": "Figma Make and AI workflows",
     "name": "Generated application publishing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-012",
     "category": "Figma Make and AI workflows",
     "name": "Data source connection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-013",
     "category": "Figma Make and AI workflows",
     "name": "Generated app environment variables",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-014",
     "category": "Figma Make and AI workflows",
     "name": "Generate image",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-015",
     "category": "Figma Make and AI workflows",
     "name": "Edit image with prompt",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-016",
     "category": "Figma Make and AI workflows",
     "name": "Remove image background",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-017",
     "category": "Figma Make and AI workflows",
     "name": "Replace image content",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-018",
     "category": "Figma Make and AI workflows",
     "name": "Generate text alternatives",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-019",
     "category": "Figma Make and AI workflows",
     "name": "Rewrite selected text",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-020",
     "category": "Figma Make and AI workflows",
     "name": "Translate selected text",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-021",
     "category": "Figma Make and AI workflows",
     "name": "Rename layers automatically",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-022",
     "category": "Figma Make and AI workflows",
     "name": "Search assets semantically",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-023",
     "category": "Figma Make and AI workflows",
     "name": "Find similar designs",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-024",
     "category": "Figma Make and AI workflows",
     "name": "Suggest layout structure",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-025",
     "category": "Figma Make and AI workflows",
     "name": "Generate prototype interactions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-026",
     "category": "Figma Make and AI workflows",
     "name": "Prompt history",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-027",
     "category": "Figma Make and AI workflows",
     "name": "AI action cancellation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-028",
     "category": "Figma Make and AI workflows",
     "name": "AI usage display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-029",
     "category": "Figma Make and AI workflows",
     "name": "AI output feedback",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-52-030",
     "category": "Figma Make and AI workflows",
     "name": "AI data sharing controls",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope."
   },
   {
     "id": "UI-53-001",
@@ -19024,140 +19024,140 @@
     "category": "Agents and code workspace",
     "name": "Agents navigation panel",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-002",
     "category": "Agents and code workspace",
     "name": "Agent connection picker",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-003",
     "category": "Agents and code workspace",
     "name": "Agent availability indicator",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-004",
     "category": "Agents and code workspace",
     "name": "Agent task prompt",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-005",
     "category": "Agents and code workspace",
     "name": "Agent design context",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-006",
     "category": "Agents and code workspace",
     "name": "Agent selection context",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-007",
     "category": "Agents and code workspace",
     "name": "Agent change review",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-008",
     "category": "Agents and code workspace",
     "name": "Accept agent edit",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-009",
     "category": "Agents and code workspace",
     "name": "Reject agent edit",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-010",
     "category": "Agents and code workspace",
     "name": "Agent activity log",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-011",
     "category": "Agents and code workspace",
     "name": "Agent conversation history",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-012",
     "category": "Agents and code workspace",
     "name": "Agent cancellation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-013",
     "category": "Agents and code workspace",
     "name": "Agent permissions display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-014",
     "category": "Agents and code workspace",
     "name": "Agent design tool access",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-015",
@@ -19224,30 +19224,30 @@
     "category": "Agents and code workspace",
     "name": "On-canvas agent prompt",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-022",
     "category": "Agents and code workspace",
     "name": "Agent prompt voice dictation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-023",
     "category": "Agents and code workspace",
     "name": "Agent file and image attachments",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-024",
@@ -19264,110 +19264,110 @@
     "category": "Agents and code workspace",
     "name": "Design-system mentions in agent prompts",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-026",
     "category": "Agents and code workspace",
     "name": "Parallel agent prompts",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-027",
     "category": "Agents and code workspace",
     "name": "Agent chat visibility controls",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-028",
     "category": "Agents and code workspace",
     "name": "Undo an agent change",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-029",
     "category": "Agents and code workspace",
     "name": "Detached desktop agent window",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-030",
     "category": "Agents and code workspace",
     "name": "Agent MCP connector context",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-031",
     "category": "Agents and code workspace",
     "name": "Reusable agent skills",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-032",
     "category": "Agents and code workspace",
     "name": "Agent web search",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-033",
     "category": "Agents and code workspace",
     "name": "Agent comment review",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-034",
     "category": "Agents and code workspace",
     "name": "Agent design critique",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-57-035",
     "category": "Agents and code workspace",
     "name": "Agent raster-to-vector conversion",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-58-001",
@@ -19394,10 +19394,10 @@
     "category": "Live interface verification additions",
     "name": "Agents navigation rail entry",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope."
   },
   {
     "id": "UI-58-004",
@@ -19474,30 +19474,30 @@
     "category": "Live interface verification additions",
     "name": "File-browser shared files tab",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so shared files are out of scope."
   },
   {
     "id": "UI-58-012",
     "category": "Live interface verification additions",
     "name": "File-browser shared folders tab",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so shared folders are out of scope."
   },
   {
     "id": "UI-58-013",
     "category": "Live interface verification additions",
     "name": "File-browser AI prompt area",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so AI prompts are out of scope."
   },
   {
     "id": "UI-58-014",
@@ -19524,10 +19524,10 @@
     "category": "Live interface verification additions",
     "name": "Multiplayer tools dropdown",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app, so multiplayer tools are out of scope."
   },
   {
     "id": "UI-58-017",

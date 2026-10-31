@@ -6,6 +6,7 @@ export const ro:Readonly<Record<Message,string|PluralForms>>={
  // Menu groups
  'File':'Fișier','Edit':'Editare','Object':'Obiect','Text':'Text','Arrange':'Aranjare','Vector':'Vector','View':'Vizualizare','Page':'Pagină','Resources':'Resurse','Help':'Ajutor','Tools':'Instrumente','Prototype':'Prototip','Canvas':'Pânză',
  // Commands and menu items
+ 'retired':'retras',
  'Templates, locked assets and batches on your Mac.':'Șabloane, resurse blocate și loturi pe Mac-ul tău.','Responsive pages exported as static files.':'Pagini adaptabile exportate ca fișiere statice.',
  'Branches…':'Ramuri…','Storage and recovery…':'Stocare și recuperare…','Restart in safe mode':'Repornește în modul sigur','On your Mac · Offline':'Pe Mac-ul tău · Offline',
  'Draw tools':'Instrumente de desen','Toolbelt mode':'Mod bară de instrumente',

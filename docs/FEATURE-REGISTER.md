@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1490,"partial":332,"planned":200}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1490,"partial":332,"planned":17,"retired":183}. **planned** = not implemented; **retired** = deliberately out of scope for an offline Mac app; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -75,8 +75,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-02-026 | Keyboard focus ring | implemented | Web focus ring as in UI-44-012, rendered by web content in the shell. Native Tab reachability under macOS keyboard settings is not verified. |
 | UI-02-027 | App sandbox file access | planned | reference-verification-pending |
 | UI-02-028 | Offline startup | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-02-029 | App update checking | planned | reference-verification-pending |
-| UI-02-030 | Update release notes | planned | reference-verification-pending |
+| UI-02-029 | App update checking | retired | Retired October 31, 2026: Forma is an offline Mac app, so update checks over the network are out of scope. |
+| UI-02-030 | Update release notes | retired | Retired October 31, 2026: Forma is an offline Mac app, so update checks over the network are out of scope. |
 | UI-02-031 | Editable design clipboard between Mac windows | implemented | v0.2.0-dev.8: explicit native Copy/Cut/Paste transfers validated editable Forma layers between document windows with remapped definitions, used embeddable fonts, source context, one-step Undo and portable saving. Native two-WKWebView/private-pasteboard acceptance passed. 20 MB/20k-layer limits, referenced-main Cut refusal and supported closure limits: docs/NATIVE-CLIPBOARD.md. No private Figma clipboard claim. |
 
 ## Home and file browser
@@ -85,7 +85,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | --- | --- | --- | --- |
 | UI-03-001 | Recent files view | implemented | v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md. |
 | UI-03-002 | Draft files view | implemented | v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md. |
-| UI-03-003 | Team files view | planned | reference-verification-pending |
+| UI-03-003 | Team files view | retired | Retired October 31, 2026: Forma is an offline Mac app, so team files are out of scope. |
 | UI-03-004 | Project folders | implemented | v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md. |
 | UI-03-005 | File thumbnails | implemented | v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md. |
 | UI-03-006 | File list view | implemented | v0.2.0-dev.6: reachable workflow with appropriate core/browser/native checks and persistence/undo where applicable. See docs/VALIDATION-v0.2-grid-files-windows.md. Exact Figma reference acceptance remains separate. Local browser database files/folders, grid/list, filters/sorting, copies, metadata, archive/Trash/restore and guarded permanent removal. These are local organization workflows, not shared team/cloud storage. See docs/LOCAL-FILES.md. |
@@ -138,7 +138,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-04-018 | Draw mode switch | partial | Draw switches the toolbelt to direct Pen, Pencil and Brush buttons plus shapes and Text, via toolbar or View → Draw mode. View state only: no saved state, no history entry, no separate Draw inspector. |
 | UI-04-019 | Dev Mode switch | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-04-020 | Present button | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-04-021 | Share button | planned | reference-verification-pending |
+| UI-04-021 | Share button | retired | Retired October 31, 2026: Forma is an offline Mac app, so hosted sharing is out of scope; export files instead. |
 | UI-04-022 | Zoom dropdown | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-04-023 | File save status | partial | Top bar label shows Saving…, Saved locally, Saved to .oui or Not saved from editor timestamps. No path is shown because the renderer receives none, and no cloud status exists. |
 | UI-04-024 | Document loading indicator | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
@@ -1116,8 +1116,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-29-019 | Deprecate library component | partial | Partial: advisory deprecation/restoration for whole local component or variant-set publication groups, validated optional reasons in immutable snapshots/installed assets, review/usage/Actions advice and one Undo. Existing instances remain usable. No individual-variant status, cloud organization enforcement or exact Figma acceptance. See docs/LOCAL-LIBRARY-COMPONENT-LIFECYCLE.md. |
 | UI-29-020 | Library analytics | partial | An explicit scan counts current references in the local project library plus the open file: files, versions, instances, layers and unused assets, up to 2,000 files. It cannot see other people or devices, .oui files never opened here, history or trends, Trash or branch copies, and the panel says so. |
 | UI-29-021 | Library usage counts | partial | Now also counted across device files and for styles, variables and guides, on top of current-file instance counts. No organization, cloud or longitudinal data. |
-| UI-29-022 | Library permissions | planned | reference-verification-pending |
-| UI-29-023 | Organization library approval | planned | reference-verification-pending |
+| UI-29-022 | Library permissions | retired | Retired October 31, 2026: Forma is an offline Mac app, so shared library permissions are out of scope. |
+| UI-29-023 | Organization library approval | retired | Retired October 31, 2026: Forma is an offline Mac app, so organization approval is out of scope. |
 | UI-29-024 | Move component between libraries | partial | Consumer-side repair: after a source removal is accepted, a group is re-homed to a cached library with the same topology. Local IDs, instances and overrides are kept in one Undo, and the next review offers the new definition. Sources are not edited. Refuses edited definitions, an already installed target, topology mismatch and changed slot identities. |
 | UI-29-025 | Swap library source | partial | Reviewed local source replacement for complete compatible component/set-only libraries uses explicit whole-group mappings and preserves linked layer/property/set identities and matching customized slot content. Dirty baselines, locks, incompatible topology, ambiguous siblings, styles/tokens/guides and installed-source merges refuse atomically. One Undo/Redo/save and guarded review are validated. No cloud source replacement. See docs/LOCAL-LIBRARY-SOURCE-SWAP.md. |
 | UI-29-026 | Missing library indicator | partial | Unreleased source: Saved dependencies show missing local snapshot/cache and missing/removed source groups while cached editable artwork remains usable. Source files must be explicitly reimported; no remote availability monitoring. docs/LOCAL-COMPONENT-LIBRARIES.md. |
@@ -1337,7 +1337,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-35-022 | Share prototype link | partial | File → Export prototype file… saves a ZIP with one offline HTML player and a README, validated on load and blocked from network requests by its page policy. There is no hosted URL; you host or send the file yourself. See docs/PROTOTYPE-SHARING.md. |
 | UI-35-023 | Embed prototype | partial | The dialog generates a copyable iframe snippet with sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" and no allow-same-origin, tested playing inside a sandboxed iframe on a host page. It embeds a file you host, not a Forma-hosted prototype. |
 | UI-35-024 | Prototype password | partial | Real AES-256-GCM encryption with a PBKDF2-SHA-256 key at 600,000 iterations and random salt and IV stored in the file; a canary test confirms the content is unreadable without the password. Anyone with file and password has the content, weak passwords can be guessed offline, a password cannot be recovered or revoked, and files open only from https:// or locally. |
-| UI-35-025 | Prototype access permissions | planned | reference-verification-pending |
+| UI-35-025 | Prototype access permissions | retired | Retired October 31, 2026: Forma is an offline Mac app, so per-person access is out of scope; an exported prototype can use a password. |
 | UI-35-026 | Mobile preview | partial | The exported player works at phone widths with touch, 44 px controls and safe areas, tested with Playwright iPhone 13 emulation in Chromium. Not tested on a physical phone or in mobile Safari, and there is no companion app. |
 | UI-35-027 | Fixed-position layers | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-35-028 | Sticky-position layers | partial | Sticky works at root and in nested regions, including inside rotated parents in nested regions. A sticky layer that is itself rotated uses conservative box bounds. |
@@ -1361,7 +1361,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-36-005 | Comment text editing | implemented | Thread panel edits root/reply text through source-bound drafts and ordinary document history, preserving authors/creation times and recording edited time. Stale same-event actions refuse; bounded legacy text is disclosed. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-006 | Delete own comment | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-36-007 | Reply to comment | implemented | Thread panel posts, edits and deletes bounded file-local replies with explicit local author/time, Undo/save/reopen, per-thread pagination and malformed-input refusal. No mentions, remote delivery or account ownership. See docs/LOCAL-COMMENT-THREADS.md. |
-| UI-36-008 | Mention collaborator | planned | reference-verification-pending |
+| UI-36-008 | Mention collaborator | retired | Retired October 31, 2026: Forma is an offline Mac app, so mentioning other people is out of scope. |
 | UI-36-009 | Resolve comment | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-36-010 | Reopen comment | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
 | UI-36-011 | Filter unresolved comments | implemented | Cross-page local thread panel filters unresolved threads with bounded indexing/search and explicit truncation diagnostics; filtering changes no document history. See docs/LOCAL-COMMENT-THREADS.md. |
@@ -1369,12 +1369,12 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-36-013 | Filter comments by author | implemented | Local thread panel filters saved root/reply author names, alongside status/search and result pagination. Legacy unknown identity is explicit; no cloud user picker. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-014 | Jump to comment | implemented | Jump selects the actual page/anchored layer and centers the derived affine pin position using the logical SVG viewport, preserving artwork and Undo. Missing/collapsed anchors use disclosed saved-position fallback. Source/identity/context guards prevent stale retargeting. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-015 | Comment thread panel | implemented | Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit. |
-| UI-36-016 | Comment notification | planned | reference-verification-pending |
+| UI-36-016 | Comment notification | retired | Retired October 31, 2026: Forma is an offline Mac app, so notifications from other people are out of scope. |
 | UI-36-017 | Comment link | partial | Copy bounded opaque root-thread references and open them in the matching currently open .oui; valid links navigate pages, center actual pins, reset filters and focus paged/resolved threads without changing artwork or Undo. Clipboard fallback and stale asynchronous/retained handler ownership are validated. No public hosting, reply-specific targets, OS URL handler or cross-file automatic lookup. See docs/LOCAL-COMMENT-LINKS.md. |
 | UI-36-018 | Emoji reaction | partial | Eight saved file-local emoji reactions work independently on roots/replies with distinct shared display-name labels, counts, accessible descriptions, one Undo/save and guarded picker/source/local receipts. No authenticated identities, arbitrary Unicode picker, cloud reactions or notifications. Private metadata stays out of artwork, libraries and explicit Figma delivery. See docs/LOCAL-COMMENT-REACTIONS.md. |
 | UI-36-019 | Copy comment text | implemented | Copy root/reply plain text from the local thread panel; browser clipboard refusal exposes a selected read-only text fallback for standard Command-C. No fabricated native node/SVG clipboard representation or expanded IPC. See docs/LOCAL-COMMENT-THREADS.md. |
 | UI-36-020 | Comment on prototype | planned | reference-verification-pending |
-| UI-36-021 | Comment permissions | planned | reference-verification-pending |
+| UI-36-021 | Comment permissions | retired | Retired October 31, 2026: Forma is an offline Mac app, so shared comment permissions are out of scope. |
 | UI-36-022 | Annotation tool | partial | Inspect offers real layer annotation editing and optional HTML canvas marker navigation, with private note persistence/Undo. A dedicated pointer annotation placement tool is not implemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
 | UI-36-023 | Annotation text | implemented | Inspect → Layer annotations creates/edits/removes literal plain-text notes with Undo/save/reopen, original-context guards, locks and component defaults/root overrides. Private metadata is excluded from artwork, library and explicit Figma delivery. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
 | UI-36-024 | Annotation category | partial | Annotations choose real named/color categories from their owning layer set. Per-layer scoped categories preserve coherent whole-set instance overrides; document-global categories and exact Figma category parity remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md. |
@@ -1389,42 +1389,42 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-37-001 | Live multiplayer document | planned | reference-verification-pending |
-| UI-37-002 | Remote cursor display | planned | reference-verification-pending |
-| UI-37-003 | Remote cursor name | planned | reference-verification-pending |
-| UI-37-004 | Collaborator avatar | planned | reference-verification-pending |
-| UI-37-005 | Collaborator selection outline | planned | reference-verification-pending |
-| UI-37-006 | Follow collaborator | planned | reference-verification-pending |
-| UI-37-007 | Stop following collaborator | planned | reference-verification-pending |
-| UI-37-008 | Multiplayer text editing | planned | reference-verification-pending |
-| UI-37-009 | Conflict-free shape editing | planned | reference-verification-pending |
-| UI-37-010 | Remote changes propagation | planned | reference-verification-pending |
-| UI-37-011 | Presence status | planned | reference-verification-pending |
-| UI-37-012 | Join file notification | planned | reference-verification-pending |
-| UI-37-013 | Leave file notification | planned | reference-verification-pending |
-| UI-37-014 | Audio collaboration | planned | reference-verification-pending |
-| UI-37-015 | Audio mute | planned | reference-verification-pending |
-| UI-37-016 | Audio captions | planned | reference-verification-pending |
-| UI-37-017 | Canvas spotlight | planned | reference-verification-pending |
-| UI-37-018 | Observation mode | planned | reference-verification-pending |
-| UI-37-019 | Invite by email | planned | reference-verification-pending |
-| UI-37-020 | Invite by link | planned | reference-verification-pending |
-| UI-37-021 | Viewer permission | planned | reference-verification-pending |
-| UI-37-022 | Editor permission | planned | reference-verification-pending |
-| UI-37-023 | Owner permission | planned | reference-verification-pending |
-| UI-37-024 | Copy collaboration link | planned | reference-verification-pending |
-| UI-37-025 | Link access settings | planned | reference-verification-pending |
-| UI-37-026 | Remove collaborator | planned | reference-verification-pending |
-| UI-37-027 | Request edit access | planned | reference-verification-pending |
-| UI-37-028 | Approve edit request | planned | reference-verification-pending |
-| UI-37-029 | Reject edit request | planned | reference-verification-pending |
-| UI-37-030 | Offline edits queue | planned | reference-verification-pending |
-| UI-37-031 | Reconnect synchronization | planned | reference-verification-pending |
-| UI-37-032 | Conflict recovery | planned | reference-verification-pending |
-| UI-37-033 | Collaborator activity history | planned | reference-verification-pending |
-| UI-37-034 | Session recovery | planned | reference-verification-pending |
-| UI-37-035 | Shared selection visibility | planned | reference-verification-pending |
-| UI-37-036 | Multiplayer undo isolation | planned | reference-verification-pending |
+| UI-37-001 | Live multiplayer document | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-002 | Remote cursor display | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-003 | Remote cursor name | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-004 | Collaborator avatar | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-005 | Collaborator selection outline | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-006 | Follow collaborator | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-007 | Stop following collaborator | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-008 | Multiplayer text editing | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-009 | Conflict-free shape editing | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-010 | Remote changes propagation | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-011 | Presence status | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-012 | Join file notification | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-013 | Leave file notification | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-014 | Audio collaboration | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-015 | Audio mute | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-016 | Audio captions | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-017 | Canvas spotlight | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-018 | Observation mode | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-019 | Invite by email | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-020 | Invite by link | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-021 | Viewer permission | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-022 | Editor permission | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-023 | Owner permission | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-024 | Copy collaboration link | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-025 | Link access settings | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-026 | Remove collaborator | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-027 | Request edit access | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-028 | Approve edit request | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-029 | Reject edit request | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-030 | Offline edits queue | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-031 | Reconnect synchronization | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-032 | Conflict recovery | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-033 | Collaborator activity history | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-034 | Session recovery | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-035 | Shared selection visibility | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
+| UI-37-036 | Multiplayer undo isolation | retired | Retired October 31, 2026: Forma is an offline Mac app, so live multiplayer and shared sessions are out of scope. |
 
 ## History and recovery
 
@@ -1508,8 +1508,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-39-035 | Clipboard paste from Figma | planned | reference-verification-pending |
 | UI-39-036 | Clipboard copy to Figma | planned | reference-verification-pending |
 | UI-39-037 | Figma REST JSON import | partial | Partial: local offline GET-file REST JSON or bare DOCUMENT import through guarded Open/Figma transfer picker. Bounded editable supported geometry/plain text, detached component frames, explicit paint/image/transform/metadata reduction review and validation before new-project open. No API retrieval, missing-asset fetch or full fidelity. See docs/FIGMA-REST-JSON-IMPORT.md. Source core/type/browser checks; native and exact reference acceptance pending. |
-| UI-39-038 | Figma API file retrieval | planned | reference-verification-pending |
-| UI-39-039 | Figma asset retrieval | planned | reference-verification-pending |
+| UI-39-038 | Figma API file retrieval | retired | Retired October 31, 2026: Forma is an offline Mac app, so the Figma web API is out of scope; use local .fig files or JSON. |
+| UI-39-039 | Figma asset retrieval | retired | Retired October 31, 2026: Forma is an offline Mac app, so the Figma web API is out of scope; use local .fig files or JSON. |
 | UI-39-040 | Import progress and cancellation | partial | Partial: browser Open/Place import panel with real byte progress, named preparation stages, cancellation and permanent source ownership; atomic raster batches and SVG review. Synchronous main-thread parsing and native picker/bootstrap paths are not interruptible. Existing Figma import subset unchanged. See docs/IMPORT-PROGRESS-RELIABILITY.md. |
 
 ## Export and delivery
@@ -1670,11 +1670,11 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-43-031 | Shader discovery and filtering | implemented | Local browser with search, kind and tag filters. This is the bundled catalog and file shaders only: no community or hosted library. |
 | UI-43-032 | Shader source filtering | partial | Filters between Forma bundled and This file. No team, community or account sources exist. |
 | UI-43-033 | Shader code inspection | implemented | Read-only source, per-version view, uniform table and shared prelude. File shaders can also be edited, with compiler errors shown and bad source refused. |
-| UI-43-034 | Generate shader fill with agent | planned | reference-verification-pending |
-| UI-43-035 | Generate shader effect with agent | planned | reference-verification-pending |
-| UI-43-036 | Edit shader with agent | planned | reference-verification-pending |
-| UI-43-037 | Generative plugin creation with agent | planned | reference-verification-pending |
-| UI-43-038 | Generative plugin prompt editing | planned | reference-verification-pending |
+| UI-43-034 | Generate shader fill with agent | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-43-035 | Generate shader effect with agent | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-43-036 | Edit shader with agent | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-43-037 | Generative plugin creation with agent | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-43-038 | Generative plugin prompt editing | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
 
 ## Accessibility and localization
 
@@ -1737,12 +1737,12 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-45-020 | Canvas wheel behavior | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history. |
 | UI-45-021 | Zoom sensitivity | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history. |
 | UI-45-022 | Trackpad behavior | partial | Two-finger panning and modifier/wheel zoom work through shared wheel events. Separate hardware/device gesture customization and physical trackpad acceptance remain incomplete. |
-| UI-45-023 | Comment notification preference | planned | reference-verification-pending |
-| UI-45-024 | Multiplayer cursor preference | planned | reference-verification-pending |
+| UI-45-023 | Comment notification preference | retired | Retired October 31, 2026: Forma is an offline Mac app, so notifications from other people are out of scope. |
+| UI-45-024 | Multiplayer cursor preference | retired | Retired October 31, 2026: Forma is an offline Mac app, so multiplayer cursors are out of scope. |
 | UI-45-025 | Profile display name | partial | Partial: explicit local display name, bounded normalization, file-browser/editor initials, cross-window persistence/reset outside artwork. User-entered label only, no authenticated account or remote sync. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md. |
 | UI-45-026 | Profile avatar | partial | Partial: local PNG/JPEG/WebP import, bounded header/codec checks, center-cropped 128px PNG avatar, cancel/timeout and retained-session guards. Embedded PNG-only storage, no remote or organization avatars. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md. |
-| UI-45-027 | Crash report opt-in | planned | reference-verification-pending |
-| UI-45-028 | Usage analytics opt-in | planned | reference-verification-pending |
+| UI-45-027 | Crash report opt-in | retired | Retired October 31, 2026: Forma is an offline Mac app, so crash report sending is out of scope; Forma sends no telemetry. |
+| UI-45-028 | Usage analytics opt-in | retired | Retired October 31, 2026: Forma is an offline Mac app, so usage analytics are out of scope; Forma sends no telemetry. |
 | UI-45-029 | Reset preferences | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history. |
 | UI-45-030 | Preferences persistence | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history. |
 | UI-45-031 | Keep drawing tool selected preference | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history. |
@@ -1758,9 +1758,9 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-45-041 | Number-key opacity preference | implemented | Unreleased source: Persisted local preferences have real consumers: library specimens, quiet recovery interval, non-destructive Home recent limit, new/unset export defaults, picker format, duplicate root names, selected-center keyboard/native-command zoom, canvas Control-click and locked-safe number opacity. Existing files/profiles/defaults remain compatible; native keyboard/menu distinction uses the existing command adapter Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/workflow-preferences.test.ts; tests/e2e/workflow-preferences.spec.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending. |
 | UI-45-042 | Legacy outlines rendering preference | planned | reference-verification-pending |
 | UI-45-043 | Command-Option rotation preference | implemented | Off by default. Command-Option drag rotates the selection with Move or Scale, with Shift snapping and Undo; locked selections refuse. Mac Command binding only. Forma's own reading of the setting; the reference meaning is unverified. |
-| UI-45-044 | AI audio notification preference | planned | reference-verification-pending |
+| UI-45-044 | AI audio notification preference | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI features are out of scope. |
 | UI-45-045 | Open design links in desktop preference | planned | reference-verification-pending |
-| UI-45-046 | Show Agents navigation preference | planned | reference-verification-pending |
+| UI-45-046 | Show Agents navigation preference | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
 | UI-45-047 | Scroll wheel zoom preference | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history. |
 | UI-45-048 | Right-button drag panning preference | implemented | v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Validated versioned local preferences affect drawing, small/large nudges, rotation increment, tool retention, outlines/dimensions, wheel zoom/sensitivity/inversion and right-button pan; preferences stay outside project history. |
 | UI-45-049 | Vector geometry snapping preference | implemented | Preferences provides persisted device-local Follow document/On/Off vector geometry snapping with effective status, reset, guarded storage and cross-window cancellation/recovery. It controls the existing bounded single-anchor solver and explicit Pen/continuation endpoints. Multiple anchors, handles and specialized solver coverage remain separate limitations. Exact reference/native acceptance is separate. See docs/SNAPPING-PREFERENCES.md. |
@@ -1772,63 +1772,63 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-46-001 | Account sign-in | planned | reference-verification-pending |
-| UI-46-002 | Account sign-out | planned | reference-verification-pending |
-| UI-46-003 | Account profile | planned | reference-verification-pending |
-| UI-46-004 | Account avatar | planned | reference-verification-pending |
-| UI-46-005 | Team creation | planned | reference-verification-pending |
-| UI-46-006 | Team renaming | planned | reference-verification-pending |
-| UI-46-007 | Team deletion | planned | reference-verification-pending |
-| UI-46-008 | Team member invitation | planned | reference-verification-pending |
-| UI-46-009 | Team member removal | planned | reference-verification-pending |
-| UI-46-010 | Team role changes | planned | reference-verification-pending |
-| UI-46-011 | Project creation | planned | reference-verification-pending |
-| UI-46-012 | Project renaming | planned | reference-verification-pending |
-| UI-46-013 | Project archiving | planned | reference-verification-pending |
-| UI-46-014 | Project permissions | planned | reference-verification-pending |
-| UI-46-015 | Organization creation | planned | reference-verification-pending |
-| UI-46-016 | Organization settings | planned | reference-verification-pending |
-| UI-46-017 | Workspace switching | planned | reference-verification-pending |
-| UI-46-018 | Seat assignment | planned | reference-verification-pending |
-| UI-46-019 | Viewer seats | planned | reference-verification-pending |
-| UI-46-020 | Developer seats | planned | reference-verification-pending |
-| UI-46-021 | Full editor seats | planned | reference-verification-pending |
-| UI-46-022 | Billing settings | planned | reference-verification-pending |
-| UI-46-023 | Subscription plan display | planned | reference-verification-pending |
-| UI-46-024 | Payment history | planned | reference-verification-pending |
-| UI-46-025 | Domain verification | planned | reference-verification-pending |
-| UI-46-026 | Single sign-on | planned | reference-verification-pending |
-| UI-46-027 | SCIM provisioning | planned | reference-verification-pending |
-| UI-46-028 | Audit log | planned | reference-verification-pending |
-| UI-46-029 | Security policy | planned | reference-verification-pending |
-| UI-46-030 | Guest management | planned | reference-verification-pending |
-| UI-46-031 | Content ownership transfer | planned | reference-verification-pending |
-| UI-46-032 | Export restriction | planned | reference-verification-pending |
-| UI-46-033 | Public link restriction | planned | reference-verification-pending |
-| UI-46-034 | Data retention policy | planned | reference-verification-pending |
-| UI-46-035 | Regional data residency | planned | reference-verification-pending |
-| UI-46-036 | Account deletion | planned | reference-verification-pending |
+| UI-46-001 | Account sign-in | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-002 | Account sign-out | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-003 | Account profile | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-004 | Account avatar | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-005 | Team creation | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-006 | Team renaming | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-007 | Team deletion | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-008 | Team member invitation | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-009 | Team member removal | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-010 | Team role changes | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-011 | Project creation | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-012 | Project renaming | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-013 | Project archiving | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-014 | Project permissions | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-015 | Organization creation | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-016 | Organization settings | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-017 | Workspace switching | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-018 | Seat assignment | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-019 | Viewer seats | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-020 | Developer seats | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-021 | Full editor seats | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-022 | Billing settings | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-023 | Subscription plan display | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-024 | Payment history | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-025 | Domain verification | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-026 | Single sign-on | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-027 | SCIM provisioning | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-028 | Audit log | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-029 | Security policy | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-030 | Guest management | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-031 | Content ownership transfer | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-032 | Export restriction | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-033 | Public link restriction | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-034 | Data retention policy | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-035 | Regional data residency | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
+| UI-46-036 | Account deletion | retired | Retired October 31, 2026: Forma is an offline Mac app, so accounts, teams and administration are out of scope. |
 
 ## Community and resources
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-47-001 | Community file browsing | planned | reference-verification-pending |
-| UI-47-002 | Community search | planned | reference-verification-pending |
-| UI-47-003 | Community category filter | planned | reference-verification-pending |
-| UI-47-004 | Community file preview | planned | reference-verification-pending |
-| UI-47-005 | Community file duplication | planned | reference-verification-pending |
-| UI-47-006 | Community creator profiles | planned | reference-verification-pending |
-| UI-47-007 | Community file likes | planned | reference-verification-pending |
-| UI-47-008 | Community bookmarks | planned | reference-verification-pending |
-| UI-47-009 | Community collections | planned | reference-verification-pending |
-| UI-47-010 | Publish community file | planned | reference-verification-pending |
-| UI-47-011 | Community file description | planned | reference-verification-pending |
-| UI-47-012 | Community cover image | planned | reference-verification-pending |
-| UI-47-013 | Community version update | planned | reference-verification-pending |
-| UI-47-014 | Community comments | planned | reference-verification-pending |
-| UI-47-015 | Community license display | planned | reference-verification-pending |
-| UI-47-016 | Report community content | planned | reference-verification-pending |
+| UI-47-001 | Community file browsing | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-002 | Community search | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-003 | Community category filter | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-004 | Community file preview | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-005 | Community file duplication | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-006 | Community creator profiles | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-007 | Community file likes | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-008 | Community bookmarks | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-009 | Community collections | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-010 | Publish community file | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-011 | Community file description | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-012 | Community cover image | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-013 | Community version update | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-014 | Community comments | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-015 | Community license display | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
+| UI-47-016 | Report community content | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
 | UI-47-017 | Template gallery | implemented | Home and Resources/Actions expose a searchable category gallery of six original free Design, Whiteboard and Presentation templates plus bounded personal local kits. No third-party template marketplace claim. See docs/LOCAL-TEMPLATE-GALLERY.md. |
 | UI-47-018 | Template preview | implemented | Selected-template page previews render isolated saved base artwork without changing the current design or registering template fonts. Existing 500-layer/4 MB font-safe preview limits and explicit diagnostics apply. See docs/LOCAL-TEMPLATE-GALLERY.md. |
 | UI-47-019 | Template insertion | implemented | One selected page inserts editable artwork and supported remapped dependencies at the matching Design/Whiteboard page root with one Undo and real save/reopen. Comments/page settings/Motion omissions are reported; presentations create new decks instead of unregistered frame insertion. See docs/LOCAL-TEMPLATE-GALLERY.md. |
@@ -1842,7 +1842,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-47-027 | Tool contextual help | partial | Current-tool guidance covers 17 actual toolbar tools, shows live personalized command bindings and links to keyboard shortcuts without activating tools. Specialized tools retain their own visible limits; broader contextual/reference coverage remains pending. See docs/EDITOR-LEARNING.md. |
 | UI-47-028 | Help center links | implemented | Fixed trusted links open existing Forma guide, product and privacy pages through normal browser links with no project identifiers. Link destinations and real UI paths are validated; the guide is explicitly a preview that may lag source. Native/reference verification remains separate. See docs/EDITOR-LEARNING.md. |
 | UI-47-029 | Release notes panel | implemented | v0.2.0-dev.9: Help/Actions opens bounded bundled release history, app-version marker, source/preview distinction, scope notes and validated public preview download/checksum. Development entries have no installer link; error/Retry/focus and unchanged selection/tool/project/history tested. Snapshot history, not live update discovery/native updater. docs/RELEASE-NOTES.md. |
-| UI-47-030 | Feedback submission | planned | reference-verification-pending |
+| UI-47-030 | Feedback submission | retired | Retired October 31, 2026: Forma is an offline Mac app, so a hosted community is out of scope. |
 
 ## FigJam whiteboarding
 
@@ -1874,7 +1874,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-48-024 | Voting session | partial | Persisted local voting with Undo in the whiteboard. One person on one device; there is no shared session or other participants. |
 | UI-48-025 | Stamps | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local board metadata, table/mind-map/connector edits and logical object duplication are validated. |
 | UI-48-026 | Emoji reactions | partial | React floats a chosen emoji locally for 1.8 seconds, with no document or Undo change. Nobody else can see it, as there is no shared session. |
-| UI-48-027 | Cursor chat | planned | reference-verification-pending |
+| UI-48-027 | Cursor chat | retired | Retired October 31, 2026: Forma is an offline Mac app, so shared cursor chat is out of scope. |
 | UI-48-028 | Laser pointer | partial | Ephemeral local laser pointer with no document or Undo change. Nobody else can see it, as there is no shared session. |
 | UI-48-029 | Music session | partial | Music plays a user-chosen PCM WAV (60 seconds, 8 MB) through PrototypePcmPlayer, with play, pause, stop, loop and volume. It runs on this device only, the clip is memory-only and never saved, and there is no shared session. |
 | UI-48-030 | Templates | implemented | Original retrospective and customer-journey templates create or insert native editable Whiteboard stickies/connectors, retaining relationships, Undo and persistence. No hosted team template catalog. See docs/LOCAL-TEMPLATE-GALLERY.md. |
@@ -1913,8 +1913,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-49-022 | Video embeds | partial | Video… embeds a local MP4/WebM up to 20 MB, with playback controls while presenting, loop/mute/autoplay inspector, Undo and .oui persistence. Hosted video URLs are unsupported; PDF, PNG and PowerPoint exports use the poster. |
 | UI-49-023 | Live polls | partial | Polls work for one local presenter session only: the presenter tallies with buttons or number keys, generated bars show in Presenter and audience views, counts persist, and each count is an Undo step. There is no audience link, join flow or network. |
 | UI-49-024 | Slide comments | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
-| UI-49-025 | Collaborator presentation | planned | reference-verification-pending |
-| UI-49-026 | Deck sharing | planned | reference-verification-pending |
+| UI-49-025 | Collaborator presentation | retired | Retired October 31, 2026: Forma is an offline Mac app, so shared presenting is out of scope. |
+| UI-49-026 | Deck sharing | retired | Retired October 31, 2026: Forma is an offline Mac app, so hosted deck sharing is out of scope. |
 | UI-49-027 | Slide export PDF | partial | The PDF stays rendered 1.5× page images, now with an invisible searchable and copyable text layer plus real URI link annotations, validated by pdf.js extraction. Text outside WinAnsi Helvetica is skipped in that layer, and vector or editable PDF objects remain absent. |
 | UI-49-028 | Slide export images | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Local notes, editable canvas, scoped clipboard, themes, templates, presenter/audience modes and PNG/ZIP exports; no cloud presenting. |
 | UI-49-029 | PowerPoint interchange | partial | Real .pptx writer and reader using fflate, with Export and Import in Slides and Undo on import. Round trips text runs, links, simple shapes, custom geometry, PNG/JPEG/GIF images, notes, hidden state, transitions and solid fills; effects and gradients flatten to PNG on export. Charts and SmartArt are omitted with notices. Validated by unzip and part checks, handwritten foreign packages and Quick Look, not yet opened in PowerPoint or Keynote. See docs/POWERPOINT-INTERCHANGE.md. |
@@ -1942,10 +1942,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-50-016 | CMS item editor | implemented | Item editor with typed inputs, slug, draft state, reorder, duplicate and delete through Undo. Image values are decoded before acceptance. No bulk or CSV import. |
 | UI-50-017 | CMS binding | partial | Repeated layers with limit and sort, text and image bindings, and one generated page per item. No filters, references or rich text fields. |
 | UI-50-018 | Published preview | partial | Local in-app preview of the export output at each breakpoint in an opaque, CSP-pinned sandbox, with page navigation. Not a hosted address. Embeds show a note and forms never send. |
-| UI-50-019 | Staging preview | planned | reference-verification-pending |
-| UI-50-020 | Publish website | planned | reference-verification-pending |
-| UI-50-021 | Unpublish website | planned | reference-verification-pending |
-| UI-50-022 | Custom domain | planned | reference-verification-pending |
+| UI-50-019 | Staging preview | retired | Retired October 31, 2026: Forma is an offline Mac app, so hosted staging is out of scope; Sites export static files. |
+| UI-50-020 | Publish website | retired | Retired October 31, 2026: Forma is an offline Mac app, so hosted publishing is out of scope; Sites export static files. |
+| UI-50-021 | Unpublish website | retired | Retired October 31, 2026: Forma is an offline Mac app, so hosted publishing is out of scope; Sites export static files. |
+| UI-50-022 | Custom domain | retired | Retired October 31, 2026: Forma is an offline Mac app, so hosted domains are out of scope; Sites export static files. |
 | UI-50-023 | Site title metadata | implemented | Site and per-page titles, plus item titles on collection pages, written to <title> and Open Graph. |
 | UI-50-024 | Site description metadata | implemented | Site and per-page descriptions, plus item summaries, written to meta and Open Graph tags. |
 | UI-50-025 | Open Graph image | implemented | Site and per-page images, plus an item image field, exported as files. An absolute address needs the site URL, and the export warns if it is missing. No preview card. |
@@ -1953,7 +1953,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-50-027 | Site accessibility settings | implemented | Language, skip link, reduced motion and focus color, plus heading and landmark tags, alternative text, one main, and export warnings. No contrast or keyboard-order testing. |
 | UI-50-028 | Site form | partial | Real labelled controls with client validation, editable from the panel. There is no backend. Without an https endpoint, visitors are told nothing was sent and the page CSP blocks posting. An endpoint posts directly from the browser and was not exercised end to end. |
 | UI-50-029 | Site embed | partial | https address or HTML in a sandboxed iframe with no referrer. HTML is rebuilt from an allow-list and has its own CSP. Scripts are opt-in. Preview shows a note instead of loading embeds. No provider presets. |
-| UI-50-030 | Site analytics | planned | reference-verification-pending |
+| UI-50-030 | Site analytics | retired | Retired October 31, 2026: Forma is an offline Mac app, so hosted analytics are out of scope. |
 
 ## Figma Buzz assets
 
@@ -1984,36 +1984,36 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-52-001 | Generate interface from prompt | planned | reference-verification-pending |
-| UI-52-002 | Edit generated interface by prompt | planned | reference-verification-pending |
-| UI-52-003 | Attach design reference | planned | reference-verification-pending |
-| UI-52-004 | Attach selected frame context | planned | reference-verification-pending |
-| UI-52-005 | Inspect generated code | planned | reference-verification-pending |
-| UI-52-006 | Edit generated code | planned | reference-verification-pending |
-| UI-52-007 | Run generated preview | planned | reference-verification-pending |
-| UI-52-008 | Preview responsive layout | planned | reference-verification-pending |
-| UI-52-009 | Revert generated edit | planned | reference-verification-pending |
-| UI-52-010 | Version generated project | planned | reference-verification-pending |
-| UI-52-011 | Generated application publishing | planned | reference-verification-pending |
-| UI-52-012 | Data source connection | planned | reference-verification-pending |
-| UI-52-013 | Generated app environment variables | planned | reference-verification-pending |
-| UI-52-014 | Generate image | planned | reference-verification-pending |
-| UI-52-015 | Edit image with prompt | planned | reference-verification-pending |
-| UI-52-016 | Remove image background | planned | reference-verification-pending |
-| UI-52-017 | Replace image content | planned | reference-verification-pending |
-| UI-52-018 | Generate text alternatives | planned | reference-verification-pending |
-| UI-52-019 | Rewrite selected text | planned | reference-verification-pending |
-| UI-52-020 | Translate selected text | planned | reference-verification-pending |
-| UI-52-021 | Rename layers automatically | planned | reference-verification-pending |
-| UI-52-022 | Search assets semantically | planned | reference-verification-pending |
-| UI-52-023 | Find similar designs | planned | reference-verification-pending |
-| UI-52-024 | Suggest layout structure | planned | reference-verification-pending |
-| UI-52-025 | Generate prototype interactions | planned | reference-verification-pending |
-| UI-52-026 | Prompt history | planned | reference-verification-pending |
-| UI-52-027 | AI action cancellation | planned | reference-verification-pending |
-| UI-52-028 | AI usage display | planned | reference-verification-pending |
-| UI-52-029 | AI output feedback | planned | reference-verification-pending |
-| UI-52-030 | AI data sharing controls | planned | reference-verification-pending |
+| UI-52-001 | Generate interface from prompt | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-002 | Edit generated interface by prompt | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-003 | Attach design reference | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-004 | Attach selected frame context | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-005 | Inspect generated code | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-006 | Edit generated code | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-007 | Run generated preview | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-008 | Preview responsive layout | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-009 | Revert generated edit | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-010 | Version generated project | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-011 | Generated application publishing | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-012 | Data source connection | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-013 | Generated app environment variables | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-014 | Generate image | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-015 | Edit image with prompt | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-016 | Remove image background | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-017 | Replace image content | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-018 | Generate text alternatives | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-019 | Rewrite selected text | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-020 | Translate selected text | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-021 | Rename layers automatically | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-022 | Search assets semantically | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-023 | Find similar designs | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-024 | Suggest layout structure | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-025 | Generate prototype interactions | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-026 | Prompt history | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-027 | AI action cancellation | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-028 | AI usage display | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-029 | AI output feedback | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
+| UI-52-030 | AI data sharing controls | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI generation is out of scope. |
 
 ## Performance and reliability
 
@@ -2194,41 +2194,41 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-57-001 | Agents navigation panel | planned | reference-verification-pending |
-| UI-57-002 | Agent connection picker | planned | reference-verification-pending |
-| UI-57-003 | Agent availability indicator | planned | reference-verification-pending |
-| UI-57-004 | Agent task prompt | planned | reference-verification-pending |
-| UI-57-005 | Agent design context | planned | reference-verification-pending |
-| UI-57-006 | Agent selection context | planned | reference-verification-pending |
-| UI-57-007 | Agent change review | planned | reference-verification-pending |
-| UI-57-008 | Accept agent edit | planned | reference-verification-pending |
-| UI-57-009 | Reject agent edit | planned | reference-verification-pending |
-| UI-57-010 | Agent activity log | planned | reference-verification-pending |
-| UI-57-011 | Agent conversation history | planned | reference-verification-pending |
-| UI-57-012 | Agent cancellation | planned | reference-verification-pending |
-| UI-57-013 | Agent permissions display | planned | reference-verification-pending |
-| UI-57-014 | Agent design tool access | planned | reference-verification-pending |
+| UI-57-001 | Agents navigation panel | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-002 | Agent connection picker | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-003 | Agent availability indicator | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-004 | Agent task prompt | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-005 | Agent design context | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-006 | Agent selection context | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-007 | Agent change review | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-008 | Accept agent edit | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-009 | Reject agent edit | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-010 | Agent activity log | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-011 | Agent conversation history | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-012 | Agent cancellation | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-013 | Agent permissions display | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-014 | Agent design tool access | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
 | UI-57-015 | Code tool in toolbar | implemented | Code layer tool in the toolbar and tool-code in Actions. Hidden in Dev Mode. |
 | UI-57-016 | Code block placement | implemented | Click places 400 × 300, drag sizes, with snap and parent handling from the normal creation path and Undo. The dialog opens on placement; double-click or Edit code reopens it. |
 | UI-57-017 | Runnable code layer | partial | Additive type:'code' node with validated HTML/CSS/JS runs in a no-network opaque frame, only from the dialog and only on explicit Run; source from a file never auto-executes. Canvas, Present and prototypes show the raster preview, not a live layer. It shares the editor thread, so a runaway loop freezes the app. See docs/CODE-LAYERS.md. |
 | UI-57-018 | Code layer property controls | implemented | Up to 24 declared text/number/boolean/color/choice properties, with validated Design panel controls, one Undo each, read through forma.props, forma.onProps and var(--forma-key). Declared as JSON, not through a form; preview refreshes only for source run this session, otherwise it is marked stale. |
 | UI-57-019 | Code layer preview | partial | Captured PNG (up to 2× and 2,048 px) stored as an ordinary image paint, with none/current/stale state and pixel-checked in Chromium and Playwright WebKit. Exports and the Figma Bridge use this raster (documented in docs/CODE-LAYERS.md). It is a DOM snapshot, frame fonts only; no real WKWebView smoke. |
 | UI-57-020 | Code layer source editing | implemented | HTML, CSS, JavaScript and Properties tabs with malformed declarations refused; save writes source and preview in one Undo; persisted in .oui. Plain text area with no highlighting or completion; locked and instance-managed layers refuse. |
-| UI-57-021 | On-canvas agent prompt | planned | reference-verification-pending |
-| UI-57-022 | Agent prompt voice dictation | planned | reference-verification-pending |
-| UI-57-023 | Agent file and image attachments | planned | reference-verification-pending |
+| UI-57-021 | On-canvas agent prompt | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-022 | Agent prompt voice dictation | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-023 | Agent file and image attachments | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
 | UI-57-024 | Agent library context | partial | Partial: source MCP read_library_context returns allowlisted metadata/provenance/versions/dependency IDs for the scoped saved file, bounded revision-pinned pagination and explicit omissions. No node/baseline/font/image/scalar/author/profile payloads, cloud catalogs, native/plugin integration or bundled-server acceptance. See docs/MCP-LIBRARY-CONTEXT.md. |
-| UI-57-025 | Design-system mentions in agent prompts | planned | reference-verification-pending |
-| UI-57-026 | Parallel agent prompts | planned | reference-verification-pending |
-| UI-57-027 | Agent chat visibility controls | planned | reference-verification-pending |
-| UI-57-028 | Undo an agent change | planned | reference-verification-pending |
-| UI-57-029 | Detached desktop agent window | planned | reference-verification-pending |
-| UI-57-030 | Agent MCP connector context | planned | reference-verification-pending |
-| UI-57-031 | Reusable agent skills | planned | reference-verification-pending |
-| UI-57-032 | Agent web search | planned | reference-verification-pending |
-| UI-57-033 | Agent comment review | planned | reference-verification-pending |
-| UI-57-034 | Agent design critique | planned | reference-verification-pending |
-| UI-57-035 | Agent raster-to-vector conversion | planned | reference-verification-pending |
+| UI-57-025 | Design-system mentions in agent prompts | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-026 | Parallel agent prompts | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-027 | Agent chat visibility controls | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-028 | Undo an agent change | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-029 | Detached desktop agent window | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-030 | Agent MCP connector context | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-031 | Reusable agent skills | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-032 | Agent web search | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-033 | Agent comment review | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-034 | Agent design critique | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
+| UI-57-035 | Agent raster-to-vector conversion | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
 
 ## Live interface verification additions
 
@@ -2236,7 +2236,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | --- | --- | --- | --- |
 | UI-58-001 | Vertical navigation rail | implemented | Vertical tablist inside the left sidebar: canvas position unchanged, existing tabs kept, one Tab stop with Up, Down, Home and End. Hidden with a collapsed left sidebar and below 850 px. |
 | UI-58-002 | File navigation rail entry | implemented | Selects the existing File panel through leftTab. |
-| UI-58-003 | Agents navigation rail entry | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-58-003 | Agents navigation rail entry | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI agents are out of scope. |
 | UI-58-004 | Assets navigation rail entry | implemented | Selects the existing Assets panel through leftTab. |
 | UI-58-005 | Tools navigation rail entry | implemented | Panel lists existing local dialogs: Actions, fonts, icons, templates, components, styles, colors, asset usage, MCP and local plugins. |
 | UI-58-006 | Variables navigation rail entry | implemented | Panel lists the file's collections, mode counts and default values, read-only, and opens Variables and modes. Bounded at 200 rows. |
@@ -2244,12 +2244,12 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-58-008 | Text tool dropdown | implemented | Dropdown with Text, Text on path (with Undo, refuses other selections) and Find and replace text. Keyboard accessible. |
 | UI-58-009 | Dedicated Text main menu | implemented | v0.2: separate browser/native Text and Vector menus, generated from shared commands. Exact menu contents remain incomplete. |
 | UI-58-010 | Dedicated Vector main menu | implemented | v0.2: separate browser/native Text and Vector menus, generated from shared commands. Exact menu contents remain incomplete. |
-| UI-58-011 | File-browser shared files tab | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-58-012 | File-browser shared folders tab | planned | observed-in-signed-in-Figma-2026-10-29 |
-| UI-58-013 | File-browser AI prompt area | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-58-011 | File-browser shared files tab | retired | Retired October 31, 2026: Forma is an offline Mac app, so shared files are out of scope. |
+| UI-58-012 | File-browser shared folders tab | retired | Retired October 31, 2026: Forma is an offline Mac app, so shared folders are out of scope. |
+| UI-58-013 | File-browser AI prompt area | retired | Retired October 31, 2026: Forma is an offline Mac app, so AI prompts are out of scope. |
 | UI-58-014 | Missing fonts button | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. Missing-font badge opens the document audit. |
 | UI-58-015 | Prototype view dropdown | implemented | Menu beside Present: present from selection or first frame, present any saved flow on the page, or open Prototype mode. Read-only; not shown in Slides. |
-| UI-58-016 | Multiplayer tools dropdown | planned | observed-in-signed-in-Figma-2026-10-29 |
+| UI-58-016 | Multiplayer tools dropdown | retired | Retired October 31, 2026: Forma is an offline Mac app, so multiplayer tools are out of scope. |
 | UI-58-017 | Frame preset archive | implemented | Reachable searchable frame-preset Archive category includes six documented older Apple UIKit logical sizes, with filtering, keyboard insertion, context guards, page-root placement, Undo and oui save/reopen. Catalog scope and primary size references are explicit; exact Figma archive inventory remains unverified. See docs/FRAME-PRESET-ARCHIVE.md. |
 | UI-58-018 | Foldable device closed preset | partial | A labeled generic Forma book-style foldable closed layout (360 × 800) is searchable and insertable independently or as an undoable pair. It does not claim a named device, hinge, posture, safe areas or exact Figma hardware preset; see docs/FRAME-PRESET-ARCHIVE.md. |
 | UI-58-019 | Foldable device open preset | partial | A labeled generic Forma book-style foldable open layout (720 × 800) is searchable and insertable independently or as an undoable pair. It does not claim a named device, hinge, posture, safe areas or exact Figma hardware preset; see docs/FRAME-PRESET-ARCHIVE.md. |

@@ -5,6 +5,7 @@
  */
 export const messages=[
  'File','Edit','Object','Text','Arrange','Vector',
+ 'retired',
  'Templates, locked assets and batches on your Mac.','Responsive pages exported as static files.',
  'Branches…','Storage and recovery…','Restart in safe mode','On your Mac · Offline',
  'Draw tools','Toolbelt mode',

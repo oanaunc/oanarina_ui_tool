@@ -1,6 +1,6 @@
 # Forma 0.2.0-dev.13 validation
 
-Forma is a local-first, offline Mac design app. This preview follows the [local platform batches](UNRELEASED-LOCAL-PLATFORM-BATCHES.md) with a further pass on components, drawing, typography, libraries and offline resources. The register holds 2,022 named requirements across 60 categories: **1,490 implemented, 332 partial and 200 planned**. Implementation and Figma reference verification stay separate, and complete parity remains unfinished.
+Forma is a local-first, offline Mac design app. This preview follows the [local platform batches](UNRELEASED-LOCAL-PLATFORM-BATCHES.md) with a further pass on components, drawing, typography, libraries and offline resources. At release the register held 2,022 named requirements across 60 categories: **1,490 implemented, 332 partial and 200 planned**. On October 31, 2026, 183 online-only requirements were retired as out of scope, leaving 17 planned. Implementation and Figma reference verification stay separate, and complete parity remains unfinished.
 
 ## Added after the local platform batches
 
