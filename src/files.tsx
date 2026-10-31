@@ -1,3 +1,5 @@
+import {announceError} from './error-announcements';
+import {t} from './i18n';
 import {validatePassThroughExportSource} from './pass-through';
 import {openSketchProjectFile,getSketchReview,cancelSketchReview} from './sketch-import';
 import {openPdfProjectFile,getPdfImportReview,cancelPdfImportReview} from './pdf-import';
@@ -49,7 +51,7 @@ export async function download(name:string,data:string|Blob,mime='text/plain',sa
 }
 export function serializedProject(){const s=useEditor.getState();return serializeFontDocument(s.doc,assetsForUsage(projectFontUsage(s.doc),s.doc.fonts));}
 export async function saveProject(saveAs=false):Promise<boolean>{try{const s=useEditor.getState(),doc=s.doc,raw=serializeFontDocument(doc,assetsForUsage(projectFontUsage(doc),doc.fonts));if(!await download(doc.name+'.oui',raw,'application/json',saveAs))return false;if(useEditor.getState().doc.id===doc.id)s.set({savedAt:doc.updatedAt,toast:'Project saved'});await markDesktopSaved(doc);return true;}catch(e){notifyError(e);return false;}}
-export function notifyError(e:unknown){useEditor.getState().set({toast:e instanceof Error?e.message:'Something went wrong.'});}
+export function notifyError(e:unknown){const message=e instanceof Error?e.message:t('Something went wrong.');useEditor.getState().set({toast:message});announceError(message);}
 export async function openSelectedProject(file:File){
  const pendingSketch=getSketchReview();if(pendingSketch)cancelSketchReview(pendingSketch);if(/\.sketch$/i.test(file.name))return openSketchProjectFile(file);
  const pendingPdf=getPdfImportReview();if(pendingPdf)cancelPdfImportReview(pendingPdf);if(/\.pdf$/i.test(file.name))return openPdfProjectFile(file);
