@@ -1,6 +1,6 @@
 import {trustedImportDiagnostic} from './trusted-import-diagnostics';
 /** Ephemeral import delivery state. Never serialized into a project or exported. */
-export type ImportFormat='project'|'fig'|'rest'|'raster'|'svg';
+export type ImportFormat='project'|'fig'|'rest'|'pdf'|'raster'|'svg';
 export type ImportStage='reading'|'validating'|'decoding'|'retaining'|'opening';
 export interface ImportTaskState {id:number;format:ImportFormat;stage:ImportStage;status:'active'|'cancelled'|'failed';file:number;files:number;bytes:number;totalBytes:number;reason?:string;}
 const labels:Record<ImportStage,string>={reading:'Reading selected bytes',validating:'Validating file structure',decoding:'Decoding embedded artwork',retaining:'Keeping the current project',opening:'Preparing the imported project'};
@@ -35,7 +35,7 @@ export function beginImportTask(format:ImportFormat,files:number,totalBytes:numb
  active?.abort();const controller=new AbortController(),id=++serial;active=controller;
  state={id,format,files,file:1,totalBytes,bytes:0,stage:'reading',status:'active'};emit();
  const check=()=>{controller.signal.throwIfAborted();if(active!==controller||state?.id!==id)throw new DOMException('Import superseded.','AbortError');};
- const update=(patch:Partial<Pick<ImportTaskState,'stage'|'bytes'|'file'|'format'>>)=>{check();state={...state!,...patch};emit();};
+ const update=(patch:Partial<Pick<ImportTaskState,'stage'|'bytes'|'file'|'files'|'format'>>)=>{check();state={...state!,...patch};emit();};
  return {signal:controller.signal,abort:()=>controller.abort(),check,update,
   async checkpoint(stage:ImportStage){update({stage});await new Promise<void>(r=>setTimeout(r,0));check();},
   finish(){check();active=undefined;state=undefined;emit();},

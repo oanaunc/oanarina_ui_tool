@@ -1,4 +1,5 @@
 import ComponentPlayground from './ComponentPlayground';
+import PdfImportReview from './PdfImportReview';
 import FigmaRestReview from './FigmaRestReview';
 import FigmaRestImportButton from './FigmaRestImportButton';
 import LocalNavigationLinks from './LocalNavigationLinks';
@@ -48,6 +49,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
  if(modal==='component-playground')return <ComponentPlayground/>;
+ if(modal==='pdf-import-review')return <PdfImportReview key={s.doc.id}/>;
  if(modal==='figma-rest-review')return <FigmaRestReview key={s.doc.id}/>;
  if(modal==='local-links')return <LocalNavigationLinks key={s.doc.id}/>;
  if(modal==='icons')return <IconLibrary key={s.doc.id}/>;

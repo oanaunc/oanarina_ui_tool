@@ -32,6 +32,7 @@
     "lucide-react": "^0.577.0",
     "paper": "^0.16.0",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "5.4.624",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "zustand": "^5.0.8"
