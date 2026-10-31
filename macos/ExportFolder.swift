@@ -9,7 +9,8 @@ enum ExportFolder {
         if path=="manifest.json"{return true}
         guard path.hasPrefix("assets/") else{return false}
         let leaf=String(path.dropFirst(7))
-        return !leaf.isEmpty&&!leaf.hasPrefix(".")&&leaf.utf8.count<=240&&!leaf.contains("/")&&!leaf.contains("\\")&&!leaf.contains(":")&&leaf.unicodeScalars.allSatisfy{$0.value>=32&&$0.value != 127}&&assetExtensions.contains((leaf as NSString).pathExtension.lowercased())
+        let safe=leaf.unicodeScalars.allSatisfy{$0.value>=32 && $0.value != 127}
+        return !leaf.isEmpty && !leaf.hasPrefix(".") && leaf.utf8.count<=240 && !leaf.contains("/") && !leaf.contains("\\") && !leaf.contains(":") && safe && assetExtensions.contains((leaf as NSString).pathExtension.lowercased())
     }
     static func folderName(_ raw:String)->String? {
         let name=raw.trimmingCharacters(in:.whitespacesAndNewlines)
@@ -35,7 +36,7 @@ enum ExportFolder {
             for (path,bytes) in files{try bytes.write(to:staging.appendingPathComponent(path),options:.withoutOverwriting)}
             for index in 1...1000 {
                 let target=parent.appendingPathComponent(index==1 ? name:"\(name) \(index)",isDirectory:true)
-                do{try manager.moveItem(at:staging,to:target);return target}catch let error as CocoaError where error.code == .fileWriteFileExists{continue}catch let error as NSError where error.domain==NSPOSIXErrorDomain&&error.code==Int(EEXIST){continue}
+                do{try manager.moveItem(at:staging,to:target);return target}catch let error as NSError where error.code==NSFileWriteFileExistsError || (error.domain==NSPOSIXErrorDomain && error.code==Int(EEXIST)){continue}
             }
             throw NSError(domain:"Choose a folder with fewer existing exports.",code:5)
         }catch{try? manager.removeItem(at:staging);throw error}

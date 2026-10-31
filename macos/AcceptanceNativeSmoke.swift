@@ -92,15 +92,15 @@ extension Studio {
     /** The shell picks the place, in a new folder beside anything already there, and the renderer learns nothing about it. */
     func acceptAssetFolder(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
         smokeSaveDirectory=directory
-        let manifest={(name:String) in directory.appendingPathComponent(name).appendingPathComponent("manifest.json")}
+        let exported={()->[URL] in ((try? FileManager.default.contentsOfDirectory(at:directory,includingPropertiesForKeys:nil)) ?? []).filter{FileManager.default.fileExists(atPath:$0.appendingPathComponent("manifest.json").path)}}
         func export(_ then:@escaping(Any?)->Void){page(document,"await window.__studioCommand('select-all');await window.__studioCommand('export');await wait(()=>find('Export to folder…'),'folder control');click('Export to folder…');await wait(()=>document.body.innerText.includes('Export ready.'),'folder export finished');const d=document.querySelector('[role=dialog]');if(d)click('Close dialog',d);await wait(()=>!document.querySelector('[role=dialog]'),'dialog closed');return true;",then)}
         loadDocument(document,acceptanceDocument("accept-folder","Folder Assets")){
             export{_ in
-                self.until("first asset folder",seconds:30,{FileManager.default.fileExists(atPath:manifest("Folder Assets").path)}){
-                    let assets=(try? FileManager.default.contentsOfDirectory(atPath:directory.appendingPathComponent("Folder Assets/assets").path)) ?? []
+                self.until("first asset folder",seconds:30,{exported().count==1}){
+                    let assets=(try? FileManager.default.contentsOfDirectory(atPath:exported()[0].appendingPathComponent("assets").path)) ?? []
                     self.check(!assets.isEmpty,"Export to folder writes assets and a manifest into a new folder in the chosen place (\(assets.count) assets)")
                     export{_ in
-                        self.until("second asset folder",seconds:30,{FileManager.default.fileExists(atPath:manifest("Folder Assets 2").path)}){
+                        self.until("second asset folder",seconds:30,{exported().count==2}){
                             let leftovers=((try? FileManager.default.contentsOfDirectory(atPath:directory.path)) ?? []).filter{$0.hasPrefix(".forma-export-")}
                             self.check(leftovers.isEmpty,"A second folder export makes a new folder and leaves no staging folder behind")
                             done()
