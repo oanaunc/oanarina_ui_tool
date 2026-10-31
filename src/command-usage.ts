@@ -1,3 +1,4 @@
+import {currentCommandId} from './command-ids';
 /** Opt-in, device-local command counts. Only command IDs and tallies are kept, never project data or typed keys. */
 export const COMMAND_USAGE_KEY='forma-command-usage-v1';
 export const COMMAND_USAGE_LIMIT=512;
@@ -6,7 +7,7 @@ export interface CommandUsage {version:1;enabled:boolean;commands:Readonly<Recor
 const empty:CommandUsage=Object.freeze({version:1,enabled:false,commands:Object.freeze({})}),validId=(id:unknown):id is string=>typeof id==='string'&&/^[a-z][a-z0-9-]{0,95}$/.test(id)&&id!=='actions';
 export function parseCommandUsage(raw:string|null):CommandUsage{
  if(!raw||raw.length>200000)return empty;
- try{const v=JSON.parse(raw);if(!v||v.version!==1||typeof v.enabled!=='boolean'||!v.commands||typeof v.commands!=='object'||Array.isArray(v.commands))return empty;const commands:Record<string,CommandCount>={},entries=Object.entries(v.commands as Record<string,CommandCount>);if(entries.length>COMMAND_USAGE_LIMIT)return empty;for(const [id,c] of entries){if(!validId(id)||!c||!Number.isSafeInteger(c.runs)||c.runs<1||!Number.isSafeInteger(c.shortcutRuns)||c.shortcutRuns<0||c.shortcutRuns>c.runs||typeof c.lastDay!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(c.lastDay))return empty;commands[id]={runs:c.runs,shortcutRuns:c.shortcutRuns,lastDay:c.lastDay};}return {version:1,enabled:v.enabled,commands};}catch{return empty;}
+ try{const v=JSON.parse(raw);if(!v||v.version!==1||typeof v.enabled!=='boolean'||!v.commands||typeof v.commands!=='object'||Array.isArray(v.commands))return empty;const commands:Record<string,CommandCount>={},entries=Object.entries(v.commands as Record<string,CommandCount>);if(entries.length>COMMAND_USAGE_LIMIT)return empty;for(const [id,c] of entries){if(!validId(id)||!c||!Number.isSafeInteger(c.runs)||c.runs<1||!Number.isSafeInteger(c.shortcutRuns)||c.shortcutRuns<0||c.shortcutRuns>c.runs||typeof c.lastDay!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(c.lastDay))return empty;const key=currentCommandId(id),prior=commands[key];commands[key]=prior?{runs:prior.runs+c.runs,shortcutRuns:prior.shortcutRuns+c.shortcutRuns,lastDay:prior.lastDay>c.lastDay?prior.lastDay:c.lastDay}:{runs:c.runs,shortcutRuns:c.shortcutRuns,lastDay:c.lastDay};}return {version:1,enabled:v.enabled,commands};}catch{return empty;}
 }
 let cached:CommandUsage|undefined,lastRaw:string|null|undefined;const listeners=new Set<()=>void>();
 const read=()=>{try{return typeof localStorage==='undefined'?null:localStorage.getItem(COMMAND_USAGE_KEY);}catch{return null;}};

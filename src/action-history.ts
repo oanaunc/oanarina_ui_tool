@@ -1,3 +1,4 @@
+import {currentCommandId} from './command-ids';
 /** Local command IDs only; history is independent of project documents. */
 export const ACTION_HISTORY_KEY='oui-action-history';
 export const ACTION_HISTORY_LIMIT=20;
@@ -9,7 +10,7 @@ function read():string|null|undefined{try{return typeof localStorage==='undefine
 function decode(raw:string|null):readonly string[]{
  if(!raw||raw.length>4096)return empty;
  try{const data=JSON.parse(raw);if(!data||data.version!==1||!Array.isArray(data.ids)||data.ids.length>ACTION_HISTORY_LIMIT)return empty;
-  if(data.ids.some((id:unknown)=>!validId(id)))return empty;return Object.freeze([...new Set<string>(data.ids)]);
+  if(data.ids.some((id:unknown)=>!validId(id)))return empty;return Object.freeze([...new Set<string>(data.ids.map(currentCommandId))]);
  }catch{return empty;}
 }
 function sync(){const raw=read();if(raw===undefined){loaded=true;return;}if(!loaded||raw!==lastRaw){lastRaw=raw;history=decode(raw);loaded=true;}}

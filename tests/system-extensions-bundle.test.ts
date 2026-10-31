@@ -8,6 +8,11 @@ describe('Quick Look and Spotlight bundle wiring',()=>{
   expect(plist).toMatch(/<string>com\.oanarinaldi\.forma\.project<\/string>\s*<key>UTTypeTagSpecification<\/key>[\s\S]*?<string>oui<\/string>/);
   expect(plist).toMatch(/<string>com\.oanarinaldi\.ui-document<\/string>\s*<\/dict>/);
  });
+ it('declares a Forma-owned imported type for .fig and uses it in the document types',()=>{
+  expect(plist).toMatch(/<key>UTImportedTypeDeclarations<\/key>\s*<array>\s*<dict>\s*<key>UTTypeIdentifier<\/key>\s*<string>com\.oanarinaldi\.forma\.design-file<\/string>[\s\S]*?<string>fig<\/string>/);
+  expect(plist).toMatch(/<key>LSItemContentTypes<\/key>\s*<array>\s*<string>com\.oanarinaldi\.forma\.design-file<\/string>/);
+  expect(read('macos/main.swift')).toContain('UTType(importedAs:"com.oanarinaldi.forma.design-file")');
+ });
  it('points every extension and the importer at that type',()=>{
   expect(build).toContain("TYPES='<array><string>com.oanarinaldi.forma.project</string></array>'");
   expect(build).toContain('<string>com.oanarinaldi.forma.project</string><string>com.oanarinaldi.ui-document</string>');

@@ -1,5 +1,5 @@
 import type {DesignNode} from './model';
-import {getSvgPath} from './vendor/figma-squircle';
+import {getSvgPath} from './vendor/corner-smoothing';
 export const smoothingKinds=['rectangle','frame','component','instance','image','section','polygon','star'] as const;
 export function validateCornerSmoothing(value:unknown){if(value!==undefined&&(typeof value!=='number'||!Number.isFinite(value)||value<0||value>1))throw Error('Corner smoothing must be a fraction from 0 to 1.');}
 export function validateDocumentCornerSmoothing(d:{pages?:unknown}){if(Array.isArray(d.pages))for(const p of d.pages)if(Array.isArray(p?.nodes))for(const n of p.nodes){validateCornerSmoothing(n?.cornerSmoothing);if(n?.cornerSmoothing!==undefined&&(!smoothingKinds.includes(n.type)||n.booleanOp))throw Error('Corner smoothing supports rectangles, frame-like boxes, polygons and stars. Bake other geometry to vector points.');}}

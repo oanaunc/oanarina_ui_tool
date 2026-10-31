@@ -43,7 +43,7 @@ export function buildDesignHealth(doc:DesignDocument):DesignHealth{
   {id:'styles',label:'Unused styles',status:status(0,styles.unused),count:styles.unused,summary:styles.complete?plural(styles.unused,'unused style')+' of '+styles.rows.length:'Scan incomplete. Unused status withheld.'},
   {id:'instances',label:'Detached instances',status:status(orphans,instances.findings.length),count:instances.findings.length,summary:plural(instances.findings.length,'finding')+' across '+plural(instances.instances,'instance')},
   {id:'hygiene',label:'Layer hygiene',status:status(0,hygieneCount+typeSprawl),count:hygieneCount+typeSprawl,summary:plural(hygieneCount,'layer')+' to review, '+plural(hygiene.fontFamilies.length,'font family','font families')+', '+plural(hygiene.fontSizes.length,'font size')},
-  {id:'transfer',label:'Transfer',status:status(transfer.blocking.length,transfer.findings.length),count:transfer.findings.length,summary:transfer.blocking.length?plural(transfer.blocking.length,'feature')+' blocks Figma Bridge transfer':plural(transfer.findings.length,'reduced feature')},
+  {id:'transfer',label:'Transfer',status:status(0,transfer.findings.length),count:transfer.findings.length,summary:plural(transfer.findings.length,'reduced feature')},
  ];
  return {generatedFrom:{name:doc.name,updatedAt:doc.updatedAt},categories,contrast,colors,tokens,styles,instances,hygiene,transfer};
 }

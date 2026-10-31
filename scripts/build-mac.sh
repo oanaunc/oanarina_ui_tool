@@ -33,4 +33,5 @@ IDENTITY="${SIGNING_IDENTITY:-16B4420E76E5FB9B5EB8C984B5A54C07D7E8B739}"
 security find-identity -v -p codesigning | grep -q "$IDENTITY" || IDENTITY=-
 bash scripts/build-mac-extensions.sh "$APP" "$IDENTITY"
 codesign --force --sign "$IDENTITY" --timestamp=none "$APP"
+node scripts/check-brand.mjs --app "$APP"
 printf 'Built %s\n' "$APP"

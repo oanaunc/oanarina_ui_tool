@@ -12,7 +12,7 @@ test.beforeEach(async({page})=>{
 test('production worker decodes synthetic archive offline under no-eval CSP and preserves input bytes',async({page})=>{
   const remote:string[]=[];page.on('request',r=>{if(!r.url().startsWith(new URL(page.url()).origin))remote.push(r.url());});
   const bytes=figZip({zstd:true});
-  await page.getByLabel('Figma file').setInputFiles({name:'synthetic.fig',mimeType:'application/octet-stream',buffer:Buffer.from(bytes)});
+  await page.getByLabel('Design file').setInputFiles({name:'synthetic.fig',mimeType:'application/octet-stream',buffer:Buffer.from(bytes)});
   await page.getByRole('button',{name:'Decode',exact:true}).click();
   await expect(page.getByRole('status')).toContainText('Synthetic café');
   const result=JSON.parse(await page.getByRole('status').innerText());
@@ -21,14 +21,14 @@ test('production worker decodes synthetic archive offline under no-eval CSP and 
 test('hostile embedded schema and corrupt archives are rejected in the worker without executing names',async({page})=>{
   const definitions=structuredClone(fixtureSchema);definitions[2].fields[0].name='__proto__';
   for(const bytes of [figCanvas({schema:encodeSchema(definitions)}),figZip().subarray(0,40)]){
-    await page.getByLabel('Figma file').setInputFiles({name:'unsafe.fig',mimeType:'application/octet-stream',buffer:Buffer.from(bytes)});
+    await page.getByLabel('Design file').setInputFiles({name:'unsafe.fig',mimeType:'application/octet-stream',buffer:Buffer.from(bytes)});
     await page.getByRole('button',{name:'Decode',exact:true}).click();
     await expect(page.getByRole('status')).toContainText('Error:');
   }
   expect(await page.evaluate(()=>Object.prototype.hasOwnProperty.call(Object.prototype,'polluted'))).toBe(false);
 });
 test('cancel terminates pending decoding and a later import still succeeds',async({page})=>{
-  await page.getByLabel('Figma file').setInputFiles({name:'cancel.fig',mimeType:'application/octet-stream',buffer:Buffer.from(figZip({zstd:true}))});
+  await page.getByLabel('Design file').setInputFiles({name:'cancel.fig',mimeType:'application/octet-stream',buffer:Buffer.from(figZip({zstd:true}))});
   // The real clicks share a task boundary before the newly spawned worker can reply.
   await page.evaluate(()=>{(document.querySelector('#decode') as HTMLButtonElement).click();(document.querySelector('#cancel') as HTMLButtonElement).click();});
   await expect(page.getByRole('status')).toContainText('AbortError');

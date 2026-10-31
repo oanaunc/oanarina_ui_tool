@@ -19,8 +19,8 @@
         "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
         "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
         ".fig and Sketch import are tested on self-authored fixtures only, not on files from those apps.",
-        "VoiceOver, physical trackpad, printer and tablet acceptance, Intel hardware, older macOS, and real PowerPoint and Figma round trips remain open.",
-        "Complete Figma parity and binary .fig export remain unfinished."
+        "VoiceOver, physical trackpad, printer and tablet acceptance, Intel hardware, older macOS, and real PowerPoint round trips remain open.",
+        "Binary .fig export remains unfinished."
       ]
     },
     {
@@ -38,8 +38,8 @@
         "This is a development preview. Exact installer metadata and checksums are published on the Forma website after release validation.",
         "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
         "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
-        "VoiceOver, physical trackpad, printer and tablet acceptance, Intel hardware, and real PowerPoint and Figma round trips remain open.",
-        "Complete Figma parity and binary .fig export remain unfinished."
+        "VoiceOver, physical trackpad, printer and tablet acceptance, Intel hardware, and real PowerPoint round trips remain open.",
+        "Binary .fig export remains unfinished."
       ]
     },
     {
@@ -57,8 +57,8 @@
         "This is a development preview. Exact installer metadata and checksums are published on the Forma website after release validation.",
         "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
         "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
-        "Romanian covers about one fifth of interface text. Physical trackpad, printer, tablet and VoiceOver acceptance, and real PowerPoint and Figma round trips, remain open.",
-        "Complete Figma parity, binary .fig export and hosted collaboration remain unfinished."
+        "Romanian covers about one fifth of interface text. Physical trackpad, printer, tablet and VoiceOver acceptance, and real PowerPoint round trips, remain open.",
+        "Binary .fig export and hosted collaboration remain unfinished."
       ]
     },
     {
@@ -75,7 +75,7 @@
         "Minimap bounds are schematic; masks, stroke/effect expansion and exact rotated clipping are not reproduced.",
         "Text search operates on bounded literal base text; language-specific word breaking and motion-keyframe replacement are unfinished.",
         "Frame overflow bounds are conservative, and advanced/batch/PDF frame export profiles remain unfinished.",
-        "Complete Figma parity, binary .fig export and cloud collaboration remain unfinished."
+        "Binary .fig export and cloud collaboration remain unfinished."
       ]
     },
     {
@@ -93,24 +93,24 @@
         "This is a development preview. Current installer metadata and checksums are published on the Forma website.",
         "Name toggles cover existing top-level labels. Nested container labels remain unfinished.",
         "Fit uses direct child rectangular bounds without stroke/effect padding and refuses managed, motion, generated and auto-layout contexts.",
-        "Substantial Figma parity remains unfinished, including binary .fig export and cloud collaboration."
+        "Binary .fig export and cloud collaboration remain unfinished."
       ]
     },
     {
       "version": "0.2.0-dev.10",
       "channel": "preview",
-      "title": "Offline Figma Design import",
+      "title": "Offline .fig Design import",
       "notes": [
         "Open supported local binary .fig Design files in the browser or Mac app, without uploading the source file.",
         "Preserve supported page/layer geometry, embedded images and original glyph shapes while keeping text editable. Review any feature reductions after import.",
         "Import component instances as detached editable layers. Native annotation blocks can retain their own embedded visual snapshots.",
-        "Imported Mac files start as new unsaved projects. Save a .oui copy; the Figma source is never a save destination.",
+        "Imported Mac files start as new unsaved projects. Save a .oui copy; the .fig source is never a save destination.",
         "Cancel obsolete imports before they can replace current edits or the active recovery identity."
       ],
       "limits": [
         "This is a development preview. Current installer metadata and checksums are published on the Forma website.",
         "Binary .fig import supports a documented subset of Design files. Live component linkage, native rich annotation editing, complete prototype/layout semantics and full visual parity are not promised.",
-        "Binary .fig export and substantial Figma suite parity remain unfinished."
+        "Binary .fig export remains unfinished."
       ]
     },
     {
@@ -133,8 +133,8 @@
       ],
       "limits": [
         "This is a development preview with documented limits. Current installer metadata and checksums are published on the Forma website.",
-        "Browser/Windows system-image clipboard and private Figma editable clipboard remain unfinished.",
-        "Substantial Figma suite parity remains unfinished, including binary .fig interchange and cloud collaboration."
+        "Browser/Windows system-image clipboard and editable clipboard data from other design apps remain unfinished.",
+        "Binary .fig interchange and cloud collaboration remain unfinished."
       ]
     },
     {

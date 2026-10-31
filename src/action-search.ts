@@ -1,14 +1,14 @@
 export type PaletteCommand=readonly[id:string,label:string,category:string,shortcut:string];
 const keywords:Record<string,string>={
  preferences:'settings configuration nudge defaults behavior',fonts:'typeface typography google installed missing font',
- figma:'interchange bridge import export',import:'upload insert picture raster vector svg',export:'download png jpg svg pdf',
+ interchange:'import export transfer convert',import:'upload insert picture raster vector svg',export:'download png jpg svg pdf',
  mcp:'automation assistant model context protocol local server',roadmap:'features requirements progress implementation register',
  shortcuts:'hotkeys keyboard bindings help',history:'versions snapshots restore',snapshot:'checkpoint version backup',
  'auto-layout':'stack flex spacing padding responsive',component:'symbol reusable main',instance:'symbol reusable copy',
  'main-component':'source symbol master',variants:'component states variations',detach:'unlink disconnect instance',
  mask:'clip clipping crop alpha',union:'boolean add merge shapes',subtract:'boolean difference minus',intersect:'boolean overlap',exclude:'boolean xor difference',
  'edit-vector':'path points bezier anchors nodes',flatten:'convert vector outlines',
- 'new-whiteboard':'figjam sticky notes brainstorm diagram', 'new-slides':'deck slides presentation keynote',
+ 'new-whiteboard':'sticky notes brainstorm diagram', 'new-slides':'deck slides presentation keynote',
  'toggle-ui':'panels interface hide distraction',theme:'appearance dark light',present:'preview play presentation prototype',
  inspect:'developer dev code properties',motion:'animation keyframes timeline',
  'text-bold':'font weight strong', 'text-italic':'font oblique emphasis', 'text-strike':'strike through crossed',

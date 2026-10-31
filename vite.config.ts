@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite';
 import type { Plugin } from 'vite';
+import fs from 'node:fs';
 import react from '@vitejs/plugin-react';
 import { prototypePlayer } from './scripts/prototype-player-plugin.mjs';
+import { publicRegister } from './scripts/public-register.mjs';
 // Dev only. The dev client reconnects through a blob SharedWorker, and any port but 5173 fails its socket first.
 // Shipped pages keep the stricter policy in index.html: this never runs for a build.
 const devPolicy = (): Plugin => ({
@@ -15,8 +17,19 @@ const devPolicy = (): Plugin => ({
   },
  },
 });
+// public/features.json is the working register. The app only ever reads the public one, which a build writes into dist.
+const publicFeatures = (): Plugin => ({
+ name: 'forma-public-features',
+ apply: 'serve',
+ configureServer(server) {
+  server.middlewares.use('/features.json', (_request, response) => {
+   response.setHeader('Content-Type', 'application/json');
+   response.end(JSON.stringify(publicRegister(JSON.parse(fs.readFileSync('public/features.json', 'utf8')))));
+  });
+ },
+});
 export default defineConfig({
- plugins: [react(), prototypePlayer(), devPolicy()],
+ plugins: [react(), prototypePlayer(), devPolicy(), publicFeatures()],
  base: './',
  // Worktrees may share node_modules; keep optimizer/worker caches local to this root.
  cacheDir: '.vite',

@@ -20,14 +20,14 @@
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Figma Design Import</string>
+			<string>Design File Import</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Alternate</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.figma.document</string>
+				<string>com.oanarinaldi.forma.design-file</string>
 			</array>
 		</dict>
 	</array>
@@ -108,9 +108,9 @@
 	<array>
 		<dict>
 			<key>UTTypeIdentifier</key>
-			<string>com.figma.document</string>
+			<string>com.oanarinaldi.forma.design-file</string>
 			<key>UTTypeDescription</key>
-			<string>Figma Design Document</string>
+			<string>Design File</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>

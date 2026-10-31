@@ -1,5 +1,5 @@
 import type {DesignDocument,Page} from './model';
-/** Figma's documented page-divider convention is a leading hyphen on a blank page.
+/** The common page-divider convention is a leading hyphen on a blank page.
  * No new saved schema or hidden ownership/controller is introduced. */
 export function pageDividerIssue(page:Page,doc?:Pick<DesignDocument,'slides'>){if(doc?.slides?.pageId===page.id)return 'The presentation deck page stays an ordinary page.';if(page.nodes.length||page.comments.length||page.guides?.length||page.flows?.length||page.motion?.tracks.length)return 'Use a blank page without artwork, comments, guides, prototype flows or animation tracks.';return undefined;}
 export function pageDividerLabel(page:Page,doc?:Pick<DesignDocument,'slides'>){return page.name.startsWith('-')&&!pageDividerIssue(page,doc)?page.name.slice(1).trim()||'Divider':null;}

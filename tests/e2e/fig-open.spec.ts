@@ -14,7 +14,7 @@ async function browserProject(page:Page){
  await choose(page,'original.oui',new TextEncoder().encode(JSON.stringify(doc)));await expect(page.locator(`[data-layer-id="${doc.pages[0].nodes[0].id}"]`)).toBeVisible();return doc;
 }
 async function save(page:Page){const event=page.waitForEvent('download');await page.keyboard.press('Meta+s');return JSON.parse(await fs.readFile((await(await event).path())!,'utf8'));}
-async function closeReport(page:Page){const dialog=page.getByRole('dialog',{name:'Figma import report',exact:true});await expect(dialog).toBeVisible();await dialog.getByRole('button',{name:'Continue editing',exact:true}).click();}
+async function closeReport(page:Page){const dialog=page.getByRole('dialog',{name:'Design file import report',exact:true});await expect(dialog).toBeVisible();await dialog.getByRole('button',{name:'Continue editing',exact:true}).click();}
 async function library(page:Page){return page.evaluate(async()=>{
  const db=await new Promise<IDBDatabase>((resolve,reject)=>{const r=indexedDB.open('oanarina-projects',1);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
  const tx=db.transaction(['documents','metadata']);const request=<T>(r:IDBRequest<T>)=>new Promise<T>((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
@@ -39,13 +39,13 @@ test('File Open decodes a synthetic .fig into editable layers with undo and port
 test('malformed .fig never changes current artwork or persisted active identity',async({page})=>{
  const original=await browserProject(page);await choose(page,'invalid.fig',new Uint8Array([80,75,3,4,1,2,3]));await expect(page.locator('.toast')).toContainText(/ZIP|fig|container/);
  const invalidScene=sceneMessage();invalidScene.nodeChanges[2].size!.x=-10;await choose(page,'invalid-scene.fig',sceneFigFromMessage(invalidScene));await expect(page.locator('.toast')).toContainText(/range|geometry|Invalid/);
- await expect(page.locator(`[data-layer-id="${original.pages[0].nodes[0].id}"]`)).toBeVisible();await expect(page.getByRole('dialog',{name:'Figma import report',exact:true})).toHaveCount(0);const saved=await save(page);expect(saved.id).toBe(original.id);expect((await library(page)).active).toBe(original.id);
+ await expect(page.locator(`[data-layer-id="${original.pages[0].nodes[0].id}"]`)).toBeVisible();await expect(page.getByRole('dialog',{name:'Design file import report',exact:true})).toHaveCount(0);const saved=await save(page);expect(saved.id).toBe(original.id);expect((await library(page)).active).toBe(original.id);
 });
 test('user edits cancel a held worker; an obsolete result cannot replace current artwork or recovery',async({page})=>{
  const original=await browserProject(page);await page.locator(`[data-layer-id="${original.pages[0].nodes[0].id}"]`).click();await holdWorkers(page);
  await choose(page,'stale.fig',syntheticSceneFig());await expect.poll(()=>page.evaluate(()=>(window as any).figHeld.length)).toBe(1);
  const width=page.getByRole('spinbutton',{name:'W',exact:true});await width.fill('210');await width.press('Enter');await expect.poll(()=>page.evaluate(()=>(window as any).figHeld[0].terminated)).toBe(true);await page.evaluate(()=>(window as any).figHeld[0].release());
- await expect(page.getByRole('dialog',{name:'Figma import report',exact:true})).toHaveCount(0);const saved=await save(page);expect(saved.id).toBe(original.id);expect(saved.pages[0].nodes[0].width).toBe(210);expect((await library(page)).active).toBe(original.id);
+ await expect(page.getByRole('dialog',{name:'Design file import report',exact:true})).toHaveCount(0);const saved=await save(page);expect(saved.id).toBe(original.id);expect(saved.pages[0].nodes[0].width).toBe(210);expect((await library(page)).active).toBe(original.id);
 });
 test('a newer File Open terminates the prior worker and only its project reaches recovery',async({page})=>{
  await browserProject(page);await holdWorkers(page);await choose(page,'First.fig',syntheticSceneFig('First candidate'));await expect.poll(()=>page.evaluate(()=>(window as any).figHeld.length)).toBe(1);
@@ -63,7 +63,7 @@ test('editing while import waits behind an IndexedDB transaction aborts its pend
  });
  await choose(page,'Database candidate.fig',syntheticSceneFig());await expect.poll(()=>page.evaluate(()=>(window as any).figWaitingTransaction)).toBe(true);
  const width=page.getByRole('spinbutton',{name:'W',exact:true});await width.fill('245');await width.press('Enter');await page.evaluate(()=>(window as any).releaseFigDb());
- await expect(page.getByRole('dialog',{name:'Figma import report',exact:true})).toHaveCount(0);const saved=await save(page),stored=await library(page);expect(saved.id).toBe(original.id);expect(saved.pages[0].nodes[0].width).toBe(245);expect(stored.active).toBe(original.id);expect(stored.documents.some((d:any)=>d.name==='Database candidate')).toBe(false);
+ await expect(page.getByRole('dialog',{name:'Design file import report',exact:true})).toHaveCount(0);const saved=await save(page),stored=await library(page);expect(saved.id).toBe(original.id);expect(saved.pages[0].nodes[0].width).toBe(245);expect(stored.active).toBe(original.id);expect(stored.documents.some((d:any)=>d.name==='Database candidate')).toBe(false);
 });
 
 for(const format of ['oui','fig'] as const)test(`an immediate ${format} File Open flushes unsaved outgoing artwork before replacing it`,async({page})=>{
@@ -85,7 +85,7 @@ test('unretained outgoing edits require a .oui backup before a valid incoming fi
  const original=await browserProject(page);await page.locator(`[data-layer-id="${original.pages[0].nodes[0].id}"]`).click();
  await page.evaluate(()=>{const timeout=window.setTimeout;window.setTimeout=((fn:TimerHandler,delay?:number,...args:any[])=>timeout(fn,delay===600?60000:delay,...args)) as typeof window.setTimeout;const put=IDBObjectStore.prototype.put;IDBObjectStore.prototype.put=function(value:any,key?:IDBValidKey){if(this.name==='documents')throw new DOMException('Local project storage is full.','QuotaExceededError');return key===undefined?put.call(this,value):put.call(this,value,key);};});
  const width=page.getByRole('spinbutton',{name:'W',exact:true});await width.fill('225');await width.press('Enter');await choose(page,'Unretained candidate.fig',syntheticSceneFig());
- await expect(page.locator('.toast')).toContainText('Save a .oui backup before opening another file.');await expect(page.getByRole('dialog',{name:'Figma import report',exact:true})).toHaveCount(0);await expect(width).toHaveValue('225');expect((await library(page)).active).toBe(original.id);
+ await expect(page.locator('.toast')).toContainText('Save a .oui backup before opening another file.');await expect(page.getByRole('dialog',{name:'Design file import report',exact:true})).toHaveCount(0);await expect(width).toHaveValue('225');expect((await library(page)).active).toBe(original.id);
  const backup=await save(page);expect(backup.id).toBe(original.id);expect(backup.pages[0].nodes[0].width).toBe(225);
  await choose(page,'Backed up candidate.fig',syntheticSceneFig());await closeReport(page);await expect(page.locator('.toast')).toContainText('Opened in memory');
 });

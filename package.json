@@ -9,7 +9,7 @@
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "node scripts/bundle-plugin.mjs && node scripts/bundle-mcp.mjs && node scripts/build-command-registry.mjs && tsc -b && vite build",
+    "build": "node scripts/bundle-mcp.mjs && node scripts/build-command-registry.mjs && tsc -b && vite build && node scripts/public-register.mjs public/features.json dist/features.json && node scripts/check-brand.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "desktop": "bash scripts/build-mac.sh && open \"build/Forma.app\"",

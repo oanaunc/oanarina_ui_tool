@@ -9,7 +9,7 @@ import {brandStarterDocument} from './brand-starters';
 export const TEMPLATE_BYTES=5_000_000,TEMPLATE_NODES=5000,TEMPLATE_COUNT=50,TEMPLATE_TOTAL_BYTES=100_000_000;
 export interface StarterKit {format:'forma-starter-kit';version:1;id:string;name:string;createdAt:string;document:DesignDocument;}
 export interface TemplateDefinition {id:string;name:string;category:'Web'|'Mobile'|'Dashboard'|'Whiteboard'|'Presentation'|'Brand';description:string;create:()=>DesignDocument;}
-/** Bounded local copies. These are original Forma examples, not Figma/community assets. */
+/** Bounded local copies. These are original Forma examples, not community assets. */
 export function templateDocument(value:unknown):DesignDocument{
  const raw=JSON.stringify(value);if(!raw||new TextEncoder().encode(raw).length>TEMPLATE_BYTES)throw Error('Starter kits support projects up to 5 MB.');
  const doc=parseDocument(raw);if(doc.pages.length>100||doc.pages.reduce((n,p)=>n+p.nodes.length,0)>TEMPLATE_NODES)throw Error('Starter kits support up to 100 pages and 5,000 layers.');

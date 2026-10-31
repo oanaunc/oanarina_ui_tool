@@ -9,7 +9,7 @@ const DOCUMENT=/\.(oui|fig|pdf|sketch)$/i;
 const CONVERTED=['image/heic','image/heif','image/tiff','image/bmp','image/avif'];
 export const DROP_LIMITS={bytes:20_000_000,side:16384,pixels:80_000_000} as const;
 export const dropConvertsImage=(file:Pick<File,'type'>)=>CONVERTED.includes(file.type);
-export function droppedDocument(files:readonly Pick<File,'name'>[]){if(files.some(f=>DOCUMENT.test(f.name))&&files.length>1)throw new ImportInputError('Drop one project, Figma, PDF or Sketch file at a time. Images can be dropped together.');return files.length===1&&DOCUMENT.test(files[0].name);}
+export function droppedDocument(files:readonly Pick<File,'name'>[]){if(files.some(f=>DOCUMENT.test(f.name))&&files.length>1)throw new ImportInputError('Drop one project, .fig, PDF or Sketch file at a time. Images can be dropped together.');return files.length===1&&DOCUMENT.test(files[0].name);}
 /** Decoded once, drawn to sRGB and re-encoded, so the rest of the import sees an ordinary validated PNG. */
 export async function dropToPng(file:File){
  if(file.size>DROP_LIMITS.bytes)throw new ImportInputError('Choose images smaller than 20 MB each.');

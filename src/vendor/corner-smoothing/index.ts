@@ -1,5 +1,5 @@
 /*!
-figma-squircle 1.1.0 — https://github.com/phamfoo/figma-squircle
+Corner smoothing 1.1.0, by Tien Pham
 MIT License
 
 Copyright (c) 2021 Tien Pham
@@ -24,7 +24,7 @@ SOFTWARE.*/
 import { distributeAndNormalize } from './distribute'
 import { getPathParamsForCorner, getSVGPathFromPathParams } from './draw'
 
-export interface FigmaSquircleParams {
+export interface CornerSmoothingParams {
   cornerRadius?: number
   topLeftCornerRadius?: number
   topRightCornerRadius?: number
@@ -46,7 +46,7 @@ export function getSvgPath({
   width,
   height,
   preserveSmoothing = false,
-}: FigmaSquircleParams) {
+}: CornerSmoothingParams) {
   topLeftCornerRadius = topLeftCornerRadius ?? cornerRadius
   topRightCornerRadius = topRightCornerRadius ?? cornerRadius
   bottomLeftCornerRadius = bottomLeftCornerRadius ?? cornerRadius

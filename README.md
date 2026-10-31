@@ -2,7 +2,7 @@
 
 A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Forma includes a vector canvas, pages, layers, editable typography, responsive layout, local components and variables, prototypes, whiteboards, slides, animation, saved project files and local automation. It is free, and the application code is MIT licensed.
 
-**Current Mac preview: 0.2.0-dev.15. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
+**Current Mac preview: 0.2.0-dev.15. This is not a complete design suite.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced parity remains substantial work. Some Mac integration and reliability requirements are our own requirements. Remaining reference checks are explicit.
 
 The register currently records **1,320 implemented, 317 partial and 385 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
 
@@ -10,17 +10,17 @@ The next [source implementation pass](docs/UNRELEASED-LAYOUT-MEDIA-EXPORT.md) ad
 
 The preceding [typography, grids, local assets and export continuation](docs/UNRELEASED-TYPE-GRID-ASSETS.md) adds rich text variants, guarded grid-track ordering, linked asset usage inspection and style-folder navigation. Design PDF and sRGB PNG metadata have working partial implementations with explicit limits.
 
-The preceding [stroke, paragraph, accessibility and inspection continuation](docs/UNRELEASED-EDITOR-WORKFLOWS.md) adds local stroke styles, primary stroke tokens, per-paragraph/list controls, a keyboard document outline/insertion dialog and read-only developer inspection. Native assistive-technology and exact Figma reference checks remain pending; broader list editing and per-entry stroke bindings remain partial.
+The preceding [stroke, paragraph, accessibility and inspection continuation](docs/UNRELEASED-EDITOR-WORKFLOWS.md) adds local stroke styles, primary stroke tokens, per-paragraph/list controls, a keyboard document outline/insertion dialog and read-only developer inspection. Native assistive-technology and exact reference checks remain pending; broader list editing and per-entry stroke bindings remain partial.
 
 The preceding [text input, component assets, mask views and pointer continuation](docs/UNRELEASED-INPUT-ASSETS-MASKS.md) adds local component folders and variants, ephemeral mask inspection/previews, fine dragging and rotation feedback, text descriptions and real fixed-pixel leading. Emoji search and colon completion have a bounded starter catalog and remain partial.
 
-The preceding [selection, frame positioning, vector bending and text settings continuation](docs/UNRELEASED-SELECTION-FRAMES-TEXT.md) adds keyboard/intersecting layout-box selection, optional parent hover outlines, guarded frame coordinates and reparent constraint baselines, fixed-anchor segment bending, opt-in smart punctuation, type-settings tabs and solid whole-layer text backgrounds. Downloads remain frozen; exact Figma and native acceptance remain separate.
+The preceding [selection, frame positioning, vector bending and text settings continuation](docs/UNRELEASED-SELECTION-FRAMES-TEXT.md) adds keyboard/intersecting layout-box selection, optional parent hover outlines, guarded frame coordinates and reparent constraint baselines, fixed-anchor segment bending, opt-in smart punctuation, type-settings tabs and solid whole-layer text backgrounds. Downloads remain frozen; exact reference and native acceptance remain separate.
 
 The preceding [responsive guides, slice exports, direction and vector offsets continuation](docs/UNRELEASED-GUIDES-SLICES-DIRECTION.md) adds durable column/row spans, a dedicated slice manager and crop overlays, RTL paragraph controls and signed vector offsets. Broader bidirectional layout and true square offset joins remain partial. Downloads remain unchanged.
 
 The preceding [layer previews, layout suggestions, wrapping and stroke outlining continuation](docs/UNRELEASED-PREVIEWS-LAYOUT-WRAPPING.md) adds on-demand layer artwork thumbnails, inferred row/stack previews with guarded Apply, and measured Balance/Pretty text wrapping. Solid stroke outlines have editable geometry and appearance previews; broader stroke outlining remains partial. Source tests and reference verification stay separate. Downloads remain frozen.
 
-The preceding [responsive resizing, OpenType comparisons and vector separation continuation](docs/UNRELEASED-RESPONSIVE-OPENTYPE-SEPARATION.md) adds real before/after frame resizing through shared layout, same-font feature comparisons with guarded range Apply, and hole-preserving compound region separation. Broader vector cutting and layer-thumbnail coverage remain partial. Downloads remain frozen; native and exact Figma reference acceptance are pending.
+The preceding [responsive resizing, OpenType comparisons and vector separation continuation](docs/UNRELEASED-RESPONSIVE-OPENTYPE-SEPARATION.md) adds real before/after frame resizing through shared layout, same-font feature comparisons with guarded range Apply, and hole-preserving compound region separation. Broader vector cutting and layer-thumbnail coverage remain partial. Downloads remain frozen; native and exact reference acceptance are pending.
 
 The preceding [canvas cropping, nested frame fitting and hanging quotations continuation](docs/UNRELEASED-CROP-FIT-QUOTATIONS.md) adds image-fill gestures directly on the canvas, explicit descendant bounds for fitting frames, and measured quotation overhang in shared text layout. All three workflows retain documented partial coverage. Downloads remain frozen.
 
@@ -50,7 +50,7 @@ The preceding [component and library source continuation](docs/UNRELEASED-SLOTS-
 
 The preceding [source continuation](docs/UNRELEASED-SNAPPING-SWAPS-COMMENT-LINKS-OUTLINES.md) adds local snapping preferences, reviewed compatible library source replacement, local comment reactions and links, and actual glyph-path SVG export for eligible static TrueType text. Broader coverage retains explicit partial limits; an existing tested prototype-video requirement is reconciled in the register. Downloads stay frozen.
 
-The latest [source continuation](docs/UNRELEASED-OFFLINE-JSON-LOCAL-LINKS.md) adds reviewed offline Figma REST JSON import and exact local file/page/flow links, with current-edit recovery and guarded repository opening. These subsets remain partial: there is no API retrieval, hosted sharing or native cross-file link handler. Downloads stay frozen.
+The latest [source continuation](docs/UNRELEASED-OFFLINE-JSON-LOCAL-LINKS.md) adds reviewed offline design JSON import and exact local file/page/flow links, with current-edit recovery and guarded repository opening. These subsets remain partial: there is no API retrieval, hosted sharing or native cross-file link handler. Downloads stay frozen.
 
 The latest [PDF, playground, vector and revision source continuation](docs/UNRELEASED-PDF-PLAYGROUND-NETWORK-REVISIONS.md) adds reviewed offline raster PDF pages, an isolated fresh component playground, editable shared-junction stroke networks and complete paged/filterable local revision review. The larger-UI, interface-motion and smart-punctuation rows are reconciled to existing partial behavior. Limits and reference checks remain explicit; downloads stay frozen.
 
@@ -66,7 +66,7 @@ npm run mcp:install           # standalone local MCP build dependencies
 npm run dev                  # browser preview at http://127.0.0.1:5173
 npm run build:mac            # universal native macOS app in build/
 open "build/Forma.app"
-npm test                    # core model + Figma plugin API mock tests
+npm test                    # core model tests
 npx playwright install chromium
 npm run test:e2e             # real browser interaction tests
 ```
@@ -83,9 +83,9 @@ The current source adds [interactive prototypes](docs/PROTOTYPES.md), [rich char
 
 **Resources → Free local MCP automation** downloads a standalone stdio server. Nine tools inspect and edit one explicitly selected saved `.oui`, with revision checks, validation, atomic writes and in-process undo. Node.js 22+ is required. There is no server fee, account or API key. Native saves share the project lock and detect external disk changes. Live editor synchronization remains unfinished; save first, then close and reopen after automation. AI hosts/models are separate products. See [MCP setup](mcp/README.md).
 
-## Figma interchange
+## Interchange
 
-Use **File → Figma import / export**. The included [Figma Bridge development plugin](figma-plugin/README.md) transfers supported editable layers and linked component/instance/variant structures through `.oui`, including dependency definitions for selection exports. It preserves a supported override/property subset; ambiguous or unsupported structures materialize as editable frames with reports. It reports many property reductions. SVG import offers [editable layers with reduction review](docs/SVG-IMPORT.md) or a sanitized visual asset; SVG export provides visual exchange. **[Direct binary `.fig` Design import](docs/FIG-IMPORT.md) supports a documented subset through File → Open project, with an import report and separate .oui save. Binary `.fig` export is not implemented.** Strict API-contract mocks cover the new component paths. Earlier synthetic connected Figma Plugin API fixtures cover shape/text/prototype paths, not the new component behavior. The real Figma desktop plugin UI and full-fidelity round-trip still require validation. Browser login alone does not install a development plugin.
+Use **File → Import and export**. SVG import offers [editable layers with reduction review](docs/SVG-IMPORT.md) or a sanitized visual asset; SVG export provides visual exchange. **[Direct binary `.fig` Design import](docs/FIG-IMPORT.md) supports a documented subset through File → Open project, with an import report and separate .oui save. Binary `.fig` export is not implemented.** Offline design JSON, Sketch and PDF files have their own reviewed import paths.
 
 The development editor also includes [alpha/vector/luminance masks](docs/MASKS.md), [layer and keyboard selection](docs/SELECTION.md), and [transformed canvas gestures](docs/CANVAS-TRANSFORMS.md). Mask exports preserve concealment when exporting a selected target. Clipboard duplication, paste and ungroup preserve supported world transforms and remap prototype/component references; genuine skew is rejected atomically.
 
@@ -112,11 +112,11 @@ The native app now has [editable Copy/Cut/Paste between Mac windows](docs/NATIVE
 
 Read [implementation limits](docs/IMPLEMENTATION.md), [Mac packaging](docs/MAC-RELEASE.md), [font licensing](docs/FONTS.md), and the [user guide](docs/USER-GUIDE.md), and [icon source](docs/ICON.md).
 
-Independent implementation; not affiliated with or endorsed by Figma. Original application code is MIT licensed. Bundled fonts retain their own licenses. No proprietary Figma code or branding is bundled.
+Independent implementation. Original application code is MIT licensed. Bundled fonts retain their own licenses.
 
 The preceding [shortcut and developer-resource continuation](docs/UNRELEASED-SHORTCUTS-DEVELOPER-RESOURCES.md) adds searchable shortcut categories and used-keyboard highlights, toolbar keyboard navigation and validated file-local issue/documentation/repository links in Inspect. Source validation and remaining reference/native limits are recorded there.
 
-The preceding [local review, handoff and navigation continuation](docs/UNRELEASED-LOCAL-REVIEW-HANDOFF-NAVIGATION.md) adds ready/completed statuses, historical preview/comparison/duplication and complete Undoable restore, authored local comment threads, private layer annotations and guarded minimap fit/navigation. Broader annotation semantics remain partial; private review metadata stays out of explicit Figma delivery.
+The preceding [local review, handoff and navigation continuation](docs/UNRELEASED-LOCAL-REVIEW-HANDOFF-NAVIGATION.md) adds ready/completed statuses, historical preview/comparison/duplication and complete Undoable restore, authored local comment threads, private layer annotations and guarded minimap fit/navigation. Broader annotation semantics remain partial; private review metadata stays out of exports.
 
 The latest [template, large-tree, font-cache and stroke-scaling continuation](docs/UNRELEASED-TEMPLATES-TREE-FONTS-SCALING.md) adds original free templates and private personal starter kits, bounded Layers virtualization and guarded font acquisition/cache controls. Authored fixed stroke widths have a working partial implementation. Downloads remain frozen while source implementation and validation continue.
 
@@ -126,4 +126,4 @@ The latest [page organization, blending and version-link source continuation](do
 
 The latest [Shape Builder, documentation and Sketch source continuation](docs/UNRELEASED-BUILDER-DOCUMENTATION-SKETCH.md) adds exact rectangle-region operations, editable linked component reference pages and reviewed offline Sketch conversion with real cubic paths. Each workflow retains explicit subset limits and source/Undo validation; native/reference acceptance and frozen-download coverage remain separate. Downloads stay frozen.
 
-The latest [local platform batches](docs/UNRELEASED-LOCAL-PLATFORM-BATCHES.md) add design health audits, interface languages, local branches and crash recovery, shaders and Display P3, Sites, brand assets, widgets, PowerPoint interchange, code layers, Code Connect mappings, live MCP context and native Mac menus and tabs. The register then recorded 1,470 implemented, 337 partial and 215 planned requirements. Full Figma parity remains unfinished.
+The latest [local platform batches](docs/UNRELEASED-LOCAL-PLATFORM-BATCHES.md) add design health audits, interface languages, local branches and crash recovery, shaders and Display P3, Sites, brand assets, widgets, PowerPoint interchange, code layers, Code Connect mappings, live MCP context and native Mac menus and tabs. The register then recorded 1,470 implemented, 337 partial and 215 planned requirements. Full parity remains unfinished.
