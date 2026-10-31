@@ -5,6 +5,8 @@ import {codeLayerDocument,defaultCodeLayer} from '../src/code-layer';
 import {dropConvertsImage,droppedDocument} from '../src/file-drop';
 import {dragAssetName,rememberDragAsset} from '../src/drag-asset';
 import {desktopDocumentState} from '../src/desktop-lifecycle';
+import {installedFontStyles} from '../src/font-styles';
+import {parseScreenColor,receiveScreenColor,subscribeScreenColor} from '../src/screen-color';
 import {setUntouchedPlaceholder} from '../src/startup-health';
 import {useEditor} from '../src/store';
 
@@ -44,6 +46,30 @@ describe('code layer capture',()=>{
   expect(CODE_LAYER_PAINTER).toContain('/\\s/.test(raw[i])');
   expect(()=>new Function(CODE_LAYER_PAINTER.replace('async function paintDom','return async function paintDom'))).not.toThrow();
  });
+});
+describe('installed font faces',()=>{
+ it('orders upright before italic and keeps the first face of each weight',()=>{
+  const list=installedFontStyles([{label:'Bold',weight:700,italic:false},{label:'Light Oblique',weight:300,italic:true},{label:'Light',weight:300,italic:false},{label:'Heavy duplicate',weight:700,italic:false}]);
+  expect(list.map(f=>f.label)).toEqual(['Light','Bold','Light Oblique']);
+ });
+ it('ignores anything malformed from the shell',()=>{
+  expect(installedFontStyles('nope')).toEqual([]);expect(installedFontStyles(null)).toEqual([]);
+  expect(installedFontStyles([null,{label:'',weight:400,italic:false},{label:'x',weight:0,italic:false},{label:'x',weight:'400',italic:false},{label:'x',weight:400},{label:'y'.repeat(81),weight:400,italic:false}])).toEqual([]);
+  expect(installedFontStyles(Array.from({length:100},(_,i)=>({label:'F'+i,weight:i+1,italic:false})))).toHaveLength(64);
+ });
+});
+describe('native screen color',()=>{
+ const sample={srgb:'#336699',p3:'#3a6596'};
+ it('refuses a malformed shell value',()=>{for(const value of [null,'#336699',{},{srgb:'#336699'},{srgb:'#33669',p3:'#000000'},{srgb:'red',p3:'#000000'}])expect(()=>parseScreenColor(value)).toThrow('Invalid sampled color.');});
+ it('gives the color to the newest open picker and keeps the file profile',()=>{
+  const first:string[]=[],second:string[]=[],offFirst=subscribeScreenColor(c=>first.push(c)),offSecond=subscribeScreenColor(c=>second.push(c));
+  receiveScreenColor(sample);expect(second).toEqual(['#336699']);expect(first).toEqual([]);
+  useEditor.setState({doc:{...useEditor.getState().doc,colorProfile:'display-p3'}});
+  receiveScreenColor(sample);expect(second).toEqual(['#336699','#3a6596']);
+  useEditor.setState({doc:{...useEditor.getState().doc,colorProfile:undefined}});
+  offSecond();receiveScreenColor(sample);expect(first).toEqual(['#336699']);offFirst();
+ });
+ it('reports the sample when no picker is open',()=>{receiveScreenColor(sample);expect(useEditor.getState().toast).toContain('#336699');});
 });
 describe('safe mode window report',()=>{
  it('marks the untouched placeholder and nothing else',()=>{

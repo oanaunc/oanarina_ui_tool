@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -183,7 +183,18 @@ extension Studio {
             let body=value as? [String:Any]
             self.check(body?["lost"] as? Bool==true,"context loss in WKWebView drops to the static fallback")
             self.check(body?["same"] as? Bool==true,"context restore repaints identical shader pixels")
-            done()
+            self.acceptGpuProcessLoss(document,done)
+        }
+    }
+    /** A real GPU process death, the failure WEBGL_lose_context only imitates. */
+    func acceptGpuProcessLoss(_ document:DocumentWindow,_ done:@escaping()->Void){
+        guard let pid=document.web.value(forKey:"_gpuProcessIdentifier") as? Int32,pid>0 else{fputs("GPU process identity unavailable: real GPU kill skipped\n",stderr);done();return}
+        js(document,"window.__gpu=[];const c=window.__formaGl.canvas;c.addEventListener('webglcontextlost',()=>window.__gpu.push('lost'));c.addEventListener('webglcontextrestored',()=>window.__gpu.push('restored'));return true;"){_ in
+            guard Darwin.kill(pid,SIGKILL)==0 else{self.smokeFail("GPU process signal")}
+            self.page(document,"const image=()=>document.querySelector('#forma-design-canvas pattern[id^=\"fill-accept-rect\"] image')?.getAttribute('href');await wait(()=>window.__gpu.includes('restored'),'GPU context restored',12000);await wait(image,'shader back after GPU process death',6000);return window.__gpu.join(' ');"){value in
+                self.check(value as? String=="lost restored","a killed GPU process loses the WebGL context and the shader repaints in the same renderer (\(value as? String ?? ""))")
+                done()
+            }
         }
     }
     func acceptCodeLayer(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
@@ -455,7 +466,7 @@ extension Studio {
     }
     func acceptCrashUndo(_ document:DocumentWindow,_ count:Int,_ directory:URL,_ done:@escaping()->Void){
         let pages="[...document.querySelectorAll('.pages-list button')].length"
-        page(document,"\(json("")) ;const first=\(pages);await window.__studioCommand('undo');await wait(()=>\(pages)<first,'undo removes the replayed journal edit');const second=\(pages);await window.__studioCommand('undo');await wait(()=>\(pages)<second,'undo reaches history saved before the kill');return first;"){value in
+        page(document,"const first=\(pages);await window.__studioCommand('undo');await wait(()=>\(pages)<first,'undo removes the replayed journal edit');const second=\(pages);await window.__studioCommand('undo');await wait(()=>\(pages)<second,'undo reaches history saved before the kill');return first;"){value in
             self.check(true,"replayed edit and the Undo history stored before the kill both undo in the new renderer")
             document.session.file=directory.appendingPathComponent("Crash.oui")
             self.js(document,"const saved=await window.__studioSave();await new Promise(r=>setTimeout(r,3300));return saved;"){value in self.check(value as? Bool==true,"the recovered project saves to a file before the start failures");self.acceptSafeMode(document,done)}
@@ -667,6 +678,24 @@ extension Studio {
                         self.check(abs(ink-widths[0])<widths[0]*0.12 && abs(widths[0]-widths[1])>widths[0]*0.15,"exported PNG text uses the embedded font in WebKit, not a fallback (\(Int(ink)) px ink, \(Int(widths[0])) px expected, \(Int(widths[1])) px fallback)")
                         self.closeDialog(document,done)
                     }
+                }
+            }
+        }
+    }
+    /** The module worker path of the Sketch importer, entered through a real Finder drop of a package zip made by /usr/bin/zip. */
+    func acceptSketchDrop(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        let folder=directory.appendingPathComponent("sketch-source",isDirectory:true),pages=folder.appendingPathComponent("pages",isDirectory:true),file=directory.appendingPathComponent("Drawing.sketch")
+        let frame:[String:Any]=["_class":"rect","x":20,"y":30,"width":120,"height":80],fill:[String:Any]=["_class":"fill","isEnabled":true,"fillType":0,"color":["_class":"color","red":1,"green":0,"blue":0,"alpha":1]]
+        let shape:[String:Any]=["_class":"rectangle","do_objectID":"Red","name":"Sketch red","rotation":0,"isFlippedHorizontal":false,"isFlippedVertical":false,"isVisible":true,"isLocked":false,"booleanOperation":-1,"frame":frame,"style":["_class":"style","contextSettings":["_class":"graphicsContextSettings","blendMode":0,"opacity":1],"fills":[fill],"borders":[]]]
+        let page:[String:Any]=["_class":"page","do_objectID":"page-source","name":"Sketch page","layers":[shape]],root:[String:Any]=["_class":"document","pages":[["_class":"MSJSONFileReference","_ref_class":"MSImmutablePage","_ref":"pages/page-source"]]]
+        do{try FileManager.default.createDirectory(at:pages,withIntermediateDirectories:true);try Data(json(root).utf8).write(to:folder.appendingPathComponent("document.json"));try Data(json(page).utf8).write(to:pages.appendingPathComponent("page-source.json"));let process=Process();process.executableURL=URL(fileURLWithPath:"/usr/bin/zip");process.currentDirectoryURL=folder;process.arguments=["-qr",file.path,"document.json","pages"];try process.run();process.waitUntilExit()}catch{smokeFail(error.localizedDescription)}
+        loadDocument(document,acceptanceDocument("accept-sketch","Before Sketch")){
+            self.page(document,"const r=document.querySelector('#forma-design-canvas').getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2];"){value in
+                guard let at=value as? [Double] else{self.smokeFail("canvas point")}
+                self.dropOnWindow(document,[file],x:CGFloat(at[0]),y:CGFloat(at[1]))
+                self.page(document,"await wait(()=>find('Open editable project')&&!find('Open editable project').disabled,'Sketch review from the real worker',15000);click('Open editable project');await wait(()=>[...document.querySelectorAll('.layer-row')].some(r=>r.textContent.includes('Sketch red')),'Sketch layer',8000);return true;"){_ in
+                    self.check(true,"a .sketch dropped from Finder runs its module worker in WKWebView and opens editable layers after review")
+                    done()
                 }
             }
         }

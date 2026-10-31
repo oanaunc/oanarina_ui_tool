@@ -16,6 +16,7 @@ Native integration checks after building. Prefer a logged-in foreground session,
 "build/Forma.app/Contents/MacOS/OanarinaUITool" --clipboard-smoke-test
 FORMA_SMOKE_REPO="$PWD" "build/Forma.app/Contents/MacOS/OanarinaUITool" --integration-smoke-test
 "build/Forma.app/Contents/MacOS/OanarinaUITool" --renderer-restart-smoke-test
+"build/Forma.app/Contents/MacOS/OanarinaUITool" --acceptance-smoke-test
 ```
 
 Run them sequentially with the app loopback port free. Smoke windows use an isolated nonpersistent WebKit data store and temporary `.oui` files. They do not read or modify the user's project library, preferences, recent-document list or saved window sessions. Clipboard checks use a private named pasteboard, preserving the user's general clipboard. The lifecycle check exercises actual WKWebViews, native alerts and save-panel cancellation. These checks supplement manual interaction checks; they do not establish Intel runtime validation. See [Mac document windows](MAC-WINDOWS.md) and [raster clipboard acceptance](RASTER-CLIPBOARD.md) for scope.
