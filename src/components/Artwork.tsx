@@ -29,7 +29,8 @@ import {EffectFilter} from './EffectFilter';
 import {scaledLocalPath} from '../geometry';
 import {textLines} from '../text-layout';
 import {fontSettings,positionedTextStyle} from '../rich-text';
-import {fillsFor,rasterGradient,strokesFor} from '../paints';
+import {fillsFor,strokesFor} from '../paints';
+import {ConicPaintDefinition} from './ConicPaintDefinition';
 import type {Paint,StrokeStyle} from '../paints';
 import type {DesignNode} from '../model';
 import {maskRegion,maskRuns,vectorPaintVisible} from '../masks';
@@ -37,7 +38,7 @@ import type {MaskMode} from '../masks';
 function paintValue(p:Paint,id:string){return p.type==='solid'?p.color:`url(#${id})`;}
 function PaintDefinition({paint:p,id,n,strokeSpace=false,diagnosticKey}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean;diagnosticKey?:string}){
  if(p.type==='linear'||p.type==='radial')return <GradientPaintDefinition paint={p} id={id} width={n.width} height={n.height} userSpace={strokeSpace}/>;
- if(p.type==='angular'||p.type==='diamond')return <pattern id={id} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} patternUnits={strokeSpace?'userSpaceOnUse':undefined} patternContentUnits={strokeSpace?'userSpaceOnUse':'objectBoundingBox'}><image href={rasterGradient(p)} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} preserveAspectRatio="none"/></pattern>;
+ if(p.type==='angular'||p.type==='diamond')return <ConicPaintDefinition paint={p} id={id} width={n.width} height={n.height} userSpace={strokeSpace}/>;
  if(p.type==='image')return <ImagePaintDefinition diagnosticKey={diagnosticKey} paint={p} id={id} width={strokeSpace?Math.max(1,n.width):n.width} height={strokeSpace?Math.max(1,n.height):n.height} userSpace={strokeSpace}/>;
  return null;
 }
