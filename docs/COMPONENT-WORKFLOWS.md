@@ -32,3 +32,18 @@ When two or more instance roots are selected, up to 200, the inspector replaces 
 ## Property values across a swap
 
 Each main component owns its property IDs. A swap, including a variant change, copies each value to the new main's property with the same name and type. Values with no match stay stored, so swapping back restores them, while an edit made after the swap wins on the way back.
+
+## Nested instances inside an instance
+
+Selecting a nested instance inside an outer instance shows its own controls: **Swap nested instance**, its variant axes and its component properties. The change applies to that outer instance only; the main components and other instances stay as they are.
+
+- A property value is stored on the nested layer as an override (`propertyValues` in `overrideKeys`) holding only the values set at this level, then applied over the artwork inherited from the main. Overrides made in the parent main on that nested branch therefore stay.
+- A direct swap regenerates that branch from the new main. Generated layer IDs and their overrides stay stable across later synchronization, and the swapped layer keeps its parent-given sizing, constraints, grid placement, visibility and lock. If a main exposes a swap of that layer, the swap writes the owning property rather than a separate override.
+- Reset this layer and Reset all overrides restore the authored nested instance.
+- Slot-bearing components stay outside other components, so swapping one in refuses, as do recursive dependencies, missing mains and locked layers. All refusals happen before the edit is published.
+
+**Expose properties to instances** on a nested instance in a main (optional `exposeNestedProperties`) lists it on outer instances. A deeper nested instance is listed only when every generated instance on the way down is exposed too, up to 64 rows.
+
+When a swap changes structure, an override follows its matching layer by component key or path, then by a unique layer of the same type and name, without its old position. A renamed layer or an ambiguous name has no match. One overridden variable binding (optional `overrideBindings`) leaves the other bindings following the main; instance overrides saved before this field keep whole-object behavior.
+
+Validation: `tests/nested-instances.test.ts` covers Undo, reopen, main edits, three-level exposure, swap property routing, cross-file copying, refusals and malformed input. `tests/e2e/nested-instances.spec.ts` drives the inspector. A real Figma round trip is not claimed.
