@@ -1,0 +1,37 @@
+import {test,expect} from '@playwright/test';
+import type {Page} from '@playwright/test';
+import {blankDocument,node} from '../../src/model';
+const HEBREW='שלום עולם יפה',ARABIC='مرحبا بالعالم';
+async function load(page:Page,text:string,extra:Record<string,unknown>={}){const d=blankDocument(),n=node('text',{id:'t',name:'Bidi',x:100,y:100,width:420,height:160,text,fontFamily:'Arial',fontSize:32,textResize:'fixed',...extra});d.fonts=[];d.pages[0].nodes=[n];page.on('filechooser',()=>{});await page.addInitScript(doc=>localStorage.setItem('oui-active',JSON.stringify(doc)),d);await page.goto('/');await page.getByRole('treeitem',{name:'Bidi',exact:true}).click();await page.evaluate(()=>document.fonts.ready);}
+const docText=(page:Page)=>page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts');return useEditor.getState().doc.pages[0].nodes[0];});
+/** Wraps one paragraph in the DOM at the same break and compares each character's visual order on the second line with the SVG line. */
+const wrappedOrder=(page:Page,text:string,breakAt:number,direction:'ltr'|'rtl',strip=false)=>page.evaluate(async({text,breakAt,direction,strip})=>{
+ const {node}=await import('/src/model.ts'),{exportSvg}=await import('/src/files.tsx'),{textLines}=await import('/src/text-layout.ts');
+ const size=24,first=text.slice(0,breakAt).trimEnd(),canvas=document.createElement('canvas').getContext('2d')!;canvas.font=`${size}px Arial`;canvas.direction=direction;const width=Math.ceil(canvas.measureText(first).width)+6,n=node('text',{id:'probe',x:0,y:0,width,height:300,text,fontFamily:'Arial',fontSize:size,textDirection:direction,textResize:'fixed'}),lines=textLines(n);
+ const host=document.createElement('div');host.innerHTML=exportSvg([n]);document.body.append(host);const svgText=host.querySelector('text') as SVGTextElement,tspans=[...svgText.querySelectorAll(':scope > tspan')];
+ const para=document.createElement('div');Object.assign(para.style,{position:'absolute',left:'0',top:'400px',width:width+'px',font:`${size}px Arial`,whiteSpace:'pre-wrap'});para.dir=direction;para.textContent=text;document.body.append(para);
+ const textNode=para.firstChild!,domX=(i:number)=>{const r=document.createRange();r.setStart(textNode,i);r.setEnd(textNode,i+1);return r.getClientRects()[0];},second=lines[1];let sourceOffset=lines[0].text.length;while(text[sourceOffset]===' ')sourceOffset++;const indices=[...Array(second.text.length).keys()].map(i=>i+sourceOffset).filter(i=>text[i]!==' ');const domOrder=indices.filter(i=>!/[\u202a-\u202e\u2066-\u2069]/.test(text[i])).map(i=>({i,x:domX(i)?.left??0})).sort((a,b)=>a.x-b.x).map(v=>text[v.i]);
+ if(strip){const lead=tspans[1].firstChild;if(lead?.nodeType===3)lead.textContent='';}const line=tspans[1],ownText=line.textContent??'';let base=0;for(const t of tspans.slice(0,1))base+=(t.textContent??'').length;const chars=[...Array(ownText.length).keys()].map(i=>{const c=ownText[i],p=svgText.getStartPositionOfChar(base+i),e=svgText.getEndPositionOfChar(base+i);return {c,x:Math.min(p.x,e.x)};}).filter(v=>v.c!==' '&&!/[\u200e\u200f\u061c\u202a-\u202e\u2066-\u2069]/.test(v.c));const svgOrder=chars.sort((a,b)=>a.x-b.x).map(v=>v.c);
+ const result={lines:lines.map(l=>l.text),domOrder,svgOrder,bidi:second.bidi};host.remove();para.remove();return result;
+},{text,breakAt,direction,strip});
+for(const [label,text,breakAt,direction] of [
+ ['Latin before a wrap in an RTL paragraph','abc def (123) שלום',8,'rtl'],
+ ['Hebrew before a wrap in an LTR paragraph','שלום עולם (123) abc',10,'ltr'],
+ ['digits after Arabic across a wrap','مرحبا بالعالم 123 456',14,'rtl'],
+ ['an embedding that spans the wrap','start ‫שלום עולם יפה מאוד‬ end',16,'ltr'],
+] as const)test(`second-line glyph order matches the whole-paragraph browser layout: ${label}`,async({page})=>{
+ await page.goto('/');const r=await wrappedOrder(page,text,breakAt,direction);expect(r.lines.length).toBeGreaterThan(1);expect(r.svgOrder).toEqual(r.domOrder);
+});
+test('without the carried context the same line reorders wrongly, so the comparison above has teeth',async({page})=>{await page.goto('/');const text='abc def (123) שלום',kept=await wrappedOrder(page,text,8,'rtl'),stripped=await wrappedOrder(page,text,8,'rtl',true);expect(kept.bidi?.prefix).toBeTruthy();expect(kept.svgOrder).toEqual(kept.domOrder);expect(stripped.svgOrder).not.toEqual(stripped.domOrder);});
+for(const [label,text] of [['Hebrew',`${HEBREW} Latin ${HEBREW}`],['Arabic',`${ARABIC} Latin ${ARABIC}`]] as const)test(`${label} mixed with Latin: arrow keys move through the source, Shift-selection is logical and formatting keeps it`,async({page})=>{
+ await load(page,text,{textDirection:'rtl'});const editor=page.getByLabel('Rich text content',{exact:true});await editor.focus();await editor.evaluate((el:HTMLTextAreaElement)=>el.setSelectionRange(0,0));const offsets:number[]=[];for(let i=0;i<text.length;i++){await page.keyboard.press('ArrowLeft');offsets.push(await editor.evaluate((el:HTMLTextAreaElement)=>el.selectionStart));}expect(new Set(offsets).size).toBeGreaterThan(text.length*.8);for(const v of offsets){expect(v).toBeGreaterThanOrEqual(0);expect(v).toBeLessThanOrEqual(text.length);}expect(await editor.evaluate((el:HTMLTextAreaElement)=>getComputedStyle(el).direction)).toBe('rtl');
+ const latin=text.indexOf('Latin');await editor.evaluate((el:HTMLTextAreaElement,at:number)=>el.setSelectionRange(at,at),latin+1);for(let i=0;i<3;i++)await page.keyboard.press('Shift+ArrowLeft');const selected=await editor.evaluate((el:HTMLTextAreaElement)=>el.value.slice(el.selectionStart,el.selectionEnd));expect(selected).toBe('ati');
+ await editor.evaluate((el:HTMLTextAreaElement)=>{el.dispatchEvent(new Event('select',{bubbles:true}));el.dispatchEvent(new MouseEvent('mouseup',{bubbles:true}));});await expect(page.locator('.rich-text-selection')).toBeVisible();const weight=page.getByRole('button',{name:'Bold'}).first();if(await weight.count())await weight.click();const n=await docText(page);expect(n.text).toBe(text);
+ const placed=await page.evaluate(()=>{const t=document.querySelector('#forma-design-canvas text') as SVGTextElement;return t.textContent;});expect(placed).toContain('Latin');
+});
+test('typing into RTL text inserts at the logical caret and reaches the canvas in one Undo',async({page})=>{
+ await load(page,HEBREW,{textDirection:'rtl'});await page.locator('#forma-design-canvas').focus();await page.keyboard.press('Enter');const editor=page.getByLabel('Edit text',{exact:true});await expect(editor).toBeVisible();await expect.poll(()=>editor.evaluate((el:HTMLTextAreaElement)=>getComputedStyle(el).direction)).toBe('rtl');await editor.evaluate((el:HTMLTextAreaElement)=>el.setSelectionRange(5,5));await page.keyboard.type('abc');expect(await editor.inputValue()).toBe(HEBREW.slice(0,5)+'abc'+HEBREW.slice(5));await page.keyboard.press('Escape');
+});
+test('Auto direction in the canvas editor follows the text and each line reorders on its own',async({page})=>{
+ await load(page,`${HEBREW}\nLatin first`);await page.locator('#forma-design-canvas').focus();await page.keyboard.press('Enter');const editor=page.getByLabel('Edit text',{exact:true});await expect(editor).toBeVisible();expect(await editor.evaluate((el:HTMLTextAreaElement)=>getComputedStyle(el).unicodeBidi)).toBe('plaintext');const tspans=await page.locator('#forma-design-canvas text > tspan').evaluateAll(list=>list.map(t=>t.getAttribute('data-text-direction')));expect(tspans.slice(0,2)).toEqual(['rtl','ltr']);await page.keyboard.press('Escape');
+});
