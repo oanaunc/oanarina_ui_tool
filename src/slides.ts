@@ -7,7 +7,7 @@ export type SlideRole='title'|'subtitle'|'body'|'accent';
 export interface SlideTheme {id:string;name:string;background:string;foreground:string;muted:string;accent:string;font:string;}
 export interface SlideEntry {id:string;frameId:string;name:string;notes:string;hidden:boolean;commentIds?:string[];template:SlideTemplate;roles:Record<string,SlideRole>;transition:{type:'none'|'fade'|'slide';duration:number};}
 export interface SlideDeck {pageId:string;slides:SlideEntry[];width:number;height:number;themeId:string;}
-export type SlideDocument=DesignDocument&{workspace?:'design'|'whiteboard'|'slides';slides?:SlideDeck};
+export type SlideDocument=DesignDocument&{workspace?:'design'|'whiteboard'|'slides'|'site';slides?:SlideDeck};
 export const slideThemes:SlideTheme[]=[{id:'paper',name:'Paper',background:'#f6f3ee',foreground:'#29262f',muted:'#736d79',accent:'#a18ac8',font:'Inter'},{id:'midnight',name:'Midnight',background:'#171827',foreground:'#f8f6ff',muted:'#bbb7d3',accent:'#c5afff',font:'Inter'},{id:'coral',name:'Coral',background:'#fff1eb',foreground:'#452d35',muted:'#8e6872',accent:'#e77f77',font:'Inter'},{id:'forest',name:'Forest',background:'#eaf1eb',foreground:'#243c31',muted:'#668270',accent:'#5a9a72',font:'Inter'}];
 export const slideTemplates:SlideTemplate[]=['blank','title','section','image','grid'];
 const clone=<T,>(value:T):T=>structuredClone(value);

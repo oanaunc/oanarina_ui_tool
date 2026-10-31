@@ -6,7 +6,7 @@ import './file-information.css';
 export default function FileInformation(){
  const s=useEditor(),doc=s.doc,[original]=useState(()=>({id:doc.id,description:doc.description})),[description,setDescription]=useState(doc.description??''),[edited,setEdited]=useState(false),[error,setError]=useState(''),hint=useId();
  let validation='',next:string|undefined;try{next=normalizedDocumentDescription(description);}catch(e){validation=(e as Error).message;}
- const changed=edited&&!validation&&next!==original.description,workspace=doc.workspace==='whiteboard'?'Whiteboard':doc.workspace==='slides'?'Presentation':'Design';
+ const changed=edited&&!validation&&next!==original.description,workspace=doc.workspace==='whiteboard'?'Whiteboard':doc.workspace==='slides'?'Presentation':doc.workspace==='site'?'Site':'Design';
  const close=()=>s.set({modal:null});
  const save=(e:React.FormEvent)=>{e.preventDefault();try{if(!changed)return;s.edit(d=>{applyDocumentDescription(d,description,original);});close();}catch(e){setError(e instanceof Error?e.message:'Unable to save file description.');}};
  return <form className="file-information" onSubmit={save}>
