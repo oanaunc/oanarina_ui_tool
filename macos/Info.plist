@@ -30,6 +30,18 @@
 				<string>com.oanarinaldi.forma.design-file</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>fig</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Design File Import by Extension</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>OanarinaUITool</string>
