@@ -119,6 +119,8 @@
 .app fieldset.blend-controls>select{margin:0;height:30px;font-size:10px}
 .app fieldset.blend-controls>label,.app fieldset.blend-controls>p{grid-column:1/-1;margin-top:0}
 .app fieldset.blend-controls>.number-field{grid-column:1}
+[data-testid=effects-section] .paint-item .field-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 6px}
+.app .stroke-body .field-grid>.number-field>span,[data-testid=effects-section] .field-grid>.number-field>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* Colors */
 .app .paint-item{position:relative;margin-bottom:6px}
 .app .paint-item>summary{min-height:22px;padding-right:96px;display:flex;align-items:center;gap:6px;font-size:10px}

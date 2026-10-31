@@ -53,7 +53,7 @@ Findings are ordered roughly by how much they got in the way. Regression coverag
 | Shift+A on an existing stack flipped it to a row. | It wraps instead. A free frame keeps its size and reads insets from its children. |
 | "Padding" sat beside the paired fields and went stale once they differed. | Horizontal and vertical padding lead; the uniform field moved into More layout options. |
 | Alignment needed two dropdowns. | A nine-point align grid. |
-| "Analyze auto layout" sat under Resizing beneath a paragraph. | It is now in Auto layout, with the explanation as a tooltip. |
+| "Analyze auto layout" sat under Resizing beneath a paragraph. | It is now in Auto layout, with the explanation in a small disclosure. |
 
 ### Panels
 
@@ -92,7 +92,10 @@ Findings are ordered roughly by how much they got in the way. Regression coverag
 - `snapDrawingEndpoint` now honors the document's pixel alignment; one unit assertion changed with it.
 - Number fields show fewer decimals until focused; `number-precision.spec.ts` asserts both forms.
 - Nested frame labels are off by default because their chips covered content. They show when the frame or its parent is selected. **View > Show nested frame names** restores them, and that local preference stays out of `.oui`. `canvas-names.spec.ts` enables it.
-- Filters and the color picker take one extra click, so specs that use them now make that click.
+- Filters, More layout options and the color picker take one extra click, so specs that use them now make that click. The picker stays open through its first commit and through dialogs; More layout options stays open between layers; neither survives a reload.
+- Undo keeps the selection, so specs that reselected a layer to reset a disclosure no longer need that step.
+- A child dragged outside an auto layout parent now leaves it. It used to snap back; `layout-reorder.spec.ts` covers the new path, and the same-slot snap back is unchanged. A group child stays in its group, and drawing inside a rotated, flipped or scaled frame stays exact rather than snapping to world pixels.
+- Inspector X and Y for one nested layer are now frame-relative. The separate Frame-relative position section remains, and appears only when it applies.
 - `.oui` data is unchanged: no new document fields.
 
 ## Found and not fixed
