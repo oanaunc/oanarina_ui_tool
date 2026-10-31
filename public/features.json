@@ -14774,10 +14774,10 @@
     "category": "Accessibility and localization",
     "name": "Romanian interface",
     "priority": "must",
-    "status": "partial",
+    "status": "retired",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Romanian catalog covers all 785 messages with plurals, comma-below ș/ț and placeholder parity. Measured interface coverage is 446 of 2,529 literal occurrences (17.6%). Inspector panels, context menus and toasts stay English. No native-speaker review."
+    "notes": "Retired October 31, 2026: a Romanian interface is not needed. The existing catalog stays as an optional preference and gets no further work; English is the default. Measured interface coverage stays at 446 of 2,529 literal occurrences (17.6%), with no native-speaker review."
   },
   {
     "id": "UI-44-026",
@@ -14794,10 +14794,10 @@
     "category": "Accessibility and localization",
     "name": "Localized menu text",
     "priority": "must",
-    "status": "partial",
+    "status": "retired",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The web menu bar is fully translated in Romanian, including all menu groups and command labels. The native Mac NSMenu stays English, and canvas and layer context menus are not wrapped."
+    "notes": "Retired October 31, 2026: translated menus are not needed. The web menu bar keeps its existing Romanian text as an optional preference; the native Mac NSMenu and context menus stay English."
   },
   {
     "id": "UI-44-028",
