@@ -1,4 +1,4 @@
-import {networkPath} from './vector-network-geometry';
+import {networkChainPath,networkPath} from './vector-network-geometry';
 import {smoothedBoxPath} from './corner-smoothing';
 import {refuseVariableWidthConversion} from './variable-width';
 import {roundedPolygonPath} from './basic-shapes';
@@ -32,7 +32,7 @@ export interface PathContour {start:{x:number;y:number};curves:PathCurve[];close
 /** Plain cubic contours for writers that have no SVG path parser. Arcs and shorthands arrive already converted. */
 export function cubicContours(d:string):PathContour[]{if(!d)return [];scope.activate();const item=scope.PathItem.create(d);item.remove();const paths=(item as paper.CompoundPath).children?[...(item as paper.CompoundPath).children] as paper.Path[]:[item as paper.Path];const out=paths.filter(p=>p.segments.length).map(p=>({start:{x:p.firstSegment.point.x,y:p.firstSegment.point.y},closed:p.closed,curves:p.curves.map(c=>({c1:{x:c.point1.x+c.handle1.x,y:c.point1.y+c.handle1.y},c2:{x:c.point2.x+c.handle2.x,y:c.point2.y+c.handle2.y},to:{x:c.point2.x,y:c.point2.y}}))}));return out;}
 export function localPath(n:DesignNode):string {
- if(n.type==='path'&&n.vectorNetwork)return networkPath(n.vectorNetwork);
+ if(n.type==='path'&&n.vectorNetwork)return n.vectorNetwork.version===3||n.strokes?.some(s=>s.cap!=='round'||s.join!=='round'||s.dash.length)?networkChainPath(n.vectorNetwork):networkPath(n.vectorNetwork);
  if(n.type==='path')return n.contours!==undefined?n.contours.map(c=>contourPath(c.points,c.closed)).join(' '):n.points.length?contourPath(n.points,n.closed):n.path;
  if(n.type==='ellipse')return ellipsePath(n);
  if(n.type==='polygon'||n.type==='star')return n.radius>0?roundedPolygonPath(shapePoints(n),n.radius):contourPath(shapePoints(n),true);
