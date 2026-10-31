@@ -1,3 +1,4 @@
+import {additionalCommand,additionalShortcutsEnabled,getKeyboardPreferences,shortcutAria,shortcutLabel,useKeyboardPreferences} from '../keyboard-preferences';
 import {usePreferences} from '../preferences';
 import {useId,useLayoutEffect,useRef,useState} from 'react';
 import {ChevronDown} from 'lucide-react';
@@ -11,7 +12,7 @@ interface OpenMenu {document:DesignDocument;last:boolean;left:number;top:number;
 const groups=TITLE_MENU_GROUPS.map(ids=>ids.map(id=>commands.find(c=>c[0]===id)!)),items=groups.flat();
 
 export default function DocumentTitleMenu({onOpen}:{onOpen:()=>void}){
- const {uiScale}=usePreferences(),s=useEditor(),trigger=useRef<HTMLButtonElement>(null),host=useRef<HTMLDivElement>(null),popup=useRef<HTMLDivElement>(null),id=useId(),[opened,setOpened]=useState<OpenMenu|null>(null),prefix=useRef({text:'',time:0}),returnFromModal=useRef<{documentId:string;modal:string}|null>(null);
+ const {uiScale}=usePreferences(),keyboard=useKeyboardPreferences(commands),s=useEditor(),trigger=useRef<HTMLButtonElement>(null),host=useRef<HTMLDivElement>(null),popup=useRef<HTMLDivElement>(null),id=useId(),[opened,setOpened]=useState<OpenMenu|null>(null),prefix=useRef({text:'',time:0}),returnFromModal=useRef<{documentId:string;modal:string}|null>(null);
  const valid=!!opened&&opened.document===s.doc&&!s.modal&&!s.home&&!s.uiHidden;
  const close=(restore=false)=>{setOpened(null);prefix.current={text:'',time:0};if(restore)trigger.current?.focus();};
  const open=(last=false)=>{const current=useEditor.getState();if(current.modal||current.home||current.uiHidden)return;const box=trigger.current!.getBoundingClientRect();onOpen();prefix.current={text:'',time:0};setOpened({document:current.doc,last,left:Math.max(8,Math.min(box.left,window.innerWidth-288)),top:box.bottom+6});};
@@ -27,12 +28,12 @@ export default function DocumentTitleMenu({onOpen}:{onOpen:()=>void}){
    event.stopPropagation();const list=buttons(),active=list.indexOf(document.activeElement as HTMLButtonElement);
    if(event.key==='Escape'){event.preventDefault();close(true);return;}
    if(event.key==='Tab'){event.preventDefault();tabOut(event.shiftKey);return;}
-   if(event.metaKey||event.ctrlKey){const action=commands.find(c=>matchesShortcut(event.nativeEvent,c[3]));if(action){event.preventDefault();if(action[2]==='File')invoke(action[0],event.nativeEvent);}return;}
+   if(event.metaKey||event.ctrlKey){const action=commands.find(c=>matchesShortcut(event.nativeEvent,c[3]))??(additionalShortcutsEnabled(useEditor.getState())?additionalCommand(event.nativeEvent,commands,getKeyboardPreferences(commands)):undefined);if(action){event.preventDefault();if(action[2]==='File')invoke(action[0],event.nativeEvent);}return;}
    if(event.altKey||event.nativeEvent.isComposing)return;
    if(['Delete','Backspace','ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();return;}
    if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){event.preventDefault();prefix.current={text:'',time:0};const next=event.key==='Home'?0:event.key==='End'?list.length-1:(active+(event.key==='ArrowDown'?1:-1)+list.length)%list.length;list[next]?.focus();return;}
    if(event.key==='Enter'||event.key===' '){event.preventDefault();if(active>=0)invoke(items[active][0],event.nativeEvent);return;}
    if(event.key.length===1){event.preventDefault();const old=prefix.current,text=event.timeStamp-old.time>700?'':old.text,next=text+event.key,repeated=[...next].every(c=>c.toLocaleLowerCase()===next[0].toLocaleLowerCase()),query=repeated?event.key:next,index=titleMenuPrefixMatch(items.map(c=>c[1]),query,repeated?active+1:Math.max(0,active));prefix.current={text:next,time:event.timeStamp};if(index>=0)list[index]?.focus();}
-  }}><div className="document-title-heading" role="presentation"><strong>{s.doc.name}</strong><small>{s.doc.workspace==='slides'?'Presentation':s.doc.workspace==='whiteboard'?'Whiteboard':'Design'} · Local .oui project</small></div>{groups.map((group,index)=><div key={index} role="group" aria-label={['File details','Save project','Local versions','Import and export','File browser'][index]}>{index>0&&<div role="separator"/>}{group.map(([command,label,,shortcut])=><button key={command} role="menuitem" aria-label={label} aria-keyshortcuts={shortcut?shortcut.replaceAll('⌘','Meta+').replaceAll('⇧','Shift+'):undefined} tabIndex={-1} onClick={event=>invoke(command,event.nativeEvent)}><span>{label}</span>{shortcut&&<kbd aria-hidden="true">{shortcut}</kbd>}</button>)}</div>)}</div>}
+  }}><div className="document-title-heading" role="presentation"><strong>{s.doc.name}</strong><small>{s.doc.workspace==='slides'?'Presentation':s.doc.workspace==='whiteboard'?'Whiteboard':'Design'} · Local .oui project</small></div>{groups.map((group,index)=><div key={index} role="group" aria-label={['File details','Save project','Local versions','Import and export','File browser'][index]}>{index>0&&<div role="separator"/>}{group.map(([command,label,,shortcut])=><button key={command} role="menuitem" aria-label={label} aria-keyshortcuts={shortcutAria([command,label,'File',shortcut],keyboard)} tabIndex={-1} onClick={event=>invoke(command,event.nativeEvent)}><span>{label}</span>{shortcutLabel([command,label,'File',shortcut],keyboard)&&<kbd aria-hidden="true">{shortcutLabel([command,label,'File',shortcut],keyboard)}</kbd>}</button>)}</div>)}</div>}
  </div>;
 }

@@ -1,3 +1,4 @@
+import {shortcutLabel,useKeyboardPreferences} from '../keyboard-preferences';
 import {useEffect,useId,useMemo,useRef,useState,useSyncExternalStore} from 'react';
 import {Search} from 'lucide-react';
 import {commands,runCommand} from '../commands';
@@ -6,16 +7,17 @@ import {moveActiveAction,searchActions} from '../action-search';
 import type {PaletteCommand} from '../action-search';
 import './action-palette.css';
 export default function ActionPalette({onClose}:{onClose:()=>void}){
+ const keyboard=useKeyboardPreferences(commands),commandRows=useMemo(()=>commands.map(c=>[c[0],c[1],c[2],shortcutLabel(c,keyboard)] as const),[keyboard]);
  const [query,setQuery]=useState(''),[category,setCategory]=useState('All'),[active,setActive]=useState(0);
  const recent=useSyncExternalStore(subscribeActionHistory,getRecentActions,getRecentActions),listId=useId(),hintId=useId(),input=useRef<HTMLInputElement>(null),list=useRef<HTMLDivElement>(null);
  const groups=useMemo(()=>[...new Set(commands.map(c=>c[2]))],[]);
  const sections=useMemo(()=>{
-  const matching=searchActions(commands,query),byId=new Map(matching.map(c=>[c[0],c])),recents=recent.flatMap(id=>byId.has(id)?[byId.get(id)!]:[]);
+  const matching=searchActions(commandRows,query),byId=new Map(matching.map(c=>[c[0],c])),recents=recent.flatMap(id=>byId.has(id)?[byId.get(id)!]:[]);
   if(category==='Recent')return[{label:'Recent actions',items:recents}];
   if(category!=='All')return[{label:category,items:matching.filter(c=>c[2]===category)}];
   if(query.trim())return[{label:'Search results',items:matching}];
   const recentIds=new Set(recents.map(c=>c[0]));return[{label:'Recent actions',items:recents},...groups.map(label=>({label,items:matching.filter(c=>c[2]===label&&!recentIds.has(c[0]))}))].filter(section=>section.items.length);
- },[query,category,recent,groups]);
+ },[query,category,recent,groups,commandRows]);
  const results=sections.flatMap(section=>section.items),index=results.length?Math.max(0,Math.min(active,results.length-1)):-1,selected=results[index];
  useEffect(()=>{input.current?.focus();},[]);
  useEffect(()=>{if(selected)list.current?.querySelector<HTMLElement>(`[data-action-id="${selected[0]}"]`)?.scrollIntoView({block:'nearest'});},[selected]);
