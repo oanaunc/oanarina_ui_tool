@@ -1,5 +1,65 @@
 [
   [
+    "design-health",
+    "Design health report…",
+    "Resources",
+    ""
+  ],
+  [
+    "palette-exchange",
+    "Import or export color palette…",
+    "Resources",
+    ""
+  ],
+  [
+    "batch-transforms",
+    "Batch transforms…",
+    "Object",
+    ""
+  ],
+  [
+    "code-export",
+    "Design-to-code export…",
+    "File",
+    ""
+  ],
+  [
+    "export-queue",
+    "Export queue…",
+    "File",
+    ""
+  ],
+  [
+    "workspace-layouts",
+    "Workspace layouts…",
+    "View",
+    ""
+  ],
+  [
+    "device-preview",
+    "Side-by-side device preview…",
+    "View",
+    ""
+  ],
+  [
+    "command-usage",
+    "Command usage…",
+    "Help",
+    ""
+  ],
+  [
+    "bug-report",
+    "Create bug report bundle…",
+    "Help",
+    ""
+  ],
+  [
+    "privacy-dashboard",
+    "Privacy dashboard…",
+    "Help",
+    ""
+  ],
+  [
     "icons",
     "Free icon library…",
     "Resources",
@@ -212,6 +272,12 @@
   [
     "new-brand",
     "New brand project",
+    "File",
+    ""
+  ],
+  [
+    "new-site",
+    "New site",
     "File",
     ""
   ],

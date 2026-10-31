@@ -5,6 +5,7 @@
  */
 export const messages=[
  'File','Edit','Object','Text','Arrange','Vector',
+ 'Design health report…','Import or export color palette…','Batch transforms…','Design-to-code export…','Export queue…','Workspace layouts…','Side-by-side device preview…','Command usage…','Create bug report bundle…','Privacy dashboard…','Local widgets…','Code layer tool','New brand project','New site','Draw mode',
  'View','Page','Resources','Help','Tools','Prototype',
  'Canvas','Free icon library…','Templates and personal starter kits…','Linear repeat…','Radial repeat…','Separate vector regions…',
  'Outline vector stroke…','Slices and exports…','Show / hide slices','Offset vector path…','Select layers in box…','Document outline…',

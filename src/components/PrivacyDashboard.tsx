@@ -14,7 +14,7 @@ export default function PrivacyDashboard(){
  const clear=(key:string)=>{if(confirming!==key){setConfirming(key);setMessage('');return;}try{if(clearers[key])clearers[key]();else localStorage.removeItem(key);setLocal(readStorage());setConfirming('');setMessage(localStorageCatalog.find(e=>e.key===key)?.label+' cleared on this device.');}catch{setMessage('Local storage is blocked, so nothing was cleared.');}};
  return <div className="local-tool privacy-dashboard">
   <section aria-label="What Forma sends"><h3>What leaves this device</h3><ul className="tool-list">{privacyStatements.map(s=><li key={s}>{s}</li>)}{native&&nativeStatements.map(s=><li key={s}>{s}</li>)}</ul>
-   <h3>The one outbound request</h3>{networkDisclosures.map(d=><div className="tool-card" key={d.host}><strong>{d.host}</strong><p>{d.when}</p><p>{d.sends}</p></div>)}
+   <h3>Outbound requests</h3>{networkDisclosures.map(d=><div className="tool-card" key={d.host}><strong>{d.host}</strong><p>{d.when}</p><p>{d.sends}</p></div>)}
    <p className="small-note">{hosts?'This window’s security policy only permits connections to itself'+(hosts.length?' and '+hosts.join(', '):'')+'. The browser engine enforces that list.':'This window does not expose a connection policy to inspect.'}</p>
    <p role="status">{observed.length?'Connections observed this session: '+observed.map(o=>o.host+' ('+o.requests+')').join(', ')+'.':'No connections to other hosts have been observed this session.'}</p>
   </section>

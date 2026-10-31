@@ -28,15 +28,18 @@ export const databaseCatalog:readonly StoredEntry[]=[
  {key:'forma-starter-kits',label:'Starter kits',holds:'Project starter kits you saved.',projectContent:true},
  {key:'forma-component-libraries',label:'Component libraries',holds:'Local component library snapshots.',projectContent:true},
  {key:'forma-local-plugin-catalog-v1',label:'Local plugins',holds:'Plugin packages you installed.',projectContent:false},
+ {key:'forma-local-plugin-data-v1',label:'Plugin storage',holds:'Values local plugins saved with storage access. Removing a plugin clears its values.',projectContent:false},
+ {key:'forma-local-widget-catalog-v1',label:'Local widgets',holds:'Widget packages you installed.',projectContent:false},
 ];
 export interface NetworkDisclosure {host:string;when:string;sends:string;}
 /** The complete list of outbound destinations in this source. Everything else is same-origin. */
 export const networkDisclosures:readonly NetworkDisclosure[]=[
  {host:'fonts.googleapis.com, fonts.gstatic.com',when:'Only when a project or the Font library asks for a catalog family that is neither bundled, cached nor installed.',sends:'The font family and weights in a normal web request, which also reveals your IP address and app version to Google. Never project content.'},
+{host:'Origins you approve for a local plugin',when:'Only while a plugin that lists those origins runs and you grant it network access for that run. No plugin has network access by default, and the plugin frame cannot reach any other origin.',sends:'Whatever that plugin chooses to send, which can include anything you let it read during that run. Forma adds nothing of its own.'},
 ];
 export const privacyStatements:readonly string[]=[
  'Forma has no account, analytics, telemetry, crash reporting, advertising or cloud sync.',
- 'Your projects, comments, images and fonts stay on this device. Forma never uploads them.',
+ 'Your projects, comments, images and fonts stay on this device. Forma itself never uploads them; a local plugin you grant network access can send what you let it read.',
  'Bug report bundles, exports and reports are files you save yourself. Forma does not transmit them.',
  'Links you click, such as the online guide or a layer hyperlink, open in your default browser.',
 ];
