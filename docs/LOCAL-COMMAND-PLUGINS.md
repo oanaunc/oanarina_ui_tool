@@ -39,7 +39,7 @@ A package with `"ui":{"html":"...","width":320,"height":200}` and `ui:show` can 
 
 The interface runs in the same opaque frame as code layers: `sandbox="allow-scripts"` only, with `connect-src`, `frame-src`, `worker-src`, `object-src`, `form-action` and `base-uri` denied, and images, fonts and media limited to inline `data:` and `blob:`. It has no `forma` object, so every document capability goes through the worker and its grants. Runs that use an interface or byte transfers get larger published budgets of 1,000 requests, 1,000 interface messages, 8 MB per estimated message and 32 MB per run.
 
-**Limit:** unlike the worker, interface code shares the editor's thread. An infinite loop in it blocks the editor and cannot be cancelled. This was measured in Chromium, and the same is expected in WKWebView. Only the worker is terminable.
+**Limit:** unlike the worker, interface code shares the editor's thread. An infinite loop in it blocks the editor and cannot be cancelled. This was measured in Chromium and in Playwright's WebKit engine. Only the worker is terminable.
 
 ## Networking
 
@@ -67,7 +67,7 @@ This browser boundary is **not an OS sandbox or a hard memory/RSS guarantee**. B
 
 ## Validation
 
-`tests/local-plugin-platform.test.ts` and `tests/e2e/local-plugin-platform.spec.ts` cover manifest pairing, origin and fetch refusal, per-grant refusal of every capability, interface messaging and malformed traffic, interface network denial against a counting server, font, image, export and storage paths, favorites, recents and Actions search. The network spec proves an unlisted origin receives zero requests through both the host check and the frame's own narrowed policy. Native WKWebView has not been exercised for any of this.
+`tests/local-plugin-platform.test.ts` and `tests/e2e/local-plugin-platform.spec.ts` cover manifest pairing, origin and fetch refusal, per-grant refusal of every capability, interface messaging and malformed traffic, interface network denial against a counting server, font, image, export and storage paths, favorites, recents and Actions search. The network spec proves an unlisted origin receives zero requests through both the host check and the frame's own narrowed policy. That spec also passed once under Playwright's WebKit engine on macOS. A real Forma app build in WKWebView has not been exercised for any of this. Its native bridge refuses messages from subframes, and its navigation policy cancels external frame navigation, by source inspection only.
 
 Pure API tests cover strict packages/permissions, redacted reads, typed operation refusals, source immutability, private plan grants/original bytes, lock/managed/mask/automatic ownership, valid legacy falsy-root mask refusal, late-controller atomic failure, one Undo/persistence and zero-edit selection delivery. Independent source checks recompute the exact guardian hash and assert the editor CSP remains strict.
 

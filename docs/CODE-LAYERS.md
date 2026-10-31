@@ -16,7 +16,7 @@ Each run loads the bundled `local-guest-frame.html` into an `iframe` with only `
 
 Browser tests cover opaque origin, denied fetch, XHR, WebSocket, Worker, remote image, storage and parent DOM access, and zero requests reaching a local counter server, including a self-navigation attempt.
 
-**Limit:** the opaque frame shares the editor's thread. Measured in Chromium through Playwright, a `while(true){}` in guest DOM code blocks the page and Forma cannot interrupt it. That is why code never runs without an explicit action, and the dialog says so. Recovery is closing the app and reopening; autosave recovery applies. The plugin worker sandbox does not have this limit because it uses a terminable worker, but DOM code cannot run in a worker.
+**Limit:** the opaque frame shares the editor's thread. Measured in Chromium and WebKit through Playwright, a `while(true){}` in guest DOM code blocks the page and Forma cannot interrupt it. That is why code never runs without an explicit action, and the dialog says so. Recovery is closing the app and reopening; autosave recovery applies. The plugin worker sandbox does not have this limit because it uses a terminable worker, but DOM code cannot run in a worker.
 
 ## Properties
 
@@ -30,7 +30,7 @@ The canvas never runs code. The layer's artwork is an ordinary image paint holdi
 
 Capture happens inside the frame: the live DOM is cloned, canvases and form state are copied in, CSSOM rules are collected, and the result is drawn through an SVG `foreignObject` image into a PNG at up to 2× scale and 2,048 pixels on a side. It is a snapshot, so animation stops at the capture moment. Remote content cannot appear because the frame cannot load it, and fonts are limited to what the frame itself can use: the document's editor fonts are not available inside it. A guest can post its own PNG in place of the capture; the host accepts only a bounded `data:image/png` for that layer's own preview, so this cannot affect anything else.
 
-**Limit:** WebKit may refuse to rasterize `foreignObject` content. Capture has only been exercised in Chromium. If capture fails, the source still saves, the old preview stays, and the state reads stale. Native WKWebView has not been smoke-tested.
+Capture passes its pixel checks in Chromium and in Playwright's WebKit engine on macOS. **Limit:** a real Forma app build in WKWebView has not been smoke-tested. If capture fails, the source still saves, the old preview stays, and the state reads stale.
 
 ## Export and transfer
 
@@ -55,4 +55,4 @@ Older Forma versions refuse a file containing a code layer, because they do not 
 
 ## Validation
 
-`tests/code-layer.test.ts` covers additive parsing, refusal of malformed source, kinds, properties and values, property bounds, safe value embedding, single-step edits with truthful preview state, editability, Undo, inspection, redacted plugin reads and Bridge delivery through the plugin mock. `tests/e2e/code-layers.spec.ts` exercises the real toolbar and canvas, pixel-checked captured previews, drag sizing, no execution from files, source and property refusal, controls with Undo, sandbox denial with a counting server, export without source, and locked layers.
+`tests/code-layer.test.ts` covers additive parsing, refusal of malformed source, kinds, properties and values, property bounds, safe value embedding, single-step edits with truthful preview state, editability, Undo, inspection, redacted plugin reads and Bridge delivery through the plugin mock. `tests/e2e/code-layers.spec.ts` exercises the real toolbar and canvas, pixel-checked captured previews, drag sizing, no execution from files, source and property refusal, controls with Undo, sandbox denial with a counting server, export without source, and locked layers. That spec and the plugin platform spec were also run once under Playwright's WebKit engine on macOS and passed; the repository's default browser configuration is Chromium.
