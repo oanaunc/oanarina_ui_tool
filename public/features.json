@@ -2404,10 +2404,10 @@
     "category": "Layer tree",
     "name": "Show layers with comments",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "Unreleased source: Filter by spatial comment pins intersecting geometry, including resolved pins. Durable layer-attached comments remain unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Filter matches durable anchored comments by layer identity, wherever the pin lands, plus spatial pins including resolved; a missing anchor uses its saved position. Option relabeled \"Has comments or pins\"."
   },
   {
     "id": "UI-09-001",
@@ -3447,7 +3447,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Legacy stroke width/radius scale; advanced stroke stacks and independent corners still require scale-tool propagation."
+    "notes": "The K Scale tool saves one layer scale transform, so stroke stacks and dashes render scaled through the matrix. Inspector numbers keep the authored pre-scale values."
   },
   {
     "id": "UI-12-015",
@@ -3457,7 +3457,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Legacy stroke width/radius scale; advanced stroke stacks and independent corners still require scale-tool propagation."
+    "notes": "The K Scale tool saves one layer scale transform, so stroke stacks and dashes render scaled through the matrix. Inspector numbers keep the authored pre-scale values.: independent corners render scaled, with inspector radii unchanged."
   },
   {
     "id": "UI-12-016",
@@ -4014,10 +4014,10 @@
     "category": "Snapping and measurement",
     "name": "Device pixel alignment",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whole/half design-pixel alignment works; physical-device-pixel alignment across scale factors is incomplete."
+    "notes": "Local Device pixels mode snaps to 1/devicePixelRatio, read on each snap and clamped to 8x, and stays out of .oui. It is the 100% zoom device grid, not the on-screen pixels at other zooms. docs/SNAPPING-PREFERENCES.md."
   },
   {
     "id": "UI-13-031",
@@ -4034,20 +4034,20 @@
     "category": "Vector pen and editing",
     "name": "Pen tool",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Pen clicks and drags create straight or cubic anchors, Enter finishes open, clicking the first anchor closes filled, Escape cancels and a single click creates nothing, with Undo/Redo/save. tests/e2e/vector-authoring.spec.ts."
   },
   {
     "id": "UI-14-002",
     "category": "Vector pen and editing",
     "name": "Add vector point",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Double-clicking a segment in point editing adds one anchor without moving the shape, with Undo."
   },
   {
     "id": "UI-14-003",
@@ -4074,10 +4074,10 @@
     "category": "Vector pen and editing",
     "name": "Add straight segment",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "A click segment from the pen or Continue open path keeps zero handles and renders a line."
   },
   {
     "id": "UI-14-006",
@@ -4355,9 +4355,9 @@
     "name": "Flatten vector network",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whole-path smoothing and curve flattening exist; per-point corner/smooth conversion and full vector networks remain incomplete."
+    "notes": "Network flatten converts to ordinary contours with Undo, and per-point corner/smooth conversion exists. A filled graph2 region must have its fill removed first."
   },
   {
     "id": "UI-14-034",
@@ -4404,10 +4404,10 @@
     "category": "Vector pen and editing",
     "name": "Delete vector points and heal path",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Delete-and-heal uses tangent-preserving cubic approximation. Exact Figma curve fitting is not claimed."
+    "notes": "Delete and heal uses a tangent-preserving cubic through the real point tools, with degenerate remnants refused. Existing tests cover it; exact Figma curve fitting stays a reference matter."
   },
   {
     "id": "UI-14-039",
@@ -4614,10 +4614,10 @@
     "category": "Boolean geometry",
     "name": "Nested boolean operations",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation."
+    "notes": "Nested Booleans recompute deepest first. Plain group operands contribute their visible subtree through group transforms. Rotate, flip and resize of a Boolean bake into operands instead of snapping back, and an empty result keeps its box. Nonuniform resize of a rotated operand refuses with the skew error. docs/BOOLEAN-OPERANDS.md."
   },
   {
     "id": "UI-15-012",
@@ -4664,20 +4664,20 @@
     "category": "Boolean geometry",
     "name": "Preserve boolean result fill",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation."
+    "notes": "Result takes the first operand's complete paint stack with paint style and fill variable links; a group supplies its first drawn leaf. It survives operand edits, Undo and reopen. Which operand supplies the style is Forma's rule, not verified against Figma."
   },
   {
     "id": "UI-15-017",
     "category": "Boolean geometry",
     "name": "Preserve boolean result stroke",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation."
+    "notes": "Same rule for the complete stroke stack with stroke style and variable links."
   },
   {
     "id": "UI-15-018",
@@ -5294,20 +5294,20 @@
     "category": "Fills and colors",
     "name": "Angular gradient",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Editable gradient stops/coordinates, saved data and raster SVG patterns; current raster resolution is 256×256, not an unlimited vector gradient."
+    "notes": "Angular paint is a vector wedge fan with stop-exact boundaries, up to 720 wedges, sharing canvas, SVG, raster and headless export. Hard stop edges alias at device resolution and a very steep gradient can show single wedge steps at extreme size. docs/CONIC-GRADIENT-PAINTS.md."
   },
   {
     "id": "UI-17-021",
     "category": "Fills and colors",
     "name": "Diamond gradient",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Editable gradient stops/coordinates, saved data and raster SVG patterns; current raster resolution is 256×256, not an unlimited vector gradient."
+    "notes": "Diamond paint is exact vector geometry at any scale, replacing the 256 by 256 raster."
   },
   {
     "id": "UI-17-022",
@@ -5597,7 +5597,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: independent Top/Right/Bottom/Left widths on square-box strokes, with common paint, alignment, single alpha ring, original-box gradient/image coordinates, asymmetric bounds/masks/filter extents, Undo/save/styles/components/clipboard and source MCP validation. Optional nested edgeWidths remains .oui v1/v2 compatible; unsupported combinations and editable Bridge refuse before mutation. Partial: no rounded/dashed/non-box/per-edge paints or outline; stroke-in-layout uses conservative maximum. docs/INDEPENDENT-EDGE-STROKES.md; focused core/actual raster and context checks. Native/reference acceptance pending."
+    "notes": "Independent widths now work on rounded boxes and per-corner radii with one tapered even-odd ring, for inside, center and outside alignment. Limits: no dashes, per-edge paints, non-box shapes, arrowheads or corner smoothing (refused)."
   },
   {
     "id": "UI-18-012",
@@ -5735,9 +5735,9 @@
     "name": "Image stroke",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Image paint controls/rendering exist; crop/tile edge cases and real Figma transfer still need visual coverage."
+    "notes": "Image stroke paints render through the shared paint pipeline in original box space. Crop/tile stroke edge cases have no dedicated test, and the Bridge transfer is not a real round trip."
   },
   {
     "id": "UI-18-026",
@@ -6244,10 +6244,10 @@
     "category": "Images and media",
     "name": "Import GIF",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "GIF imports as an ordinary image layer with header and byte-type validation, one Undo and saved source bytes. Playback is left to the browser; there is no frame timeline and raster export shows one frame."
   },
   {
     "id": "UI-20-005",
@@ -6635,9 +6635,9 @@
     "name": "Font style selection",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Normal/italic faces and numeric weights are available; comprehensive named font-face/style discovery and matching remain incomplete."
+    "notes": "Font style select names catalog, variable wght and embedded faces, applying weight and italic together. Installed Mac fonts have no face list in the renderer and show Regular, Bold and italics plus the numeric weight control."
   },
   {
     "id": "UI-21-008",
@@ -6794,10 +6794,10 @@
     "category": "Typography",
     "name": "Text justified alignment",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Single-style synthetic italic and line spacing justification exist. Real italic assets, mixed ranges, complex-script shaping and paragraph-level reference fidelity remain incomplete."
+    "notes": "Justified paragraphs fill the rendered line across mixed sizes, weights and spans, including paragraph overrides, RTL (existing spec) and a natural last line."
   },
   {
     "id": "UI-21-024",
@@ -6944,10 +6944,10 @@
     "category": "Advanced typography",
     "name": "Italic text shortcut",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Synthetic italic; simple single-style paragraph prefixes and uniform indentation. Nested lists, rich ranges and true italic font assets remain planned."
+    "notes": "Command/Control+I formats the selected range in the rich and canvas editors and toggles the layer at a caret, with one Undo and lock refusal. Real italic faces are used when loaded, otherwise browser synthesis."
   },
   {
     "id": "UI-22-003",
@@ -7034,40 +7034,40 @@
     "category": "Advanced typography",
     "name": "Numbered lists",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
+    "notes": "Numbered lists: inspector controls, Enter/Tab/Shift+Tab/Backspace in rich and canvas editors, decimal, alpha, Roman and Outline counters, suffix, composite 1.2.3 numbering and semantic HTML import. Numbering is per layer: a following layer continues only through an explicit Restart number at. docs/PARAGRAPH-TYPOGRAPHY.md."
   },
   {
     "id": "UI-22-012",
     "category": "Advanced typography",
     "name": "Bulleted lists",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
+    "notes": "Bulleted lists with level cycle or a custom 1-8 character bullet, shared keyboard editing and ul import. Marker-specific decorations are absent."
   },
   {
     "id": "UI-22-013",
     "category": "Advanced typography",
     "name": "Nested lists",
     "priority": "must",
-    "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Mixed bullet/decimal nesting levels 0–8, local numbering restart/start and hanging layout work in source text; Enter/Tab editing semantics, custom/Roman counters, cross-layer continuation and external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
+    "notes": "Nesting levels 0-8 with per-level formats, composite parents, independent counters, keyboard indent/outdent and nested HTML import (deeper levels clamp to 8)."
   },
   {
     "id": "UI-22-014",
     "category": "Advanced typography",
     "name": "List indentation",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Source paragraph controls add mixed decimal/bullet levels, hanging markers, indent/outdent, local numbering start/restart and item spacing. Automatic Enter/Tab semantics, custom/Roman/composite counters, cross-layer continuation and arbitrary external HTML list import remain unfinished. See docs/PARAGRAPH-TYPOGRAPHY.md."
+    "notes": "Tab and Shift+Tab change every touched list paragraph within 0-8; indent/outdent controls and nesting indent remain. Escape then Tab leaves the inspector editor; Command+Z in the field stays browser text undo, so document Undo applies after leaving it."
   },
   {
     "id": "UI-22-015",
@@ -7625,9 +7625,9 @@
     "name": "Fill container width",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
+    "notes": "Row, column, grid cell and spanned track fill, aspect locks, nested chains, wrapped text and min/max redistribution work and are tested. Layout convergence stops after 8 passes, and rotated children use their unrotated box."
   },
   {
     "id": "UI-23-016",
@@ -7635,9 +7635,9 @@
     "name": "Fill container height",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
+    "notes": "Row, column, grid cell and spanned track fill, aspect locks, nested chains, wrapped text and min/max redistribution work and are tested. Layout convergence stops after 8 passes, and rotated children use their unrotated box."
   },
   {
     "id": "UI-23-017",
@@ -7705,9 +7705,9 @@
     "name": "Resize nested constrained frame",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row/column fill, min/max allocation and nested constraints work. Grid tracks/spans, aspect ratios, deeply nested wrap (>8 stabilization passes), rotated editing and all text/fill sizing combinations need more work."
+    "notes": "Row, column, grid cell and spanned track fill, aspect locks, nested chains, wrapped text and min/max redistribution work and are tested. Layout convergence stops after 8 passes, and rotated children use their unrotated box."
   },
   {
     "id": "UI-23-024",
@@ -8104,10 +8104,10 @@
     "category": "Auto layout fundamentals",
     "name": "Drag reorder layout children",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "General layer-tree drag ordering and insertion is implemented. Dedicated auto-layout insertion previews, gap targets and full auto-layout-specific reference acceptance remain incomplete."
+    "notes": "Dragging children in horizontal, vertical and wrapped auto layout shows an insertion line and reorders once on release, with Undo and save; Escape or release outside changes nothing. Free move stays for absolute children, grid, reverse wrap, rotated siblings, locks, instances and Motion. No sliding sibling preview or reparenting. docs/AUTO-LAYOUT-COMPLETION.md."
   },
   {
     "id": "UI-24-034",
@@ -8744,40 +8744,40 @@
     "category": "Components",
     "name": "Create main component",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Create component wraps shapes or multiple selections at the same world bounds, with Undo and save."
   },
   {
     "id": "UI-27-002",
     "category": "Components",
     "name": "Convert frame to component",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "One frame converts in place, keeping ID, children, layout and paint; locked layers and instance children refuse."
   },
   {
     "id": "UI-27-003",
     "category": "Components",
     "name": "Convert group to component",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "One group converts in place with Undo; same refusals."
   },
   {
     "id": "UI-27-004",
     "category": "Components",
     "name": "Main component icon",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Main components and instances show the component icon in the layer row."
   },
   {
     "id": "UI-27-005",
@@ -9005,9 +9005,9 @@
     "name": "Preserve overrides when swapping",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete."
+    "notes": "Swaps carry property values by name and type and keep the rest for a swap back. Divergent structure and per-binding override granularity remain limits."
   },
   {
     "id": "UI-27-028",
@@ -9255,19 +9255,19 @@
     "name": "Instance-swap component property",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
+    "notes": "Instance-swap properties work singly and across a selection through target validation. Multi-level exposure chains remain unvalidated."
   },
   {
     "id": "UI-28-017",
     "category": "Variants and properties",
     "name": "Variant component property",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
+    "notes": "Variant properties work for one instance and across a selection, with exact match then per-axis fallback, one Undo and values migrating by name and type."
   },
   {
     "id": "UI-28-018",
@@ -9325,9 +9325,9 @@
     "name": "Bind swap property",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
+    "notes": "Instance-swap properties work singly and across a selection through target validation. Multi-level exposure chains remain unvalidated."
   },
   {
     "id": "UI-28-024",
@@ -9364,10 +9364,10 @@
     "category": "Variants and properties",
     "name": "Multi-select property editing",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
+    "notes": "Shared instance properties for 2-200 selected instance roots: text, Boolean, instance-swap, variant axes and whole swap, with Mixed display, one atomic Undo and refusal if any target is locked. Exposed nested properties are not listed. docs/COMPONENT-WORKFLOWS.md."
   },
   {
     "id": "UI-28-028",
@@ -9394,10 +9394,10 @@
     "category": "Variants and properties",
     "name": "Variant matching on swap",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
+    "notes": "A variant change picks the exact match, else the first variant with that value, and carries property values by name and type."
   },
   {
     "id": "UI-28-031",
@@ -9964,10 +9964,10 @@
     "category": "Variables and tokens",
     "name": "Variable grouping with slashes",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slash-separated names and substring search work; a hierarchical token-group editor is not present."
+    "notes": "Variable group tree per collection, derived from slash names with no schema change: filter, rename a level, move, ungroup, add inside, and delete with bindings materialized, each one Undo with collisions refused. No drag between groups. docs/VARIABLE-GROUPS.md."
   },
   {
     "id": "UI-30-019",
@@ -10474,10 +10474,10 @@
     "category": "Prototype connections",
     "name": "Prototype connection search",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Search covers top-level destinations; nested conditional destinations are validated but not fully indexed."
+    "notes": "Connection search indexes nested conditional actions at any depth: destinations across pages, URLs, variables, expressions, conditions, triggers and action types."
   },
   {
     "id": "UI-31-030",
@@ -11207,57 +11207,57 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: authored labeled text, textarea, number, checkbox and select simulation on eligible leaf boxes uses actual native presenter controls and typed resolved variable defaults. Values stay ephemeral across navigation, Restart/reset restore defaults; IME/caret, local numeric errors, disabled/clipped controls, input event ownership, definition Undo/save and typed copy/page/library/MCP remaps validated. Conservative square clips, bounded counts/aliases and source/runtime receipts; Motion/transitions/nested presentation restrictions, no submission, arbitrary control skins or cloud forms. Static SVG/Bridge disclose omitted interaction. See docs/PROTOTYPE-FORM-INPUTS.md. Native/reference acceptance pending."
+    "notes": "Partial: authored labeled text, textarea, number, checkbox, radio and select simulation on eligible leaf boxes uses actual native presenter controls and typed resolved variable defaults. Values stay ephemeral across navigation, Restart/reset restore defaults; IME/caret, local numeric errors, disabled/clipped controls, input event ownership, definition Undo/save and typed copy/page/library/MCP remaps validated. Conservative square clips, bounded counts/aliases and source/runtime receipts; Motion/transitions/nested presentation restrictions, no submission, arbitrary control skins or cloud forms. Static SVG/Bridge disclose omitted interaction. See docs/PROTOTYPE-FORM-INPUTS.md. Native/reference acceptance pending."
   },
   {
     "id": "UI-34-021",
     "category": "Advanced prototype behavior",
     "name": "Checkbox simulation",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete."
+    "notes": "Native checkbox simulation bound to a Boolean variable, driving visibility in the real presenter. Browser appearance, not an authored skin."
   },
   {
     "id": "UI-34-022",
     "category": "Advanced prototype behavior",
     "name": "Radio control simulation",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete."
+    "notes": "New radio input kind: native radiogroup bound to a string variable, with arrow keys, disabled state, Restart, and Bridge validation that accepts and reports it. Browser appearance."
   },
   {
     "id": "UI-34-023",
     "category": "Advanced prototype behavior",
     "name": "Dropdown simulation",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete."
+    "notes": "Native select bound to a string variable drives bound artwork in the presenter. Browser appearance."
   },
   {
     "id": "UI-34-024",
     "category": "Advanced prototype behavior",
     "name": "Progress simulation",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete."
+    "notes": "Progress bar through a variable-bound width, set-variable and a conditional maximum, run in the presenter. No dedicated template."
   },
   {
     "id": "UI-34-025",
     "category": "Advanced prototype behavior",
     "name": "Cart quantity simulation",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete."
+    "notes": "Cart quantity through number and string variables, conditional floor and one action batch, run in the presenter. No dedicated template."
   },
   {
     "id": "UI-34-026",
@@ -11634,10 +11634,10 @@
     "category": "Prototype presentation",
     "name": "Scroll-to animation",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Scroll-to follows the action's duration and easing in the ordinary presenter and Motion preview; instant or reduced motion jumps; wheel, touch or pointer input interrupts."
   },
   {
     "id": "UI-35-034",
@@ -18214,10 +18214,10 @@
     "category": "Google and installed font library",
     "name": "Variable font weight downloading",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.google.com/fonts/docs/developer_api",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Variable families request one continuous wght range and one file covers all used weights. Network download itself is covered by existing mocked tests only."
   },
   {
     "id": "UI-55-016",
@@ -18264,10 +18264,10 @@
     "category": "Google and installed font library",
     "name": "Embed downloaded fonts in project",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.google.com/fonts/docs/developer_api",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Saving embeds exactly the used faces and Unicode subsets, never faces forbidding embedding. Installed fonts are never embedded."
   },
   {
     "id": "UI-55-021",
@@ -18284,10 +18284,10 @@
     "category": "Google and installed font library",
     "name": "Embed available fonts in SVG",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.google.com/fonts/docs/developer_api",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "SVG export inlines used embeddable faces only, without document mutation."
   },
   {
     "id": "UI-55-023",
