@@ -14,7 +14,7 @@ Root frames support horizontal, vertical and two-axis scroll, fixed/sticky desce
 
 ## Limits
 
-- This is local playback. Hosted prototype URLs, sharing, embeds, passwords, remote access permissions, remote comments and mobile companion apps are absent.
+- In-app Present is local playback. [Prototype files](PROTOTYPE-SHARING.md) add an offline HTML export with an optional password and embed code. Hosted prototype URLs, remote access permissions, remote comments and mobile companion apps are absent.
 - Device presets and orientation size the viewing area; they do not render an exact physical device shell or rotate artwork.
 - Independent nested scrolling is incomplete. Sticky geometry inside rotated ancestors uses conservative bounds. Scroll-to uses browser smooth scrolling; exact custom scroll duration is not guaranteed.
 - Smart animate is an independent implementation. Divergent hierarchies, arbitrary mixed text runs, all paint/effect combinations and nested interactive variants need further acceptance checks. New transitions can interrupt playback, but exact Figma interruption semantics are not claimed.

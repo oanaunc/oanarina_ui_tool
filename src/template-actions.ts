@@ -4,7 +4,7 @@ import {createFromTemplate,insertTemplatePage} from './templates';
 import type {DesignDocument} from './model';
 import {openDocumentForEditing,saveDocument} from './repository';
 import {desktopDocuments} from './desktop-lifecycle';
-export function captureTemplateAction(){const origin=captureColorContext(useEditor.getState()),controller=new AbortController();let valid=origin.modal==='templates'&&!origin.uiHidden&&!origin.motionOpen;
+export function captureTemplateAction(){const origin=captureColorContext(useEditor.getState()),controller=new AbortController();let valid=(origin.modal==='templates'||origin.modal==='resource-library')&&!origin.uiHidden&&!origin.motionOpen;
  if(!valid)throw Error('Open the template gallery with Motion closed.');const stop=useEditor.subscribe(live=>{if(!sameColorContext(origin,live)){valid=false;controller.abort();}});
  return {origin,signal:controller.signal,check(){const live=useEditor.getState();if(!valid||!sameColorContext(origin,live))throw Error('The template target changed. Reopen the gallery and retry.');return live;},dispose(){valid=false;controller.abort();stop();}};}
 export type TemplateAction=ReturnType<typeof captureTemplateAction>;
