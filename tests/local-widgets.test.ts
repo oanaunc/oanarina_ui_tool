@@ -28,3 +28,7 @@ describe('widget document model',()=>{
  it('caps widgets per document',()=>{const d=blankDocument(),frame=doc().frame;d.pages[0].nodes=Array.from({length:512},(_,i)=>({...structuredClone(frame),id:'w'+i}));expect(()=>createWidget(d,d.pages[0].id,{x:0,y:0},pkg(),out(0))).toThrow('512');});
  it('generates a text height that grows with wrapped content',()=>{const {frame}=doc(),long=widgetLayers(frame,{type:'stack',children:[{type:'text',text:'x'.repeat(300),fontSize:14},{type:'box',height:10}]});expect(long[1].y-frame.y).toBeGreaterThan(50);});
 });
+
+import {validateWidgetMenu,validateWidgetView} from '../src/local-widget-manifest';
+import {it as widgetIt,expect as widgetExpect} from 'vitest';
+widgetIt('validates input views and color and separator menu items strictly',()=>{validateWidgetView({type:'input',action:'name',value:'x',placeholder:'p'});validateWidgetMenu([{type:'color',label:'Tint',action:'tint',value:'#112233'},{type:'separator'}]);for(const bad of [{type:'input'},{type:'input',action:'1bad'},{type:'input',action:'a',value:5},{type:'input',action:'a',extra:1},{type:'input',action:'a',placeholder:'x'.repeat(121)}])widgetExpect(()=>validateWidgetView(bad)).toThrow();for(const bad of [[{type:'color',label:'T',action:'t',value:'red'}],[{type:'color',label:'T',action:'t'}],[{type:'separator',label:'x'}]])widgetExpect(()=>validateWidgetMenu(bad)).toThrow();});
