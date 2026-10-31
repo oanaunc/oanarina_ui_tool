@@ -4,7 +4,7 @@ A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Fo
 
 **Source includes unreleased changes after 0.2.0-dev.12; notarized Mac preview: 0.2.0-dev.12. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
 
-The register currently records **1,319 implemented, 312 partial and 391 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
+The register currently records **1,320 implemented, 317 partial and 385 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
 
 The next [source implementation pass](docs/UNRELEASED-LAYOUT-MEDIA-EXPORT.md) adds center drawing/repeat tools, aspect-aware layout, paired padding, wrapping and stacking controls, SVG/visibility/overlap export settings, animated GIF checks and embedded MP4/WebM playback. Downloads remain unchanged; video uses browser codecs and static exports use posters.
 
@@ -55,6 +55,8 @@ The latest [source continuation](docs/UNRELEASED-OFFLINE-JSON-LOCAL-LINKS.md) ad
 The latest [PDF, playground, vector and revision source continuation](docs/UNRELEASED-PDF-PLAYGROUND-NETWORK-REVISIONS.md) adds reviewed offline raster PDF pages, an isolated fresh component playground, editable shared-junction stroke networks and complete paged/filterable local revision review. The larger-UI, interface-motion and smart-punctuation rows are reconciled to existing partial behavior. Limits and reference checks remain explicit; downloads stay frozen.
 
 The latest [text, audio and extension source continuation](docs/UNRELEASED-TEXT-BOOLEANS-AUDIO-PLUGINS.md) adds reviewed real glyph operands in Booleans, explicit local PCM prototype audio, sandboxed local command packages and guarded post-edit selection/page delivery. Supported subsets and native/reference limits remain explicit; apps and automation downloads stay frozen.
+
+The latest [sampled-brush, editor-learning and plugin-input source continuation](docs/UNRELEASED-SAMPLED-BRUSHES-LEARNING-PLUGIN-INPUTS.md) adds reusable sampled vector silhouettes, deterministic scatter brushes, optional measured canvas guidance and typed host-rendered plugin parameters. All 1,910 source browser checks pass; supported subsets and native/reference limits remain explicit. Downloads stay frozen.
 
 ## Run
 
