@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project.ts';
+import {blankDocument,node} from '../../src/model.ts';
+import {createStroke} from '../../src/paints.ts';
+import {calligraphicCandidate} from '../../src/calligraphic-stroke-actions.ts';
+import {calligraphicStrokeGeometry} from '../../src/calligraphic-stroke.ts';
+test('source MCP edits, persists and undoes a real calligraphic stroke; invalid multi-operation batches remain atomic',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-calligraphic-'));try{const d=blankDocument();d.fonts=[];d.pages[0].nodes=[calligraphicCandidate(node('path',{id:'nib',width:400,height:100,pathWidth:400,pathHeight:100,fill:'none',strokes:[{...createStroke('#ff0000'),width:40}],contours:[{closed:false,points:[{x:0,y:50},{x:400,y:50}]}]}),{angle:45,roundness:.2})];const file=path.join(dir,'nib.oui');await fs.writeFile(file,JSON.stringify(d));const project=await Project.open(file),before=await project.read(),stroke={...before.document.pages[0].nodes[0].strokes![0],calligraphic:{angle:0,roundness:.1}},after=await project.apply(before.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:'nib',properties:{strokes:[stroke]}}]);assert.deepEqual(after.document.pages[0].nodes[0].strokes![0].calligraphic,{angle:0,roundness:.1});assert.match(calligraphicStrokeGeometry(after.document.pages[0].nodes[0]).path,/A20 2 0/);const raw=await fs.readFile(file,'utf8');await assert.rejects(project.apply(after.revision,[{op:'rename_document',name:'Must not persist'},{op:'update_node',pageId:d.pages[0].id,nodeId:'nib',properties:{strokes:[{...stroke,calligraphic:{angle:0,roundness:0}}]}}]));assert.equal(await fs.readFile(file,'utf8'),raw);assert.deepEqual((await project.undo(after.revision)).document.pages[0].nodes[0].strokes![0].calligraphic,{angle:45,roundness:.2});}finally{await fs.rm(dir,{recursive:true,force:true});}});

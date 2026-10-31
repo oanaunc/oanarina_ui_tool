@@ -1,4 +1,5 @@
 import {textBaselinePath,textPathResourceId,textPathAnchor} from '../text-path';
+import {calligraphicStrokeGeometry} from '../calligraphic-stroke';
 import {dynamicStrokePath} from '../dynamic-stroke';
 import {imageAssetKey} from '../missing-assets';
 import ProgressiveBlurRefusal from './ProgressiveBlurRefusal';
@@ -44,6 +45,7 @@ function Shape({n,hyperlinks=false,maskVector=false,...props}:{n:DesignNode;hype
  return <path d={scaledLocalPath(n)} {...props} fillRule={n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero')} clipRule={n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero')}/>;
 }
 function Stroke({n,s,id,maskVector=false}:{n:DesignNode;s:StrokeStyle;id:string;maskVector?:boolean}){
+ if(s.calligraphic)return <path data-calligraphic-stroke={s.id} d={calligraphicStrokeGeometry(n,s).path} fillRule="nonzero" fill={maskVector?'#ffffff':paintValue(s.paint,id)} opacity={maskVector?1:s.paint.opacity}/>;
  if(s.dynamic)return <path data-dynamic-stroke={s.id} d={dynamicStrokePath(n,s)} fillRule="nonzero" fill={maskVector?'#ffffff':paintValue(s.paint,id)} opacity={maskVector?1:s.paint.opacity}/>;
  if(s.variableWidth)return <path data-variable-width-stroke={s.id} d={variableWidthPath(n,s)} fillRule="nonzero" fill={maskVector?'#ffffff':paintValue(s.paint,id)} opacity={maskVector?1:s.paint.opacity}/>;
  if(s.edgeWidths)return <path data-edge-stroke={s.id} d={edgeStrokePath(n,s)} fillRule="evenodd" fill={maskVector?'#ffffff':paintValue(s.paint,id)} opacity={maskVector?1:s.paint.opacity}/>;

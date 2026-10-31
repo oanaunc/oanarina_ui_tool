@@ -1,4 +1,5 @@
 import {validateDocumentTextPaths} from './text-path';
+import {validateDocumentCalligraphicStrokes} from './calligraphic-stroke';
 import {validateDocumentDynamicStrokes} from './dynamic-stroke';
 import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
@@ -38,6 +39,7 @@ export function validateDocumentMetadata(document:{fileCover?:unknown;descriptio
  validateDocumentVariableWidths(document);
  validateDocumentDynamicStrokes(document);
  validateDocumentTextPaths(document);
+ validateDocumentCalligraphicStrokes(document);
  validateDocumentRotationOrigins(document);
  validateDocumentProgressiveBlur(document);
  validateDocumentSurfaces(document);
