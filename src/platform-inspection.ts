@@ -76,6 +76,7 @@ export function inspectPlatform(n: DesignNode, platform: InspectPlatform, unitsP
   }
   if (n.effects?.length || n.shadow || n.blur || n.mask || n.booleanOp || n.clip || n.media || ['path', 'ellipse', 'polygon', 'star', 'line', 'arrow'].includes(n.type))
     warnings.push('Effects, clipping, vector geometry, masks, Boolean results and media playback require separate native resources or rendering.');
+  if (n.textPath) warnings.push('Curved text baseline and start offset need SVG or a separate native path-text renderer; typography properties alone do not reproduce them.');
   if (n.blendMode && n.blendMode !== 'normal') warnings.push('Authored blend mode is not a native color property.');
   return {rows, warnings};
 }

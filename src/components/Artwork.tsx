@@ -1,3 +1,4 @@
+import {textBaselinePath,textPathResourceId,textPathAnchor} from '../text-path';
 import {dynamicStrokePath} from '../dynamic-stroke';
 import {imageAssetKey} from '../missing-assets';
 import ProgressiveBlurRefusal from './ProgressiveBlurRefusal';
@@ -15,7 +16,7 @@ import VideoSurface from './VideoSurface';
 import {ImagePaintDefinition} from './ImagePaintDefinition';
 import {orientedArrowheadPath,arrowStyle,arrowTips} from '../arrowheads';
 import {currentTextOutline} from '../text-outline';
-import {Fragment} from 'react';
+import {createContext,Fragment,useContext,useId} from 'react';
 import type {CSSProperties} from 'react';
 import {effectsFor} from '../effects';
 import {EffectFilter} from './EffectFilter';
@@ -34,7 +35,10 @@ function PaintDefinition({paint:p,id,n,strokeSpace=false,diagnosticKey}:{paint:P
  if(p.type==='image')return <ImagePaintDefinition diagnosticKey={diagnosticKey} paint={p} id={id} width={strokeSpace?Math.max(1,n.width):n.width} height={strokeSpace?Math.max(1,n.height):n.height} userSpace={strokeSpace}/>;
  return null;
 }
+const TextPathNamespace=createContext('');
 function Shape({n,hyperlinks=false,maskVector=false,...props}:{n:DesignNode;hyperlinks?:boolean;maskVector?:boolean}&React.SVGProps<SVGPathElement>){
+ const textPathNamespace=useContext(TextPathNamespace);
+ if(n.type==='text'&&n.textPath){const text=<text {...props as React.SVGProps<SVGTextElement>} data-text-path={n.id} fontFamily={fontFamilyStack(n)} fontSize={n.fontSize} fontWeight={n.fontWeight} fontStyle={n.fontStyle??'normal'} letterSpacing={n.letterSpacing} textAnchor={textPathAnchor(n)} direction="ltr" unicodeBidi="isolate" xmlSpace="preserve"><textPath href={'#'+textPathResourceId(n.id,textPathNamespace)} startOffset={n.textPath.startOffset+'%'}>{n.text}</textPath></text>;return hyperlinks&&!maskVector&&n.hyperlink?<a href={n.hyperlink} target="_blank" rel="noopener noreferrer">{text}</a>:text;}
  if(n.type==='text'){const outline=currentTextOutline(n);if(outline!==undefined){const path=<path d={outline} {...props} fillRule="nonzero" clipRule="nonzero" role="img" aria-label={n.text}/>;return hyperlinks&&!maskVector&&n.hyperlink?<a href={n.hyperlink} target="_blank" rel="noopener noreferrer">{path}</a>:path;}}
  if(n.type==='text')return <text {...props as React.SVGProps<SVGTextElement>} fontFamily={fontFamilyStack(n)} fontSize={n.fontSize} fontWeight={n.fontWeight} fontStyle={n.fontStyle??'normal'} letterSpacing={n.letterSpacing} textAnchor={n.textAlign==='center'?'middle':n.textAlign==='right'?'end':'start'} xmlSpace="preserve" style={{fontSynthesis:'style small-caps',fontVariationSettings:fontSettings(n.fontAxes),fontFeatureSettings:fontSettings(n.fontFeatures)}}>{textLines(n).map((line,i)=><Fragment key={i}>{line.marker&&<tspan data-list-marker={line.paragraphStart} x={line.marker.x} y={line.y+positionedTextStyle(line.marker.style).baselineShift} textAnchor="start" direction="ltr" unicodeBidi="isolate" fontFamily={fontFamilyStack(line.marker.style)} fontSize={positionedTextStyle(line.marker.style).fontSize} fontWeight={line.marker.style.fontWeight} fontStyle={line.marker.style.fontStyle} fill={props.fill==='none'?undefined:maskVector?(line.marker.style.fill==='none'||/^#(?:[\da-f]{3}0|[\da-f]{6}00)$/i.test(line.marker.style.fill??'')?'none':'#ffffff'):line.marker.style.fill===n.fill?undefined:line.marker.style.fill} style={{fontVariantCaps:line.marker.style.smallCaps?'small-caps':'normal',fontVariationSettings:fontSettings(line.marker.style.fontAxes),fontFeatureSettings:fontSettings(line.marker.style.fontFeatures)}}>{line.marker.text}</tspan>}<tspan data-paragraph-start={line.paragraphStart} textAnchor={textLinePlacement(n.width,line).anchor} direction={line.direction} unicodeBidi="isolate" data-text-direction={line.direction} data-text-vertical-trim={line.verticalTrim?.status} data-trim-offset={line.verticalTrim?.offset} data-hang-left={line.hangLeft||undefined} data-hang-right={line.hangRight||undefined} data-text-wrap={line.wrapMode==='normal'?undefined:line.wrapMode} x={textLinePlacement(n.width,line).x} y={line.y} textLength={line.textAlign==='justify'&&!line.paragraphEnd?textLinePlacement(n.width,line).available:undefined} lengthAdjust={line.textAlign==='justify'?'spacing':undefined}>{line.runs.length?line.runs.map((run,j)=>{const style=run.style,u=style.underline,position=positionedTextStyle(style);const span=<tspan key={j} data-text-href={style.hyperlink||undefined} data-text-range={run.start>=0?`${run.start}:${run.end}`:undefined} fontFamily={fontFamilyStack(style)} fontSize={position.fontSize} data-text-baseline={line.y+position.baselineShift} dy={position.baselineShift-(j?positionedTextStyle(line.runs[j-1].style).baselineShift:0)} fontWeight={style.fontWeight} fontStyle={style.fontStyle} letterSpacing={style.letterSpacing} fill={props.fill==='none'?undefined:maskVector?(style.fill==='none'||/^#(?:[\da-f]{3}0|[\da-f]{6}00)$/i.test(style.fill??'')?'none':'#ffffff'):style.fill===n.fill?undefined:style.fill} textDecoration={style.decorations?.join(' ')||'none'} style={{fontVariantCaps:style.smallCaps?'small-caps':'normal',fontVariationSettings:fontSettings(style.fontAxes),fontFeatureSettings:fontSettings(style.fontFeatures),textDecorationColor:u?.color,textDecorationStyle:u?.style,textDecorationThickness:u?`${u.thickness}px`:undefined,textUnderlineOffset:u?`${u.offset}px`:undefined,textDecorationSkipInk:u?(u.skipInk?'auto':'none'):undefined}}>{run.text}</tspan>;return hyperlinks&&style.hyperlink?<a key={j} href={style.hyperlink} target="_blank" rel="noopener noreferrer">{span}</a>:span;}):' '}</tspan></Fragment>)}</text>;
  return <path d={scaledLocalPath(n)} {...props} fillRule={n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero')} clipRule={n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero')}/>;
@@ -51,6 +55,7 @@ export interface ArtworkProps {nodes:DesignNode[];live?:boolean;mediaMode?:'edit
 /** Live refusal is atomic: never paint a filtered/masked subtree without its effect. Exports stay strict. */
 export function Artwork(props:ArtworkProps){let progressiveRegions:ReturnType<typeof validateDocumentProgressiveBlur>;try{progressiveRegions=validateDocumentProgressiveBlur({pages:[{nodes:props.nodes}]});}catch(error){if(!props.live||!isProgressiveBlurRegionError(error))throw error;return <ProgressiveBlurRefusal message={error.message}/>;}return <ArtworkContent {...props} progressiveRegions={progressiveRegions}/>;}
 function ArtworkContent({nodes,outlines=false,hyperlinks=false,onNode,onInteraction,mediaMode,maskOutlines,progressiveRegions}:ArtworkProps&{progressiveRegions:ReturnType<typeof validateDocumentProgressiveBlur>}) {
+ const textPathNamespace=useId();
  const outlineKinds=maskOutlines?maskOutlineKinds(nodes):undefined;
  const ids=new Set(nodes.map(n=>n.id)),children=new Map<string|null,DesignNode[]>();
  for(const n of nodes){const parent=n.parentId&&ids.has(n.parentId)?n.parentId:null;const list=children.get(parent)??[];list.push(n);children.set(parent,list);}
@@ -69,11 +74,12 @@ function ArtworkContent({nodes,outlines=false,hyperlinks=false,onNode,onInteract
    {!n.booleanOp&&<g clipPath={n.clip?`url(#local-clip-${n.id})`:undefined}>{renderSiblings(children.get(n.id)??[],n,sourceMode,masked)}</g>}
   </g></g>;
  };
- return <>{nodes.map(n=><defs key={'def'+n.id}>
+ return <TextPathNamespace.Provider value={textPathNamespace}>{nodes.map(n=><defs key={'def'+n.id}>
+  {n.type==='text'&&n.textPath&&<path id={textPathResourceId(n.id,textPathNamespace)} d={textBaselinePath(n)}/>}
   <clipPath id={'local-clip-'+n.id}><Shape n={n}/></clipPath>
   <mask id={'outside-mask-'+n.id} x="-100%" y="-100%" width="300%" height="300%"><rect x={-n.width} y={-n.height} width={n.width*3} height={n.height*3} fill="white"/><Shape n={n} fill="black" stroke="none"/></mask>
   {fillsFor(n).map(p=><PaintDefinition key={p.id} paint={p} id={`fill-${n.id}-${p.id}`} n={n} diagnosticKey={imageAssetKey(n.id,'fill',p.id)}/>)}
   {strokesFor(n).map(s=><PaintDefinition key={s.id} paint={s.paint} id={`stroke-${n.id}-${s.id}`} n={n} diagnosticKey={imageAssetKey(n.id,'stroke',s.id)} strokeSpace={!!s.edgeWidths||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none'}/>)}
   <EffectFilter n={n} nodes={nodes} progressiveRegion={progressiveRegions.get(n.id)}/>
- </defs>)}{renderSiblings(children.get(null)??[])}</>;
+ </defs>)}{renderSiblings(children.get(null)??[])}</TextPathNamespace.Provider>;
 }

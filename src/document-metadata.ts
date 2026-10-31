@@ -1,3 +1,4 @@
+import {validateDocumentTextPaths} from './text-path';
 import {validateDocumentDynamicStrokes} from './dynamic-stroke';
 import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
@@ -36,6 +37,7 @@ export function validateDocumentMetadata(document:{fileCover?:unknown;descriptio
  validateDocumentCornerSmoothing(document);
  validateDocumentVariableWidths(document);
  validateDocumentDynamicStrokes(document);
+ validateDocumentTextPaths(document);
  validateDocumentRotationOrigins(document);
  validateDocumentProgressiveBlur(document);
  validateDocumentSurfaces(document);

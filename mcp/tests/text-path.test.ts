@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project.ts';
+import {blankDocument,node} from '../../src/model.ts';
+import {textPathCandidate} from '../../src/text-path-actions.ts';
+import {textBaselinePath} from '../../src/text-path.ts';
+test('source MCP edits owned text baseline offsets/content and refuses malformed batches atomically with Undo',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-text-path-'));try{const d=blankDocument();d.fonts=[];d.pages[0].nodes=[textPathCandidate(node('path',{id:'curve',width:400,height:160,pathWidth:400,pathHeight:160,text:'Curved text',fill:'#ff0000',strokes:[],contours:[{closed:false,points:[{x:0,y:120,out:{x:100,y:-100}},{x:400,y:120,in:{x:-100,y:-100}}]}]}))];const file=path.join(dir,'curve.oui');await fs.writeFile(file,JSON.stringify(d));const project=await Project.open(file),before=await project.read(),changed=await project.apply(before.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:'curve',properties:{textPath:{startOffset:25},text:'New curved source'}}]);assert.deepEqual(changed.document.pages[0].nodes[0].textPath,{startOffset:25});assert.equal(changed.document.pages[0].nodes[0].text,'New curved source');assert.ok(textBaselinePath(changed.document.pages[0].nodes[0]).includes('C'));const raw=await fs.readFile(file,'utf8');await assert.rejects(project.apply(changed.revision,[{op:'rename_document',name:'Must roll back'},{op:'update_node',pageId:d.pages[0].id,nodeId:'curve',properties:{textPath:{startOffset:101}}}]));assert.equal(await fs.readFile(file,'utf8'),raw);assert.deepEqual((await project.undo(changed.revision)).document.pages[0].nodes[0].textPath,{startOffset:0});}finally{await fs.rm(dir,{recursive:true,force:true});}});
