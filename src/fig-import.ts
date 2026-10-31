@@ -5,7 +5,7 @@ import type {DesignDocument} from './model';
 import {parseDocument} from './model';
 import {serializeFontDocument} from './font-data';
 
-export interface FigImportResult {document:DesignDocument;issues:FigImportIssue[];complete:boolean;fontFamilies:string[];}
+export interface FigImportResult {source?:'rest';document:DesignDocument;issues:FigImportIssue[];complete:boolean;fontFamilies:string[];}
 /** Selected bytes only. No network access, source paths, or document mutation. */
 export async function importFigBytes(bytes:Uint8Array,name:string,signal?:AbortSignal,onStage?:(stage:'validating'|'decoding')=>void):Promise<FigImportResult>{
  if(bytes.byteLength>=50_000_000)throw Error('Choose a Figma file smaller than 50 MB.');

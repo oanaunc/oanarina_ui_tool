@@ -1,5 +1,8 @@
 import {currentTextOutline} from './text-outline';
 import {svgOutlinedTextPlan} from './svg-text-outlines';
+import {isFigmaRestJson,importFigmaRestJson,FIGMA_REST_LIMITS} from './figma-rest-import';
+import {getFigmaRestReview,requestFigmaRestReview,checkFigmaRestReview,finishFigmaRestReview,cancelFigmaRestReview} from './figma-rest-review';
+import type {FigmaRestReview} from './figma-rest-review';
 import {textPathExportWarnings} from './text-path-bounds';
 import {validateDocumentTextPaths} from './text-path';
 import {importRasterHeader} from './import-raster-header';
@@ -43,13 +46,15 @@ export function serializedProject(){const s=useEditor.getState();return serializ
 export async function saveProject(saveAs=false):Promise<boolean>{try{const s=useEditor.getState(),doc=s.doc,raw=serializeFontDocument(doc,assetsForUsage(projectFontUsage(doc),doc.fonts));if(!await download(doc.name+'.oui',raw,'application/json',saveAs))return false;if(useEditor.getState().doc.id===doc.id)s.set({savedAt:doc.updatedAt,toast:'Project saved'});await markDesktopSaved(doc);return true;}catch(e){notifyError(e);return false;}}
 export function notifyError(e:unknown){useEditor.getState().set({toast:e instanceof Error?e.message:'Something went wrong.'});}
 export async function openSelectedProject(file:File){
+ const pendingRest=getFigmaRestReview();if(pendingRest)cancelFigmaRestReview(pendingRest);
  const isFig=/\.fig$/i.test(file.name),session=beginImportSession(isFig?'fig':'project',1,file.size),{task}=session,before=useEditor.getState();
  try{
   if(file.size>=50_000_000)throw new ImportInputError('Choose a project smaller than 50 MB.');
   const raw=await readImportFile(file,isFig?'bytes':'text',task.signal,bytes=>task.update({bytes}));session.check();
   await task.checkpoint('validating');session.check();
   const result=isFig?await importFigBytes(new Uint8Array(raw as ArrayBuffer),file.name,task.signal,stage=>task.update({stage})):undefined;
-  const source=result?.document??parseDocument(raw as string);session.check();
+  let source=result?.document;
+  if(!isFig){const json=JSON.parse(raw as string);if(isFigmaRestJson(json)){task.update({format:'rest'});if(file.size>FIGMA_REST_LIMITS.bytes)throw new ImportInputError('Choose Figma REST JSON smaller than 20 MB.');const converted=importFigmaRestJson(json,file.name.replace(/\.json$/i,''));session.check();session.dispose();task.finish();const review=await requestFigmaRestReview(converted);return review?openReviewedFigmaRest(review):undefined;}source=parseDocument(raw as string);}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
   await task.checkpoint('retaining');session.check();
   const mustRetain=desktopDocuments.state(before.doc).dirty||before.past.length>0&&before.savedAt!==before.doc.updatedAt;
   try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw new ImportInputError('The current edited project cannot be retained. Save a .oui backup before opening another file.');}catch(error){task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();
@@ -59,6 +64,29 @@ export async function openSelectedProject(file:File){
   if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});
   const loaded=useEditor.getState();setTimeout(()=>{if(useEditor.getState().doc===loaded.doc&&useEditor.getState().pageId===loaded.pageId)useEditor.getState().fit();},0);
  }catch(error){const reason=task.fail(error);if(!task.signal.aborted)throw new Error(reason??'The import could not finish.');}finally{session.dispose();}
+}
+/** Review confirmation uses a fresh abortable delivery session; no source mutation before every validation succeeds. */
+async function openReviewedFigmaRest(review:FigmaRestReview){
+ checkFigmaRestReview(review);const session=beginImportSession('rest',1,0),{task}=session,before=useEditor.getState();
+ try{
+  await task.checkpoint('validating');session.check();checkFigmaRestReview(review);const source=parseDocument(JSON.stringify(review.result.document));
+  await task.checkpoint('retaining');session.check();const mustRetain=desktopDocuments.state(before.doc).dirty||before.past.length>0&&before.savedAt!==before.doc.updatedAt;
+  try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw Error();}catch{task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();checkFigmaRestReview(review);
+  await task.checkpoint('opening');session.check();const opened=await openDocumentForEditing(source,task.signal);session.check();checkFigmaRestReview(review);
+  session.dispose();task.finish();finishFigmaRestReview(review);desktopDocuments.mark(opened.document,true);useEditor.getState().load(opened.document);setFigImportReport({...review.result,document:opened.document,source:'rest'});useEditor.getState().set({modal:'fig-import-report',toast:opened.warning??'Figma REST JSON imported as a new .oui project.'});
+  const loaded=useEditor.getState();setTimeout(()=>{if(useEditor.getState().doc===loaded.doc&&useEditor.getState().pageId===loaded.pageId)useEditor.getState().fit();},0);
+ }catch(error){const reason=task.fail(error);cancelFigmaRestReview(review);if(!task.signal.aborted)throw new Error(reason??'The REST JSON import could not finish.');}finally{session.dispose();}
+}
+/** Capture before opening the chooser; source transitions invalidate permanently even if it returns later. */
+export function chooseFigmaRestJson(expected=captureColorContext(useEditor.getState())){
+ if(!sameColorContext(expected,useEditor.getState())||expected.modal!==null&&expected.modal!=='figma')return;
+ if(expected.modal==='figma')useEditor.getState().set({modal:null});
+ const origin=captureColorContext(useEditor.getState()),input=document.createElement('input');let valid=true,done=false;
+ input.type='file';input.accept='.json';input.hidden=true;document.body.appendChild(input);
+ const off=useEditor.subscribe(live=>{if(!sameColorContext(origin,live)){valid=false;off();}});
+ const dispose=()=>{done=true;valid=false;off();input.remove();};
+ input.onchange=()=>{if(done)return;const file=input.files?.[0],current=valid&&sameColorContext(origin,useEditor.getState());dispose();if(file&&current)void openSelectedProject(file).catch(notifyError);};
+ input.addEventListener('cancel',dispose,{once:true});try{input.click();}catch{dispose();}
 }
 export async function openProject(){try{if(window.desktop){const raw=await window.desktop.open();if(raw){const opened=await openDocumentForEditing(parseDocument(raw));useEditor.getState().load(opened.document);if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});}}else pickFile('.oui,.json,.fig',async files=>openSelectedProject(files[0]));}catch(e){notifyError(e);}}
 export function pickFile(accept:string,fn:(files:File[])=>void|Promise<void>){const input=document.createElement('input');input.type='file';input.accept=accept;input.multiple=accept.includes('image');input.hidden=true;document.body.appendChild(input);input.onchange=()=>{const files=[...(input.files??[])];input.remove();if(files.length)Promise.resolve(fn(files)).catch(notifyError);};input.addEventListener('cancel',()=>input.remove(),{once:true});input.click();}
