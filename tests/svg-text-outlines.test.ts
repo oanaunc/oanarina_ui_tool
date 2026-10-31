@@ -1,7 +1,7 @@
 import {expect,it} from 'vitest';
 import fs from 'node:fs';
 import {node,blankDocument,parseDocument} from '../src/model';
-import {exactOutlineFont,outlineText,assertOutlineText,svgOutlinedTextPlan,validateSvgTextOutlineSource} from '../src/svg-text-outlines';
+import {decodeOutlineGlyphs,exactOutlineFont,outlineText,assertOutlineText,svgOutlinedTextPlan,validateSvgTextOutlineSource} from '../src/svg-text-outlines';
 import {textOutlineSignature} from '../src/text-outline';
 import {createEffect} from '../src/effects';
 import {createPaint} from '../src/paints';
@@ -16,3 +16,5 @@ it('source preflight detects affected ancestor effects/masks, missing ancestors 
 it('validates additive saved outline export settings in old version documents and refuses malformed options atomically',()=>{for(const version of [1,2]){const d=blankDocument(),n=text();n.exportSettings=[{...defaultFrameExportSetting(),svg:{textMode:'outline'}}];d.pages[0].nodes=[n];d.version=version as 2;expect(parseDocument(JSON.stringify(d)).pages[0].nodes[0].exportSettings![0].svg?.textMode).toBe('outline');n.exportSettings[0].svg!.textMode='fake' as any;expect(()=>parseDocument(JSON.stringify(d))).toThrow();}});
 it('Bridge accepts validated saved glyph-outline export options, explicitly omits profiles and rejects forged enum atomically',async()=>{const {createFigmaMock}=await import('./helpers/figma-mock'),d=blankDocument(),n=text();d.fonts=[];n.exportSettings=[{...defaultFrameExportSetting(),svg:{textMode:'outline'}}];d.pages[0].nodes=[n];const good=createFigmaMock(),result=await good.importDocument(d);expect(result.type).toBe('imported');expect(result.report.join(' ')).toContain('export profiles omitted');const bad=createFigmaMock(),before=bad.snapshot();n.exportSettings[0].svg!.textMode='wrong' as any;expect((await bad.importDocument(d)).type).toBe('error');expect(bad.snapshot()).toBe(before);expect(bad.calls.some(c=>c.method==='createPage')).toBe(false);});
 it('treats falsy-root mask siblings consistently and refuses glyph-cell gradient/image paint remapping',()=>{const n=text(),mask=node('rectangle',{id:'mask',mask:{mode:'alpha'}});n.parentId='';expect(()=>validateSvgTextOutlineSource([mask,n],[n])).toThrow('mask');for(const type of ['linear','radial','image'] as const){n.paints=[{...createPaint('#ff0000'),type}];expect(()=>assertOutlineText(n)).toThrow('solid/none');}});
+
+it('charges repeated output glyph points before decoding any glyph beyond the cumulative limit',()=>{const calls:number[]=[],glyph={advance:1,contours:[[{x:0,y:0,on:true}]]},font={glyph:(id:number)=>{calls.push(id);return glyph;}},budget={characters:0,points:99999};expect(()=>decodeOutlineGlyphs(font,[1,1,2,3],budget)).toThrow('100,000');expect(calls).toEqual([1,1]);expect(budget.points).toBe(100001);});
