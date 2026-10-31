@@ -28,3 +28,11 @@ Binary `.fig` export is not implemented and stays planned: a file only Forma cou
 ## Validation boundary
 
 Committed tests use generated synthetic schemas, archives and artwork. Container, scene, raster, edit/undo, save/reopen, cancellation and native lifecycle checks are separate gates. Private user archives, decoded content, images, identifiers and comparison screenshots remain local and are not public fixtures. A low-resolution archive thumbnail can assist a local comparison but does not establish exact live-Figma acceptance.
+
+## Pasting a copied selection
+
+On Mac, Paste looks in the clipboard's HTML for a base64 message that starts with the `fig-kiwi` header. A match goes through the same worker, mapper, validation and settle pass as a `.fig` file, behind the import panel's Cancel, and lands as one Undo step. Layers that arrive without their page gain one, and mains they need arrive with them. Image bytes are not expected in the clipboard, so images stay marked placeholders.
+
+**Evidence limit.** This shape comes from public third-party research. Tests use payloads written here, in the same synthetic schema as the `.fig` fixtures, and no real clipboard capture has been decoded. If a real copy is laid out differently, Paste reports that it could not read it and nothing changes. The dependable route remains Copy as SVG in the source app, which Paste already imports through SVG review.
+
+Copying out of Forma writes SVG markup as plain text and as an SVG flavor, through **Copy selection as SVG**. Whether another app accepts that paste has not been tested here. Forma does not write a `fig-kiwi` clipboard payload, because no reference schema exists here to show that anything else could read it.
