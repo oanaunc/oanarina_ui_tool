@@ -1,0 +1,160 @@
+/* Design tab: compact sections with thin rules, values in rounded fields with a small leading glyph. */
+.app .inspector-section{padding:9px 12px 10px}
+.app .inspector-section .section-title,.app .inspector-section>fieldset>.section-title{min-height:22px;margin:0 0 5px;padding:0;font-size:11px;font-weight:600;color:var(--text)}
+.app .inspector-section:has(>.section-title:only-child),.app .inspector-section:has(>fieldset:only-child>.section-title:only-child){padding-block:5px}
+.app .inspector-section>.section-title:only-child,.app .inspector-section>fieldset:only-child>.section-title:only-child{margin-bottom:0}
+.app .inspector-section .section-title>button,.section-actions>button,.section-title>fieldset>button{width:22px;height:22px;padding:0;color:var(--muted);border-radius:4px}
+.section-actions{display:inline-flex;align-items:center;gap:2px}
+.section-title>button:hover,.section-actions>button:hover,.section-title>fieldset>button:hover{color:var(--text);background:var(--hover)}
+.app .section-actions>button[aria-expanded=true],.app .section-actions>button[aria-pressed=true]{color:var(--text);background:var(--field);box-shadow:none}
+.plain-fieldset{border:0;padding:0;margin:0;min-width:0;min-inline-size:0}
+.app .inspector-section button:focus-visible,.app .inspector-section summary:focus-visible,.app .inspector-disclosure>summary:focus-visible,.inspector-header button:focus-visible{outline:2px solid var(--focus-ring,#bf9ce9);outline-offset:-1px}
+/* Header */
+.inspector-header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px;padding:6px 8px 6px 12px;border-bottom:1px solid var(--line)}
+.inspector-header>h3{flex:1;min-width:0;margin:0;font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inspector-header-actions{display:flex;align-items:center;gap:1px;flex:none}
+.inspector-header-actions button{width:22px;height:22px;padding:0;color:var(--muted);border-radius:4px}
+.inspector-header-actions button:hover{color:var(--text);background:var(--hover)}
+.app .inspector-header-actions button[aria-pressed=true],.app .inspector-header-actions button[aria-expanded=true]{color:var(--text);background:var(--field);box-shadow:none}
+.inspector-overflow{position:relative}
+.inspector-overflow-menu{position:absolute;z-index:30;right:0;top:calc(100% + 4px);width:172px;padding:4px;display:grid;gap:0;background:var(--panel);border:1px solid var(--line);border-radius:6px;box-shadow:0 8px 24px #0005}
+.app .inspector-overflow-menu>button{width:100%;height:auto;min-height:24px;justify-content:flex-start;padding:4px 8px;color:var(--text);font-size:10px;white-space:normal;text-align:left}
+.app .inspector-overflow-menu>button:hover,.app .inspector-overflow-menu>button:focus-visible{background:var(--hover)}
+/* Rows */
+.inspector-row{display:grid;gap:6px;align-items:center;min-width:0;margin-top:6px}
+.inspector-row:first-child,.section-title+.inspector-row{margin-top:0}
+.inspector-row.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.inspector-row.with-tool{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 24px}
+.inspector-row.rotation-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.inspector-row.groups{display:flex;flex-wrap:wrap}
+.inspector-row.groups>.icon-group{flex:1 1 56px}
+.app .inspector-row .number-field,.app .type-align-row .number-field,.app .size-field .number-field{height:24px;min-height:24px;margin:0;padding:0 6px;gap:5px;flex-direction:row;align-items:center}
+.app .inspector-row .number-field>span{flex:none;min-width:12px;display:inline-grid;place-items:center;color:var(--muted);font-size:10px}
+.app .inspector-row .number-field>input{flex:1;min-width:0;padding:3px 0;text-align:left;font-size:10px}
+.app .inspector-row .number-field>small{flex:none;font-size:9px;color:var(--muted);pointer-events:none}
+.number-field>span>svg{display:block}
+/* Icon button groups */
+.icon-group{display:flex;min-width:0;padding:1px;gap:1px;background:var(--field);border-radius:5px}
+.icon-group>button{flex:1 1 0;min-width:0;height:22px;padding:0;color:var(--muted);border-radius:4px}
+.icon-group>button:hover:not(:disabled){color:var(--text);background:var(--hover)}
+.app .icon-group>button.active,.app .icon-group>button[aria-pressed=true]{color:var(--text);background:color-mix(in srgb,var(--text) 15%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 12%,transparent)}
+.inspector-section>.icon-group,.inspector-section>fieldset>.icon-group{margin-bottom:6px}
+.inspector-tool,.icon-toggle{position:relative;display:inline-grid;place-items:center;width:24px;height:24px;padding:0;color:var(--muted);background:var(--field);border-radius:5px;cursor:pointer}
+.inspector-tool:hover:not(:disabled),.icon-toggle:hover{color:var(--text)}
+.app .inspector-tool[aria-pressed=true],.app .inspector-tool[aria-expanded=true],.app .icon-toggle:has(input:checked){color:var(--text);background:color-mix(in srgb,var(--text) 15%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 12%,transparent)}
+.app .icon-toggle>input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:inherit}
+.icon-toggle:has(input:disabled){opacity:.35;cursor:default}
+.icon-toggle:has(input:focus-visible),.icon-select:has(select:focus-visible),.glyph-select:has(select:focus-visible){outline:2px solid var(--focus-ring,#bf9ce9);outline-offset:-1px}
+.app fieldset:disabled .icon-toggle{opacity:.35;cursor:default}
+/* Dropdowns */
+.glyph-select{position:relative;display:block;min-width:0;height:24px;background:var(--field);border-radius:5px;color:var(--muted)}
+.app .glyph-select>select{appearance:none;-webkit-appearance:none;display:block;width:100%;height:24px;margin:0;padding-block:0;padding-inline:7px 18px;border:0;background:transparent;color:var(--text);font-size:10px;line-height:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app .glyph-select.has-glyph>select{padding-inline-start:23px}
+.glyph-select>.field-glyph{position:absolute;inset-inline-start:6px;top:0;height:24px;display:grid;place-items:center;pointer-events:none}
+.glyph-select>svg{position:absolute;inset-inline-end:6px;top:7px;pointer-events:none}
+.icon-select{position:relative;display:inline-grid;place-items:center;width:22px;height:22px;color:var(--muted);border-radius:4px;cursor:pointer}
+.icon-select:hover,.icon-select.active{color:var(--text)}
+.icon-select.active{background:var(--field)}
+.app .icon-select>select{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:0;cursor:inherit;font-size:10px}
+.app fieldset:disabled .icon-select{opacity:.35;cursor:default}
+/* Constraints */
+.constraint-row{display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:6px;margin-top:6px;align-items:center}
+.constraint-selects{display:grid;gap:6px;min-width:0}
+.constraint-widget{position:relative;width:54px;height:54px;background:var(--field);border-radius:5px}
+.constraint-box{position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--muted) 55%,transparent);border-radius:2px}
+.constraint-widget>.pin{position:absolute;display:grid;place-items:center;padding:0;border-radius:2px;color:var(--muted)}
+.constraint-widget>.pin>i{display:block;background:currentColor;border-radius:1px;opacity:.6}
+.constraint-widget>.pin:hover{background:var(--hover)}
+.constraint-widget>.pin:hover>i{opacity:1}
+.app .constraint-widget>.pin[aria-pressed=true]{color:var(--accent);box-shadow:none}
+.constraint-widget>.pin[aria-pressed=true]>i{opacity:1}
+.constraint-widget>.pin.top,.constraint-widget>.pin.bottom{left:15px;width:24px;height:12px}
+.constraint-widget>.pin.top{top:8px}
+.constraint-widget>.pin.bottom{bottom:8px}
+.constraint-widget>.pin.left,.constraint-widget>.pin.right{top:15px;width:12px;height:24px}
+.constraint-widget>.pin.left{left:8px}
+.constraint-widget>.pin.right{right:8px}
+.constraint-widget>.pin.top>i,.constraint-widget>.pin.bottom>i{width:1.5px;height:6px}
+.constraint-widget>.pin.top{align-items:start}
+.constraint-widget>.pin.bottom{align-items:end}
+.constraint-widget>.pin.left>i,.constraint-widget>.pin.right>i{width:6px;height:1.5px}
+.constraint-widget>.pin.left{justify-items:start}
+.constraint-widget>.pin.right{justify-items:end}
+/* The plus: its upright arm centers horizontally, its level arm centers vertically. */
+.constraint-widget>.pin.across{left:23px;top:21px;width:8px;height:12px}
+.constraint-widget>.pin.across>i{width:1.5px;height:9px}
+.constraint-widget>.pin.down{left:21px;top:23px;width:12px;height:8px}
+.constraint-widget>.pin.down>i{width:9px;height:1.5px}
+/* Layout */
+.app .layout-align-grid>button[aria-pressed=true]{box-shadow:none}
+.app .layout-section .layout-primary>.field-grid{align-content:start}
+.layout-section .check-row{margin-top:6px}
+.app .layout-section .layout-primary{margin-top:6px}
+.app .layout-section .field-grid>.number-field{min-height:24px;height:24px;flex-direction:row;align-items:center;padding:0 6px;gap:5px}
+.app .layout-section .field-grid>.number-field>span{flex:0 1 auto;max-width:62%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.app .layout-section .field-grid>.number-field>input{flex:1;min-height:0;min-width:24px;padding:3px 0;text-align:right}
+/* Typography */
+.app .inspector-section .font-library-button{margin:0}
+.typography-section>.glyph-select{margin-bottom:6px}
+.typography-section>.inspector-row{margin-top:6px}
+.typography-section>.glyph-select+.inspector-row{margin-top:0}
+.size-field{position:relative;min-width:0}
+.app .size-field .number-field>input{padding-inline-end:14px}
+.size-field>.icon-select{position:absolute;inset-inline-end:1px;top:1px;width:18px}
+.type-align-row{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
+.type-align-row>.icon-group:first-child{flex:4 1 0}
+.type-align-row>.icon-group:nth-child(2){flex:3 1 0}
+.type-advanced{display:grid;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);min-width:0}
+.type-advanced>*{min-width:0}
+.app .type-advanced>select{height:24px;padding-block:0;font-size:10px}
+.app .type-advanced .segmented{margin:0}
+.app .type-advanced .check-row{margin:0}
+.app .type-advanced textarea{margin:0;min-height:44px;height:44px}
+.app .type-advanced h4{margin:2px 0 0;font-size:10px;font-weight:600;color:var(--text)}
+/* Multiple selection keeps its mixed fill list, at this panel's scale. */
+.app .mixed-fills .mixed-fill-row h4{font-size:10px;font-weight:600}
+.app .mixed-fills .inspector-note{font-size:9px;line-height:1.4}
+/* Fill rows */
+.app .fill-row .forma-color-picker{grid-template-columns:minmax(0,1fr)}
+.app .fill-row{border:0;padding:0;margin:0 0 4px}
+.app .fill-row .paint-color-row{display:flex;align-items:center;gap:4px;margin:0}
+.app .fill-row .paint-color-chip{flex:none;width:20px;height:20px;display:grid;place-items:center;color:var(--muted)}
+.app .fill-row .paint-color-row>input,.app .fill-row .paint-color-variable{flex:1;min-width:0;width:auto;height:24px;padding:0 6px;font-size:10px;border:0}
+.app .fill-row .paint-color-row>.number-field{flex:0 0 44px;width:44px;height:24px;min-height:24px;margin:0}
+.paint-kind{flex:1;min-width:0;height:24px;line-height:24px;padding:0 6px;font-size:10px;color:var(--text);background:var(--field);border-radius:5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.paint-row-gap{flex:0 0 44px;width:44px}
+.app .paint-tool{flex:none;width:18px;height:22px;padding:0;color:var(--muted);border-radius:4px}
+.app .paint-tool:hover{color:var(--text);background:var(--hover)}
+.fill-row.paint-hidden .paint-color-chip,.fill-row.paint-hidden input,.fill-row.paint-hidden .paint-kind,.fill-row.paint-hidden .number-field{opacity:.45}
+.paint-settings{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px;align-items:center;min-width:0}
+.app .paint-settings>select{height:24px;margin:0;padding-block:0;font-size:10px}
+.paint-order{display:flex;gap:1px}
+.paint-order>button{width:20px;height:22px;padding:0;color:var(--muted);border-radius:4px}
+.paint-order>button:hover{color:var(--text);background:var(--hover)}
+.paint-settings-body{display:grid;gap:6px;margin:6px 0 8px;min-width:0}
+.paint-settings-body>*{min-width:0}
+.app .paint-settings-body select{height:24px;padding-block:0;font-size:10px}
+.app .paint-settings-body .field-grid{margin-top:0}
+.paint-styles{margin:0 0 6px;min-width:0}
+.paint-styles .mini-swatches{margin:4px 0}
+.app .paint-styles .system-field-row:first-of-type{margin-top:4px}
+/* Stroke, Effects and Export keep their bodies; an empty one is only its title. */
+.app [data-testid=stroke-section] .section-title,.app [data-testid=effects-section] .section-title{margin-bottom:5px}
+.app .inspector-section .export-settings{margin-top:0}
+/* Secondary sections after Export */
+.app .contrast-checker{padding:0;border-top:0;font-size:10px}
+.app .contrast-checker>summary{min-height:26px;display:flex;align-items:center;padding:5px 12px;font-size:10px;font-weight:500;color:var(--muted);border-bottom:1px solid var(--line);cursor:default}
+.app .contrast-checker[open]>summary{color:var(--text)}
+.app .contrast-checker-body{padding:8px 12px;border-bottom:1px solid var(--line)}
+.app .inspector-more>details>summary{min-height:26px;display:flex;align-items:center;padding:5px 12px;font-weight:500}
+.app .inspector-more>details:not(.more-section)>summary{list-style-position:inside}
+.more-section>summary{cursor:default}
+.app .inspector-more>details>summary::before,.app .contrast-checker>summary::before{content:'';flex:none;width:0;height:0;margin-right:7px;border-left:4px solid currentColor;border-block:3px solid transparent}
+.app .inspector-more>details[open]>summary::before,.app .contrast-checker[open]>summary::before{transform:rotate(90deg)}
+.app .inspector-more>details>summary::-webkit-details-marker,.app .contrast-checker>summary::-webkit-details-marker{display:none}
+.more-section:not(:has(>.more-body>*)){display:none}
+.more-section>.more-body{padding:8px 12px;border-bottom:1px solid var(--line);min-width:0}
+.more-section>.more-body>.inspector-section,.more-section>.more-body>fieldset>.inspector-section{padding:0;border:0}
+.more-section>.more-body>.inspector-section>.section-title:first-child{display:none}
+.more-section>.more-body>.inspector-section>h3:first-child{display:none}
+.more-section>.more-body>select{margin-bottom:5px;font-size:10px}
