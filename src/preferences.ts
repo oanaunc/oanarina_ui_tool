@@ -7,7 +7,7 @@ export interface EditorPreferences {
  exportHiddenLayers:boolean;defaultExportFormat:'svg'|'png'|'jpg';colorPickerFormat:'HEX'|'RGB'|'HSL'|'HSB';duplicateNaming:'preserve'|'copy'|'increment';keyboardZoomSelection:boolean;controlClickContextMenu:boolean;numberKeyOpacity:boolean;smartTextSubstitution:boolean;
  pixelSnapping:'document'|'none'|'pixel'|'half'|'device';objectSnapping:'document'|'on'|'off';vectorGeometrySnapping:'document'|'on'|'off';
  smallNudge:number;largeNudge:number;rotationSnapIncrement:number;
- showFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;showSlices:boolean;
+ showFrameNames:boolean;showNestedFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;showSlices:boolean;
  viewportCulling:boolean;highContrastSelection:boolean;keepDrawingTool:boolean;hoverHighlight:boolean;parentHoverOutline:boolean;showSelectionDimensions:boolean;
  wheelZoom:boolean;zoomSensitivity:number;invertZoom:boolean;rightButtonPan:boolean;
  defaultFrameFill:string;defaultShapeFill:string;defaultShapeStrokeEnabled:boolean;
@@ -20,7 +20,7 @@ export const defaultPreferences:Readonly<EditorPreferences>=Object.freeze({
  uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,exportHiddenLayers:false,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,smartTextSubstitution:false,
  pixelSnapping:'document',objectSnapping:'document',vectorGeometrySnapping:'document',
  smallNudge:1,largeNudge:10,rotationSnapIncrement:15,
- showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,showSlices:true,
+ showFrameNames:true,showNestedFrameNames:false,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,showSlices:true,
  viewportCulling:true,highContrastSelection:false,keepDrawingTool:false,hoverHighlight:true,parentHoverOutline:false,showSelectionDimensions:true,
  wheelZoom:false,zoomSensitivity:1,invertZoom:false,rightButtonPan:false,
  defaultFrameFill:'#ffffff',defaultShapeFill:'#d8c9f2',defaultShapeStrokeEnabled:false,

@@ -792,6 +792,12 @@
     ""
   ],
   [
+    "nested-frame-names",
+    "Show nested frame names",
+    "View",
+    ""
+  ],
+  [
     "section-names",
     "Show section names",
     "View",

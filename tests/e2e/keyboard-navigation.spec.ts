@@ -60,7 +60,7 @@ test('keyboard alone edits layer properties with Undo',async({page})=>{
  const x=page.getByRole('spinbutton',{name:'X',exact:true});await x.focus();await page.keyboard.press('ArrowUp');await page.keyboard.press('Enter');await expect.poll(async()=>(await state())!.x).toBe(before!.x+1);
  const width=page.getByRole('spinbutton',{name:'W',exact:true});await width.focus();await page.keyboard.press('ControlOrMeta+a');await page.keyboard.type('140*2');await page.keyboard.press('Enter');await expect.poll(async()=>(await state())!.width).toBe(280);
  const hex=page.getByRole('textbox',{name:'Fill 1 color value'});await hex.focus();await page.keyboard.press('ControlOrMeta+a');await page.keyboard.type('#123456');await page.keyboard.press('Enter');await expect.poll(async()=>(await state())!.fill).toBe('#123456');
- await page.getByRole('slider',{name:/Fill 1 saturation and brightness/}).focus();await page.keyboard.press('ArrowRight');await expect.poll(async()=>(await state())!.fill).not.toBe('#123456');
+ await page.getByRole('button',{name:'Fill 1 color picker',exact:true}).click();await page.getByRole('slider',{name:/Fill 1 saturation and brightness/}).focus();await page.keyboard.press('ArrowRight');await expect.poll(async()=>(await state())!.fill).not.toBe('#123456');
  await page.keyboard.press('Meta+z');await expect.poll(async()=>(await state())?.fill).toBe('#123456');
 });
 test('keyboard alone exports through the dialog',async({page})=>{
