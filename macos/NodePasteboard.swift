@@ -13,12 +13,13 @@ struct ClipboardCommandOrder {
 enum NodePasteboard {
     static let nodes=NSPasteboard.PasteboardType("com.oanarinaldi.forma.nodes-json")
     static let svg=NSPasteboard.PasteboardType("public.svg-image")
+    static let jpeg=NSPasteboard.PasteboardType("public.jpeg")
     static let limit=20_000_000
     static let rasterPixelLimit=16_000_000
     /** Inspect dimensions before pixel decoding, then normalize the first oriented frame to PNG. */
     static func raster(_ data:Data,type:NSPasteboard.PasteboardType)throws->String {
         let failure=NSError(domain:"Clipboard image is invalid or exceeds 20 MB, 8192 pixels per side or 16 million pixels.",code:8)
-        guard data.count<=limit,let source=CGImageSourceCreateWithData(data as CFData,[kCGImageSourceShouldCache:false] as CFDictionary),let actual=CGImageSourceGetType(source) as String?,actual==(type == .png ? "public.png":"public.tiff"),let properties=CGImageSourceCopyPropertiesAtIndex(source,0,nil) as? [CFString:Any],let width=properties[kCGImagePropertyPixelWidth] as? NSNumber,let height=properties[kCGImagePropertyPixelHeight] as? NSNumber else{throw failure}
+        guard data.count<=limit,let source=CGImageSourceCreateWithData(data as CFData,[kCGImageSourceShouldCache:false] as CFDictionary),let actual=CGImageSourceGetType(source) as String?,actual==type.rawValue,let properties=CGImageSourceCopyPropertiesAtIndex(source,0,nil) as? [CFString:Any],let width=properties[kCGImagePropertyPixelWidth] as? NSNumber,let height=properties[kCGImagePropertyPixelHeight] as? NSNumber else{throw failure}
         let w=width.doubleValue,h=height.doubleValue
         guard w.isFinite,h.isFinite,w>=1,h>=1,w<=8192,h<=8192,w*h<=Double(rasterPixelLimit),w.rounded()==w,h.rounded()==h else{throw failure}
         let options:[CFString:Any]=[kCGImageSourceCreateThumbnailFromImageAlways:true,kCGImageSourceCreateThumbnailWithTransform:true,kCGImageSourceThumbnailMaxPixelSize:max(w,h),kCGImageSourceShouldCacheImmediately:true]
@@ -52,8 +53,8 @@ enum NodePasteboard {
         pasteboard.clearContents();return pasteboard.writeObjects([item])
     }
     static func read(from pasteboard:NSPasteboard = .general)throws->[String:String] {
-        guard let item=pasteboard.pasteboardItems?.first,let type=item.availableType(from:[nodes,svg,.png,.tiff,.string]) else{return ["kind":"empty"]}
-        if type == .png || type == .tiff {
+        guard let item=pasteboard.pasteboardItems?.first,let type=item.availableType(from:[nodes,svg,.png,.tiff,jpeg,.string]) else{return ["kind":"empty"]}
+        if type == .png || type == .tiff || type==jpeg {
             guard let data=item.data(forType:type) else{throw NSError(domain:"Unable to read clipboard image.",code:8)}
             return ["kind":"image","data":try raster(data,type:type)]
         }

@@ -39,7 +39,7 @@ Add this server to any MCP host supporting local stdio servers. Replace the exam
 }
 ```
 
-Append `--create` to create an empty document if that exact path does not exist. Without it, an existing valid `.oui` file is required. The directory must already exist. Save changes in the Mac editor before using the server, then reopen the saved file to see MCP edits. Live synchronization with an already open editor is not implemented.
+Append `--create` to create an empty document if that exact path does not exist. Without it, an existing valid `.oui` file is required. The directory must already exist. Save changes in the Mac editor before using the server. A Forma window with no unsaved changes reloads MCP edits within seconds; see [the open editor](../docs/MCP-LIVE-CONTEXT.md) for what happens otherwise.
 
 Version-one `.oui` projects can be read and migrate to version two when written. Use the current development editor to reopen MCP-edited files; compatibility with the older public v0.1.0 installer is not claimed.
 
@@ -54,10 +54,18 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | `read_library_context` | Source-only metadata index of local reusable definitions, installed libraries/publication, versions/status and bounded dependency IDs; revision-bound pagination |
 | `apply_operations` | Atomic batches of up to 500 node/page/design-system edits |
 | `replace_document` | Validated complete document replacement for advanced model features |
-| `undo_transaction` | Restore the previous successful MCP transaction; last 20 in memory |
+| `undo_transaction` | Restore the previous successful MCP transaction; last 20 survive restarts |
+| `read_undo_history` | Source-only: retained Undo count, size and availability, never content |
+| `clear_undo_history` | Source-only: delete retained prior project copies; the project is unchanged |
+| `list_installed_fonts` | Source-only: installed family names and styles, optionally compared with the document |
+| `read_live_editor` | Source-only: page, selection and viewport of an opted-in open Forma window |
+| `read_live_screenshot` | Source-only: latest window screenshot from an opted-in open Forma window |
+| `export_live_artwork_png` | Source-only: selection or page PNG rendered by an opted-in open Forma window |
 | `import_image_asset` | Source-only: validate embedded static 8-bit RGB/RGBA PNG, create an editable page-root image in one transaction |
 | `validate_project` | Run the editor's shared document validators |
 | `export_svg` | Return SVG for vector/text pages; reject images and browser-raster fills |
+
+Durable Undo, font listing and the command-line `mcp/automation.ts` are described in [MCP undo, fonts and automation](../docs/MCP-LOCAL-AUTOMATION.md). Live tools are described in [the open editor](../docs/MCP-LIVE-CONTEXT.md). The server has no renderer of its own: raster output needs an open editor window that opted in. The frozen standalone download does not include these source tools yet.
 
 The resource `oanarina://project/summary` provides current metadata. Tool schemas are discoverable through MCP. Every write requires a `revision` returned by a read. Stale revisions fail without changing the file.
 
@@ -103,7 +111,7 @@ Example: first duplicate a known page, then use its returned ID and revision in 
 
 All tools are scoped to the one launch-time project. Tools accept no filesystem paths, shell commands, scripts or eval code. Individual file symlinks are refused, parent directory symlinks are canonicalized at launch, and `.oui` files are limited to 50 MB. Inputs are validated before writes using the same component, variable, prototype, grid and motion validators as the editor. Project reads use bounded chunks and reject symlinks, non-regular files, named pipes and malformed UTF-8. Lock cleanup removes only the lock identity it opened. Components and design-system values propagate before saving. Headless text measurements are approximate; review automatic wrapping and size in the Mac app.
 
-Writes use a per-project exclusive lock, a temporary sibling file, fsync and atomic rename. Hashes are checked immediately before committing. The lock coordinates MCP processes and the Forma native editor. Native project saves also compare the last opened/saved SHA-256 and offer Cancel, Save As or an explicit overwrite when the disk copy changed. The editor does not live-reload MCP changes: close and reopen the project before continuing to edit automated results. Other applications ignoring the shared lock are not coordinated. An external write in the final check-to-rename interval cannot be excluded by the filesystem API. A crash before rename retains the old file; a crash after rename retains the validated new file. Undo history clears when this process ends. A crash can leave `<project>.oanarina-mcp.lock`; verify neither Forma nor an MCP process is using the project before manually removing that lock.
+Writes use a per-project exclusive lock, a temporary sibling file, fsync and atomic rename. Hashes are checked immediately before committing. The lock coordinates MCP processes and the Forma native editor. Native project saves also compare the last opened/saved SHA-256 and offer Cancel, Save As or an explicit overwrite when the disk copy changed. A clean editor window reloads the saved file automatically; a window with unsaved changes keeps them and asks before Save replaces the file. Other applications ignoring the shared lock are not coordinated. An external write in the final check-to-rename interval cannot be excluded by the filesystem API. A crash before rename retains the old file; a crash after rename retains the validated new file. Undo history persists beside the project in a private hidden folder and stops at any external change. A crash can leave `<project>.oanarina-mcp.lock`; verify neither Forma nor an MCP process is using the project before manually removing that lock.
 
 SVG output uses the editor's actual vector renderer and escapes text. It never writes a path, fetches URLs or evaluates document content. Image layers, image paints, angular/diamond raster paints are refused so output cannot depend on browser decoding or external assets. Text wrapping uses approximate headless metrics; installed font files are not copied. Project-embedded fonts are included only where embedding is permitted. Responses are capped at 5 MB. Binary `.fig` support and direct Figma cloud control are outside this server.
 

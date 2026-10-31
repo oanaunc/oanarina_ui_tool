@@ -10,7 +10,7 @@ Changes save immediately. **Reset preferences** restores the defaults below whil
 
 **View → Toggle light / dark theme** chooses the opposite explicit theme and leaves Follow system. The preference survives reopening and changes propagate between open editors on the same origin through storage events. Reset preferences returns appearance to Dark. A denied storage write reports an error and preserves the current choice. The legacy local key `oui-theme` stores only `light`, `dark` or `system`; no migration of project data is required.
 
-The media-query binding is shared browser code used by WKWebView. Browser emulation and real same-origin storage-event tests cover its behavior; final native window appearance acceptance remains pending while the Mac is locked. Accent colors, increased contrast and UI scaling are separate requirements.
+The media-query binding is shared browser code used by WKWebView. Browser emulation and real same-origin storage-event tests cover its behavior; the native integration run changes the application appearance while running and confirms the actual WKWebView and editor theme follow in both directions. Accent colors, increased contrast and UI scaling are separate requirements.
 
 ## Movement and drawing
 

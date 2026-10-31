@@ -1,4 +1,5 @@
 import {validateDocumentPassThrough} from '../pass-through';
+import {bindTrackpadPinch} from '../trackpad-pinch';
 import ShapeBuilderOverlay from './ShapeBuilderOverlay';
 import {useShapeBuilder} from '../shape-builder-actions';
 import VectorNetworkOverlay from './VectorNetworkOverlay';
@@ -114,6 +115,7 @@ export default function Canvas(){
  useEffect(()=>setContinuation(null),[s.zoom,s.pan.x,s.pan.y]);
  const continuationPoint=(n:DesignNode,nodes:DesignNode[],position:{x:number;y:number})=>{const p=canvasPointInNode(n,nodes,position);return {x:p.x*(n.pathWidth||n.width||1)/(n.width||1),y:p.y*(n.pathHeight||n.height||1)/(n.height||1)};};
  useEffect(()=>{const el=svg.current;if(!el)return;const wheel=(e:WheelEvent)=>{e.preventDefault();const st=useEditor.getState(),preferences=getPreferences();if(e.metaKey||e.ctrlKey||preferences.wheelZoom){const r=el.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,z=Math.min(8,Math.max(.05,st.zoom*Math.exp(-e.deltaY*.01*preferences.zoomSensitivity*(preferences.invertZoom?-1:1))));st.set({zoom:z,pan:{x:x-(x-st.pan.x)*z/st.zoom,y:y-(y-st.pan.y)*z/st.zoom}});}else st.set({pan:{x:st.pan.x-e.deltaX,y:st.pan.y-e.deltaY}});};el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[]);
+ useEffect(()=>{const el=svg.current;return el?bindTrackpadPinch(el):undefined;},[]);
  const begin=(e:React.PointerEvent,id?:string,handle?:string,direct=false)=>{
  if(!freshSnapStart()){e.stopPropagation();return;}
  if(useShapeBuilder.getState().context&&!space.current&&s.tool!=='hand'&&e.button!==1&&!(e.button===2&&prefs.rightButtonPan)){e.stopPropagation();return;}

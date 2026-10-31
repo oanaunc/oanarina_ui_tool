@@ -26,6 +26,7 @@ extension Studio {
     func runSmoke(_ document:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(document);return}
         if CommandLine.arguments.contains("--fig-import-smoke-test"){runFigImportSmoke(document);return}
+        if CommandLine.arguments.contains("--integration-smoke-test"){runIntegrationSmoke(document);return}
         if CommandLine.arguments.contains("--clipboard-smoke-test"){runClipboardSmoke(document);return}
         if CommandLine.arguments.contains("--lifecycle-smoke-test"){runLifecycleSmoke(document);return}
         guard smokeStage==0 else{return};smokeStage=1
