@@ -12,6 +12,9 @@ async function exportSvg(page:Page){const event=page.waitForEvent('download');aw
 async function pixels(page:Page,svg:string,points:number[][]){return page.evaluate(async({svg,points})=>{const image=new Image();await new Promise<void>((resolve,reject)=>{image.onload=()=>resolve();image.onerror=()=>reject(Error('SVG export did not decode'));image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);});const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d')!;ctx.drawImage(image,0,0);return points.map(([x,y])=>[...ctx.getImageData(x,y,1,1).data]);},{svg,points});}
 async function number(page:Page,label:string,value:number){const input=page.getByRole('spinbutton',{name:label,exact:true});await input.fill(String(value));await input.press('Enter');}
 test('fill, fit, crop, tile, scale, rotation and transform reset persist and render the shared export geometry',async({page})=>{
+ // Arm CDP chooser interception before the final native shortcut; waiting only at
+ // that shortcut can race the browser's asynchronous interception setup.
+ page.on('filechooser',()=>{});
  const data=await asset(page),doc=fixture(data);await load(page,doc);let px=await pixels(page,await exportSvg(page),[[5,50],[95,50]]);expect(px).toEqual([[255,0,0,255],[0,0,255,255]]);
  await page.getByLabel('Fill 1 image mode',{exact:true}).selectOption('fit');px=await pixels(page,await exportSvg(page),[[5,50],[95,50],[50,5]]);expect(px).toEqual([[255,0,0,255],[0,0,255,255],[0,0,0,0]]);
  await page.getByLabel('Fill 1 image mode',{exact:true}).selectOption('tile');px=await pixels(page,await exportSvg(page),[[10,10],[30,10],[50,10],[70,10]]);expect(px).toEqual([[255,0,0,255],[0,0,255,255],[255,0,0,255],[0,0,255,255]]);
