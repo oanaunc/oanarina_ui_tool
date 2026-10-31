@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1317,"partial":297,"planned":408}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1319,"partial":312,"planned":391}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -544,7 +544,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-15-009 | Release boolean group | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
 | UI-15-010 | Flatten boolean result | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
 | UI-15-011 | Nested boolean operations | partial | Nested path operands render; group operands, transformed parent editing, full mixed styling and geometry edge cases need further validation. |
-| UI-15-012 | Boolean operation with text | planned | reference-verification-pending |
+| UI-15-012 | Boolean operation with text | partial | Actual eligible static-TTF glyph outlines become ordinary editable vector operands in a reviewed live Boolean group. Holes, signed transforms, source/font proofs, atomic Undo/save and numeric amplification refusal are tested. Text stops being editable as text; broader fonts/shaping/native reference fidelity remain unsupported. See docs/BOOLEAN-TEXT-OPERANDS.md. |
 | UI-15-013 | Boolean operation with vectors | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
 | UI-15-014 | Boolean operation with ellipses | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
 | UI-15-015 | Boolean operation with rectangles | implemented | v0.2: actual Paper.js geometry, live operands, command/inspector paths, undo; analytic rectangle area and browser flatten/edit/export checks. |
@@ -1346,7 +1346,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-35-031 | Two-axis scroll regions | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
 | UI-35-032 | Scroll overflow setting | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-35-033 | Scroll-to animation | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
-| UI-35-034 | Prototype audio playback | planned | reference-verification-pending |
+| UI-35-034 | Prototype audio playback | partial | Explicit local canonical PCM16 WAV attachment and steady-frame presentation controls: Play/Pause/seek/restart, loop/volume, single owned voice, cancellation and Undo/save. Strict byte/duration/float budgets, private transfer/static warnings and metadata-only MCP redaction are tested. No autoplay/reaction/Motion/transition/mixing/compressed-codec or native audible parity claim. See docs/PROTOTYPE-AUDIO.md. |
 | UI-35-035 | Prototype video playback | partial | Existing embedded MP4/WebM prototype playback is reachable and browser-validated: transforms/clips, loop/mute/start time, restart/navigation pause and visibility audio gates. This reconciles an overlooked planned row with the already implemented media path, without claiming a new renderer. Browser/native codec and autoplay policies apply; nonrectangular clips/masks require manual Play, and remote media, trimming/transcoding and full native/reference acceptance remain unfinished. See docs/EMBEDDED-MEDIA.md and tests/e2e/media.spec.ts. |
 | UI-35-036 | Presentation reduced motion | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 
@@ -1637,30 +1637,30 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 
 | ID | Required behavior | Status | Verification / limits |
 | --- | --- | --- | --- |
-| UI-43-001 | Plugin discovery | planned | reference-verification-pending |
-| UI-43-002 | Plugin installation | planned | reference-verification-pending |
-| UI-43-003 | Plugin removal | planned | reference-verification-pending |
-| UI-43-004 | Plugin launch | planned | reference-verification-pending |
+| UI-43-001 | Plugin discovery | partial | Search and inspect installed local Forma command packages through Assets > Local plugins. No remote marketplace or Figma Plugin API compatibility. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-002 | Plugin installation | partial | Review and install bounded local version-one JSON command packages in separate transactional local storage, without executing during import. Broader marketplace/SDK installation remains unsupported. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-003 | Plugin removal | implemented | Remove an installed local command package through guarded transactional local storage. Existing files/artwork stay unchanged; cross-window catalog invalidation and reinstall paths are validated. This describes Forma-local package removal, with separate native/reference verification pending. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-004 | Plugin launch | partial | Explicit per-run launch in an opaque trusted guardian and terminateable blob worker after permission review. No automatic execution or arbitrary iframe guest UI; native WKWebView acceptance pending. See docs/LOCAL-COMMAND-PLUGINS.md. |
 | UI-43-005 | Plugin favorites | planned | reference-verification-pending |
 | UI-43-006 | Recent plugins | planned | reference-verification-pending |
-| UI-43-007 | Plugin permissions display | planned | reference-verification-pending |
+| UI-43-007 | Plugin permissions display | implemented | Installed-package review and run controls display every requested supported capability with explicit per-run grants; permissions are checked per request and before reviewed Apply. Bounded read/write capability details are visible; broader APIs remain separately planned. Native/reference verification pending. See docs/LOCAL-COMMAND-PLUGINS.md. |
 | UI-43-008 | Plugin iframe UI | planned | reference-verification-pending |
 | UI-43-009 | Plugin parameter input | planned | reference-verification-pending |
-| UI-43-010 | Plugin message bridge | planned | reference-verification-pending |
-| UI-43-011 | Plugin document read API | planned | reference-verification-pending |
-| UI-43-012 | Plugin document write API | planned | reference-verification-pending |
-| UI-43-013 | Plugin node creation | planned | reference-verification-pending |
-| UI-43-014 | Plugin selection API | planned | reference-verification-pending |
+| UI-43-010 | Plugin message bridge | partial | Authenticated source-window/token bridge mediates closed bounded request/response messages through an opaque guardian/worker, with real CSP/network/source-forgery tests. No Figma API or arbitrary iframe UI protocol. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-011 | Plugin document read API | partial | Granted bounded redacted current-page and selection reads expose base layer IDs/names/geometry/text only. Private annotations/comments/images/fonts/audio/profile data and broader document APIs are excluded. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-012 | Plugin document write API | partial | One bounded proposal per run is shown for explicit reviewed Apply through ordinary validation, one Undo and persistence. Simple independent leaf updates/root creation only; controllers/richer fields refuse. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-013 | Plugin node creation | partial | Reviewed plugin creation supports ordinary root rectangles, ellipses and fixed text with bounded finite geometry, opaque solid fill and names. Other node types/hierarchies remain unsupported. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-014 | Plugin selection API | partial | Granted selection read and reviewed selection delivery support existing current-page IDs and this proposal’s created keys. Selection-only changes preserve document identity/history; stale post-edit delivery refuses permanently. See docs/LOCAL-COMMAND-PLUGINS.md. |
 | UI-43-015 | Plugin font loading | planned | reference-verification-pending |
 | UI-43-016 | Plugin image API | planned | reference-verification-pending |
 | UI-43-017 | Plugin export API | planned | reference-verification-pending |
 | UI-43-018 | Plugin storage | planned | reference-verification-pending |
 | UI-43-019 | Plugin networking permissions | planned | reference-verification-pending |
-| UI-43-020 | Plugin error isolation | planned | reference-verification-pending |
-| UI-43-021 | Plugin cancellation | planned | reference-verification-pending |
-| UI-43-022 | Plugin development manifest | planned | reference-verification-pending |
-| UI-43-023 | Plugin reload | planned | reference-verification-pending |
-| UI-43-024 | Plugin console | planned | reference-verification-pending |
+| UI-43-020 | Plugin error isolation | partial | Worker errors, invalid/flooded requests, cancellation and deadlines dispose the owned sandbox without applying proposals. Browser isolation/CSP tests pass; hard OS/RSS isolation and native WKWebView acceptance are not claimed. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-021 | Plugin cancellation | partial | Explicit Cancel, source/permission/package invalidation and deadline terminate the owned worker and prevent late review/Apply. Source/local/cross-window and loop cancellation checks pass; broader SDK/native behavior pending. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-022 | Plugin development manifest | partial | Closed version-one Forma local command manifest carries bounded ID/name/description/code and supported capabilities; malformed/unknown fields refuse. This is an independent local format, not a Figma manifest implementation. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-023 | Plugin reload | partial | Reload installed local catalog or replace a reviewed package; explicit rerun creates a fresh worker and invalidates old grants/handlers. No automatic code/file watching or Figma development runtime. See docs/LOCAL-COMMAND-PLUGINS.md. |
+| UI-43-024 | Plugin console | partial | Bounded run-local console displays forma.log and captured console messages without source mutation; errors stay in the manager. General browser debugger/SDK console features remain unsupported. See docs/LOCAL-COMMAND-PLUGINS.md. |
 | UI-43-025 | Widget insertion | planned | reference-verification-pending |
 | UI-43-026 | Widget state synchronization | planned | reference-verification-pending |
 | UI-43-027 | Widget resizing | planned | reference-verification-pending |

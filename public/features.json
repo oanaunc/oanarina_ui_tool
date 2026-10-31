@@ -4624,10 +4624,10 @@
     "category": "Boolean geometry",
     "name": "Boolean operation with text",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Actual eligible static-TTF glyph outlines become ordinary editable vector operands in a reviewed live Boolean group. Holes, signed transforms, source/font proofs, atomic Undo/save and numeric amplification refusal are tested. Text stops being editable as text; broader fonts/shaping/native reference fidelity remain unsupported. See docs/BOOLEAN-TEXT-OPERANDS.md."
   },
   {
     "id": "UI-15-013",
@@ -11644,10 +11644,10 @@
     "category": "Prototype presentation",
     "name": "Prototype audio playback",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "Explicit local canonical PCM16 WAV attachment and steady-frame presentation controls: Play/Pause/seek/restart, loop/volume, single owned voice, cancellation and Undo/save. Strict byte/duration/float budgets, private transfer/static warnings and metadata-only MCP redaction are tested. No autoplay/reaction/Motion/transition/mixing/compressed-codec or native audible parity claim. See docs/PROTOTYPE-AUDIO.md."
   },
   {
     "id": "UI-35-035",
@@ -14154,40 +14154,40 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin discovery",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Search and inspect installed local Forma command packages through Assets > Local plugins. No remote marketplace or Figma Plugin API compatibility. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-002",
     "category": "Plugins widgets and extensions",
     "name": "Plugin installation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Review and install bounded local version-one JSON command packages in separate transactional local storage, without executing during import. Broader marketplace/SDK installation remains unsupported. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-003",
     "category": "Plugins widgets and extensions",
     "name": "Plugin removal",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Remove an installed local command package through guarded transactional local storage. Existing files/artwork stay unchanged; cross-window catalog invalidation and reinstall paths are validated. This describes Forma-local package removal, with separate native/reference verification pending. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-004",
     "category": "Plugins widgets and extensions",
     "name": "Plugin launch",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Explicit per-run launch in an opaque trusted guardian and terminateable blob worker after permission review. No automatic execution or arbitrary iframe guest UI; native WKWebView acceptance pending. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-005",
@@ -14214,10 +14214,10 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin permissions display",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Installed-package review and run controls display every requested supported capability with explicit per-run grants; permissions are checked per request and before reviewed Apply. Bounded read/write capability details are visible; broader APIs remain separately planned. Native/reference verification pending. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-008",
@@ -14244,50 +14244,50 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin message bridge",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Authenticated source-window/token bridge mediates closed bounded request/response messages through an opaque guardian/worker, with real CSP/network/source-forgery tests. No Figma API or arbitrary iframe UI protocol. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-011",
     "category": "Plugins widgets and extensions",
     "name": "Plugin document read API",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Granted bounded redacted current-page and selection reads expose base layer IDs/names/geometry/text only. Private annotations/comments/images/fonts/audio/profile data and broader document APIs are excluded. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-012",
     "category": "Plugins widgets and extensions",
     "name": "Plugin document write API",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "One bounded proposal per run is shown for explicit reviewed Apply through ordinary validation, one Undo and persistence. Simple independent leaf updates/root creation only; controllers/richer fields refuse. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-013",
     "category": "Plugins widgets and extensions",
     "name": "Plugin node creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Reviewed plugin creation supports ordinary root rectangles, ellipses and fixed text with bounded finite geometry, opaque solid fill and names. Other node types/hierarchies remain unsupported. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-014",
     "category": "Plugins widgets and extensions",
     "name": "Plugin selection API",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Granted selection read and reviewed selection delivery support existing current-page IDs and this proposal’s created keys. Selection-only changes preserve document identity/history; stale post-edit delivery refuses permanently. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-015",
@@ -14344,50 +14344,50 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin error isolation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Worker errors, invalid/flooded requests, cancellation and deadlines dispose the owned sandbox without applying proposals. Browser isolation/CSP tests pass; hard OS/RSS isolation and native WKWebView acceptance are not claimed. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-021",
     "category": "Plugins widgets and extensions",
     "name": "Plugin cancellation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Explicit Cancel, source/permission/package invalidation and deadline terminate the owned worker and prevent late review/Apply. Source/local/cross-window and loop cancellation checks pass; broader SDK/native behavior pending. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-022",
     "category": "Plugins widgets and extensions",
     "name": "Plugin development manifest",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Closed version-one Forma local command manifest carries bounded ID/name/description/code and supported capabilities; malformed/unknown fields refuse. This is an independent local format, not a Figma manifest implementation. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-023",
     "category": "Plugins widgets and extensions",
     "name": "Plugin reload",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Reload installed local catalog or replace a reviewed package; explicit rerun creates a fresh worker and invalidates old grants/handlers. No automatic code/file watching or Figma development runtime. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-024",
     "category": "Plugins widgets and extensions",
     "name": "Plugin console",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Bounded run-local console displays forma.log and captured console messages without source mutation; errors stay in the manager. General browser debugger/SDK console features remain unsupported. See docs/LOCAL-COMMAND-PLUGINS.md."
   },
   {
     "id": "UI-43-025",
