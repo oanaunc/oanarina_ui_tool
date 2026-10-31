@@ -44,7 +44,7 @@
 .app .inspector-tool[aria-pressed=true],.app .inspector-tool[aria-expanded=true],.app .icon-toggle:has(input:checked){color:var(--text);background:color-mix(in srgb,var(--text) 15%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 12%,transparent)}
 .app .icon-toggle>input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:inherit}
 .icon-toggle:has(input:disabled){opacity:.35;cursor:default}
-.icon-toggle:has(input:focus-visible),.icon-select:has(select:focus-visible),.glyph-select:has(select:focus-visible){outline:2px solid var(--focus-ring,#bf9ce9);outline-offset:-1px}
+.icon-toggle:has(input:focus),.icon-select:has(select:focus),.glyph-select:has(select:focus){outline:2px solid var(--focus-ring,#bf9ce9);outline-offset:-1px}
 .app fieldset:disabled .icon-toggle{opacity:.35;cursor:default}
 /* Dropdowns */
 .glyph-select{position:relative;display:block;min-width:0;height:24px;background:var(--field);border-radius:5px;color:var(--muted)}
