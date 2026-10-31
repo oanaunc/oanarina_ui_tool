@@ -1,0 +1,14 @@
+import {it,expect} from 'vitest';
+import {edgeStrokeIssue,edgeStrokePath} from '../src/edge-strokes';
+import {createStroke} from '../src/paints';
+import {node} from '../src/model';
+const stroke=(edgeWidths:[number,number,number,number],align:'inside'|'center'|'outside')=>({...createStroke('#000000'),edgeWidths,align});
+const box=(extra={})=>({width:100,height:60,radius:0,...extra});
+it('keeps the exact square ring output for unrounded boxes',()=>{expect(edgeStrokePath(box(),stroke([2,4,6,8],'inside'))).toBe('M0 0H100V60H0Z'+'M8 2H96V54H8Z');expect(edgeStrokePath(box(),stroke([10,10,10,10],'outside'))).toBe('M-10 -10H110V70H-10Z'+'M0 0H100V60H0Z');});
+it('inside alignment keeps the box radius outside and shrinks each inner axis by its own side',()=>{const d=edgeStrokePath(box({radius:20}),stroke([4,10,4,10],'inside'));expect(d).toContain('M20 0H80A20 20 0 0 1 100 20');expect(d).toContain('M20 4H80A10 16 0 0 1 90 20');});
+it('outside alignment grows the outer radius by each side and keeps the box radius as the hole',()=>{const d=edgeStrokePath(box({radius:20}),stroke([4,10,4,10],'outside'));expect(d).toContain('A30 24 0 0 1 110 20');expect(d).toContain('M20 0H80A20 20 0 0 1 100 20');});
+it('center alignment splits both radii around the box radius',()=>{const d=edgeStrokePath(box({radius:20}),stroke([4,8,4,8],'center'));expect(d).toContain('A24 22 0 0 1 104 20');expect(d).toContain('A16 18 0 0 1 96 20');});
+it('a wide side consumes its inner radius into a sharp corner while the other corners stay round',()=>{const d=edgeStrokePath(box({corners:[20,0,0,0]}),stroke([25,0,0,25],'inside'));expect(d.split('Z')[1]).toBe('M25 25H100V60H25');expect(d.split('Z')[0]).toBe('M20 0H100V60H0V20A20 20 0 0 1 20 0');});
+it('clamps corners to half the short side and handles a zero-width side and a consumed hole',()=>{const d=edgeStrokePath(box({radius:500}),stroke([0,2,0,2],'inside'));expect(d).toContain('A30 30 0 0 1 100 30');expect(d).toContain('A28 30 0 0 1 98 30');expect(edgeStrokePath(box({radius:10}),stroke([40,0,40,0],'inside')).match(/M/g)).toHaveLength(1);expect(edgeStrokePath(box({radius:10}),stroke([0,0,0,0],'inside'))).toBe('');});
+it('independent corner radii map to their own corners',()=>{const d=edgeStrokePath(box({corners:[0,10,0,10]}),stroke([1,1,1,1],'inside'));expect(d.startsWith('M0 0H90A10 10 0 0 1 100 10V60H10A10 10 0 0 1 0 50Z')).toBe(true);});
+it('only corner smoothing, non-box shapes and arrowheads stay refused',()=>{expect(edgeStrokeIssue(node('rectangle',{radius:12,corners:[1,2,3,4]}))).toBe('');expect(edgeStrokeIssue(node('rectangle',{radius:12,cornerSmoothing:.6}))).toContain('corner smoothing');expect(edgeStrokeIssue(node('ellipse'))).toContain('box shapes');});
