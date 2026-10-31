@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-10-30",
+  "asOf": "2026-10-31",
   "releases": [
+    {
+      "version": "0.2.0-dev.13",
+      "channel": "preview",
+      "title": "Components, drawing, branches and offline resources",
+      "notes": [
+        "Build real design systems: nested instance overrides and exposed nested properties, published and linked variables, variable groups, usage counts and local branches with three-way merge.",
+        "Draw and type with more control: stretch brushes, an illustration toolbar, straight knife, shape eraser, curved corner rounding, keyboard lists, real variable font axes and the full emoji catalog.",
+        "Lay out and present: automatic group bounds, nested baselines, drag reorder in auto layout, nested scroll regions, device shells, Smart animate improvements and exact vector angular and diamond paints.",
+        "New workspaces and tools: Sites with static export, brand asset templates, shader paints and Display P3, runnable code layers, sandboxed widgets, PowerPoint interchange, design health audits, UI kits and tutorials.",
+        "Mac and reliability: native tabs, print, system share, document versions, crash journal, persisted Undo, safe mode, renderer restart, Romanian interface and an accessibility sweep."
+      ],
+      "limits": [
+        "This is a development preview. Exact installer metadata and checksums are published on the Forma website after release validation.",
+        "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
+        "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
+        "Romanian covers about one fifth of interface text. Physical trackpad, printer, tablet and VoiceOver acceptance, and real PowerPoint and Figma round trips, remain open.",
+        "Complete Figma parity, binary .fig export and hosted collaboration remain unfinished."
+      ]
+    },
     {
       "version": "0.2.0-dev.12",
       "channel": "preview",
