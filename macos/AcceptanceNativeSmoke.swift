@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -192,6 +192,25 @@ extension Studio {
         }
     }
     func pluginPackage(_ directory:URL,_ name:String,_ package:[String:Any])->URL {let file=directory.appendingPathComponent(name);do{try Data(json(package).utf8).write(to:file)}catch{smokeFail(error.localizedDescription)};return file}
+    /** macOS 27's WebKit does not taint these canvases, but the app supports macOS 13, where WebKit does. The source makes the first read fail exactly as a tainted canvas would. */
+    func acceptCodePainter(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        let script="const real=HTMLCanvasElement.prototype.toDataURL;let thrown=false;HTMLCanvasElement.prototype.toDataURL=function(...a){if(!thrown&&this.width>=300){thrown=true;throw new DOMException('tainted','SecurityError');}return real.apply(this,a);};"
+        let code:[String:Any]=["version":1,"html":"<div id=\"box\"></div><p id=\"m\">Painted text</p><input id=\"f\" value=\"Field\"><canvas id=\"c\" width=\"40\" height=\"40\"></canvas>","css":"html,body{margin:0;height:100%;background:#00ff00}#box{position:absolute;left:10px;top:10px;width:60px;height:60px;background:#0000ff;border-radius:6px;border-top:6px solid #ff0000}#m{position:absolute;left:100px;top:90px;margin:0;font:32px sans-serif;color:#000}#f{position:absolute;left:100px;top:150px}#c{position:absolute;left:240px;top:20px}","js":script+"document.getElementById('c').getContext('2d').fillStyle='#ff00ff';document.getElementById('c').getContext('2d').fillRect(0,0,40,40);","properties":[],"values":[:],"preview":"none"]
+        loadDocument(document,acceptanceDocument("accept-painter","Painter"){nodes in nodes[1]["type"]="code";nodes[1]["name"]="Painter";nodes[1]["code"]=code;nodes[1]["parentId"]=NSNull();nodes[1]["x"]=40;nodes[1]["y"]=40;nodes[1]["width"]=320;nodes[1]["height"]=200}){
+            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await wait(()=>find('Edit code'),'code inspector');click('Edit code');await wait(()=>find('Run code'),'code dialog');click('Run code');await wait(()=>document.querySelector('[data-guest-frame]'),'guest');await new Promise(r=>setTimeout(r,300));click('Save code and preview');await wait(()=>!document.querySelector('.code-layer-dialog'),'dialog closes after preview',8000);return true;"){_ in
+                document.session.file=directory.appendingPathComponent("Painter.oui")
+                self.js(document,"return await window.__studioSave();"){_ in
+                    guard let data=try? ProjectFileSafety.readBounded(directory.appendingPathComponent("Painter.oui")),let doc=try? JSONSerialization.jsonObject(with:data) as? [String:Any],let pages=doc["pages"] as? [[String:Any]],let target=(pages[0]["nodes"] as? [[String:Any]])?.first(where:{$0["id"] as? String=="accept-rect"}),let paints=target["paints"] as? [[String:Any]],let image=paints.first(where:{$0["type"] as? String=="image"})?["image"] as? String,let bytes=Data(base64Encoded:String(image.split(separator:",").last ?? "")),let decoded=self.decoded(bytes) else{self.smokeFail("painted preview missing from saved project")}
+                    let scale=decoded.width/320
+                    func at(_ x:Int,_ y:Int)->[Int]{self.sample(decoded,x*scale,y*scale)}
+                    var dark=0;for y in 95..<125{for x in 100..<300{if at(x,y).reduce(0,+)<120{dark+=1}}}
+                    self.check(self.close(at(300,190),[0,255,0],3)&&self.close(at(40,50),[0,0,255],3)&&self.close(at(40,12),[255,0,0],3)&&self.close(at(260,40),[255,0,255],3),"the DOM painter draws background, box, per-side border and canvas pixels in WebKit")
+                    self.check(dark>200,"the DOM painter draws real text glyphs (\(dark) dark samples)")
+                    document.session.file=nil;document.session.fingerprint=nil;done()
+                }
+            }
+        }
+    }
     func acceptPlugin(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
         let code="const selection=await forma.readSelection();await forma.propose({operations:[{op:\"update\",nodeId:selection[0].id,properties:{x:145}}]});let reach='none';try{await fetch('/');reach='network';}catch{reach='refused';}await forma.log('sandbox '+reach+' '+typeof document);"
         let file=pluginPackage(directory,"plugin.json",["format":"forma-local-plugin","version":1,"id":"local.accept","name":"Acceptance","description":"Acceptance package","permissions":["selection:read","document:write"],"code":code])
@@ -489,6 +508,116 @@ extension Studio {
                         self.check(true,"choosing a face sets its weight on the canvas with one Undo")
                         done()
                     }
+                }
+            }
+        }
+    }
+    func axValue(_ element:AXUIElement,_ attribute:String)->(AXError,AnyObject?) {var value:AnyObject?;let error=AXUIElementCopyAttributeValue(element,attribute as CFString,&value);return (error,value)}
+    func axWalk(_ element:AXUIElement,_ depth:Int,_ visit:(String,String,String,AXUIElement)->Void,_ budget:inout Int){
+        guard budget>0,depth<40 else{return};budget-=1
+        let role=axValue(element,kAXRoleAttribute).1 as? String ?? "",title=axValue(element,kAXTitleAttribute).1 as? String ?? "",description=axValue(element,kAXDescriptionAttribute).1 as? String ?? ""
+        visit(role,title,description,element)
+        for child in axValue(element,kAXChildrenAttribute).1 as? [AXUIElement] ?? []{axWalk(child,depth+1,visit,&budget)}
+    }
+    /** Without the Accessibility permission macOS refuses to cross into the WebContent process (kAXErrorCannotComplete), so this cannot read ARIA.
+     * It proves what is reachable: the shell's own AX tree, and that WKWebView hands assistive software a bridge to its page. */
+    func acceptAccessibility(_ document:DocumentWindow,_ done:@escaping()->Void){
+        loadDocument(document,acceptanceDocument("accept-ax","Accessible")){
+            self.later(0.3){
+                let app=AXUIElementCreateApplication(getpid()),(error,windows)=self.axValue(app,kAXWindowsAttribute)
+                guard error == .success,let window=(windows as? [AXUIElement])?.first else{self.smokeFail("AX application windows: \(error.rawValue)")}
+                var budget=2000,roles:[String:Int]=[:],title=""
+                self.axWalk(window,0,{role,name,_,_ in roles[role,default:0]+=1;if role=="AXWindow"{title=name}},&budget)
+                self.check(title=="Accessible" && (roles["AXButton"] ?? 0)>=3,"AXUIElement reads the real window title and its controls from the shell")
+                let bridge=document.web.accessibilityChildren()?.first as? NSObject
+                self.check(bridge.map{String(describing:type(of:$0))}=="NSAccessibilityRemoteUIElement","WKWebView exposes a remote accessibility element for its page")
+                let webApp=AXUIElementCreateApplication(self.rendererPid(document)),(crossing,_)=self.axValue(webApp,kAXChildrenAttribute)
+                self.check(AXIsProcessTrusted() || crossing != .success,"page-level AX stays unverified here: AXIsProcessTrusted=\(AXIsProcessTrusted()), WebContent read error \(crossing.rawValue)")
+                done()
+            }
+        }
+    }
+    func key(_ document:DocumentWindow,_ characters:String,_ code:UInt16,_ flags:NSEvent.ModifierFlags=[]){
+        for type in [NSEvent.EventType.keyDown,.keyUp]{guard let event=NSEvent.keyEvent(with:type,location:.zero,modifierFlags:flags,timestamp:ProcessInfo.processInfo.systemUptime,windowNumber:document.window.windowNumber,context:nil,characters:characters,charactersIgnoringModifiers:characters,isARepeat:false,keyCode:code) else{smokeFail("key event")};document.window.sendEvent(event)}
+    }
+    /** Real key events through AppKit. This Mac has the system keyboard navigation setting at its default. */
+    func acceptKeyboard(_ document:DocumentWindow,_ done:@escaping()->Void){
+        loadDocument(document,acceptanceDocument("accept-keys","Keys")){
+            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();document.querySelector('[aria-label=\"Zoom in\"]').focus();window.__tabs=[];document.addEventListener('focusin',e=>window.__tabs.push(e.target.tagName),true);return true;"){_ in
+                document.window.makeFirstResponder(document.web)
+                func press(_ left:Int){
+                    if left>0{self.key(document,"\t",48);self.later(0.08){press(left-1)};return}
+                    self.page(document,"const seen=window.__tabs.slice(),last=document.activeElement.getAttribute('aria-label')||document.activeElement.textContent;return {seen,ring:document.activeElement.matches(':focus-visible'),last};"){value in
+                        let body=value as? [String:Any],seen=body?["seen"] as? [String] ?? []
+                        self.check(seen.count==6 && seen.contains("BUTTON") && seen.contains("INPUT"),"real Tab key events move focus through buttons and fields in WKWebView (\(seen.joined(separator:" ")))")
+                        self.check(body?["ring"] as? Bool==true,"keyboard focus matches :focus-visible, so the focus ring shows")
+                        self.key(document,"\u{19}",48,[.shift])
+                        self.later(0.1){
+                            self.page(document,"return window.__tabs.length;"){value in
+                                self.check(value as? Int==7,"Shift-Tab moves focus back");done()
+                            }
+                        }
+                    }
+                }
+                press(6)
+            }
+        }
+    }
+    /** WebKit reads system settings the same way a person's Mac would; this reports what the shell sees on this Mac rather than changing it. */
+    func acceptInterface(_ document:DocumentWindow,_ done:@escaping()->Void){
+        let workspace=NSWorkspace.shared,reduce=workspace.accessibilityDisplayShouldReduceMotion,contrast=workspace.accessibilityDisplayShouldIncreaseContrast
+        loadDocument(document,acceptanceDocument("accept-interface","Interface")){
+            self.page(document,"return {motion:matchMedia('(prefers-reduced-motion: reduce)').matches,contrast:matchMedia('(prefers-contrast: more)').matches};"){value in
+                let body=value as? [String:Any]
+                self.check(body?["motion"] as? Bool==reduce,"prefers-reduced-motion in WKWebView equals the macOS setting (\(reduce))")
+                self.check(body?["contrast"] as? Bool==contrast,"prefers-contrast in WKWebView equals the macOS setting (\(contrast))")
+                self.page(document,"await window.__studioCommand('preferences');await wait(()=>document.querySelector('[aria-label=\"Interface scale\"]'),'preferences');pick('Interface scale','1.25');await new Promise(r=>setTimeout(r,200));click('Close dialog',document.querySelector('[role=dialog]'));await wait(()=>!document.querySelector('[role=dialog]'),'preferences closed');await window.__studioCommand('deselect');await new Promise(r=>setTimeout(r,300));const r=document.querySelector('#forma-design-canvas [data-node-id=\"accept-frame-2\"]').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};"){value in
+                    guard let at=value as? [String:Any],let x=at["x"] as? Double,let y=at["y"] as? Double else{self.smokeFail("scaled layer point")}
+                    document.window.makeFirstResponder(document.web)
+                    self.mouse(document,.leftMouseDown,CGFloat(x),CGFloat(y));self.mouse(document,.leftMouseUp,CGFloat(x),CGFloat(y))
+                    self.until("scaled click selects",{document.state?.menu?.selection==true},{
+                        self.page(document,"return document.querySelector('.layer-row.selected, [role=treeitem][aria-selected=true]')?.textContent??'';"){value in
+                            self.check((value as? String)?.contains("Frame two")==true,"at 125% interface scale a real click selects the layer under it in WebKit")
+                            self.page(document,"await window.__studioCommand('preferences');await wait(()=>document.querySelector('[aria-label=\"Interface scale\"]'),'preferences');pick('Interface scale','1');await new Promise(r=>setTimeout(r,120));click('Close dialog',document.querySelector('[role=dialog]'));await wait(()=>!document.querySelector('[role=dialog]'),'preferences closed');return [typeof document.documentElement.requestFullscreen,document.fullscreenEnabled];"){value in
+                                let fullscreen=value as? [Any]
+                                self.check(fullscreen?[0] as? String=="function" && fullscreen?[1] as? Bool==true,"element full screen is available to presentations in WKWebView")
+                                done()
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+    func acceptExportedFont(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        smokeSaveDirectory=directory
+        loadDocument(document,acceptanceDocument("accept-font","Fonts"){nodes in nodes=[nodes[2]];nodes[0]["parentId"]=NSNull();nodes[0]["name"]="Script";nodes[0]["x"]=40;nodes[0]["y"]=40;nodes[0]["width"]=900;nodes[0]["height"]=120;nodes[0]["fontFamily"]="Caveat";nodes[0]["fontSize"]=72;nodes[0]["text"]="Hamburgefonstiv";nodes[0]["fill"]="#000000"}){
+            self.page(document,"await document.fonts.load('72px Caveat');await new Promise(r=>setTimeout(r,300));const c=document.createElement('canvas').getContext('2d');c.font='72px Caveat';const script=c.measureText('Hamburgefonstiv').width;c.font='72px Helvetica';const fallback=c.measureText('Hamburgefonstiv').width;document.querySelector('[data-layer-id=\"accept-text\"]').click();await new Promise(r=>setTimeout(r,150));return [script,fallback];"){value in
+                guard let widths=value as? [Double] else{self.smokeFail("font widths")}
+                self.clickExport(document,"png"){
+                    self.saved(directory,"Script.png"){_,data in
+                        guard let image=self.decoded(data),let provider=image.dataProvider?.data,let bytes=CFDataGetBytePtr(provider) else{self.smokeFail("font PNG")}
+                        var left=image.width,right=0;for y in 0..<image.height{for x in 0..<image.width{let at=y*image.bytesPerRow+x*image.bitsPerPixel/8;if bytes[at+3]>128{left=min(left,x);right=max(right,x)}}}
+                        let ink=Double(right-left+1)
+                        self.check(abs(ink-widths[0])<widths[0]*0.12 && abs(widths[0]-widths[1])>widths[0]*0.15,"exported PNG text uses the embedded font in WebKit, not a fallback (\(Int(ink)) px ink, \(Int(widths[0])) px expected, \(Int(widths[1])) px fallback)")
+                        self.closeDialog(document,done)
+                    }
+                }
+            }
+        }
+    }
+    /** Worker, CMap and raster paths of the PDF importer, entered through a real Finder drop. */
+    func acceptPdfDrop(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        let file=directory.appendingPathComponent("Pages.pdf");var box=CGRect(x:0,y:0,width:200,height:120)
+        guard let context=CGContext(file as CFURL,mediaBox:&box,nil) else{smokeFail("PDF fixture")}
+        context.beginPDFPage(nil);context.setFillColor(CGColor(red:1,green:0,blue:0,alpha:1));context.fill(CGRect(x:0,y:0,width:200,height:120));context.endPDFPage();context.closePDF()
+        loadDocument(document,acceptanceDocument("accept-pdf","Before PDF")){
+            self.page(document,"const r=document.querySelector('#forma-design-canvas').getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2];"){value in
+                guard let at=value as? [Double] else{self.smokeFail("canvas point")}
+                self.dropOnWindow(document,[file],x:CGFloat(at[0]),y:CGFloat(at[1]))
+                self.page(document,"await wait(()=>find('Open PDF pages as project')&&!find('Open PDF pages as project').disabled,'PDF review from the real parser worker',15000);click('Open PDF pages as project');await wait(()=>document.querySelector('#forma-design-canvas pattern image, #forma-design-canvas image'),'PDF page image',10000);return document.title;"){_ in
+                    self.check(true,"a PDF dropped from Finder runs its parser worker in WKWebView and opens its page image after review")
+                    done()
                 }
             }
         }
