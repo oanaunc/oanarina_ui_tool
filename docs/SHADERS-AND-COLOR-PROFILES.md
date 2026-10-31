@@ -98,3 +98,11 @@ The ICC profile comes from `src/display-p3-icc.ts`, a small ICC v4.3 matrix/shap
 ## Figma Bridge
 
 The bridge refuses shader paints, in the same way it refuses editable surfaces. Use SVG or PNG to carry their appearance. This is an original local implementation; shader parity with Figma has not been verified.
+
+## Converting a file
+
+File information offers two different changes. Choosing a profile **assigns** it: saved values stay, so colors can look different. **Convert colors to Display P3…** or **Convert colors to sRGB…** rewrites the saved values so colors look the same under the new profile, in one Undo step, after a review that counts the colors and any Display P3 values that will clip.
+
+Conversion covers layer fills, strokes, gradients, effect and text run colors, page backgrounds, prototype backdrops, paint styles, the file palette, color variables in every mode, fill and stroke keyframes, and shader color settings and defaults. It uses allow-listed color fields, so hex-looking text in a layer, name, note or comment stays as written. Annotation categories are editor labels and stay as they are.
+
+Limits: values stay 8-bit, so a channel can move by a step, and a round trip from sRGB to Display P3 and back can differ by up to two steps in dark channels. Converting to sRGB clips colors outside sRGB to their nearest channel value. Raster images and video stay as they are. A file with linked libraries refuses, because those libraries own their values; read-only linked variables refuse through the normal edit guard. Validation: tests/color-profile-convert.test.ts and tests/e2e/color-profile.spec.ts.
