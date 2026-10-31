@@ -12,7 +12,7 @@ const encoder=new EditHistoryEncoder(),restoring=new Set<string>(),journal=()=>{
 const HISTORY_SAVE_BUDGET_MS=40;
 let persisted:DesignDocument|undefined,timer:ReturnType<typeof setTimeout>|undefined,journalDelay=60;
 const clearTimer=()=>{if(timer!==undefined)clearTimeout(timer);timer=undefined;};
-function flushJournal(){timer=undefined;const doc=useEditor.getState().doc,store=journal(),session=useWindowSession.getState();if(!store||!persisted||persisted.id!==doc.id||persisted===doc||session.conflict)return;const started=performance.now();writeCrashJournal(store,persisted,doc);journalDelay=Math.min(1000,Math.max(60,(performance.now()-started)*10));}
+function flushJournal(){timer=undefined;const doc=useEditor.getState().doc,store=journal(),session=useWindowSession.getState();if(!store||!persisted||persisted.id!==doc.id||session.conflict)return;if(persisted===doc){clearCrashJournal(store,doc.id);return;}const started=performance.now();writeCrashJournal(store,persisted,doc);journalDelay=Math.min(1000,Math.max(60,(performance.now()-started)*10));}
 const pause=()=>new Promise<void>(resolve=>setTimeout(resolve));
 async function afterLoad(doc:DesignDocument){
  persisted=doc;if(isSafeMode())return;restoring.add(doc.id);
