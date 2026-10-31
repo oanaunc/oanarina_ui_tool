@@ -4914,10 +4914,10 @@
     "category": "Freehand and Figma Draw",
     "name": "Shape builder tool",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Reachable exact-rectangle Shape Builder: bounded same-color consecutive sibling rectangles, real region click/drag picking, Merge/Extract/Subtract and explicit one-Undo Apply to ordinary editable paths. Source/context/gesture guards and save/reopen/export validated. Arbitrary curves, richer styles and full interaction parity remain unsupported; split-edge antialiasing limits are explicit. See docs/SHAPE-BUILDER.md."
   },
   {
     "id": "UI-16-022",
@@ -9744,10 +9744,10 @@
     "category": "Libraries and design systems",
     "name": "Component documentation page",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Components/Assets offers source-owned review and one-Undo generation of an ordinary editable documentation page: snapshot descriptions, property/variant text and fresh live default instances, with save/reopen. Bounded closures/variants/work; slots, unsafe ancestry and unsupported contexts refuse. No automatic regeneration, remote publishing or full reference parity claim. See docs/COMPONENT-DOCUMENTATION-PAGES.md."
   },
   {
     "id": "UI-29-033",
@@ -13014,10 +13014,10 @@
     "category": "Import and Figma interchange",
     "name": "Sketch document import",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Real owned-worker offline .sketch ZIP import, reviewed counted reductions and atomic new-project delivery. Editable bounded axis-aligned shapes, straight/cubic paths with retained incoming/outgoing and closing handles, base-style text and local PNG/JPEG; actual progress/cancel/decode deadlines, malformed refusal and dirty-source retention validated. Unknown curve modes, transforms, symbols, Booleans/masks and unknown classes refuse this subset; native/current Sketch full fidelity remains unverified. See docs/SKETCH-DOCUMENT-IMPORT.md."
   },
   {
     "id": "UI-39-034",

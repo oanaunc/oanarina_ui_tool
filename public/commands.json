@@ -240,6 +240,12 @@
     "⇧⌘K"
   ],
   [
+    "import-sketch",
+    "Import Sketch document…",
+    "File",
+    ""
+  ],
+  [
     "import-pdf",
     "Import PDF pages…",
     "File",
