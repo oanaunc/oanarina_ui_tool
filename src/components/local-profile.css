@@ -1,0 +1,3 @@
+.local-avatar{overflow:hidden;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center}.local-avatar img{width:100%;height:100%;object-fit:cover}.local-profile-preferences{min-width:0}.local-profile-preferences .avatar{width:40px;height:40px}.version-author-label{display:flex;align-items:center;gap:6px;font-size:11px;overflow-wrap:anywhere}.version-author-label .avatar{width:22px;height:22px;font-size:10px}.local-profile-preferences input:not([type=file]){min-width:0;width:100%}
+
+.local-profile-name{overflow-wrap:anywhere}
