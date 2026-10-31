@@ -1,6 +1,6 @@
 # Code layers
 
-A code layer is an additive `type:'code'` node holding your own HTML, CSS and JavaScript. Choose **Code layer** in the toolbar (or `tool-code` in Actions), click for a 400 × 300 block or drag to size it. The code dialog opens straight away. Double placement and the panel's **Edit code** both reach the same dialog.
+A code layer is an additive `type:'code'` node holding your own HTML, CSS and JavaScript. Choose **Code layer** in the toolbar (or `tool-code` in Actions), click for a 400 × 300 block or drag to size it. The code dialog opens straight away. Double-clicking the layer, or **Edit code** in the Design panel, reopens it.
 
 This is a Forma-specific local feature. It is not Figma Sites or Figma Make code layers, no reference verification has been done, and nothing here is an agent feature.
 
