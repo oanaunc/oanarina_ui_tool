@@ -5,6 +5,7 @@ import type {DesignNode,NodeKind} from './model';
 export interface EditorPreferences {
  uiScale:number;fontPreview:boolean;autosaveIntervalMs:number;recentFileLimit:number;
  exportHiddenLayers:boolean;defaultExportFormat:'svg'|'png'|'jpg';colorPickerFormat:'HEX'|'RGB'|'HSL'|'HSB';duplicateNaming:'preserve'|'copy'|'increment';keyboardZoomSelection:boolean;controlClickContextMenu:boolean;numberKeyOpacity:boolean;smartTextSubstitution:boolean;
+ pixelSnapping:'document'|'none'|'pixel'|'half';objectSnapping:'document'|'on'|'off';vectorGeometrySnapping:'document'|'on'|'off';
  smallNudge:number;largeNudge:number;rotationSnapIncrement:number;
  showFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;showSlices:boolean;
  viewportCulling:boolean;highContrastSelection:boolean;keepDrawingTool:boolean;hoverHighlight:boolean;parentHoverOutline:boolean;showSelectionDimensions:boolean;
@@ -17,6 +18,7 @@ export interface EditorPreferences {
 export const PREFERENCES_KEY='oui-preferences';
 export const defaultPreferences:Readonly<EditorPreferences>=Object.freeze({
  uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,exportHiddenLayers:false,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,smartTextSubstitution:false,
+ pixelSnapping:'document',objectSnapping:'document',vectorGeometrySnapping:'document',
  smallNudge:1,largeNudge:10,rotationSnapIncrement:15,
  showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,showSlices:true,
  viewportCulling:true,highContrastSelection:false,keepDrawingTool:false,hoverHighlight:true,parentHoverOutline:false,showSelectionDimensions:true,
@@ -35,6 +37,8 @@ export function validatePreferences(value:unknown):EditorPreferences {
  const out={} as EditorPreferences;
  for(const key of fields){let v=record[key];const range=ranges[key];
   if(range){if(typeof v!=='number'||!Number.isFinite(v)||v<range[0]||v>range[1])throw Error(`${key} must be between ${range[0]} and ${range[1]}.`);}
+  else if(key==='pixelSnapping'){if(!['document','none','pixel','half'].includes(v as string))throw Error('Choose document, off, pixels or half pixels for local pixel snapping.');}
+  else if(key==='objectSnapping'||key==='vectorGeometrySnapping'){if(!['document','on','off'].includes(v as string))throw Error('Choose document, on or off for local snapping.');}
   else if(key==='defaultExportFormat'){if(!['svg','png','jpg'].includes(v as string))throw Error('Choose SVG, PNG or JPG as the default export format.');}
   else if(key==='colorPickerFormat'){if(!['HEX','RGB','HSL','HSB'].includes(v as string))throw Error('Choose HEX, RGB, HSL or HSB as the color picker format.');}
   else if(key==='duplicateNaming'){if(!['preserve','copy','increment'].includes(v as string))throw Error('Choose a valid duplicate naming style.');}
@@ -50,8 +54,8 @@ export function validatePreferences(value:unknown):EditorPreferences {
 let cached:Readonly<EditorPreferences>|undefined,lastRaw:string|null|undefined;
 const listeners=new Set<()=>void>();
 function rawPreferences(){try{return typeof localStorage==='undefined'?null:localStorage.getItem(PREFERENCES_KEY);}catch{return null;}}
-function decode(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{viewportCulling:true,highContrastSelection:false,parentHoverOutline:false,uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,exportHiddenLayers:false,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,smartTextSubstitution:false,showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,showSlices:true},...data.values}));}catch{return defaultPreferences;}}
-export function getPreferences():Readonly<EditorPreferences>{const raw=rawPreferences();if(!cached||raw!==lastRaw){lastRaw=raw;cached=decode(raw);}return cached;}
+export function decodePreferences(raw:string|null):Readonly<EditorPreferences>{if(!raw)return defaultPreferences;try{if(raw.length>16000)return defaultPreferences;const data=JSON.parse(raw);if(!data||data.version!==1)return defaultPreferences;return Object.freeze(validatePreferences({...{pixelSnapping:'document',objectSnapping:'document',vectorGeometrySnapping:'document',viewportCulling:true,highContrastSelection:false,parentHoverOutline:false,uiScale:1,fontPreview:true,autosaveIntervalMs:600,recentFileLimit:0,exportHiddenLayers:false,defaultExportFormat:'svg',colorPickerFormat:'HEX',duplicateNaming:'preserve',keyboardZoomSelection:false,controlClickContextMenu:true,numberKeyOpacity:true,smartTextSubstitution:false,showFrameNames:true,showSectionNames:true,showCanvasScrollbars:false,showOverviewMinimap:false,showSlices:true},...data.values}));}catch{return defaultPreferences;}}
+export function getPreferences():Readonly<EditorPreferences>{const raw=rawPreferences();if(!cached||raw!==lastRaw){lastRaw=raw;cached=decodePreferences(raw);}return cached;}
 function emit(){for(const listener of [...listeners])listener();}
 /** Re-read local storage, including changes made by another app window. */
 export function reloadPreferences(){const previous=cached;getPreferences();if(previous!==cached)emit();return getPreferences();}
