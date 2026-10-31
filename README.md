@@ -4,7 +4,7 @@ A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Fo
 
 **Source includes unreleased changes after 0.2.0-dev.12; notarized Mac preview: 0.2.0-dev.12. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
 
-The register currently records **1,314 implemented, 262 partial and 446 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
+The register currently records **1,314 implemented, 269 partial and 439 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
 
 The next [source implementation pass](docs/UNRELEASED-LAYOUT-MEDIA-EXPORT.md) adds center drawing/repeat tools, aspect-aware layout, paired padding, wrapping and stacking controls, SVG/visibility/overlap export settings, animated GIF checks and embedded MP4/WebM playback. Downloads remain unchanged; video uses browser codecs and static exports use posters.
 
@@ -44,7 +44,9 @@ The preceding [source continuation](docs/UNRELEASED-IMPORTS-COMPONENTS-STROKES-I
 
 The preceding [source continuation](docs/UNRELEASED-TEXT-PATHS-VARIANTS-INSPECTION.md) adds editable text on bounded paths, presented interactive variants, mixed-fill stack editing, read-only Inspect asset downloads and conservative canvas viewport culling. Each workflow retains explicit partial limits, source validation and separate reference acceptance. Downloads stay frozen.
 
-The latest [source continuation](docs/UNRELEASED-KEYBOARD-NIB-PROFILE.md) adds local keyboard-layout and additional shortcut preferences, fixed-angle calligraphic nibs, local names/avatars and immutable optional named-version author labels. Auto-layout wrapping is now one atomic edit when validation refuses unsupported content. Coverage remains explicitly partial; downloads stay frozen.
+The preceding [source continuation](docs/UNRELEASED-KEYBOARD-NIB-PROFILE.md) adds local keyboard-layout and additional shortcut preferences, fixed-angle calligraphic nibs, local names/avatars and immutable optional named-version author labels. Auto-layout wrapping is now one atomic edit when validation refuses unsupported content. Coverage remains explicitly partial; downloads stay frozen.
+
+The latest [component and library source continuation](docs/UNRELEASED-SLOTS-LIBRARIES-ACTIONS-AGENT-CONTEXT.md) adds bounded component slots, library deprecation and current-file usage, component search in Actions, and read-only saved-file MCP library context. The documented subsets remain partial; downloadable apps and automation archives stay frozen.
 
 ## Run
 
