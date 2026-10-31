@@ -61,6 +61,7 @@ import PrototypeEditor from './PrototypeEditor';
 import {LayoutGuideInspector,GuideSettings,GuideExportOption} from './LayoutGuides';
 import {sampleMotion} from '../motion';
 import {DesignSystemInspector} from './DesignSystemsEditor';
+import ScaledLayerNote from './ScaledLayerNote';
 import {ComponentInspector} from './ComponentEditor';
 import {useEffect,useLayoutEffect,useId,useMemo,useRef,useState} from 'react';
 import {layerClickSelection} from '../selection';
@@ -156,6 +157,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
 
  <section className="inspector-section" data-testid="effects-section"><EffectsEditor n={n} patch={patch}/></section>
  {sel.length===1&&<ComponentSlots key={'component-slots:'+n.id} selected={n}/>}
+ {sel.length===1&&<ScaledLayerNote key={'scale-'+n.id} n={n}/>}
  {sel.length>1&&sel.every(v=>v.type==='instance'&&!v.instanceRootId)&&<MultiInstanceProperties key={sel.map(v=>v.id).join('|')} ids={sel.map(v=>v.id)}/>}{sel.length===1&&(n.type==='component'||n.type==='instance'||n.instanceRootId)&&<Section name="Component"><ComponentInspector n={n}/></Section>}
  </>}
  <ContrastChecker selection={sel}/>{sel.length===1&&s.mode!=='inspect'?<FrameExportSettings key={n.id} id={n.id}/>:<Section name="Export" action={<ArrowDown size={14}/>}><div className="export-settings"><select aria-label="Export scale" value={scale} onChange={e=>setScale(Number(e.target.value))}>{[1,2,3,4].map(v=><option key={v} value={v}>{v}×</option>)}</select><select aria-label="Export format" value={format} onChange={e=>setFormat(e.target.value as typeof format)}><option value="svg">SVG</option><option value="png">PNG</option><option value="jpg">JPG</option></select></div><GuideExportOption value={includeGuides} onChange={setIncludeGuides}/><button className="outline-button" onClick={()=>{void exportArtwork(format,scale,includeGuides);}}>Export {sel.length?sel.length===1?n.name:`${sel.length} layers`:'page'}</button></Section>}
