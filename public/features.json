@@ -1877,7 +1877,7 @@
     "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Parent-default canvas selection, Command deep selection, double-click descent, Enter/Shift-Enter hierarchy and Tab/Shift-Tab siblings with canvas focus."
+    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Parent-default canvas selection, Command deep selection, double-click descent, Enter/Shift-Enter hierarchy and Tab/Shift-Tab siblings with canvas focus. A click now passes through a page-level frame or section to what is on it; the frame keeps its empty area and name."
   },
   {
     "id": "UI-07-008",

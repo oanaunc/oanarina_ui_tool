@@ -3,6 +3,27 @@
   "asOf": "2026-10-31",
   "releases": [
     {
+      "version": "0.2.0-dev.15",
+      "channel": "preview",
+      "title": "Everyday design flow, richer import and a redo fix",
+      "notes": [
+        "Clicking now reaches objects on a page-level frame, as on an artboard. Its empty area and name still select the frame.",
+        "Option-drag copies layers, dragging moves layers in and out of frames, X and Y are relative to the parent, and copy and paste properties and alignment keys are in. Undo keeps your selection.",
+        "Text types where it will land, Shift-A reads direction and gap from what you drew, and the inspector is about half as tall, with the color picker folded to one row. The native Mac menus now use the same tidy order as the in-app menus.",
+        "Fixes a redone edit being lost if the app reloaded or quit within about a second of Redo, and the code layer preview failing on older macOS.",
+        "SVG, Sketch, PDF and .fig import keep much more live structure, vector networks gain faces and holes, and strokes run on curves and closed contours. PDF pages open as editable shapes, images and text.",
+        "Guest scripts run in a worker, so a runaway plugin or code layer can be stopped instead of freezing Forma. A guest canvas cannot read itself synchronously or draw an image element."
+      ],
+      "limits": [
+        "This is a development preview. Exact installer metadata and checksums are published on the Forma website after release validation.",
+        "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
+        "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
+        ".fig and Sketch import are tested on self-authored fixtures only, not on files from those apps.",
+        "VoiceOver, physical trackpad, printer and tablet acceptance, Intel hardware, older macOS, and real PowerPoint and Figma round trips remain open.",
+        "Complete Figma parity and binary .fig export remain unfinished."
+      ]
+    },
+    {
       "version": "0.2.0-dev.14",
       "channel": "preview",
       "title": "Mac fixes, real video export and prototype comments",
