@@ -1,3 +1,4 @@
+import {editWithOwnedDelivery} from '../owned-edit-delivery';
 import './component-documentation.css';
 import {useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {useEditor} from '../store';
@@ -20,7 +21,7 @@ export function ComponentDocumentation({mainId,owner,isCurrent}:{mainId:string;o
  const change=(patch:Partial<Draft>)=>run(()=>{guard();publish({...draft,...patch,plan:undefined,source:undefined,reviewProof:undefined});});
  const activation=(e:React.KeyboardEvent)=>{if(e.key===' '||e.key==='Enter')e.stopPropagation();};
  const review=()=>run(()=>{const live=guard();if(!choices.value)throw Error(choices.error??'This component is unavailable.');const plan=prepareComponentDocumentation(live.doc,mainId,{title:draft.title,allVariants:draft.allVariants});guard();publish({...draft,plan,source:live.doc,reviewProof:proof});});
- const generate=()=>run(()=>{const live=guard(),plan=draft.plan;if(!plan||draft.source!==live.doc||!draft.reviewProof?.valid)throw Error('Review the current documentation page before generating it.');live.edit(d=>applyComponentDocumentation(d,plan),d=>validateComponentDocumentation(d,plan));const after=useEditor.getState(),page=after.doc.pages.find(p=>p.id===plan.pageId);if(!page)throw Error('The page was not added.');after.set({pageId:page.id,selection:[],vectorEditId:null,vectorSelection:[],pan:{x:24,y:24},zoom:.75,leftTab:'layers'});publish({...draft,open:false,plan:undefined,source:undefined,reviewProof:undefined});});
+ const generate=()=>run(()=>{const live=guard(),plan=draft.plan;if(!plan||draft.source!==live.doc||!draft.reviewProof?.valid)throw Error('Review the current documentation page before generating it.');editWithOwnedDelivery(d=>applyComponentDocumentation(d,plan),d=>validateComponentDocumentation(d,plan),()=>({pageId:plan.pageId,selection:[],vectorEditId:null,vectorSelection:[],pan:{x:24,y:24},zoom:.75,leftTab:'layers'}));publish({...draft,open:false,plan:undefined,source:undefined,reviewProof:undefined});});
  return <section className="component-documentation" aria-label="Component documentation" onKeyDown={activation} onKeyUp={activation}>
   <button type="button" className="outline-button" disabled={blocked} onClick={()=>change({open:!draft.open})}>{draft.open?'Close documentation review':'Create documentation page'}</button>
   {draft.open&&<div className="component-documentation-review"><p>Generate an editable sibling page. Documentation text is a snapshot; fresh instance examples stay linked to the selected mains and their defaults in the new page’s variable modes. Selected instance overrides are excluded.</p>

@@ -1,3 +1,4 @@
+import {editWithOwnedDelivery} from '../owned-edit-delivery';
 import {useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {useEditor} from '../store';
 import {getPreferences,subscribePreferences,usePreferences} from '../preferences';
@@ -14,7 +15,7 @@ export default function BooleanTextControls(){
  const publish=(next:Draft)=>{current.current=next;setDraft(next);};
  const run=(fn:()=>void)=>{try{fn();setError('');}catch(e){setError(e instanceof Error?e.message:String(e));notifyError(e);}};
  const review=()=>run(()=>{const live=guard(),plan=prepareTextBoolean(live.doc,live.pageId,live.selection,draft.operation);guard();publish({...draft,plan,proof});});
- const apply=()=>run(()=>{const live=guard(),plan=draft.plan;if(!plan||!draft.proof?.valid)throw Error('Review the current outlined-text Boolean before applying it.');validateTextBooleanReview(live.doc,plan);guard();live.edit(d=>applyTextBoolean(d,plan),d=>validateTextBooleanResult(d,plan));useEditor.getState().set({selection:[plan.groupId],vectorEditId:null,vectorSelection:[]});publish({operation:draft.operation});});
+ const apply=()=>run(()=>{const live=guard(),plan=draft.plan;if(!plan||!draft.proof?.valid)throw Error('Review the current outlined-text Boolean before applying it.');validateTextBooleanReview(live.doc,plan);guard();editWithOwnedDelivery(d=>applyTextBoolean(d,plan),d=>validateTextBooleanResult(d,plan),()=>({selection:[plan.groupId],vectorEditId:null,vectorSelection:[]}));publish({operation:draft.operation});});
  let reason='';try{if(s.mode!=='design'||s.home||s.modal||s.uiHidden||s.motionOpen)throw Error('Use the visible Design canvas with Motion and dialogs closed.');inspectTextBoolean(s.doc,s.pageId,s.selection);}catch(e){reason=e instanceof Error?e.message:String(e);}
  const plan=draft.plan&&draft.proof?.valid?draft.plan:undefined;
  return <div className="boolean-text-controls" onKeyDown={e=>{if((e.key===' '||e.key==='Enter')&&(e.target as Element).closest('button'))e.stopPropagation();}}>
