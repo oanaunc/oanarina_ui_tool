@@ -9,6 +9,11 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .menu [role^=menuitem]:focus-visible{outline-offset:-2px}
 .motion-timeline:focus-visible{outline:2px solid var(--focus-ring);outline-offset:-2px}
 
+/* Rendered-contrast fixes for colors that bypass the theme tokens. */
+.file-subtitle span{color:var(--muted)}
+.theme-light :is(.toolbar>button,.tool-group>button){color:var(--text)}
+.action-palette-modes [aria-pressed=true]{background:var(--accent-fill);color:var(--on-accent)}
+
 /* Tooltips shown on keyboard focus. Pointer events pass through, so a tip can never block a click. */
 .focus-tooltip{position:fixed;z-index:1000;transform:translate(-50%,-100%);max-width:min(320px,calc(100vw - 24px));padding:5px 8px;border-radius:5px;background:#111014;color:#fff;border:1px solid #ffffff59;font-size:11px;line-height:1.35;pointer-events:none;white-space:normal;text-align:center;box-shadow:0 4px 14px #0006}
 .focus-tooltip-below{transform:translate(-50%,0)}
@@ -19,7 +24,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .toolbar .active{position:relative}
 .toolbar .active:after{content:'';position:absolute;inset-inline:6px;bottom:2px;height:2px;border-radius:1px;background:currentColor}
 .menu-container>button.active{text-decoration:underline;text-underline-offset:3px}
-[aria-pressed=true]:not(.toolbar *){box-shadow:inset 0 -2px 0 currentColor}
+[aria-pressed=true]:not(.toolbar *,.action-palette-modes *){box-shadow:inset 0 -2px 0 currentColor}
 
 /* Accent choices keep the same 4.5:1 text and 3:1 indicator guarantees as the default; see tests/interface-contrast.test.ts. */
 :root[data-accent=blue] .app{--accent:#9cc4ff;--focus-ring:#9cc4ff;--accent-fill:#9cc4ff;--on-accent:#10233f}
