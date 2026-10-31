@@ -1,0 +1,16 @@
+import {effectsFor} from './effects';
+import type {DesignNode} from './model';
+import {strokesFor} from './paints';
+type Color=(a:string,b:string,t:number)=>string;
+const unit=(v:number)=>Math.max(0,Math.min(1,v));
+const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+/** Interpolates matched strokes, effects, corners, scale and type. Unmatched stacks take the destination value, as other discrete properties do. */
+export function animateMatchedProperties(before:DesignNode,n:DesignNode,out:DesignNode,progress:number,color:Color){const lerp=(a:number,b:number)=>a+(b-a)*progress;
+ for(const key of ['motionScaleX','motionScaleY'] as const)if(before[key]!==undefined||n[key]!==undefined)out[key]=lerp(before[key]??1,n[key]??1);
+ if(before.corners&&n.corners&&before.corners.length===n.corners.length)out.corners=n.corners.map((v,i)=>Math.max(0,lerp(before.corners![i],v))) as DesignNode['corners'];
+ if(typeof before.strokeWidth==='number'&&typeof n.strokeWidth==='number')out.strokeWidth=Math.max(0,lerp(before.strokeWidth,n.strokeWidth));if(before.stroke&&n.stroke)out.stroke=color(before.stroke,n.stroke,progress);
+ const oldStrokes=strokesFor(before),newStrokes=strokesFor(n);if(oldStrokes.length===newStrokes.length&&newStrokes.length&&oldStrokes.every((s,i)=>s.paint.type==='solid'&&newStrokes[i].paint.type==='solid'&&s.align===newStrokes[i].align&&!s.edgeWidths&&!newStrokes[i].edgeWidths))out.strokes=newStrokes.map((s,i)=>{const old=oldStrokes[i];return {...structuredClone(s),width:Math.max(0,lerp(old.width,s.width)),visible:progress>=1?s.visible:old.visible||s.visible,paint:{...structuredClone(s.paint),color:color(old.paint.color,s.paint.color,progress),opacity:unit(lerp(old.visible&&old.paint.visible?old.paint.opacity:0,s.visible&&s.paint.visible?s.paint.opacity:0))}};});
+ const oldEffects=effectsFor(before),newEffects=effectsFor(n);if(oldEffects.length===newEffects.length&&newEffects.length&&oldEffects.every((e,i)=>e.type===newEffects[i].type&&!e.shader&&!e.progressive))out.effects=newEffects.map((e,i)=>{const old=oldEffects[i];return {...structuredClone(e),visible:progress>=1?e.visible:old.visible||e.visible,color:color(old.color,e.color,progress),opacity:unit(lerp(old.visible?old.opacity:0,e.visible?e.opacity:0)),x:lerp(old.x,e.x),y:lerp(old.y,e.y),radius:Math.max(0,lerp(old.radius,e.radius)),spread:lerp(old.spread,e.spread)};});
+ if(n.type==='text'&&before.type==='text'&&!n.textRuns&&!before.textRuns){out.fontSize=Math.max(.01,lerp(before.fontSize,n.fontSize));if(typeof before.letterSpacing==='number'&&typeof n.letterSpacing==='number')out.letterSpacing=lerp(before.letterSpacing,n.letterSpacing);if(typeof before.lineHeightPx==='number'&&typeof n.lineHeightPx==='number')out.lineHeightPx=Math.max(0,lerp(before.lineHeightPx,n.lineHeightPx));}}
+/** Different text cannot morph, so the old words fade out in place over the new ones fading in. */
+export function textCrossfade(before:DesignNode,n:DesignNode,out:DesignNode,fade:number,parentId:string|null):DesignNode|undefined{if(n.type!=='text'||before.type!=='text'||before.text===n.text&&same(before.textRuns,n.textRuns))return undefined;const full=out.opacity;out.opacity=full*fade;return {...before,id:'exiting-text-'+n.id,parentId,x:out.x,y:out.y,width:out.width,height:out.height,rotation:out.rotation,visible:out.visible,opacity:full*(1-fade)};}
