@@ -13344,20 +13344,20 @@
     "category": "Export and delivery",
     "name": "SVG simplify stroke",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Opt-in aligned-stroke SVG simplification replaces supported miter rectangles and circle alignment masks with exact local centerline geometry, preserving original fill, transforms and crop. Unsupported geometry refuses before download; no document mutation or default byte changes. Arbitrary vector networks, ellipse approximations and exact Figma output remain outside scope. See docs/SVG-SIMPLIFY-STROKES.md."
   },
   {
     "id": "UI-40-027",
     "category": "Export and delivery",
     "name": "SVG outline stroke",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Opt-in SVG stroke outlines export validated cloned geometry for supported solid strokes, with bounded curve flattening, source-ancestry preflight, conversion limits and refusal before download. Default SVG bytes and project artwork remain unchanged. Broader effects, text, paint stacks, masks, markers and exact reference coverage remain unsupported; see docs/SVG-STROKE-OUTLINES.md."
   },
   {
     "id": "UI-40-028",
@@ -13544,20 +13544,20 @@
     "category": "Dev Mode and inspection",
     "name": "iOS property inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect includes searchable/copyable iOS logical-point geometry, supported single solid color/stroke, typography and layout references, with explicit design-unit ratio and sampled/base Motion source. It does not infer device scale, Dynamic Type, native font/layout equivalence or runnable UIKit code. Read-only source guards and clipboard fallback are validated. See docs/PLATFORM-PROPERTY-INSPECTION.md."
   },
   {
     "id": "UI-41-007",
     "category": "Dev Mode and inspection",
     "name": "Android property inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Inspect includes searchable/copyable Android dp geometry, baseline sp typography/em spacing, supported ARGB colors/strokes and layout references with explicit design-unit ratio and sampled/base source. Runtime density/font scaling, native constraints/resources and runnable Compose/XML code remain outside scope. Read-only source guards and clipboard fallback are validated. See docs/PLATFORM-PROPERTY-INSPECTION.md."
   },
   {
     "id": "UI-41-008",
@@ -15914,10 +15914,10 @@
     "category": "Community and resources",
     "name": "Icon library browsing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Resources/Actions opens a licensed offline catalog of 1,951 Lucide icons with multiword search, pagination, selected preview and license display. Validated configurable size/color/stroke/position insertion creates ordinary editable vectors with one Undo and oui save/reopen in Design/Whiteboard. This is local library browsing, without an external community marketplace or slide insertion. See docs/LOCAL-ICON-LIBRARY.md."
   },
   {
     "id": "UI-47-022",
@@ -16324,10 +16324,10 @@
     "category": "FigJam whiteboarding",
     "name": "Code blocks",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Whiteboard toolbar supports real literal code cards, language labels, styling/size/source edits, code copy/fallback, ordinary-layer conversion, controlled layout, Undo and oui persistence. Logical clipboard/page lifecycle, locks, validation and Design/Slides demotion are covered. Syntax highlighting, execution, formatting and source-file tooling remain absent. See docs/WHITEBOARD-CODE-BLOCKS.md."
   },
   {
     "id": "UI-48-033",
@@ -17724,10 +17724,10 @@
     "category": "Performance and reliability",
     "name": "Missing asset placeholders",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Canvas missing-image diagnostics distinguish missing, invalid and failed decoded authored image/poster paints, with selectable placeholders and Inspector status. Actual SVG image events, bounded indexing, source guards and replacement Undo/save are validated. Font/video/component/library/general resource diagnostics and broader occlusion semantics remain separate; see docs/MISSING-IMAGE-DIAGNOSTICS.md."
   },
   {
     "id": "UI-53-027",
@@ -19534,30 +19534,30 @@
     "category": "Live interface verification additions",
     "name": "Frame preset archive",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Reachable searchable frame-preset Archive category includes six documented older Apple UIKit logical sizes, with filtering, keyboard insertion, context guards, page-root placement, Undo and oui save/reopen. Catalog scope and primary size references are explicit; exact Figma archive inventory remains unverified. See docs/FRAME-PRESET-ARCHIVE.md."
   },
   {
     "id": "UI-58-018",
     "category": "Live interface verification additions",
     "name": "Foldable device closed preset",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A labeled generic Forma book-style foldable closed layout (360 × 800) is searchable and insertable independently or as an undoable pair. It does not claim a named device, hinge, posture, safe areas or exact Figma hardware preset; see docs/FRAME-PRESET-ARCHIVE.md."
   },
   {
     "id": "UI-58-019",
     "category": "Live interface verification additions",
     "name": "Foldable device open preset",
     "priority": "must",
-    "status": "planned",
-    "verification": "observed-in-signed-in-Figma-2026-10-29",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A labeled generic Forma book-style foldable open layout (720 × 800) is searchable and insertable independently or as an undoable pair. It does not claim a named device, hinge, posture, safe areas or exact Figma hardware preset; see docs/FRAME-PRESET-ARCHIVE.md."
   },
   {
     "id": "UI-58-020",

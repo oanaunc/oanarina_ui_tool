@@ -4,7 +4,7 @@ A local-first interface design editor for **Mac**, developed by Oana Rinaldi. Fo
 
 **Source includes unreleased changes after 0.2.0-dev.12; notarized Mac preview: 0.2.0-dev.12. This is not a complete Figma clone.** The [feature register](docs/FEATURE-REGISTER.md) specifies **2,022 requirements** across 60 categories: 1,992 required baseline behaviors and 30 later improvements. Status is tracked per requirement; advanced Figma parity remains substantial work. Some Mac integration and reliability requirements are our own requirements rather than verified Figma features. The signed-in Figma interface was inspected on October 29, 2026; remaining reference checks are explicit.
 
-The register currently records **1,312 implemented, 233 partial and 477 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
+The register currently records **1,314 implemented, 241 partial and 467 planned** requirements. The preceding [unreleased implementation pass](docs/UNRELEASED-IMPLEMENTATION.md) adds image adjustments, vector/arrow controls, color workflows, numeric scrubbing, component metadata, preferences and batch asset delivery, with Undo/persistence and context guards. Downloads stay frozen while implementation continues; automatic source pushes run tests without creating Mac apps or release archives.
 
 The next [source implementation pass](docs/UNRELEASED-LAYOUT-MEDIA-EXPORT.md) adds center drawing/repeat tools, aspect-aware layout, paired padding, wrapping and stacking controls, SVG/visibility/overlap export settings, animated GIF checks and embedded MP4/WebM playback. Downloads remain unchanged; video uses browser codecs and static exports use posters.
 
@@ -39,6 +39,8 @@ The development source also includes live booleans, cubic curve editing, richer 
 The dev.12 preview adds [optional canvas scrollbars and a schematic minimap](docs/CANVAS-OVERVIEW.md), [literal text find/replace](docs/TEXT-SEARCH.md), and [frame overflow inspection, prototype starts and saved export profiles](docs/FRAME-DELIVERY.md). Combined validation passes 707 core tests, 293 production browser checks, 40 MCP tests and the universal native build/menu smoke. See the [dev.12 report](docs/VALIDATION-v0.2-overview-text-frames.md). Overflow and advanced export profiles retain documented limits.
 
 Earlier preview additions include [canvas history and selection navigation](docs/CANVAS-NAVIGATION.md) and [frame presets/inspector actions](docs/FRAME-WORKFLOWS.md). Its name toggles and fit-to-content retain documented limits. The universal dev.12 Mac app and installer are Apple-notarized, stapled and Gatekeeper checked. Intel hardware runtime validation remains pending.
+
+The latest [source continuation](docs/UNRELEASED-ICONS-CODE-IMPORT-DIAGNOSTICS.md) adds a licensed offline editable icon library, local Whiteboard code cards, archived/generic foldable frame presets, selectable missing-image diagnostics, two guarded SVG stroke conversion options and read-only iOS/Android property references. Explicit limits remain partial; downloads stay frozen.
 
 ## Run
 
