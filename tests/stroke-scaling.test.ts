@@ -4,6 +4,7 @@ import {createStroke} from '../src/paints';
 import {resizeCanvasNodes} from '../src/canvas-geometry';
 import {assertAuthoredStrokeScaleResult,compensateAuthoredStrokeScale,inheritedStrokeScaleMode,setStrokeScaleMode} from '../src/stroke-scaling';
 import {useEditor} from '../src/store';
+it('checks absolute ancestor depth independently of source order without changing either draft',()=>{const nodes=Array.from({length:257},(_,i)=>node('frame',{id:'depth'+i,parentId:i?'depth'+(i-1):null,strokeScaleMode:i===0?'fixed':undefined,stroke:i===256?'#000000':'',strokeWidth:4}));for(const ordered of [nodes,nodes.slice().reverse()]){const after=structuredClone(ordered),source=JSON.stringify(ordered),draft=JSON.stringify(after);expect(()=>inheritedStrokeScaleMode(ordered[0],ordered)).toThrow('256 acyclic ancestor');expect(()=>compensateAuthoredStrokeScale(ordered,after,['depth0'])).toThrow('256 acyclic ancestor');expect(JSON.stringify(ordered)).toBe(source);expect(JSON.stringify(after)).toBe(draft);}expect(inheritedStrokeScaleMode(nodes[255],nodes.slice(0,256))).toBe('fixed');});
 import {insertInstance,resetOverrides} from '../src/components-model';
 import {makeDesignClipboard,parseDesignClipboard} from '../src/clipboard-transfer';
 import {duplicateDocumentPage} from '../src/pages';
