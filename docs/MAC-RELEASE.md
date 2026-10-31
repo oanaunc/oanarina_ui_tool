@@ -8,7 +8,7 @@ Only describe a release as notarized after both app and DMG submissions return A
 
 The public app and installer are named **Forma**. The existing `com.oanarinaldi.uitool` bundle identifier, executable name and `.oui` document type stay stable for upgrade and document compatibility. Installer names use `release/Forma-<version>.dmg`; changing the product name does not make an unsigned build notarized.
 
-Native integration checks after building. Run them in a logged-in foreground session; the clipboard and integration checks need window focus:
+Native integration checks after building. Prefer a logged-in foreground session, because the clipboard and integration checks appear sensitive to window focus:
 
 ```sh
 "build/Forma.app/Contents/MacOS/OanarinaUITool" --smoke-test
