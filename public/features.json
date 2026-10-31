@@ -4284,10 +4284,10 @@
     "category": "Vector pen and editing",
     "name": "Vector network branches",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: real owner-local stroke forests with shared vertices/per-edge cubic handles, exact edge split/new leaf branches, shared vertex/handle dragging, edge deletion and explicit flatten. One solid centered round stroke, no fills/cycles/effects/masks/layout/components/affected Motion. Strict bounded graph and equal ordinary-path appearance fallback validate before publication; Undo/save/oui1/2, copied scoped IDs and SVG appearance supported. Bridge requires flatten; generic incompatible geometry refuses. See docs/VECTOR-NETWORK-BRANCHES.md. Core/browser/source-MCP/type checks and independent read; broader regions/native/reference acceptance pending."
   },
   {
     "id": "UI-14-027",
@@ -13024,10 +13024,10 @@
     "category": "Import and Figma interchange",
     "name": "PDF document import",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Partial: real offline local PDF raster-page import with pinned compatible PDF.js, whole-document geometry/operator/pixel/resource/output limits, sequential rendering, thumbnail/reduction review, cancellation/deadline and guarded retained current edits. Each page becomes one embedded PNG with normal later crop/resize/Undo/save; PDF text/vectors are flattened. Scripts/annotations/forms/links/attachments excluded, no remote PDF/assets. Owned repository delivery preserves newer writers and rolls back unaccepted imports. See docs/PDF-DOCUMENT-IMPORT.md. Core/type/real browser pixels and independent review; parser allocation/codec/color limits and native packaging/reference acceptance explicit."
   },
   {
     "id": "UI-39-035",
@@ -13764,10 +13764,10 @@
     "category": "Dev Mode and inspection",
     "name": "Component playground",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Partial: reachable Assets/Inspect component playground derives an isolated fresh default instance through shared component/layout/style validation. Try exact variants, exposed text/Boolean/swap values and supported ordinary nested swaps; reset without source/selection/history mutations. Static isolated SVG with bounded dependency/font/output work, source/local-generation cancellation and inherited locks. Slot-bearing, circular/oversized or unsupported ancestor/context dependencies refuse; no insertion, prototype execution, Code Connect or cloud controls. See docs/COMPONENT-PLAYGROUND.md. Focused core/browser/type/MCP and independent review; native/reference/broader coverage pending."
   },
   {
     "id": "UI-41-029",

@@ -240,6 +240,12 @@
     "⇧⌘K"
   ],
   [
+    "import-pdf",
+    "Import PDF pages…",
+    "File",
+    ""
+  ],
+  [
     "place-video",
     "Place video…",
     "File",
