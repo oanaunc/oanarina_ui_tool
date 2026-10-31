@@ -21,10 +21,10 @@ export default function FileInformation(){
    <div className="file-information-modified"><dt>{t('Last changed')}</dt><dd><time dateTime={doc.updatedAt}>{formatDateTime(doc.updatedAt)}</time></dd></div>
   </dl>
   <ColorProfileControl/>
-  <LibraryFileInformation/>
   <label className="file-information-description"><span>{t('File description')}</span><textarea aria-label={t('File description')} aria-describedby={hint} autoFocus rows={6} maxLength={DOCUMENT_DESCRIPTION_LIMIT} value={description} onChange={e=>{setDescription(e.target.value);setEdited(true);setError('');}} placeholder={t('What is this file for?')}/></label>
   <div className="file-information-help" id={hint}><span>{t('Plain text, saved with your .oui project.')}</span><span>{formatNumber(description.length)} / {formatNumber(DOCUMENT_DESCRIPTION_LIMIT)}</span></div>
   {(error||validation)&&<p className="file-information-error" role="alert">{error||validation}</p>}
   <div className="button-row"><button className="primary-button" type="submit" disabled={!changed}>{t('Save description')}</button><button className="outline-button" type="button" disabled={!description.length&&(edited||original.description===undefined)} onClick={()=>{setDescription('');setEdited(true);setError('');}}>{t('Clear description')}</button><button className="outline-button" type="button" onClick={close}>{t('Cancel')}</button></div>
+  <LibraryFileInformation/>
  </form>;
 }
