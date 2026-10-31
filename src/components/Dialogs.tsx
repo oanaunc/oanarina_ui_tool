@@ -1,4 +1,5 @@
 import SketchImport from './SketchImport';
+import LocalPlugins from './LocalPlugins';
 import ComponentPlayground from './ComponentPlayground';
 import PdfImportReview from './PdfImportReview';
 import FigmaRestReview from './FigmaRestReview';
@@ -49,6 +50,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{setQuery('');setCategory('All');setFilter('All');setValue(modal==='rename-file'?s.doc.name:modal==='rename-page'?page.name:modal==='rename'?n?.name??'':modal==='text-link'?n?.hyperlink??'':'');if(modal==='roadmap')fetch('./features.json').then(r=>r.json()).then(setFeatures).catch(notifyError);},[modal]);
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
+ if(modal==='local-plugins')return <LocalPlugins key={s.doc.id}/>;
  if(modal==='component-playground')return <ComponentPlayground/>;
  if(modal==='sketch-import'||modal==='sketch-import-review')return <SketchImport key={s.doc.id+modal}/>;
  if(modal==='pdf-import-review')return <PdfImportReview key={s.doc.id}/>;
