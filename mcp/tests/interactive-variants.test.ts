@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project';
+import {interactiveFixture,selfReaction} from '../../tests/helpers/interactive-variants-fixture';
+import {createPrototypeState,executeActions,prototypeDocument} from '../../src/prototype';
+import {interactiveActionResolver} from '../../src/interactive-variants';
+test('source MCP saves validated reusable scope with atomic refusal/Undo and no preview identities in the saved model',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-interactive-source-'));try{const file=path.join(dir,'synthetic.oui'),d=interactiveFixture();d.pages[0].nodes.find(n=>n.id==='off')!.reactions=[];await fs.writeFile(file,JSON.stringify(d));const project=await Project.open(file),before=await project.read(),edited=await project.apply(before.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:'off',properties:{reactions:[selfReaction('on')]}}]),raw=await fs.readFile(file,'utf8');const state=createPrototypeState(edited.document.pages[0],'screen'),bind=interactiveActionResolver(edited.document,d.pages[0].id),next=executeActions(edited.document,d.pages[0].id,state,bind('first',selfReaction('on').actions)).state,shown=prototypeDocument(edited.document,next);assert.equal(shown.pages[0].nodes.find(n=>n.id==='first')!.componentId,'on');assert.equal(await fs.readFile(file,'utf8'),raw);assert.ok(!raw.includes('forma-preview-'));const invalid=selfReaction('on');(invalid.actions[0] as any).targetScope='bad';await assert.rejects(project.apply(edited.revision,[{op:'rename_document',name:'Must roll back'},{op:'update_node',pageId:d.pages[0].id,nodeId:'off',properties:{reactions:[invalid]}}]),/Self/);assert.equal(await fs.readFile(file,'utf8'),raw);const undone=await project.undo(edited.revision);assert.deepEqual(undone.document.pages[0].nodes.find(n=>n.id==='off')!.reactions,[]);}finally{await fs.rm(dir,{recursive:true,force:true});}});
