@@ -6,6 +6,8 @@ export default defineConfig({
  // Worktrees may share node_modules; keep optimizer/worker caches local to this root.
  cacheDir: '.vite',
  // Native installer staging contains an /Applications symlink. Scan only our entry page.
- optimizeDeps: { entries: ['index.html'] },
+ // The .fig decoder is first imported by a worker, outside the entry scan.
+ // Discover it up front so opening a file cannot trigger a dev dependency reload.
+ optimizeDeps: { entries: ['index.html'], include: ['fzstd'] },
  server: { port: 5173, strictPort: true },
 });

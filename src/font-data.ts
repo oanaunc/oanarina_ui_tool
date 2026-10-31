@@ -13,7 +13,9 @@ export function validateFontAsset(value:unknown):asserts value is FontAsset {
 }
 export function cssFontFamily(family:string){return '"'+family.replace(/["\\\n\r\f]/g,c=>'\\'+c.codePointAt(0)!.toString(16)+' ')+'"';}
 export function fontAssetKey(a:Pick<FontAsset,'family'|'weight'|'style'|'unicodeRange'>){return JSON.stringify([a.family,a.weight,a.style??'normal',a.unicodeRange??'']);}
-export function bytesToBase64(bytes:ArrayBuffer){let out='';for(const b of new Uint8Array(bytes))out+=String.fromCharCode(b);return btoa(out);}
+/** Complete triplets keep intermediate padding out of the joined base64 data.
+ * Bounded chunks avoid millions of tiny strings for a large licensed font. */
+export function bytesToBase64(bytes:ArrayBuffer){const data=new Uint8Array(bytes),chunks:string[]=[],size=3*8192;for(let at=0;at<data.length;at+=size)chunks.push(btoa(String.fromCharCode(...data.subarray(at,at+size))));return chunks.join('');}
 export function parseFontFile(bytes:ArrayBuffer):ParsedFont {
  if(bytes.byteLength<28||bytes.byteLength>MAX_FONT_BYTES)throw Error('Font files must be valid TTF or OTF files smaller than 20 MB.');
  const v=new DataView(bytes),tag=(o:number)=>String.fromCharCode(...new Uint8Array(bytes,o,4)),signature=v.getUint32(0);if(signature!==0x00010000&&tag(0)!=='OTTO'&&tag(0)!=='true')throw Error('Choose an individual TTF or OTF font file. Font collections and compressed web fonts are not supported.');
