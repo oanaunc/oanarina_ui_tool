@@ -19,7 +19,7 @@ test('real MCP frame export profiles survive saved transactions and Undo; malfor
  const args=standalone?[path.resolve(standalone),'--project',file,'--create']:[path.join(root,'node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'tsconfig.json'),path.join(root,'server.ts'),'--project',file,'--create'];
  const transport=new StdioClientTransport({command:process.execPath,args,cwd:directory,env:{NODE_PATH:'',NODE_OPTIONS:''},stderr:'pipe'}),client=new Client({name:'forma-frame-export-profile-test',version:'1.0.0'});let errors='';transport.stderr?.on('data',chunk=>errors+=String(chunk));
  try{
-  await client.connect(transport);assert.equal((await client.listTools()).tools.length,10);
+  await client.connect(transport);assert.equal((await client.listTools()).tools.length,11);
   const initial=data(await client.callTool({name:'inspect_project',arguments:{}})),pageId=initial.pages[0].id;
   const created=data(await client.callTool({name:'apply_operations',arguments:{revision:initial.revision,operations:[{op:'create_node',pageId,id:'frame',type:'frame',properties:{name:'Profile source',width:120,height:80}}]}}));
   const full=data(await client.callTool({name:'read_document',arguments:{includeAssets:true}}));assert.equal(full.revision,created.revision);

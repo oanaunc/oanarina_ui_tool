@@ -51,6 +51,7 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | `read_nodes` | Search, filter IDs and paginate layers; asset bytes omitted by default |
 | `read_document` | Complete JSON, optionally including assets; maximum response 5 MB |
 | `read_design_system` | Typed variables, collections/modes, local styles and component sets |
+| `read_library_context` | Source-only metadata index of local reusable definitions, installed libraries/publication, versions/status and bounded dependency IDs; revision-bound pagination |
 | `apply_operations` | Atomic batches of up to 500 node/page/design-system edits |
 | `replace_document` | Validated complete document replacement for advanced model features |
 | `undo_transaction` | Restore the previous successful MCP transaction; last 20 in memory |
@@ -59,6 +60,8 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | `export_svg` | Return SVG for vector/text pages; reject images and browser-raster fills |
 
 The resource `oanarina://project/summary` provides current metadata. Tool schemas are discoverable through MCP. Every write requires a `revision` returned by a read. Stale revisions fail without changing the file.
+
+Source `read_library_context` omits node bodies, library baselines, scalar variable/style values, images/fonts, comments/annotations, author/profile payloads and unknown optional metadata. It returns explicit limits/notices and requires `expectedRevision` for nonzero pagination offsets. It is scoped to the selected saved file; it does not search remote libraries or the browser's snapshot cache. See [agent library context](../docs/MCP-LIBRARY-CONTEXT.md). The frozen standalone download does not include this source tool yet.
 
 Default asset-omitted document reads also omit opaque local-library edit-baseline strings: those can contain copies of embedded image/font data. Request `includeAssets: true` for a complete saved document, subject to the response limit. Asset-omitted views are for inspection and must not be submitted to `replace_document`.
 

@@ -1,0 +1,72 @@
+import type {DesignDocument,DesignNode} from '../src/model';
+import type {LibraryVersion,ComponentLibrary} from '../src/local-library-metadata';
+import type {PrototypeAction} from '../src/prototype';
+
+export const LIBRARY_CONTEXT_LIMITS={nodes:100000,rows:20000,references:200000,depth:256,id:512,name:300,dependencies:64,properties:32,responseBytes:2000000} as const;
+export const libraryContextKinds=['library','publication','installed-asset','component','component-set','style','collection','variable','guide-style'] as const;
+export type LibraryContextKind=typeof libraryContextKinds[number];
+type RefKind='component'|'component-set'|'style'|'collection'|'variable'|'mode'|'guide-style'|'guide'|'layer';
+interface Reference {kind:RefKind;id:string;role:string;available:boolean|'unknown';}
+interface Row {key:string;kind:LibraryContextKind;id:string;name:string;scope:'local'|'installed'|'publication';libraryId?:string;[key:string]:unknown;}
+export interface LibraryContextQuery {scope?:'all'|'local'|'installed'|'publication';libraryId?:string;kind?:LibraryContextKind;query?:string;offset?:number;limit?:number;}
+const assetValue=/^data:(?:image|font)\//i;
+const entityKey=(kind:string,id:string)=>JSON.stringify([kind,id]);
+
+/** Allowlisted metadata only. Never clone/serialize nodes, baselines or variable values. */
+export function libraryContext(d:DesignDocument,options:LibraryContextQuery={}){
+ const offset=options.offset??0,limit=options.limit??25,query=options.query??'',scope=options.scope??'all';
+ if(!Number.isSafeInteger(offset)||offset<0||offset>100000||!Number.isSafeInteger(limit)||limit<1||limit>100||query.length>300)throw Error('Invalid library context pagination or query.');
+ if(!['all','local','installed','publication'].includes(scope)||options.kind&&!libraryContextKinds.includes(options.kind)||options.libraryId!==undefined&&(typeof options.libraryId!=='string'||options.libraryId.length>512))throw Error('Invalid library context filter.');
+ const notices=new Set<string>(),rows:Row[]=[],nodes=new Map<string,{node:DesignNode;pageId:string;pageName:string}>(),owners=new Map<string,ComponentLibrary>(),sets=new Map((d.componentSets??[]).map(s=>[s.id,s])),styles=new Map((d.styles??[]).map(s=>[s.id,s])),variables=new Map((d.variables??[]).map(v=>[v.id,v])),collections=new Map((d.variableCollections??[]).map(c=>[c.id,c])),guideStyles=new Map((d.layoutGuideStyles??[]).map(g=>[g.id,g]));
+ let nodeVisits=0,referenceVisits=0,rowVisits=0,truncated=false;
+ const visit=()=>{if(++referenceVisits>LIBRARY_CONTEXT_LIMITS.references)throw Error('Library context exceeds its 200,000 reference inspection budget. Narrow the saved source before inspecting.');};
+ const id=(value:unknown):value is string=>{if(typeof value!=='string'||!value||value.length>LIBRARY_CONTEXT_LIMITS.id||assetValue.test(value)){notices.add('Oversized, empty or asset-valued identifiers are omitted; identifiers are never truncated.');truncated=true;return false;}return true;};
+ const name=(value:string)=>{if(assetValue.test(value)){notices.add('Asset-valued metadata strings are omitted.');return '[asset value omitted]';}if(value.length>LIBRARY_CONTEXT_LIMITS.name){notices.add('Long metadata names are truncated to 300 characters.');truncated=true;}return value.slice(0,LIBRARY_CONTEXT_LIMITS.name);};
+ const add=(kind:LibraryContextKind,identity:string,label:string,extra:Record<string,unknown>={},library?:ComponentLibrary,publication=false)=>{rowVisits++;if(!id(identity))return;if(rows.length>=LIBRARY_CONTEXT_LIMITS.rows){truncated=true;notices.add('The metadata index is limited to 20,000 rows.');return;}rows.push({key:JSON.stringify([kind,library?.id??'',identity]),kind,id:identity,name:name(label),scope:publication?'publication':library?'installed':'local',...(library&&id(library.id)?{libraryId:library.id}:{}),...extra});};
+ const version=(v:LibraryVersion|undefined)=>v&&id(v.snapshotId)?{snapshotId:v.snapshotId,version:v.version,name:name(v.name),publishedAt:v.publishedAt}:undefined;
+ const versions=(history:LibraryVersion[])=>({historyCount:history.length,knownVersions:history.slice(-10).map(version).filter(Boolean),historyTruncated:history.length>10});
+ for(const page of d.pages)for(const n of page.nodes){if(++nodeVisits>LIBRARY_CONTEXT_LIMITS.nodes)throw Error('Library context supports up to 100,000 document layers.');nodes.set(n.id,{node:n,pageId:page.id,pageName:page.name});}
+ for(const l of d.componentLibraries??[]){
+  for(const [kind,map] of Object.entries(l.maps))for(const local of Object.values(map)){visit();owners.set(kind+':'+local,l);}
+  add('library',l.id,l.name,{enabled:l.enabled,...(id(l.sourceDocumentId)?{sourceDocumentId:l.sourceDocumentId}:{}),...(id(l.pageId)?{pageId:l.pageId}:{}),assetCount:l.assets.length,missingAssetCount:l.assets.filter(a=>a.missing).length,deprecatedAssetCount:l.assets.filter(a=>a.deprecation).length,...versions(l.history)},l);
+  for(const a of l.assets){visit();const mapKind=({component:'node',set:'set',style:'style',collection:'collection',guide:'guide'} as const)[a.kind],localId=l.maps[mapKind][a.sourceId],available=a.kind==='component'?nodes.get(localId)?.node.type==='component'&&!nodes.get(localId)?.node.instanceRootId:a.kind==='set'?sets.has(localId):a.kind==='style'?styles.has(localId):a.kind==='collection'?collections.has(localId):guideStyles.has(localId);
+   add('installed-asset',a.key,a.name,{assetKind:a.kind,...(id(a.sourceId)?{sourceId:a.sourceId}:{}),...(localId&&id(localId)?{localId}:{}),enabled:l.enabled,missing:a.missing??false,available:Boolean(available),version:version(a.version),...(a.deprecation?{deprecation:{reason:name(a.deprecation.reason)}}:{})},l);
+  }
+ }
+ if(d.libraryPublication){const p=d.libraryPublication;add('publication',p.id,d.name,{...versions(p.history),deprecationCount:Object.keys(p.deprecations??{}).length},undefined,true);}
+ const available=(kind:RefKind,value:string)=>kind==='component'?nodes.get(value)?.node.type==='component'&&!nodes.get(value)?.node.instanceRootId:kind==='component-set'?sets.has(value):kind==='style'?styles.has(value):kind==='variable'?variables.has(value):kind==='collection'?collections.has(value):kind==='guide-style'?guideStyles.has(value):kind==='layer'?nodes.has(value):undefined;
+ const dependencies=new Map<string,Map<string,Reference>>(),limited=new Set<string>();
+ const ref=(owner:string,kind:RefKind,value:unknown,role:string)=>{visit();if(!id(value))return;const found=available(kind,value);if(found===undefined)notices.add('Guide and mode reference availability is not inferred from node payloads or variable values.');const refs=dependencies.get(owner)??new Map<string,Reference>();dependencies.set(owner,refs);const key=JSON.stringify([kind,value,role]);if(refs.has(key))return;if(refs.size>=LIBRARY_CONTEXT_LIMITS.dependencies){limited.add(owner);truncated=true;return;}refs.set(key,{kind,id:value,role,available:found??'unknown'});};
+ const nearest=new Map<string,{owner:string|null;depth:number}>();
+ function mainFor(identity:string|null):string|null{
+  if(!identity)return null;if(nearest.has(identity))return nearest.get(identity)!.owner;
+  const chain:DesignNode[]=[],seen=new Set<string>();let at:string|null=identity,base={owner:null as string|null,depth:0};
+  while(at){if(nearest.has(at)){base=nearest.get(at)!;break;}const n:DesignNode|undefined=nodes.get(at)?.node;if(!n)throw Error('Library context encountered a missing source ancestor.');if(seen.has(at)||chain.length>=LIBRARY_CONTEXT_LIMITS.depth)throw Error('Library context ancestry exceeds 256 levels or contains a cycle.');seen.add(at);chain.push(n);if(n.type==='component'&&!n.instanceRootId)break;at=n.parentId;}
+  for(let i=chain.length-1;i>=0;i--){const n=chain[i];base=n.type==='component'&&!n.instanceRootId?{owner:n.id,depth:1}:{owner:base.owner,depth:base.depth+1};if(base.depth>LIBRARY_CONTEXT_LIMITS.depth)throw Error('Library context ancestry exceeds 256 levels.');nearest.set(n.id,base);}return nearest.get(identity)!.owner;
+ }
+ const actions=(owner:string,source:PrototypeAction[])=>{const pending=source.map(a=>({a,depth:0}));while(pending.length){visit();const {a,depth}=pending.pop()!;if(depth>32)throw Error('Library context prototype nesting exceeds 32 levels.');if(a.componentId)ref(owner,'component',a.componentId,'prototype-variant');if(a.variableId)ref(owner,'variable',a.variableId,'prototype-variable');if(a.targetId)ref(owner,'layer',a.targetId,'prototype-target');if(a.expression||a.branches?.length)notices.add('Prototype expression text, branch conditions and indirect expression dependencies are omitted.');for(const branch of a.branches??[]){visit();for(const child of branch.actions)pending.push({a:child,depth:depth+1});}}};
+ for(const {node:n} of nodes.values()){
+  const owner=mainFor(n.id);if(!owner)continue;const main=entityKey('component',owner);if(n.type==='component'&&!n.instanceRootId){const parent=mainFor(n.parentId);if(parent)ref(entityKey('component',parent),'component',n.id,'nested-definition');}
+  if(n.type==='instance'&&n.componentId)ref(main,'component',n.componentId,'nested-instance');
+  for(const value of Object.values(n.styleIds??{}))ref(main,'style',value,'layer-style');
+  for(const value of Object.values(n.variableBindings??{}))ref(main,'variable',value,'layer-variable');
+  for(const [collection,mode] of Object.entries(n.variableModes??{})){ref(main,'collection',collection,'mode-owner');ref(main,'mode',mode,'selected-mode');}
+  if(n.layoutGuideStyleId)ref(main,'guide-style',n.layoutGuideStyleId,'layout-guide-style');
+  for(const binding of Object.values(n.layoutGuideBindings??{})){ref(main,'guide',binding.guideId,'responsive-guide');ref(main,'layer',binding.ownerId,'responsive-owner');}
+  if(n.targetId)ref(main,'layer',n.targetId,'legacy-prototype-target');
+  for(const reaction of n.reactions??[]){visit();actions(main,reaction.actions);}
+  for(const preferred of n.componentMetadata?.preferredInstances??[])ref(main,'component',preferred,'preferred-instance');
+  for(const p of n.componentMetadata?.properties??[]){visit();ref(main,'layer',p.targetId,'property-target');if(p.type==='instance-swap'){ref(main,'component',p.defaultValue,'default-swap');for(const preferred of p.preferredValues??[])ref(main,'component',preferred,'preferred-swap');}}
+ }
+ const refsFor=(key:string)=>({dependencies:[...(dependencies.get(key)?.values()??[])],dependenciesTruncated:limited.has(key)});
+ for(const {node:n,pageId,pageName} of nodes.values())if(n.type==='component'&&!n.instanceRootId){const props=n.componentMetadata?.properties??[],propertyTypes:Record<string,number>={};for(const p of props){visit();propertyTypes[p.type]=(propertyTypes[p.type]??0)+1;}const l=owners.get('node:'+n.id),deprecation=d.libraryPublication?.deprecations?.['component:'+n.id];add('component',n.id,n.name,{...(id(pageId)?{pageId}:{}),pageName:name(pageName),propertyCount:props.length,propertyTypes,properties:props.slice(0,LIBRARY_CONTEXT_LIMITS.properties).flatMap(p=>id(p.id)?[{id:p.id,name:name(p.name),type:p.type}]:[]),propertiesTruncated:props.length>LIBRARY_CONTEXT_LIMITS.properties,...refsFor(entityKey('component',n.id)),...(deprecation?{deprecation:{reason:name(deprecation.reason)}}:{})},l);}
+ for(const s of sets.values()){for(const v of s.variants)ref(entityKey('component-set',s.id),'component',v.componentId,'variant');const deprecation=d.libraryPublication?.deprecations?.['set:'+s.id];add('component-set',s.id,s.name,{variantCount:s.variants.length,...(id(s.defaultComponentId)?{defaultComponentId:s.defaultComponentId}:{}),...refsFor(entityKey('component-set',s.id)),...(deprecation?{deprecation:{reason:name(deprecation.reason)}}:{})},owners.get('set:'+s.id));}
+ for(const s of styles.values()){for(const value of Object.values(s.value.styleIds??{}))ref(entityKey('style',s.id),'style',value,'style-reference');for(const value of Object.values(s.value.variableBindings??{}))ref(entityKey('style',s.id),'variable',value,'style-variable');add('style',s.id,s.name,{styleType:s.type,...refsFor(entityKey('style',s.id))},owners.get('style:'+s.id));}
+ for(const c of collections.values()){for(const mode of c.modes)ref(entityKey('collection',c.id),'mode',mode.id,'collection-mode');add('collection',c.id,c.name,{modeCount:c.modes.length,modes:c.modes.slice(0,64).flatMap(m=>id(m.id)?[{id:m.id,name:name(m.name)}]:[]),modesTruncated:c.modes.length>64,...(id(c.defaultModeId)?{defaultModeId:c.defaultModeId}:{}),...refsFor(entityKey('collection',c.id))},owners.get('collection:'+c.id));}
+ for(const v of variables.values()){ref(entityKey('variable',v.id),'collection',v.collectionId,'variable-owner');for(const [mode,value] of Object.entries(v.values)){ref(entityKey('variable',v.id),'mode',mode,'value-mode');if(value&&typeof value==='object')ref(entityKey('variable',v.id),'variable',value.alias,'alias');}add('variable',v.id,v.name,{variableType:v.type,...refsFor(entityKey('variable',v.id))},owners.get('variable:'+v.id));}
+ for(const g of guideStyles.values()){for(const guide of g.guides)ref(entityKey('guide-style',g.id),'guide',guide.id,'style-guide');add('guide-style',g.id,g.name,{guideCount:g.guides.length,...refsFor(entityKey('guide-style',g.id))},owners.get('guide:'+g.id));}
+ if(limited.size)notices.add('Dependency summaries retain at most 64 unique references per row.');
+ const terms=query.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean),matches=rows.filter(r=>(scope==='all'||r.scope===scope)&&(!options.libraryId||r.libraryId===options.libraryId)&&(!options.kind||r.kind===options.kind)&&terms.every(t=>(r.name+' '+r.kind+' '+r.id).toLocaleLowerCase().includes(t))),page:Row[]=[];let bytes=0;
+ for(const row of matches.slice(offset,offset+limit)){const size=Buffer.byteLength(JSON.stringify(row));if(bytes+size>LIBRARY_CONTEXT_LIMITS.responseBytes){notices.add('This response page was shortened to stay within the 2 MB metadata budget.');break;}bytes+=size;page.push(row);}
+ return {metadataOnly:true,localOnly:true,total:matches.length,offset,requestedLimit:limit,returned:page.length,nextOffset:offset+page.length<matches.length?offset+page.length:null,truncated,notices:[...notices],rows:page,stats:{nodeVisits,referenceVisits,rowVisits,indexedRows:rows.length},omitted:['node bodies','library baselines','variable scalar values','style paint/effect values','font and image data','comments and annotations','author and profile data','prototype expressions and URLs','unknown optional metadata']};
+}
