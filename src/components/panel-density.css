@@ -84,7 +84,6 @@
 .app .left-panel .layer-row>.layer-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .app .left-panel .layer-row>.layer-action{position:absolute;top:50%;transform:translateY(-50%);right:8px;width:18px;height:18px;padding:0;display:grid;place-items:center;border-radius:3px;background:#2c2a33}
 .app .left-panel .layer-row>.layer-action:nth-last-of-type(2){right:27px}
-.app .left-panel .layer-row:not(:hover)>.layer-action:not(.visible){pointer-events:none}
 .app .left-panel .layer-row:has(.layer-mask-indicator){padding-right:48px}
 .instance-layer-note{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:10px;color:var(--muted);margin-bottom:6px}
 .app .override-reset{display:flex;flex-wrap:wrap;gap:0 10px}
@@ -116,11 +115,10 @@
 [data-testid=effects-section] .paint-item>fieldset>select,[data-testid=effects-section] .paint-item>fieldset>p,[data-testid=effects-section] .paint-item>fieldset>section,[data-testid=effects-section] .paint-item>fieldset>div:not(.stack-buttons){grid-column:1/-1}
 [data-testid=effects-section] .paint-item>fieldset>.number-field{padding:0 6px;gap:3px}
 [data-testid=effects-section] .paint-item>fieldset>.number-field>span{overflow:hidden;text-overflow:ellipsis;max-width:60%}
-.app section[aria-label='Layer'] ,.app .inspector-section fieldset:has(>legend.visually-hidden){min-width:0}
-.app .inspector-section>fieldset:has(>legend.visually-hidden){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 6px;align-items:center}
-.app .inspector-section>fieldset:has(>legend.visually-hidden)>select{margin:0;height:30px;font-size:10px}
-.app .inspector-section>fieldset:has(>legend.visually-hidden)>label,.app .inspector-section>fieldset:has(>legend.visually-hidden)>p{grid-column:1/-1;margin-top:0}
-.app .inspector-section>fieldset:has(>legend.visually-hidden)>.number-field{grid-column:1}
+.app fieldset.blend-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 6px;align-items:center}
+.app fieldset.blend-controls>select{margin:0;height:30px;font-size:10px}
+.app fieldset.blend-controls>label,.app fieldset.blend-controls>p{grid-column:1/-1;margin-top:0}
+.app fieldset.blend-controls>.number-field{grid-column:1}
 /* Colors */
 .app .paint-item{position:relative;margin-bottom:6px}
 .app .paint-item>summary{min-height:22px;padding-right:96px;display:flex;align-items:center;gap:6px;font-size:10px}
@@ -135,7 +133,7 @@
 .app .paint-color-chip{width:22px;height:22px;padding:0;border-radius:4px;border:1px solid #ffffff2b;box-shadow:inset 0 0 0 1px #0002}
 .app .paint-color-chip[aria-expanded=true]{outline:2px solid var(--focus-ring,#bfa4ef);outline-offset:1px}
 .app .paint-color-row>.number-field{height:26px;min-height:26px;padding:0 6px;gap:0;position:relative}
-.app .paint-color-row>.number-field>span{position:absolute;inset:0 auto 0 0;width:12px;overflow:hidden;color:transparent;font-size:0}
+.app .paint-color-row>.number-field>span{position:absolute;inset:0 auto 0 0;width:12px;overflow:hidden;font-size:0}
 .app .paint-color-row>.number-field>input{padding-right:9px;min-width:0;text-align:right}
 .app .paint-color-row>.number-field:after{content:'%';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--muted);pointer-events:none}
 .app .forma-color-picker{gap:0}
@@ -154,6 +152,6 @@
 .page-background-row>input[type=color]{width:24px;height:24px;padding:0}
 .page-background-row>input:not([type=color]){height:26px;min-width:0;font-size:10px}
 .page-background-row>.number-field{height:26px;min-height:26px;padding:0 6px;gap:0;position:relative}
-.page-background-row>.number-field>span{position:absolute;inset:0 auto 0 0;width:12px;overflow:hidden;color:transparent;font-size:0}
+.page-background-row>.number-field>span{position:absolute;inset:0 auto 0 0;width:12px;overflow:hidden;font-size:0}
 .page-background-row>.number-field>input{text-align:right;padding-right:9px;min-width:0}
 .page-background-row>.number-field:after{content:'%';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--muted);pointer-events:none}
