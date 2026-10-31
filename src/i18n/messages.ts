@@ -146,5 +146,13 @@ export const messages=[
  'Add column after {index}','Add row after {index}','Remove column {index}','Remove row {index}','Add after',
  'Shown at {x}% × {y}% · {width} × {height} px on canvas. Fields show the size before scale.','Apply scale to values','Select a layer.','This layer has no scale to apply.','Clear the mirrored scale first.','Apply scale on the main component.','Unlock this layer first.','Detach instances inside this layer first.','Main components cannot be rescaled this way.','This layer holds content that cannot be rescaled here.','Rich text cannot be rescaled here.','Apply the inner scale first.','Uneven scale with rotated contents would skew them. Scale evenly first.','Animated layers keep their scale.',
  'Gradient center','Angular gradient rotation','Diamond gradient size and rotation',
+
+ 'Brush presets','Brush preset choices','Illustration tools','Illustration tool choices','Edit points','Bend segments','Cut path','Erase path','Lasso points','Shape builder','Stretch',
+
+ 'Variable axes','Named instance','Custom position','Reset axes','Mixed axis values. Changing one sets all axes for the selected text.','Slider edits apply on release.',
+
+ 'Skin tone','Default skin tone','Light skin tone','Medium-light skin tone','Medium skin tone','Medium-dark skin tone','Dark skin tone','{count} local emoji. Search by name to find more. Appearance depends on the fonts on this Mac, so newer emoji can show as boxes on older systems.',
+
+ 'Knife',
 ] as const;
 export type Message=typeof messages[number];

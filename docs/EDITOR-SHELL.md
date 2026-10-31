@@ -10,7 +10,7 @@ Keyboard: the rail has one Tab stop. Up, Down, Home and End move and activate en
 
 ## Toolbelt, Draw mode and tool menus
 
-The toolbar's Toolbelt mode control switches between Design tools and Draw tools. Draw shows Pen, Pencil and Brush as direct buttons, with shapes and Text beside them, and picks Pencil unless a drawing tool is already active. View → Draw mode does the same. Returning to Design tools restores the full toolbar and the Move tool. The mode is view state: it is not saved, makes no document edit and adds no Undo step. Draw has no separate inspector. The selector hides below 1000 px wide, where View → Draw mode still works.
+The toolbar's Toolbelt mode control switches between Design tools and Draw tools. Draw shows Pen, Pencil and Brush as direct buttons, with shapes and Text beside them, and picks Pencil unless a drawing tool is already active. View → Draw mode does the same. Returning to Design tools restores the full toolbar and the Move tool. The mode is view state: it is not saved, makes no document edit and adds no Undo step. Draw also adds [Brush presets and Illustration tools menus](STRETCH-BRUSHES.md#draw-toolbar-ui-16-034). Draw has no separate inspector. The selector hides below 1000 px wide, where View → Draw mode still works.
 
 The Text tool now has a dropdown with Text, Text on path and Find and replace text. Text on path converts one selected contour path with the same validation and Undo as the inspector. Any other selection is refused with a message.
 

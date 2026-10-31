@@ -1,0 +1,31 @@
+import {test,expect} from '@playwright/test';
+import type {Page} from '@playwright/test';
+import fs from 'node:fs/promises';
+import {blankDocument,node,parseDocument} from '../../src/model';
+import {createStroke} from '../../src/paints';
+
+function fixture(){const d=blankDocument();d.pages[0].nodes=[node('path',{id:'vector',name:'Curve',x:160,y:200,width:300,height:120,pathWidth:300,pathHeight:120,fill:'none',strokes:[{...createStroke('#ff0000'),width:24,join:'round' as const}],contours:[{closed:false,points:[{x:0,y:120,out:{x:60,y:-160}},{x:300,y:120,in:{x:-60,y:-160}}]}]})];return d;}
+const errors=new WeakMap<Page,string[]>();test.beforeEach(({page})=>{const e:string[]=[];errors.set(page,e);page.on('pageerror',err=>e.push(err.message));});test.afterEach(({page})=>expect(errors.get(page)).toEqual([]));
+async function load(page:Page,d=fixture()){await page.addInitScript(doc=>{if(!localStorage.getItem('oui-active'))localStorage.setItem('oui-active',JSON.stringify(doc));},d);await page.goto('/');await page.getByRole('treeitem',{name:'Curve',exact:true}).click();await page.getByRole('button',{name:'Edit vector points',exact:true}).click();await page.locator('summary').filter({hasText:'Per-anchor stroke widths'}).click();}
+const state=(page:Page)=>page.evaluate(async()=>{const p='/src/store.ts',{useEditor}=await import(p),s=useEditor.getState(),n=s.doc.pages[0].nodes[0];return {points:n.contours![0].points,stroke:n.strokes![0],past:s.past.length,selection:s.vectorSelection};});
+const save=async(page:Page)=>{const pending=page.waitForEvent('download');await page.keyboard.press('Meta+s');return parseDocument(await fs.readFile((await(await pending).path())!,'utf8'));};
+const exportedPath=(page:Page)=>page.evaluate(async()=>{const p='/src/store.ts',f='/src/files.tsx',{useEditor}=await import(p),{exportSvg}=await import(f);return exportSvg(useEditor.getState().doc.pages[0].nodes);});
+
+test('a curved stroke converts to point widths in one Undo, tapers, and exports as a filled band',async({page})=>{
+ await load(page);await expect(page.getByLabel('Enable per-anchor widths',{exact:true})).toBeDisabled();const before=await state(page);await page.getByRole('button',{name:'Convert curves and enable',exact:true}).click();await expect(page.getByLabel('Enable per-anchor widths',{exact:true})).toBeChecked();const converted=await state(page);expect(converted.past).toBe(before.past+1);expect(converted.points.length).toBeGreaterThan(8);expect(converted.points.every(p=>!p.in&&!p.out)).toBe(true);expect(converted.stroke.variableWidth).toBe('points');
+ await page.getByLabel('Stroke taper preset',{exact:true}).selectOption('both');await expect.poll(async()=>(await state(page)).points[0].widthScale).toBe(0);const tapered=await state(page);expect(tapered.past).toBe(converted.past+1);expect(tapered.points.at(-1)!.widthScale).toBe(0);expect(Math.max(...tapered.points.map(p=>p.widthScale!))).toBeGreaterThan(.9);await expect(page.getByLabel('Stroke taper preset',{exact:true})).toHaveValue('');const svg=await exportedPath(page);expect(svg).toContain('fill="#ff0000"');expect(svg).not.toContain('NaN');
+ const saved=await save(page);expect(saved.pages[0].nodes[0].contours![0].points.map(p=>p.widthScale)).toEqual(tapered.points.map(p=>p.widthScale));
+ await page.getByRole('button',{name:'Finish editing points',exact:true}).click().catch(()=>{});await page.keyboard.press('Escape');await page.locator('#forma-design-canvas').focus();await page.keyboard.press('Meta+z');await expect.poll(async()=>(await state(page)).points[0].widthScale).toBe(1);await page.keyboard.press('Meta+z');await expect.poll(async()=>(await state(page)).points.length).toBe(2);const restored=await state(page);expect(restored.points[0].out).toEqual({x:60,y:-160});expect(restored.stroke.variableWidth).toBeUndefined();
+});
+test('adding a width point inserts one selected anchor without moving the line',async({page})=>{
+ const d=fixture();d.pages[0].nodes[0].contours![0].points=[{x:0,y:60,widthScale:1},{x:300,y:60,widthScale:3}];d.pages[0].nodes[0].strokes![0].variableWidth='points';await load(page,d);const before=await state(page);await page.getByRole('spinbutton',{name:'New width point position',exact:true}).fill('25');await page.getByRole('button',{name:'Add width point',exact:true}).click();await expect.poll(async()=>(await state(page)).points.length).toBe(3);const after=await state(page);expect(after.past).toBe(before.past+1);expect(after.selection).toEqual(['0:1']);expect(after.points[1]).toMatchObject({x:75,y:60,widthScale:1.5});await expect(page.getByLabel('Stroke width anchor',{exact:true})).toHaveValue('0:1');await page.getByRole('spinbutton',{name:'Anchor stroke width',exact:true}).fill('60');await page.getByRole('spinbutton',{name:'Anchor stroke width',exact:true}).press('Enter');await expect.poll(async()=>(await state(page)).points[1].widthScale).toBe(2.5);
+});
+test('a bad width point position reports an error and changes nothing',async({page})=>{
+ const d=fixture();d.pages[0].nodes[0].contours![0].points=[{x:0,y:60,widthScale:1},{x:300,y:60,widthScale:3}];d.pages[0].nodes[0].strokes![0].variableWidth='points';await load(page,d);const before=await state(page);await page.getByRole('spinbutton',{name:'New width point position',exact:true}).fill('140');await page.getByRole('button',{name:'Add width point',exact:true}).click();await expect(page.getByRole('status').getByText('Place a width point from 1% to 99% along the segment.',{exact:true})).toBeVisible();expect(await state(page)).toEqual(before);
+});
+test('a dashed curve is refused with a message and stays unchanged',async({page})=>{
+ const d=fixture();d.pages[0].nodes[0].strokes![0].dash=[4,4];await load(page,d);const before=await state(page);await page.getByRole('button',{name:'Convert curves and enable',exact:true}).click();await expect(page.getByRole('status').getByText(/Point widths require/)).toBeVisible();expect(await state(page)).toEqual(before);
+});
+test('closed curves offer no conversion',async({page})=>{
+ const d=fixture();d.pages[0].nodes[0].contours![0].closed=true;await load(page,d);await expect(page.getByRole('button',{name:'Convert curves and enable',exact:true})).toHaveCount(0);
+});

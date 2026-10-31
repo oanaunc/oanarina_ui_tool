@@ -1,0 +1,29 @@
+import {describe,expect,it} from 'vitest';
+import {blankDocument,node,parseDocument} from '../src/model';
+import type {DesignNode} from '../src/model';
+import {createStroke} from '../src/paints';
+import {eraseVectorFill,eraseVectorGeometry,hasVisibleFill,validateVectorEraserTarget} from '../src/vector-eraser-fill';
+import {eraseVectorStroke} from '../src/vector-eraser-geometry';
+import {geometricArea,geometry} from '../src/geometry';
+import {identity} from '../src/transforms';
+import type {Matrix} from '../src/transforms';
+
+const square=(extra:Partial<DesignNode>={})=>node('path',{id:'s',x:0,y:0,width:200,height:200,pathWidth:200,pathHeight:200,fill:'#ff0000',stroke:'',strokes:[],contours:[{closed:true,points:[{x:0,y:0},{x:200,y:0},{x:200,y:200},{x:0,y:200}]}],...extra});
+const inside=(n:DesignNode,x:number,y:number)=>{const p=geometry(n);try{return p.contains({x,y} as never);}finally{p.remove();}};
+const brush=(points:{x:number;y:number}[],diameter=40,shape:'round'|'square'='round')=>({points,diameter,shape});
+const erased=(n:DesignNode,m:Matrix,b:ReturnType<typeof brush>)=>({...n,contours:eraseVectorFill(n,m,b)});
+
+describe('erasing filled shapes',()=>{
+ it('bites a round notch out of an edge with the true swept area',()=>{const n=square(),out=erased(n,identity,brush([{x:100,y:0},{x:100,y:0}])),expected=40000-Math.PI*400/2;expect(Math.abs(geometricArea(out)-expected)/expected).toBeLessThan(.002);expect(inside(out,100,5)).toBe(false);expect(inside(out,100,30)).toBe(true);expect(out.contours).toHaveLength(1);});
+ it('cuts a hole when the brush stays inside',()=>{const out=erased(square(),identity,brush([{x:60,y:100},{x:140,y:100}]));expect(out.contours).toHaveLength(2);expect(inside(out,100,100)).toBe(false);expect(inside(out,100,40)).toBe(true);const expected=40000-(80*40+Math.PI*400);expect(Math.abs(geometricArea(out)-expected)/expected).toBeLessThan(.002);});
+ it('splits a shape in two when the sweep crosses it',()=>{const out=erased(square(),identity,brush([{x:-20,y:100},{x:220,y:100}]));expect(out.contours).toHaveLength(2);expect(inside(out,100,20)).toBe(true);expect(inside(out,100,180)).toBe(true);expect(inside(out,100,100)).toBe(false);});
+ it('follows every step of a bending sweep',()=>{const out=erased(square(),identity,brush([{x:40,y:40},{x:160,y:40},{x:160,y:160}],20));expect(inside(out,100,40)).toBe(false);expect(inside(out,160,100)).toBe(false);expect(inside(out,100,100)).toBe(true);});
+ it('uses a square brush that keeps canvas axes',()=>{const out=erased(square(),identity,brush([{x:100,y:100},{x:100,y:100}],40,'square'));expect(inside(out,119,119)).toBe(false);expect(inside(out,121,121)).toBe(true);const round=erased(square(),identity,brush([{x:100,y:100},{x:100,y:100}]));expect(inside(round,117,117)).toBe(true);});
+ it('maps the brush through the layer transform',()=>{const n=square(),scaled:Matrix=[2,0,0,2,50,50],out=erased(n,scaled,brush([{x:250,y:250},{x:250,y:250}],40));expect(inside(out,100,100)).toBe(false);expect(inside(out,100,92)).toBe(false);expect(inside(out,100,88)).toBe(true);});
+ it('keeps curves it does not touch and existing even-odd holes',()=>{const n=square({fillRule:'evenodd',contours:[{closed:true,points:[{x:0,y:0},{x:200,y:0},{x:200,y:200},{x:0,y:200}]},{closed:true,points:[{x:80,y:80},{x:120,y:80},{x:120,y:120},{x:80,y:120}]}]}),out=erased(n,identity,brush([{x:20,y:20},{x:20,y:20}],20));expect(inside(out,100,100)).toBe(false);expect(inside(out,20,20)).toBe(false);expect(inside(out,150,150)).toBe(true);const round=square({contours:[{closed:true,points:[{x:0,y:100,in:{x:0,y:55},out:{x:0,y:-55}},{x:100,y:0,in:{x:-55,y:0},out:{x:55,y:0}},{x:200,y:100,in:{x:0,y:-55},out:{x:0,y:55}},{x:100,y:200,in:{x:55,y:0},out:{x:-55,y:0}}]}]}),nibbled=erased(round,identity,brush([{x:100,y:0},{x:100,y:0}],20));expect(nibbled.contours![0].points.some(p=>p.out&&Math.hypot(p.out.x,p.out.y)>30)).toBe(true);});
+ it('returns the same contours for a miss, so no history is made',()=>{const n=square();expect(eraseVectorFill(n,identity,brush([{x:900,y:900},{x:900,y:900}]))).toBe(n.contours);});
+ it('refuses erasing everything, leaving the source alone',()=>{const n=square({width:20,height:20,pathWidth:20,pathHeight:20,contours:[{closed:true,points:[{x:0,y:0},{x:20,y:0},{x:20,y:20},{x:0,y:20}]}]}),before=JSON.stringify(n);expect(()=>eraseVectorFill(n,identity,brush([{x:10,y:10},{x:10,y:10}],200))).toThrow('entire shape');expect(JSON.stringify(n)).toBe(before);});
+ it('refuses open filled paths, masks, Booleans, effects and bad brushes',()=>{for(const patch of [{contours:[{closed:false,points:[{x:0,y:0},{x:100,y:100}]}]},{mask:{mode:'vector'}},{booleanOp:'union'}] as Partial<DesignNode>[])expect(()=>validateVectorEraserTarget(square(patch))).toThrow();expect(()=>eraseVectorFill(square(),identity,brush([{x:0,y:0}],0))).toThrow('diameter');expect(()=>eraseVectorFill(square(),identity,brush([]))).toThrow();expect(()=>eraseVectorFill(square(),identity,brush([{x:NaN,y:0}]))).toThrow();expect(()=>eraseVectorFill(node('rectangle',{fill:'#ff0000'}),identity,brush([{x:0,y:0}]))).toThrow('contour path');});
+ it('routes fills and strokes to their own methods',()=>{const stroke=square({fill:'none',strokes:[createStroke('#000000',4)],paints:[],contours:[{closed:false,points:[{x:0,y:100},{x:200,y:100}]}]});expect(hasVisibleFill(stroke)).toBe(false);expect(hasVisibleFill(square())).toBe(true);expect(eraseVectorGeometry(stroke,identity,brush([{x:100,y:100},{x:100,y:100}]))).toEqual(eraseVectorStroke(stroke,identity,brush([{x:100,y:100},{x:100,y:100}])));});
+ it('saves as ordinary closed contours in the same layer basis',()=>{const n=square(),out=erased(n,identity,brush([{x:100,y:0},{x:100,y:0}])),d=blankDocument();d.pages[0].nodes=[out];const saved=parseDocument(JSON.stringify(d)).pages[0].nodes[0];expect(saved.contours).toEqual(out.contours);expect(saved).toMatchObject({x:0,y:0,width:200,height:200,pathWidth:200});});
+});

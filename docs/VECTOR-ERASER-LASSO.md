@@ -1,5 +1,9 @@
 # Vector eraser and lasso
 
+## Filled shape eraser
+
+When the path has a visible fill, the same tool removes area instead of centerline intervals, using `src/vector-eraser-fill.ts`. The sweep is built in canvas space, mapped through the inverse layer transform, and subtracted from the shape with Paper Booleans, so scale and skew erase what the pointer covered on screen. Round brushes use 32-sided capsules, so erased edges are short straight segments, not true arcs. The result can bite an edge, open a hole or split the shape into separate contours within the same layer. Identity, basis, pose and paints stay, and the layer box is not tightened. Untouched curves stay curves. A miss makes no history, erasing everything is refused, and the budgets are 128 contours and 2,048 anchors. Open filled paths, masks, live Booleans, visible effects and automatic layout refuse.
+
 ## Stroke eraser
 
 In the point inspector, open **Vector eraser**, choose a **Round** or **Square** brush and diameter from 1 to 500 canvas units, then enable **Erase vector strokes**. Drag and release on the canvas. A translucent continuous brush sweep and an actual geometry preview show the operation before release; saved geometry remains unchanged until release. Round brushes sweep circular capsules; square brushes remain aligned to the canvas axes and sweep the convex hull between consecutive positions. Sparse pointer positions are connected continuously, with no unpainted sampling gaps. Brush sizes remain canvas sizes while zoom changes their displayed screen size.

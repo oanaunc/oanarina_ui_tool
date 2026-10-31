@@ -25,7 +25,7 @@ Curves use the existing bounded adaptive flattening with a **0.25-unit local con
 
 ## Explicit refusals and work limits
 
-Gradient/image stroke paints, multiple saved strokes, different/translucent existing fills, arrowheads, visible effects, zero dash entries, zero-length/degenerate/reversing contours, crossing/touching input geometry and inside/outside open-path clipping remain unsupported. Hidden or inherited-locked targets, managed instance descendants, containers, live booleans, Motion, non-Design mode and Slides cannot start conversion. Component or workspace/layout control that changes the final geometry prevents commit.
+Gradient and image strokes outline with their paint moved to the fill, and with no visible fill alongside them. The paint then maps to the outlined shape's own box, which is larger than the path by the stroke width, so a gradient can shift slightly. Multiple saved strokes, different/translucent existing fills, arrowheads, visible effects, zero dash entries, zero-length/degenerate/reversing contours, crossing/touching input geometry and inside/outside open-path clipping remain unsupported. Hidden or inherited-locked targets, managed instance descendants, containers, live booleans, Motion, non-Design mode and Slides cannot start conversion. Component or workspace/layout control that changes the final geometry prevents commit.
 
 The proposal belongs to one document/page/selection, tool, vector target, camera, modal and Home/UI/Motion/mode context. Changed context, window blur or hidden-document visibility expires it. Escape/Cancel closes it without mutation. There is no native filesystem/IPC expansion, external project upload or broad desktop codec/assistive-technology claim.
 

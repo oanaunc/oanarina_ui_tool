@@ -1,0 +1,35 @@
+import {beforeEach,describe,expect,it} from 'vitest';
+import {blankDocument,node,parseDocument} from '../src/model';
+import type {DesignNode,VectorContour} from '../src/model';
+import {useEditor} from '../src/store';
+import {captureColorContext} from '../src/color-edit-context';
+import {convertToTextPath,flipTextPath,returnToBaselinePath,textPathCandidate} from '../src/text-path-actions';
+import {canBecomeTextPath,nearestPathLength,offsetPercent,openedContour,reclosedContour,reversedContour} from '../src/text-path-baseline';
+import {textBaselinePath,validateTextPathNode} from '../src/text-path';
+
+const loop:VectorContour={closed:true,points:[{x:0,y:50,in:{x:0,y:30},out:{x:0,y:-30}},{x:50,y:0,in:{x:-30,y:0},out:{x:30,y:0}},{x:100,y:50,in:{x:0,y:-30},out:{x:0,y:30}},{x:50,y:100,in:{x:30,y:0},out:{x:-30,y:0}}]};
+const shape=(extra:Partial<DesignNode>={})=>node('path',{id:'s',x:10,y:20,width:100,height:100,pathWidth:100,pathHeight:100,text:'Around',fontSize:12,fill:'#ff0000',stroke:'',strokes:[],contours:[structuredClone(loop)],...extra});
+const proof=()=>({origin:captureColorContext(useEditor.getState()),valid:true});
+function setup(n:DesignNode){const d=blankDocument();d.pages[0].nodes=[n];useEditor.getState().load(d);useEditor.getState().set({selection:[n.id],tool:'move',mode:'design',home:false,modal:null,uiHidden:false,motionOpen:false,outlines:false});}
+const live=()=>useEditor.getState().doc.pages[0].nodes[0];
+beforeEach(()=>useEditor.getState().set({past:[],future:[]}));
+
+describe('closed shapes as baselines',()=>{
+ it('opens a loop into a contour ending on its start, keeping every curve segment',()=>{const open=openedContour(loop);expect(open.closed).toBe(false);expect(open.points).toHaveLength(5);expect(open.points[0]).toEqual({x:0,y:50,out:{x:0,y:-30}});expect(open.points[4]).toEqual({x:0,y:50,in:{x:0,y:30}});expect(open.points.slice(1,4)).toEqual(loop.points.slice(1));expect(openedContour(open)).toBe(open);});
+ it('reopens and recloses without losing a handle, and leaves real open paths alone',()=>{expect(reclosedContour(openedContour(loop))).toEqual(loop);const open:VectorContour={closed:false,points:[{x:0,y:0},{x:10,y:0},{x:20,y:0}]};expect(reclosedContour(open)).toBe(open);const two:VectorContour={closed:false,points:[{x:0,y:0},{x:0,y:0}]};expect(reclosedContour(two)).toBe(two);});
+ it('passes the unchanged baseline validator, so every build reads it',()=>{const next=textPathCandidate(shape());expect(()=>validateTextPathNode(next)).not.toThrow();expect(next.contours![0].closed).toBe(false);expect(textBaselinePath(next).match(/C/g)).toHaveLength(4);});
+ it('still refuses a saved text path marked closed',()=>{const next=textPathCandidate(shape());next.contours=[{...next.contours![0],closed:true}];expect(()=>validateTextPathNode(next)).toThrow('one open contour');});
+ it('accepts ellipses, rectangles, polygons and stars, baking their pose',()=>{for(const type of ['ellipse','rectangle','polygon','star'] as const){const n=node(type,{id:type,x:50,y:60,width:200,height:100,text:'Around',fontSize:12,fill:'#ff0000',stroke:'',strokes:[]}),next=textPathCandidate(n);expect(canBecomeTextPath(n)).toBe(true);expect(next.type).toBe('text');expect(next.contours![0].closed,type).toBe(false);expect(()=>validateTextPathNode(next),type).not.toThrow();if(type==='ellipse'||type==='rectangle'){expect(next.x,type).toBeCloseTo(50,3);expect(next.width,type).toBeCloseTo(200,3);}}const turned=textPathCandidate(node('rectangle',{id:'t',x:0,y:0,width:100,height:100,rotation:45,fill:'#ff0000',stroke:'',strokes:[]}));expect(turned.rotation).toBe(0);expect(turned.width).toBeCloseTo(100*Math.SQRT2,2);});
+ it('refuses non-vectors, multiple contours and oversized loops before changing anything',()=>{expect(canBecomeTextPath(node('frame'))).toBe(false);expect(()=>textPathCandidate(node('frame'))).toThrow('vector shape');expect(()=>textPathCandidate(shape({contours:[structuredClone(loop),structuredClone(loop)]}))).toThrow('single contour');const big=shape({contours:[{closed:true,points:Array.from({length:64},(_,i)=>({x:i,y:i%2}))}]}),raw=JSON.stringify(big);expect(()=>textPathCandidate(big)).toThrow('2–64 anchors');expect(JSON.stringify(big)).toBe(raw);});
+ it('round trips through conversion, Undo, save and return to a closed path',()=>{setup(shape());expect(convertToTextPath(proof(),'s')).toBe(true);expect(useEditor.getState().past).toHaveLength(1);expect(live().type).toBe('text');const saved=parseDocument(JSON.stringify(useEditor.getState().doc));expect(saved.pages[0].nodes[0].contours).toEqual(live().contours);expect(returnToBaselinePath(proof(),'s')).toBe(true);expect(live().type).toBe('path');expect(live().contours).toEqual([loop]);useEditor.getState().undo();useEditor.getState().set({selection:['s']});expect(live().type).toBe('text');useEditor.getState().undo();expect(live().contours![0].closed).toBe(true);});
+});
+describe('flipping',()=>{
+ it('reverses travel and swaps each handle pair',()=>{const c:VectorContour={closed:false,points:[{x:0,y:0,out:{x:5,y:5}},{x:100,y:0,in:{x:-5,y:5}}]},flipped=reversedContour(c);expect(flipped.points).toEqual([{x:100,y:0,out:{x:-5,y:5}},{x:0,y:0,in:{x:5,y:5}}]);expect(reversedContour(flipped)).toEqual(c);});
+ it('flips in one Undo, mirrors the offset, and a second flip restores the layer',()=>{const n=textPathCandidate(shape());n.textPath={startOffset:20};setup(n);const before=structuredClone(live());expect(flipTextPath(proof(),'s')).toBe(true);expect(live().textPath).toEqual({startOffset:80});expect(useEditor.getState().past).toHaveLength(1);expect(()=>validateTextPathNode(live())).not.toThrow();expect(flipTextPath(proof(),'s')).toBe(true);expect(live().contours).toEqual(before.contours);expect(live().textPath).toEqual({startOffset:20});});
+ it('refuses plain paths and stale proofs',()=>{setup(shape({contours:[{closed:false,points:[{x:0,y:0},{x:100,y:0}]}]}));expect(()=>flipTextPath(proof(),'s')).toThrow('Select a text path');const n=textPathCandidate(shape());setup(n);const stale=proof();useEditor.getState().set({selection:[]});expect(()=>flipTextPath(stale,'s')).toThrow();expect(live().textPath).toEqual({startOffset:0});});
+});
+describe('offset from a pointer',()=>{
+ const line={getTotalLength:()=>200,getPointAtLength:(l:number)=>({x:l,y:0})},circle={getTotalLength:()=>2*Math.PI*50,getPointAtLength:(l:number)=>({x:50*Math.cos(l/50),y:50*Math.sin(l/50)})};
+ it('finds the nearest length on lines and curves, clamped to the ends',()=>{expect(nearestPathLength(line,{x:60,y:40})).toBeCloseTo(60,1);expect(nearestPathLength(line,{x:-30,y:0})).toBe(0);expect(nearestPathLength(line,{x:500,y:9})).toBe(200);expect(nearestPathLength(circle,{x:0,y:120})).toBeCloseTo(Math.PI*25,1);});
+ it('rounds to a tenth of a percent inside the valid range',()=>{expect(offsetPercent(50,200)).toBe(25);expect(offsetPercent(33.333,100)).toBe(33.3);expect(offsetPercent(300,200)).toBe(100);expect(offsetPercent(-5,200)).toBe(0);expect(offsetPercent(5,0)).toBe(0);expect(nearestPathLength({getTotalLength:()=>0,getPointAtLength:()=>({x:0,y:0})},{x:1,y:1})).toBe(0);});
+});
