@@ -17494,10 +17494,10 @@
     "category": "Performance and reliability",
     "name": "Viewport culling",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: bounded conservative whole-root-subtree culling on the Design/Whiteboard canvas, with opt-out, selected/editing retention, exact immutable source index and measured viewport. Real omitted DOM/defs plus on/off pixels, pan/zoom/resize/Undo/export checks. Uncertain text/effect/media/Boolean/complex-stroke roots stay rendered; root mask runs and unsupported scenes fall back fully. Shared Artwork/model/exports unchanged. See docs/CANVAS-VIEWPORT-CULLING.md."
   },
   {
     "id": "UI-53-004",
