@@ -1,3 +1,4 @@
+import {validateDocumentDynamicStrokes} from './dynamic-stroke';
 import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
 import {validateDocumentAnnotations} from './layer-annotations';
@@ -34,6 +35,7 @@ export function validateDocumentMetadata(document:{fileCover?:unknown;descriptio
  if(value!==undefined&&(typeof value!=='string'||value.length>DOCUMENT_DESCRIPTION_LIMIT||forbiddenControls.test(value)))throw Error('File description must be plain text up to 10,000 characters, without disallowed control characters.');
  validateDocumentCornerSmoothing(document);
  validateDocumentVariableWidths(document);
+ validateDocumentDynamicStrokes(document);
  validateDocumentRotationOrigins(document);
  validateDocumentProgressiveBlur(document);
  validateDocumentSurfaces(document);

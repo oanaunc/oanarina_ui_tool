@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project.ts';
+import {blankDocument,node} from '../../src/model.ts';
+import {createStroke} from '../../src/paints.ts';
+import {dynamicStrokePath} from '../../src/dynamic-stroke.ts';
+test('source MCP dynamic stroke metadata renders, persists, refuses malformed batches atomically and supports Undo',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-dynamic-'));try{const d=blankDocument();d.fonts=[];const stroke={...createStroke('#ff0000'),width:20,join:'round' as const};d.pages[0].nodes=[node('path',{id:'wave',width:300,height:100,pathWidth:300,pathHeight:100,fill:'none',contours:[{closed:false,points:[{x:0,y:50},{x:300,y:50}]}],strokes:[stroke]})];const file=path.join(dir,'wave.oui');await fs.writeFile(file,JSON.stringify(d));const p=await Project.open(file),first=await p.read(),changed=await p.apply(first.revision,[{op:'update_node',pageId:d.pages[0].id,nodeId:'wave',properties:{strokes:[{...stroke,dynamic:{wiggle:1,frequency:3}}]}}]);const out=changed.document.pages[0].nodes[0];assert.deepEqual(out.strokes![0].dynamic,{wiggle:1,frequency:3});assert.ok(dynamicStrokePath(out,out.strokes![0]).length>100);const raw=await fs.readFile(file,'utf8');await assert.rejects(p.apply(changed.revision,[{op:'rename_document',name:'Must roll back'},{op:'update_node',pageId:d.pages[0].id,nodeId:'wave',properties:{strokes:[{...stroke,dynamic:{wiggle:1,frequency:17}}]}}]));assert.equal(await fs.readFile(file,'utf8'),raw);assert.equal((await p.undo(changed.revision)).document.pages[0].nodes[0].strokes![0].dynamic,undefined);}finally{await fs.rm(dir,{recursive:true,force:true});}});
