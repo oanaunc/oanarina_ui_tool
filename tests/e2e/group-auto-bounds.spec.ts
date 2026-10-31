@@ -1,0 +1,9 @@
+import {test,expect} from '@playwright/test';
+import type {Page} from '@playwright/test';
+import fs from 'node:fs/promises';
+import {blankDocument,node,parseDocument} from '../../src/model';
+import type {DesignDocument} from '../../src/model';
+function fixture(){const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('group',{id:'g',name:'Cluster',x:100,y:100,width:200,height:100,fill:'none'}),node('rectangle',{id:'a',name:'Left',parentId:'g',x:100,y:100,width:80,height:100}),node('rectangle',{id:'b',name:'Right',parentId:'g',x:220,y:100,width:80,height:100})];return d;}
+async function load(page:Page,d:DesignDocument){await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.getByRole('menubar')).toBeVisible();}
+async function save(page:Page){const wait=page.waitForEvent('download');await page.keyboard.press('Meta+s');return parseDocument(await fs.readFile((await(await wait).path())!,'utf8'));}
+test('dragging a grouped child refits the group bounds in one Undo and they persist',async({page})=>{await load(page,fixture());await page.getByRole('treeitem',{name:'Right',exact:true}).click();const box=await page.locator('[data-node-id="b"]').first().boundingBox();expect(box).toBeTruthy();await page.mouse.move(box!.x+box!.width/2,box!.y+box!.height/2);await page.mouse.down();await page.mouse.move(box!.x+box!.width/2+60,box!.y+box!.height/2,{steps:6});await page.mouse.move(box!.x+box!.width/2+120,box!.y+box!.height/2,{steps:6});await page.mouse.up();await expect.poll(async()=>{const saved=await save(page),g=saved.pages[0].nodes.find(n=>n.id==='g')!,b=saved.pages[0].nodes.find(n=>n.id==='b')!;return Math.abs(g.x+g.width-(b.x+b.width))<.01&&b.x>220;}).toBe(true);await page.keyboard.press('Meta+z');const restored=await save(page);expect(restored.pages[0].nodes.find(n=>n.id==='g')).toMatchObject({x:100,width:200});expect(restored.pages[0].nodes.find(n=>n.id==='b')?.x).toBe(220);});
