@@ -1,0 +1,5 @@
+import {expect,it} from 'vitest';
+import {node} from '../src/model';
+import {diffPixels,versionDiffViewport} from '../src/version-pixel-diff';
+it('counts only pixels past the threshold and marks them',()=>{const a=new Uint8ClampedArray([0,0,0,255,10,10,10,255]),b=new Uint8ClampedArray([200,0,0,255,20,10,10,255]),r=diffPixels(a,b,24);expect(r.changed).toBe(1);expect(r.total).toBe(2);expect([...r.pixels.slice(0,4)]).toEqual([255,0,128,255]);expect(r.pixels[4]).toBeGreaterThan(180);expect(()=>diffPixels(a,new Uint8ClampedArray(4))).toThrow('same size');});
+it('uses the union of both sides, scales a long page down and refuses two empty sides',()=>{const left=[node('rectangle',{id:'a',x:10,y:10,width:100,height:50,stroke:'',strokeWidth:0})],right=[node('rectangle',{id:'b',x:3000,y:0,width:100,height:50,stroke:'',strokeWidth:0})];const view=versionDiffViewport(left,right);expect(view).toMatchObject({x:10,y:0,width:3090,height:60});expect(view.pixelWidth).toBe(1600);expect(view.scale).toBeCloseTo(1600/3090);expect(()=>versionDiffViewport([],[])).toThrow('Neither side');});
