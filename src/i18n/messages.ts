@@ -140,5 +140,6 @@ export const messages=[
  'Previous match','Next match','Reveal selected layer','Selected text match','Text matches','Previous results',
  'Next results','Close the motion timeline to replace base text.','Replace match','Replace all editable matches','Close search',
  'Nested instance','Swap nested instance','Exposed nested instances','Expose properties to instances',
+ 'Keep shapes as vectors','Solid shapes stay sharp at any zoom. Text, images, gradients and effects stay at the chosen resolution, and a page with too many of those areas is flattened.',
 ] as const;
 export type Message=typeof messages[number];
