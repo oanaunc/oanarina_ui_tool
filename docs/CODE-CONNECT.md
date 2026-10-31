@@ -30,7 +30,7 @@ Inspect's **Code generator** list starts with Forma's approximate CSS. Local plu
 
 That run has only `forma.codegen.input()`, `forma.codegen.result({sections:[{title,language,code}]})` and `forma.log`. `input()` returns the chosen language and the layer's type, name, geometry, opacity, radius, solid fill, layout values and, for text, its text and typography. It excludes comments, annotations, embedded images, code layer source and every other layer. Reads, storage, network and the interface all refuse, whatever else the package declares. A result holds up to 8 sections of 200,000 characters and renders as plain text. Changing the selection or document cancels the run.
 
-Unlike Figma, Forma does not regenerate automatically on selection, because each generate executes third-party code.
+Regeneration on selection is opt-in. **Generate on each selection** is off by default and remembered per device with the generator, because each generate executes third-party code. Each run is still one fresh sandbox holding only that layer, and changing the selection cancels a run in progress.
 
 ## Validation
 
