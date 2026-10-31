@@ -1,7 +1,8 @@
-import {beforeEach,it,expect} from 'vitest';
+import {beforeEach,describe,it,expect} from 'vitest';
 import {blankDocument,node,parseDocument} from '../src/model';
 import {createStroke} from '../src/paints';
-import {dynamicStrokeGeometry,dynamicStrokePath,dynamicStrokeMaxWidth,validateDocumentDynamicStrokes} from '../src/dynamic-stroke';
+import type {StrokeStyle} from '../src/paints';
+import {dynamicProfile,dynamicStrokeGeometry,dynamicStrokePath,dynamicStrokeMaxWidth,validateDocumentDynamicStrokes,validateDynamicStroke} from '../src/dynamic-stroke';
 import {applyDynamicStroke,dynamicStrokeProof} from '../src/dynamic-stroke-actions';
 import {useEditor} from '../src/store';
 import {useMaskView} from '../src/mask-view';
@@ -30,3 +31,9 @@ it('maximum supported source on a 20k-layer, 64-ancestor page uses bounded cache
 it('disabling absent metadata on legacy strokes is a true no-op without materializing a stack',()=>{setup(false);useEditor.getState().edit(d=>{const n=d.pages[0].nodes[0];delete n.strokes;n.stroke='#ff0000';n.strokeWidth=20;});const before=useEditor.getState();expect(applyDynamicStroke(dynamicStrokeProof(),'wave',undefined)).toBe(false);expect(useEditor.getState().doc).toBe(before.doc);expect(useEditor.getState().past).toBe(before.past);expect(useEditor.getState().doc.pages[0].nodes[0].strokes).toBeUndefined();});
 it('prototype Smart animate refuses dynamic subtrees before producing transient unsupported boxes',async()=>{const {smartAnimate,validateProgressiveSmartAnimate}=await import('../src/prototype'),d=blankDocument(),frame=node('frame',{id:'f',x:0,y:0,width:600,height:300}),other=node('frame',{id:'other',x:700,y:0,width:600,height:300}),n=dynamicPath();n.parentId='f';d.pages[0].nodes=[frame,n,other];expect(()=>validateProgressiveSmartAnimate(d.pages[0],'f',d.pages[0],'other')).toThrow(/Dynamic strokes.*Smart animate/);expect(()=>smartAnimate(d.pages[0],'f',d.pages[0],'other',1.2)).toThrow(/Dynamic strokes/);expect(()=>validateProgressiveSmartAnimate(d.pages[0],'other',d.pages[0],'other')).not.toThrow();});
 it('microscopic contours refuse sub-resolution frequency rather than silently coalescing away cycles',()=>{const n=dynamicPath();n.width=n.pathWidth=.00002;n.contours=[{closed:false,points:[{x:0,y:50},{x:.00002,y:50}]}];n.strokes![0].dynamic={wiggle:1,frequency:16};expect(()=>dynamicStrokeGeometry(n)).toThrow(/too short.*frequency/);n.width=n.pathWidth=.003;n.contours[0].points[1].x=.003;expect(dynamicStrokeGeometry(n).node.contours![0].points).toHaveLength(257);});
+describe('smoothen and irregular bumps',()=>{
+ it('keeps old strokes exactly, and draws the same irregular profile every time',()=>{const plain={wiggle:.5,frequency:3};for(const t of [0,.1,.33,.72])expect(dynamicProfile(plain,t)).toBeCloseTo(Math.sin(2*Math.PI*3*t),12);const noise={...plain,noise:true};expect(dynamicProfile(noise,.21)).toBe(dynamicProfile({...noise},.21));expect(dynamicProfile(noise,.21)).not.toBeCloseTo(dynamicProfile(plain,.21),3);});
+ it('wraps at the seam of a closed contour',()=>{const noise={wiggle:1,frequency:2,noise:true};expect(dynamicProfile(noise,0)).toBeCloseTo(dynamicProfile(noise,1-1e-9),5);expect(dynamicProfile({...noise,smoothen:.5},0)).toBeCloseTo(dynamicProfile({...noise,smoothen:.5},1-1e-9),5);});
+ it('smoothen reduces the swing of the profile',()=>{const swing=(smoothen:number)=>{const d={wiggle:1,frequency:3,noise:true,smoothen},values=Array.from({length:400},(_,i)=>dynamicProfile(d,i/400));return Math.max(...values)-Math.min(...values);};expect(swing(1)).toBeLessThan(swing(.4));expect(swing(.4)).toBeLessThan(swing(0));});
+ it('validates the new optional fields',()=>{const stroke=(dynamic:object)=>({...createStroke('#000000'),join:'round' as const,dynamic}) as StrokeStyle;expect(()=>validateDynamicStroke(stroke({wiggle:.2,frequency:2,smoothen:.5,noise:true}))).not.toThrow();expect(()=>validateDynamicStroke(stroke({wiggle:.2,frequency:2,smoothen:2}))).toThrow();expect(()=>validateDynamicStroke(stroke({wiggle:.2,frequency:2,noise:'yes'}))).toThrow();});
+});
