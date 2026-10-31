@@ -18,7 +18,7 @@ export function watchDialogFocus(doc:Document=document){
  const observer=new MutationObserver(sync);observer.observe(doc.body,{childList:true,subtree:true});sync();doc.addEventListener('keydown',key,true);doc.addEventListener('focusin',focus);
  return()=>{observer.disconnect();doc.removeEventListener('keydown',key,true);doc.removeEventListener('focusin',focus);};
 }
-const REGIONS=['.menubar','#editor-sidebar-left','.canvas-wrap','.toolbar','#editor-sidebar-right'];
+const REGIONS=['.menubar','#editor-sidebar-left','.canvas-wrap','.toolbar','#editor-sidebar-right','.slides-workspace'];
 /** F6 and Shift+F6 cycle the visible editor regions; a dialog keeps focus until it closes. */
 export function nextPanelRegion(current:number,count:number,backward:boolean){return count<1?-1:current<0?(backward?count-1:0):(current+(backward?-1:1)+count)%count;}
 export function watchPanelNavigation(doc:Document=document){

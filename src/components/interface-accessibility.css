@@ -1,30 +1,28 @@
 /* Focus indicators: one token, every focusable control, and at least 3:1 against panels in both themes. */
 .app{--focus-ring:#bf9ce9;--accent-fill:#d4b5d3;--on-accent:#392e40}
 .app.theme-light{--focus-ring:#6d4a96;--accent-fill:#6d4a96;--on-accent:#fff}
-button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visible,[role=button]:focus-visible,[role=tab]:focus-visible,[role=option]:focus-visible,[role=treeitem]:focus-visible,[role=menuitem]:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
-:is(input,select,textarea):focus-visible{outline:2px solid var(--focus-ring);outline-offset:-1px}
-.canvas-text-editor:focus-visible{outline:none}
-.number-field:focus-within{border-color:var(--focus-ring)}
-.number-field input:focus-visible{outline-offset:-2px}
-.menu [role^=menuitem]:focus-visible{outline-offset:-2px}
-.motion-timeline:focus-visible{outline:2px solid var(--focus-ring);outline-offset:-2px}
+.app :is(button,a,summary,[tabindex],[role=button],[role=tab],[role=option],[role=treeitem],[role=menuitem]):focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.app :is(input,select,textarea):focus-visible{outline:2px solid var(--focus-ring);outline-offset:-1px}
+.app .canvas-text-editor:focus-visible{outline:none}
+.app .number-field:focus-within{border-color:var(--focus-ring)}
+.app .number-field input:focus-visible,.app .menu [role^=menuitem]:focus-visible,.app .canvas-wrap svg:focus-visible,.app .motion-timeline:focus-visible{outline-offset:-2px}
 
 /* Rendered-contrast fixes for colors that bypass the theme tokens. */
-.file-subtitle span{color:var(--muted)}
-.theme-light :is(.toolbar>button,.tool-group>button){color:var(--text)}
-.action-palette-modes [aria-pressed=true]{background:var(--accent-fill);color:var(--on-accent)}
+.app .file-subtitle span{color:var(--muted)}
+.app.theme-light :is(.toolbar>button,.tool-group>button){color:var(--text)}
+.app .action-palette-modes [aria-pressed=true]{background:var(--accent-fill);color:var(--on-accent)}
 
 /* Tooltips shown on keyboard focus. Pointer events pass through, so a tip can never block a click. */
 .focus-tooltip{position:fixed;z-index:1000;transform:translate(-50%,-100%);max-width:min(320px,calc(100vw - 24px));padding:5px 8px;border-radius:5px;background:#111014;color:#fff;border:1px solid #ffffff59;font-size:11px;line-height:1.35;pointer-events:none;white-space:normal;text-align:center;box-shadow:0 4px 14px #0006}
 .focus-tooltip-below{transform:translate(-50%,0)}
-.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.error-announcer{position:fixed;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 
 /* Selection never depends on color alone: every selected state also changes shape. */
-.page-row.active,.home>aside>button.active,.systems-sidebar .active,:is([role=option],[role=tab],[role=treeitem])[aria-selected=true]{box-shadow:inset 3px 0 0 var(--focus-ring)}
-.toolbar .active{position:relative}
-.toolbar .active:after{content:'';position:absolute;inset-inline:6px;bottom:2px;height:2px;border-radius:1px;background:currentColor}
-.menu-container>button.active{text-decoration:underline;text-underline-offset:3px}
-[aria-pressed=true]:not(.toolbar *,.action-palette-modes *){box-shadow:inset 0 -2px 0 currentColor}
+.app :is(.page-row.active,.home>aside>button.active,.systems-sidebar .active,[role=option][aria-selected=true],[role=tab][aria-selected=true]){box-shadow:inset 3px 0 0 var(--focus-ring)}
+.app .toolbar .active{position:relative}
+.app .toolbar .active:after{content:'';position:absolute;inset-inline:6px;bottom:2px;height:2px;border-radius:1px;background:currentColor}
+.app .menu-container>button.active{text-decoration:underline;text-underline-offset:3px}
+.app [aria-pressed=true]:not(.toolbar *,.action-palette-modes *){box-shadow:inset 0 -2px 0 currentColor}
 
 /* Accent choices keep the same 4.5:1 text and 3:1 indicator guarantees as the default; see tests/interface-contrast.test.ts. */
 :root[data-accent=blue] .app{--accent:#9cc4ff;--focus-ring:#9cc4ff;--accent-fill:#9cc4ff;--on-accent:#10233f}

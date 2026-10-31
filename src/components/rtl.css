@@ -35,5 +35,5 @@
 [dir=rtl] .home-files-list .home-file-actions{right:auto;left:14px}
 [dir=rtl] .home-files-list .home-file-badges{right:auto;left:54px}
 [dir=rtl] .sidebar-layout-controls svg{transform:scaleX(-1)}
-[dir=rtl] .page-row.active,[dir=rtl] .home>aside>button.active,[dir=rtl] .systems-sidebar .active,[dir=rtl] :is([role=option],[role=tab],[role=treeitem])[aria-selected=true]{box-shadow:inset -3px 0 0 var(--focus-ring)}
+[dir=rtl] .app :is(.page-row.active,.home>aside>button.active,.systems-sidebar .active,[role=option][aria-selected=true],[role=tab][aria-selected=true]){box-shadow:inset -3px 0 0 var(--focus-ring)}
 [dir=rtl] .layer-row.selected{box-shadow:inset -2px 0 #bc9bde}

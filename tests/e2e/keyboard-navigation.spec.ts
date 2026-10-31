@@ -11,6 +11,10 @@ test('F6 cycles editor regions in both directions and stays out of dialogs',asyn
  await page.keyboard.press('Shift+F6');expect(await region(page)).toBe('right');await page.keyboard.press('Shift+F6');expect(await region(page)).toBe('toolbar');
  await page.keyboard.press('Meta+,');await expect(page.getByRole('dialog').first()).toBeVisible();await page.keyboard.press('F6');expect(await page.evaluate(()=>!!document.activeElement?.closest('[role=dialog]'))).toBe(true);
 });
+test('F6 reaches the Slides workspace',async({page})=>{
+ await start(page);await page.getByRole('menuitem',{name:'File',exact:true}).click();await page.getByRole('menuitem',{name:'New presentation'}).click();await expect(page.getByRole('region',{name:'Slides workspace'})).toBeVisible();
+ await page.keyboard.press('F6');await page.keyboard.press('F6');expect(await page.evaluate(()=>!!document.activeElement?.closest('.slides-workspace'))).toBe(true);await page.keyboard.press('F6');expect(await page.evaluate(()=>!!document.activeElement?.closest('.menubar'))).toBe(true);
+});
 test('F6 skips a collapsed sidebar',async({page})=>{
  await start(page);await page.getByRole('button',{name:'Hide layers sidebar'}).click();const seen:string[]=[];for(let i=0;i<4;i++){await page.keyboard.press('F6');seen.push(await region(page));}expect(seen).not.toContain('left');
 });
@@ -42,8 +46,8 @@ test('focusing a titled control shows a described tooltip that Escape dismisses'
  await page.mouse.click(700,300);await expect(tip).toHaveCount(0);await page.getByRole('button',{name:'Frame tool',exact:true}).hover();await page.getByRole('button',{name:'Frame tool',exact:true}).click();await expect(tip).toHaveCount(0);
 });
 test('a failed project open is announced assertively',async({page})=>{
- await start(page);const chooser=page.waitForEvent('filechooser');await page.keyboard.press('Meta+o');await (await chooser).setFiles({name:'broken.oui',mimeType:'application/json',buffer:Buffer.from('{not json')});
- await expect(page.locator('[role=alert]').filter({hasText:/.+/}).first()).toBeVisible({timeout:500}).catch(()=>{});await expect.poll(()=>page.locator('.visually-hidden[role=alert]').innerText()).not.toBe('');await expect(page.locator('.toast')).toBeVisible();
+ await start(page);await page.waitForTimeout(500);const chooser=page.waitForEvent('filechooser');await page.keyboard.press('Meta+o');await (await chooser).setFiles({name:'broken.oui',mimeType:'application/json',buffer:Buffer.from('{not json')});
+ await expect.poll(()=>page.locator('[data-error-announcer]').textContent()).not.toBe('');await expect(page.locator('.toast')).toBeVisible();
 });
 test('keyboard alone edits layer properties with Undo',async({page})=>{
  await start(page);const layer=page.getByRole('treeitem',{name:'Mobile card',exact:true});await layer.focus();await page.keyboard.press('Enter');

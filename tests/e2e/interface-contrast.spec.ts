@@ -26,6 +26,8 @@ for(const theme of ['dark','light'])for(const contrast of [undefined,'more'])tes
  await page.getByRole('button',{name:'Prototype',exact:true}).click();results.push(await audit(page));
  await page.getByRole('button',{name:'Inspect',exact:true}).click();results.push(await audit(page));
  for(const name of ['preferences','actions','about','file-info']){await modal(page,name);await expect(page.locator('[role=dialog][aria-modal=true]').last()).toBeVisible();results.push(await audit(page));await modal(page,'');}
+ await page.getByRole('menuitem',{name:'File',exact:true}).click();results.push(await audit(page));await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'Back to files'}).click();await expect(page.getByRole('navigation',{name:'Local files'})).toBeVisible();await page.waitForTimeout(150);results.push(await audit(page));
  expect(results.reduce((sum,r)=>sum+r.checked,0)).toBeGreaterThan(200);
  expect([...new Set(results.flatMap(r=>r.failures))]).toEqual([]);
 });

@@ -28,7 +28,7 @@ describe('language packs',()=>{
   expect(Object.keys(ro).sort()).toEqual([...messages].sort());
   for(const message of messages){const value=ro[message];for(const text of texts(value)){expect(text.trim(),message).not.toBe('');expect(placeholders(text),message).toBe(placeholders(message));expect(text,message).not.toMatch(/[şţŞŢ]/);}}
  });
- it('is really translated rather than copied',()=>{const copied=messages.filter(m=>ro[m]===m).sort();expect(copied).toEqual(['Design','Figma Bridge','Forma','Name · A–Z','Name · Z–A','Normal','Text','Transparent','Vector'].filter(x=>x!=='Name · A–Z'&&x!=='Name · Z–A'));});
+ it('is really translated rather than copied',()=>{const copied=messages.filter(m=>ro[m]===m).sort();expect(copied).toEqual(['Design','Figma Bridge','Forma','Normal','Text','Transparent','Vector','pixel']);});
  it('keeps Arabic keys and placeholders valid',()=>{for(const [key,value] of Object.entries(ar)){expect(messages).toContain(key);for(const text of texts(value!))if(key!=='{count} file'&&!/^(لا ملفات|ملف واحد|ملفان)$/.test(text))expect(placeholders(text),key).toBe(placeholders(key));}});
  it('every pack declares a direction',()=>{expect(languageDirection('en')).toBe('ltr');expect(languageDirection('ro')).toBe('ltr');expect(languageDirection('ar')).toBe('rtl');expect(Object.keys(languagePacks)).toEqual(['en','ro','ar']);});
  it('uses Romanian plural categories',()=>{updateLanguage('ro');expect(tn(1,'{count} file','{count} files')).toBe('1 fișier');expect(tn(2,'{count} file','{count} files')).toBe('2 fișiere');expect(tn(19,'{count} file','{count} files')).toBe('19 fișiere');expect(tn(20,'{count} file','{count} files')).toBe('20 de fișiere');expect(tn(101,'{count} file','{count} files')).toBe('101 fișiere');});
