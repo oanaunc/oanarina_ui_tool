@@ -35,6 +35,7 @@ import {cancelSvgImport,getSvgImportRequest,exportArtwork,notifyError,openProjec
 import FontLibrary from './FontLibrary';
 import LocalCommentsDialog from './LocalCommentsDialog';
 import TemplateGallery from './TemplateGallery';
+import IconLibrary from './IconLibrary';
 interface Feature {id:string;name:string;category:string;status:string;priority:string;notes:string;}
 export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(''),[value,setValue]=useState(''),[features,setFeatures]=useState<Feature[]>([]),[category,setCategory]=useState('All'),[filter,setFilter]=useState('All'),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false),[format,setFormat]=useState<'svg'|'png'|'jpg'>(()=>getPreferences().defaultExportFormat);
  const page=s.doc.pages.find(p=>p.id===s.pageId)!,n=page.nodes.find(n=>s.selection.includes(n.id)),modal=s.modal;
@@ -42,6 +43,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{setQuery('');setCategory('All');setFilter('All');setValue(modal==='rename-file'?s.doc.name:modal==='rename-page'?page.name:modal==='rename'?n?.name??'':modal==='text-link'?n?.hyperlink??'':'');if(modal==='roadmap')fetch('./features.json').then(r=>r.json()).then(setFeatures).catch(notifyError);},[modal]);
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
+ if(modal==='icons')return <IconLibrary key={s.doc.id}/>;
  if(modal==='templates')return <TemplateGallery key={s.doc.id}/>;
  if(modal==='comments'||modal.startsWith('comment:'))return <LocalCommentsDialog key={s.doc.id+':'+modal}/>;
  const close=()=>{if(modal==='fig-import-report')clearFigImportReport();if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
