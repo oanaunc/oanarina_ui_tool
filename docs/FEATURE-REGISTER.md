@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1317,"partial":272,"planned":433}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1317,"partial":273,"planned":432}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -1347,7 +1347,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-35-032 | Scroll overflow setting | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 | UI-35-033 | Scroll-to animation | partial | Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete. |
 | UI-35-034 | Prototype audio playback | planned | reference-verification-pending |
-| UI-35-035 | Prototype video playback | planned | reference-verification-pending |
+| UI-35-035 | Prototype video playback | partial | Existing embedded MP4/WebM prototype playback is reachable and browser-validated: transforms/clips, loop/mute/start time, restart/navigation pause and visibility audio gates. This reconciles an overlooked planned row with the already implemented media path, without claiming a new renderer. Browser/native codec and autoplay policies apply; nonrectangular clips/masks require manual Play, and remote media, trimming/transcoding and full native/reference acceptance remain unfinished. See docs/EMBEDDED-MEDIA.md and tests/e2e/media.spec.ts. |
 | UI-35-036 | Presentation reduced motion | implemented | v0.2.0-dev.3: reachable authoring/playback path, undo/persistence and validation where applicable. Core/browser/native evidence and limits: docs/VALIDATION-v0.2-prototypes-workspaces.md. Reference acceptance remains separate. |
 
 ## Comments and annotations

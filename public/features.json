@@ -11654,10 +11654,10 @@
     "category": "Prototype presentation",
     "name": "Prototype video playback",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "Existing embedded MP4/WebM prototype playback is reachable and browser-validated: transforms/clips, loop/mute/start time, restart/navigation pause and visibility audio gates. This reconciles an overlooked planned row with the already implemented media path, without claiming a new renderer. Browser/native codec and autoplay policies apply; nonrectangular clips/masks require manual Play, and remote media, trimming/transcoding and full native/reference acceptance remain unfinished. See docs/EMBEDDED-MEDIA.md and tests/e2e/media.spec.ts."
   },
   {
     "id": "UI-35-036",
