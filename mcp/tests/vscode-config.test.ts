@@ -1,0 +1,12 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {Client} from '@modelcontextprotocol/client';
+import {StdioClientTransport} from '@modelcontextprotocol/client/stdio';
+import {MCP_SERVER_NAME,mcpHostConfig,vscodeAddMcpCommand} from '../../src/mcp-client-config';
+const mcpRoot=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+test('the VS Code configuration the app shows launches a working server over stdio',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'oui-mcp-vscode-')),file=path.join(dir,'My Design.oui'),config=path.join(dir,'mcp.json');await fs.writeFile(config,JSON.stringify(mcpHostConfig('vscode',path.join(mcpRoot,'server.ts'),file),null,2));const saved=JSON.parse(await fs.readFile(config,'utf8')),server=saved.servers[MCP_SERVER_NAME];assert.equal(server.type,'stdio');assert.equal(server.command,'node');const transport=new StdioClientTransport({command:process.execPath,args:[path.join(mcpRoot,'node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(mcpRoot,'tsconfig.json'),...server.args,'--create'],stderr:'pipe'}),client=new Client({name:'vscode-config-check',version:'1.0.0'});try{await client.connect(transport);const tools=await client.listTools();assert.ok(tools.tools.some(t=>t.name==='inspect_project'));const result=await client.callTool({name:'inspect_project',arguments:{}}) as {content:{text:string}[];isError?:boolean};assert.notEqual(result.isError,true);assert.match(JSON.parse(result.content[0].text).revision,/^[a-f0-9]{64}$/);}finally{await client.close();await fs.rm(dir,{recursive:true,force:true});}});
+test('the generic host shape is unchanged and the command quotes spaces and apostrophes',()=>{assert.deepEqual(mcpHostConfig('stdio','/a/server.mjs','/b/c.oui'),{mcpServers:{'oanarina-ui':{command:'node',args:['/a/server.mjs','--project','/b/c.oui']}}});const command=vscodeAddMcpCommand('/a/server.mjs',"/b/Oana's Design.oui");assert.ok(command.startsWith("code --add-mcp '"));assert.ok(command.endsWith("'"));assert.ok(command.includes("Oana'\\''s Design.oui"));});
