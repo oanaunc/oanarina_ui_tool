@@ -1,10 +1,13 @@
 import type {DesignDocument,DesignNode} from './model';
+import {effectPadding,effectsFor} from './effects';
+import {fillsFor,strokesFor} from './paints';
+import {effectiveStrokeWidth} from './edge-strokes';
 import {descendants,effectiveVisible,isLocked,parseDocument} from './model';
 import {managedLayer} from './layer-operations';
 import {inverseMatrix,multiply,nodeMatrix,point,transformFromMatrix} from './transforms';
 import type {Matrix} from './transforms';
 
-export type FrameFitBounds='children'|'descendants';
+export type FrameFitBounds='children'|'descendants'|'painted';
 /** A bounded, cached hierarchy for fitting and post-layout verification. */
 function fitHierarchy(nodes:DesignNode[],id:string){
  if(nodes.length>20000)throw Error('Frame fitting supports pages with up to 20000 layers.');
@@ -29,6 +32,10 @@ function editableFrame(nodes:DesignNode[],id:string,doc?:DesignDocument){
 }
 function checkedSize(n:DesignNode,width:number,height:number){if(!Number.isFinite(width)||!Number.isFinite(height)||width<1||height<1||width>1e6||height>1e6||width<(n.minWidth??0)||width>(n.maxWidth??1e6)||height<(n.minHeight??0)||height>(n.maxHeight??1e6))throw Error('The resulting frame size conflicts with its size limits.');}
 function finiteFitGeometry(width:number,height:number,matrix:Matrix){if(![width,height,...matrix].every(Number.isFinite)||[[0,0],[width,0],[width,height],[0,height]].some(([x,y])=>{const p=point(matrix,x,y);return !Number.isFinite(p.x)||!Number.isFinite(p.y);}))throw Error('This frame hierarchy has nonfinite world geometry. Reduce its nested scales before fitting.');}
+const paintOutset=(n:DesignNode)=>Math.max(0,...strokesFor(n).filter(s=>s.visible&&s.paint.visible).map(s=>['line','arrow'].includes(n.type)?s.width/2:s.align==='inside'?0:effectiveStrokeWidth(s,n)*(s.align==='center'?.5:1)))+effectPadding(effectsFor(n));
+const paints=(n:DesignNode)=>n.type==='text'?!!n.text:fillsFor(n).some(p=>p.visible&&p.opacity>0)||strokesFor(n).some(s=>s.visible&&s.paint.visible)||effectPadding(effectsFor(n))>0;
+/** Visible layers that put ink on the canvas. A nested clip hides whatever overflows it, so measurement stops there. */
+function paintedLayers(nodes:DesignNode[],id:string,hierarchy:ReturnType<typeof fitHierarchy>){const found:DesignNode[]=[],pending=[...hierarchy.children.get(id)??[]];for(let i=0;i<pending.length;i++){const n=pending[i];if(!effectiveVisible(n,nodes)||n.type==='slice')continue;if(paints(n))found.push(n);if(!n.clip)pending.push(...hierarchy.children.get(n.id)??[]);}return found;}
 /** Direct visible unlocked children, in front-to-back layer order. Nested descendants are not included. */
 export function frameContentsSelection(nodes:DesignNode[],id:string){const frame=nodes.find(n=>n.id===id);if(!frame||frame.type!=='frame')throw Error('Select one frame.');return nodes.filter(n=>n.parentId===id&&effectiveVisible(n,nodes)&&!isLocked(n,nodes)).reverse().map(n=>n.id);}
 
@@ -42,14 +49,14 @@ export function planFrameOrientation(nodes:DesignNode[],id:string,doc?:DesignDoc
 export interface FrameFitPlan {nodes:DesignNode[];frameId:string;matrix:Matrix;size:{width:number;height:number};preserved:Map<string,{matrix:Matrix;width:number;height:number}>;constraints:Map<string,{x:DesignNode['constraintX'];y:DesignNode['constraintY'];hasX:boolean;hasY:boolean}>;}
 /** Fit child or descendant rectangles (including hidden/clipped geometry), preserving all content poses. */
 export function planFrameFit(nodes:DesignNode[],id:string,doc?:DesignDocument,bounds:FrameFitBounds='children'):FrameFitPlan{
- if(bounds!=='children'&&bounds!=='descendants')throw Error('Choose direct children or all descendant bounds.');
+ if(bounds!=='children'&&bounds!=='descendants'&&bounds!=='painted')throw Error('Choose direct children, all descendant or painted bounds.');
  const hierarchy=fitHierarchy(nodes,id),source=hierarchy.byId.get(id);if(source)hierarchy.matrix(source);const frame=editableFrame(nodes,id,doc);if(frame.layout!=='none')throw Error('Fit to content is for free-layout frames. Use Hug contents for auto layout.');
  const {owned}=hierarchy,children=hierarchy.children.get(id)??[];if(!children.length)throw Error('Add content to the frame before fitting it.');
  const frameWorld=hierarchy.matrix(frame);finiteFitGeometry(frame.width,frame.height,frameWorld);
- const measured=bounds==='children'?children:nodes.filter(n=>n.id!==id&&owned.has(n.id)),inverse=inverseMatrix(frameWorld),corners=measured.flatMap(n=>{const world=hierarchy.matrix(n);finiteFitGeometry(n.width,n.height,world);const m=multiply(inverse,world);return [[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(m,x,y));}),x=Math.min(...corners.map(p=>p.x)),y=Math.min(...corners.map(p=>p.y)),width=Math.max(...corners.map(p=>p.x))-x,height=Math.max(...corners.map(p=>p.y))-y;checkedSize(frame,width,height);
+ const painted=bounds==='painted'?paintedLayers(nodes,id,hierarchy):undefined;if(painted&&!painted.length)throw Error('Nothing in this frame is painted yet. Use direct child bounds.');const measured=painted??(bounds==='children'?children:nodes.filter(n=>n.id!==id&&owned.has(n.id))),inverse=inverseMatrix(frameWorld),corners=measured.flatMap(n=>{const world=hierarchy.matrix(n);finiteFitGeometry(n.width,n.height,world);const m=multiply(inverse,world),p=painted?paintOutset(n):0;return [[-p,-p],[n.width+p,-p],[n.width+p,n.height+p],[-p,n.height+p]].map(([x,y])=>point(m,x,y));}),x=Math.min(...corners.map(p=>p.x)),y=Math.min(...corners.map(p=>p.y)),width=Math.max(...corners.map(p=>p.x))-x,height=Math.max(...corners.map(p=>p.y))-y;checkedSize(frame,width,height);
  if(nodes.some(n=>owned.has(n.id)&&(n.type==='instance'||n.type==='component'||n.instanceRootId)))throw Error('Fit a free frame without managed instances or main components.');
  const relevant=new Set(owned);let ancestor=nodes.find(n=>n.id===frame.parentId);while(ancestor&&!relevant.has(ancestor.id)){relevant.add(ancestor.id);ancestor=nodes.find(n=>n.id===ancestor!.parentId);}
- if(bounds==='descendants'&&nodes.some(n=>relevant.has(n.id)&&(n.mask||n.booleanOp||n.type==='slice')))throw Error('All-descendant fitting does not support mask sources, live booleans or slices in this hierarchy. Use direct child bounds or ordinary layers.');
+ if(bounds!=='children'&&nodes.some(n=>relevant.has(n.id)&&(n.mask||n.booleanOp||n.type==='slice')))throw Error('All-descendant fitting does not support mask sources, live booleans or slices in this hierarchy. Use direct child bounds or ordinary layers.');
  if(doc?.pages.some(p=>p.motion?.tracks.some(t=>relevant.has(t.nodeId))))throw Error('Remove motion tracks from this hierarchy before fitting its base geometry.');
  const preserved=new Map(nodes.filter(n=>n.id!==id&&owned.has(n.id)).map(n=>{const matrix=hierarchy.matrix(n);finiteFitGeometry(n.width,n.height,matrix);return [n.id,{matrix,width:n.width,height:n.height}];})),next=structuredClone(nodes),result=next.find(n=>n.id===id)!,parent=next.find(n=>n.id===frame.parentId),oldLocal=nodeMatrix(frame,parent),newLocal=multiply(oldLocal,[1,0,0,1,x,y]);
  Object.assign(result,{width,height,sizingX:'fixed',sizingY:'fixed'});

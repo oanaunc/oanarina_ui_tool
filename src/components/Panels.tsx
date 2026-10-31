@@ -62,6 +62,7 @@ import {LayoutGuideInspector,GuideSettings,GuideExportOption} from './LayoutGuid
 import {sampleMotion} from '../motion';
 import {DesignSystemInspector} from './DesignSystemsEditor';
 import ScaledLayerNote from './ScaledLayerNote';
+import {layerScale,typeGroupSize} from '../group-size-field';
 import {ComponentInspector} from './ComponentEditor';
 import {useEffect,useLayoutEffect,useId,useMemo,useRef,useState} from 'react';
 import {layerClickSelection} from '../selection';
@@ -125,7 +126,7 @@ export function LeftPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===
 function Section({name,children,action}:{name:string;children:React.ReactNode;action?:React.ReactNode}){return <section className="inspector-section"><div className="section-title"><span>{name}</span>{action}</div>{children}</section>;}
 export function RightPanel(){const motionView=useMotionView(),exportPreferences=usePreferences(),s=useEditor(),page=s.doc.pages.find(p=>p.id===s.pageId)!,displayNodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,sel=displayNodes.filter(n=>s.selection.includes(n.id)),n=sel[0],[format,setFormat]=useState<'svg'|'png'|'jpg'>(exportPreferences.defaultExportFormat),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false);
  useEffect(()=>setFormat(exportPreferences.defaultExportFormat),[exportPreferences.defaultExportFormat]);
- const patch=(p:Partial<DesignNode>)=>{try{if('radius'in p&&sel.some(n=>n.type==='polygon'||n.type==='star')&&(s.motionOpen||sel.some(n=>isLocked(n,page.nodes)||n.instanceRootId)))throw Error('Unlock and detach the shape, and close Motion before editing its corners.');s.patch(s.selection,p);}catch(error){notifyError(error);}};
+ const patch=(p:Partial<DesignNode>)=>{try{if('radius'in p&&sel.some(n=>n.type==='polygon'||n.type==='star')&&(s.motionOpen||sel.some(n=>isLocked(n,page.nodes)||n.instanceRootId)))throw Error('Unlock and detach the shape, and close Motion before editing its corners.');if(sel.length===1&&sel[0].type==='group'&&!s.motionOpen&&!sel[0].booleanOp&&!layerScale(sel[0])&&('width'in p||'height'in p)){typeGroupSize(s,sel[0],p);return;}s.patch(s.selection,p);}catch(error){notifyError(error);}};
  const layoutLocked=s.motionOpen||sel.some(n=>isLocked(n,page.nodes)||n.instanceRootId),patchLayout=(p:Partial<DesignNode>)=>{try{const live=useEditor.getState();if(live.doc!==s.doc||live.pageId!==s.pageId||live.motionOpen)throw Error('Close Motion and select the current layout target before editing.');s.edit(d=>applyLayoutSettings(d,s.pageId,s.selection,p));}catch(error){notifyError(error);}};
  return <aside className="right-panel panel"><div className="panel-tabs right-tabs">{(['design','prototype','inspect'] as const).map(mode=><button key={mode} aria-current={s.mode===mode&&!motionView.inspector?'true':undefined} className={s.mode===mode&&!motionView.inspector?'active':''} onClick={()=>{motionView.setInspector(false);s.set({mode});}}>{t(mode==='inspect'?'Inspect':mode[0].toUpperCase()+mode.slice(1))}</button>)}<button aria-label="Motion inspector" aria-pressed={motionView.inspector} className={motionView.inspector?'active':''} onClick={()=>{s.set({mode:'design',motionOpen:true});motionView.setInspector(true);}}>Motion</button></div>
  <div className="inspector-scroll">
