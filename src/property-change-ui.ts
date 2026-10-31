@@ -2,7 +2,7 @@ import {getWorkspacePreferences,subscribeWorkspacePreferences} from './workspace
 
 export const PROPERTY_CHANGE_ATTRIBUTE='data-property-change';
 export const PROPERTY_CHANGE_LINGER_MS=800;
-const surface='.right-panel,.color-picker,.color-popover',gesture='[aria-label^="Scrub "],input[type=range],input[type=color],[role=slider],.color-picker canvas,.color-picker svg';
+const surface='.right-panel,.forma-color-picker',gesture='[aria-label^="Scrub "],input[type=range],input[type=color],[role=slider]';
 /** Inspector value controls only: panel chrome, tabs and the canvas itself never hide selection UI. */
 export function isPropertyGesture(target:EventTarget|null){const el=target instanceof Element?target:null;return !!el?.closest(surface)&&!!el.closest(gesture);}
 export function isPropertyInput(target:EventTarget|null){const el=target instanceof Element?target:null;return !!el?.closest(surface)&&el.matches('input,select,textarea');}
