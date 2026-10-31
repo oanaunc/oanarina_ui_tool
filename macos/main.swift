@@ -212,6 +212,8 @@ final class LocalServer {
 }
 
 
+// A crashed test run must not leave the next one waiting on the system's reopen-windows prompt.
+if CommandLine.arguments.contains(where:{$0.hasSuffix("smoke-test")}){UserDefaults.standard.register(defaults:["ApplePersistenceIgnoreState":true])}
 let app=NSApplication.shared
 let delegate=Studio()
 app.delegate=delegate

@@ -67,7 +67,7 @@ extension Studio {
                 guard let snapshot=value as? String else{self.smokeFail("snapshot id")}
                 let encoded=self.json([1,"accept-link",snapshot]).addingPercentEncoding(withAllowedCharacters:.alphanumerics) ?? ""
                 self.openVersionLink(Self.versionScheme+":"+encoded)
-                self.page(document,"await wait(()=>document.body.textContent.includes('Linked historical preview only'),'linked preview from the shell');click('Close dialog',document.querySelector('[role=dialog]'));await wait(()=>!document.querySelector('[role=dialog]'),'history closed');return true;"){_ in
+                self.page(document,"await wait(()=>find('Copy local version link')&&!find('Copy local version link').disabled,'linked preview from the shell');click('Close dialog',document.querySelector('[role=dialog]'));await wait(()=>!document.querySelector('[role=dialog]'),'history closed');return true;"){_ in
                     self.check(true,"an external version link opens the read-only preview in its project window")
                     let file=directory.appendingPathComponent("Linked recent.oui")
                     do{try Data(self.acceptanceDocument("accept-link-recent","Linked recent").utf8).write(to:file)}catch{self.smokeFail(error.localizedDescription)}
