@@ -9674,10 +9674,10 @@
     "category": "Libraries and design systems",
     "name": "Swap library source",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Reviewed local source replacement for complete compatible component/set-only libraries uses explicit whole-group mappings and preserves linked layer/property/set identities and matching customized slot content. Dirty baselines, locks, incompatible topology, ambiguous siblings, styles/tokens/guides and installed-source merges refuse atomically. One Undo/Redo/save and guarded review are validated. No cloud source replacement. See docs/LOCAL-LIBRARY-SOURCE-SWAP.md."
   },
   {
     "id": "UI-29-026",
@@ -11834,20 +11834,20 @@
     "category": "Comments and annotations",
     "name": "Comment link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Copy bounded opaque root-thread references and open them in the matching currently open .oui; valid links navigate pages, center actual pins, reset filters and focus paged/resolved threads without changing artwork or Undo. Clipboard fallback and stale asynchronous/retained handler ownership are validated. No public hosting, reply-specific targets, OS URL handler or cross-file automatic lookup. See docs/LOCAL-COMMENT-LINKS.md."
   },
   {
     "id": "UI-36-018",
     "category": "Comments and annotations",
     "name": "Emoji reaction",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Eight saved file-local emoji reactions work independently on roots/replies with distinct shared display-name labels, counts, accessible descriptions, one Undo/save and guarded picker/source/local receipts. No authenticated identities, arbitrary Unicode picker, cloud reactions or notifications. Private metadata stays out of artwork, libraries and explicit Figma delivery. See docs/LOCAL-COMMENT-REACTIONS.md."
   },
   {
     "id": "UI-36-019",
@@ -15014,10 +15014,10 @@
     "category": "Preferences and document settings",
     "name": "Pixel snapping preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Preferences provides persisted device-local Follow document/Off/whole/half pixel settings, effective status, reset, validation, storage failures and cross-window synchronization. Real eligible Canvas gestures honor the preference; relevant changes permanently cancel drafts and fresh gestures recover. Document master-off wins; keyboard/numeric and specialized paths retain documented behavior. Exact reference/native acceptance is separate. See docs/SNAPPING-PREFERENCES.md."
   },
   {
     "id": "UI-45-020",
@@ -15314,20 +15314,20 @@
     "category": "Preferences and document settings",
     "name": "Vector geometry snapping preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Preferences provides persisted device-local Follow document/On/Off vector geometry snapping with effective status, reset, guarded storage and cross-window cancellation/recovery. It controls the existing bounded single-anchor solver and explicit Pen/continuation endpoints. Multiple anchors, handles and specialized solver coverage remain separate limitations. Exact reference/native acceptance is separate. See docs/SNAPPING-PREFERENCES.md."
   },
   {
     "id": "UI-45-050",
     "category": "Preferences and document settings",
     "name": "Object snapping preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Preferences provides persisted device-local Follow document/On/Off object snapping with effective status, reset, guarded storage and cross-window cancellation/recovery. Eligible move/resize and explicitly opted-in shape/Pen endpoints honor it; guides/layout remain document-owned and default free drawing is preserved. Exact reference/native acceptance is separate. See docs/SNAPPING-PREFERENCES.md."
   },
   {
     "id": "UI-45-051",
