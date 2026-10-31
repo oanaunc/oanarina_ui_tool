@@ -1,6 +1,7 @@
 import LearningDialog from './EditorLearning';
 import SketchImport from './SketchImport';
 import LocalPlugins from './LocalPlugins';
+import CodeLayerEditor from './CodeLayerEditor';
 import ComponentPlayground from './ComponentPlayground';
 import PdfImportReview from './PdfImportReview';
 import FigmaRestReview from './FigmaRestReview';
@@ -53,6 +54,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  if(!modal)return null;
  if(modal==='learning')return <LearningDialog/>;
  if(modal==='local-plugins')return <LocalPlugins key={s.doc.id}/>;
+ if(modal==='code-layer')return <CodeLayerEditor key={s.doc.id}/>;
  if(modal==='component-playground')return <ComponentPlayground/>;
  if(modal==='sketch-import'||modal==='sketch-import-review')return <SketchImport key={s.doc.id+modal}/>;
  if(modal==='pdf-import-review')return <PdfImportReview key={s.doc.id}/>;

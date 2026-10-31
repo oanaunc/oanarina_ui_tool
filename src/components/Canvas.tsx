@@ -170,7 +170,7 @@ export default function Canvas(){
  if(d.kind==='pencil'){const bb=bounds(n.points.map(p=>node('rectangle',{...p,width:0,height:0})));n.x+=bb.x;n.y+=bb.y;n.points=n.points.map(p=>({x:p.x-bb.x,y:p.y-bb.y}));n.width=bb.width;n.height=bb.height;}
  if(d.kind==='pencil'&&n.points.length>2)Object.assign(n,vectorOperation(n,'simplify'));
  const shownParent=d.nodes.find(parent=>parent.id===n.parentId),baseParent=d.sourceNodes.find(parent=>parent.id===n.parentId);if(shownParent&&baseParent){n.x+=baseParent.x-shownParent.x;n.y+=baseParent.y-shownParent.y;}
- s.edit(doc=>doc.pages.find(p=>p.id===s.pageId)!.nodes.push(n));s.set({selection:[n.id],tool:prefs.keepDrawingTool?s.tool:'move'});if(n.type==='text')setEditText(n.id);
+ s.edit(doc=>doc.pages.find(p=>p.id===s.pageId)!.nodes.push(n));s.set({selection:[n.id],tool:prefs.keepDrawingTool?s.tool:'move'});if(n.type==='text')setEditText(n.id);if(n.type==='code')s.set({modal:'code-layer'});
  }else if(preview&&['move','resize','rotate','vector'].includes(d.kind)){try{s.edit(doc=>{const page=doc.pages.find(p=>p.id===s.pageId)!;if(d.kind==='vector'){const source=page.nodes.find(n=>n.id===d.ids[0]),edited=preview.find(n=>n.id===d.ids[0]);if(source&&edited)source.contours=structuredClone(edited.contours);}else if(s.motionOpen&&['move','resize','rotate'].includes(d.kind))applyMotionEdits(page,d.nodes,d.result??preview,s.selection,s.motionTime,s.autoKey);else page.nodes=d.result??preview;},doc=>{if(d.kind==='resize'&&!s.motionOpen)assertAuthoredStrokeScaleResult(d.nodes,d.result??preview,doc.pages.find(p=>p.id===d.pageId)!.nodes);});}catch(error){notifyError(error);}}
  setPreview(null);setBox(null);
  };

@@ -5,7 +5,7 @@ import {useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {toolbarFocusIndex} from '../toolbar-navigation';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import type {ColorEditContext} from '../color-edit-context';
-import {MousePointer2,Frame,Square,Circle,Minus,ArrowUpRight,Hexagon,Star,PenTool,Pencil,Paintbrush,Type,Hand,Scaling,MessageCircle,Plus,ChevronDown,Scan,SquareDashed,Code2,Search} from 'lucide-react';
+import {MousePointer2,Frame,Square,Circle,Minus,ArrowUpRight,Hexagon,Star,PenTool,Pencil,Paintbrush,Type,Hand,Scaling,MessageCircle,Plus,ChevronDown,Scan,SquareDashed,Code2,Search,Braces} from 'lucide-react';
 import type {Tool} from '../model';
 import {useEditor} from '../store';
 const groups:[string,Tool,typeof Square,string][][]=[
@@ -13,7 +13,7 @@ const groups:[string,Tool,typeof Square,string][][]=[
  [['Frame','frame',Frame,'F'],['Section','section',SquareDashed,'⇧S'],['Slice','slice',Scan,'S']],
  [['Rectangle','rectangle',Square,'R'],['Ellipse','ellipse',Circle,'O'],['Line','line',Minus,'L'],['Arrow','arrow',ArrowUpRight,'⇧L'],['Polygon','polygon',Hexagon,''],['Star','star',Star,'']],
  [['Pen','pen',PenTool,'P'],['Pencil','pencil',Pencil,'⇧P'],['Brush','brush',Paintbrush,'']],
- [['Text','text',Type,'T']], [['Comment','comment',MessageCircle,'C']]
+ [['Text','text',Type,'T']], [['Code layer','code',Braces,'']], [['Comment','comment',MessageCircle,'C']]
 ];
 export default function Toolbar(){const s=useEditor(),keyboard=useKeyboardPreferences(commands),keyFor=(id:string)=>{const c=commands.find(c=>c[0]===id);return c?shortcutLabel(c,keyboard):'';},[open,setOpen]=useState<number|null>(null),[focused,setFocused]=useState(0),root=useRef<HTMLDivElement>(null),returnTo=useRef<HTMLButtonElement|null>(null),menuEnd=useRef(false),origin=useRef<ColorEditContext|null>(null);
  const topButtons=()=>[...root.current?.querySelectorAll<HTMLButtonElement>('button[data-toolbar-button]')??[]],close=(restore=false)=>{setOpen(null);origin.current=null;if(restore)returnTo.current?.focus({preventScroll:true});},show=(i:number,trigger:HTMLButtonElement,end=false)=>{origin.current=captureColorContext(useEditor.getState());returnTo.current=trigger;menuEnd.current=end;setOpen(i);};

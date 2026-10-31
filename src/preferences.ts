@@ -73,6 +73,7 @@ export function resetPreferences():Readonly<EditorPreferences>{try{if(typeof loc
 /** Creation defaults for caller-owned insertion paths; never changes existing document nodes. */
 export function drawingDefaults(type:NodeKind,prefs:Readonly<EditorPreferences>=getPreferences()):Partial<DesignNode>{
  if(type==='text')return {fill:prefs.defaultTextFill,fontFamily:prefs.defaultFontFamily,fontSize:prefs.defaultFontSize,fontWeight:prefs.defaultFontWeight,fontStyle:prefs.defaultFontStyle,lineHeight:prefs.defaultLineHeight,stroke:'',strokeWidth:prefs.defaultStrokeWidth};
+ if(type==='code')return {stroke:'',strokeWidth:0};
  const line=['path','line','arrow'].includes(type),fill=['frame','component','section'].includes(type)?prefs.defaultFrameFill:line?'none':prefs.defaultShapeFill;
  return {fill,stroke:line||prefs.defaultShapeStrokeEnabled?prefs.defaultStrokeColor:'',strokeWidth:prefs.defaultStrokeWidth};
 }
