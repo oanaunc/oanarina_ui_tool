@@ -24,6 +24,7 @@ import {validateDocumentEdgeStrokes} from './edge-strokes';
 import {validateDocumentLinearGradients} from './linear-gradient';
 import {validateComponentWorkflowMetadata} from './component-workflow-metadata';
 import {validateDocumentMedia} from './media';
+import {validateDocumentEmbeds} from './document-embeds';
 import {validateSectionMetadata} from './section-metadata';
 import {validateDocumentImageAdjustments} from './image-paint';
 import {validateDocumentArrowheads} from './arrowheads';
@@ -63,6 +64,7 @@ export function validateDocumentMetadata(document:{workspace?:unknown;fileCover?
  validateDocumentArrowheads(document);
  validateComponentWorkflowMetadata(document);
  validateDocumentMedia(document);
+ validateDocumentEmbeds(document);
  validateDocumentPrototypeAudio(document);
 }
 /** Plain text is preserved literally; only line endings and empty clearing normalize. */
