@@ -7,13 +7,14 @@ import {serializeFontDocument} from './font-data';
 
 export interface FigImportResult {document:DesignDocument;issues:FigImportIssue[];complete:boolean;fontFamilies:string[];}
 /** Selected bytes only. No network access, source paths, or document mutation. */
-export async function importFigBytes(bytes:Uint8Array,name:string,signal?:AbortSignal):Promise<FigImportResult>{
+export async function importFigBytes(bytes:Uint8Array,name:string,signal?:AbortSignal,onStage?:(stage:'validating'|'decoding')=>void):Promise<FigImportResult>{
  if(bytes.byteLength>=50_000_000)throw Error('Choose a Figma file smaller than 50 MB.');
- const decoded=await decodeFigFile(bytes,{signal});
+ onStage?.('decoding');const decoded=await decodeFigFile(bytes,{signal});
  if(signal?.aborted)throw new DOMException('Figma import cancelled.','AbortError');
- const result=mapFigScene(decoded,name.replace(/\.fig$/i,'').slice(0,120)||'Imported Figma file');
- await validateFigSceneRasters(result.document,signal);
+ onStage?.('validating');if(onStage)await new Promise<void>(resolve=>setTimeout(resolve,0));signal?.throwIfAborted();const result=mapFigScene(decoded,name.replace(/\.fig$/i,'').slice(0,120)||'Imported Figma file');
+ onStage?.('decoding');await validateFigSceneRasters(result.document,signal);
  if(signal?.aborted)throw new DOMException('Figma import cancelled.','AbortError');
+ onStage?.('validating');
  // Apply the same readable-file byte budget used by Save, before accepting it.
  const raw=serializeFontDocument(result.document,result.document.fonts??[]);
  if(new TextEncoder().encode(raw).byteLength>=50_000_000)throw Error('The converted project exceeds the 50 MB project limit.');
