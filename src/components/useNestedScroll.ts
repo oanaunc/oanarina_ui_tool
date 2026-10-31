@@ -1,0 +1,31 @@
+import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
+import type {RefObject} from 'react';
+import type {Easing} from '../motion';
+import type {DesignNode} from '../model';
+import {reactionsFor} from '../prototype';
+import {animateScroll} from '../prototype-scroll-animation';
+import {enclosingRegions,nestedScrollRegions,revealInRegions,routeScroll} from '../prototype-nested-scroll';
+import type {ScrollOffsets,ScrollRegion} from '../prototype-nested-scroll';
+const LINE=40,DRAG_START=5;
+const fromTarget=(target:EventTarget|null)=>{const el=target instanceof Element?target:null;if(!el||el.closest('input,textarea,select,button,[data-prototype-input]'))return undefined;return el.closest('[data-node-id]')?.getAttribute('data-node-id')??undefined;};
+/** Wheel, drag and keyboard input for nested scroll regions. Scrolling moves artwork inside its clip, so no node needs its own host element. */
+export function useNestedScroll({stage,nodes,roots,disabled,scale,suppressClick,onScroll}:{stage:RefObject<HTMLElement|null>;nodes:DesignNode[];roots:readonly string[];disabled:boolean;scale:number;suppressClick:()=>void;onScroll:(id:string)=>void}){
+ const [offsets,setOffsets]=useState<ScrollOffsets>({}),offsetsRef=useRef(offsets),rootKey=roots.join('|'),regions=useMemo(()=>disabled?[]:rootKey.split('|').flatMap(id=>id?nestedScrollRegions(nodes,id):[]),[nodes,rootKey,disabled]),live=useRef({regions,nodes,scale,suppressClick,onScroll,hovered:undefined as string|undefined});live.current={...live.current,regions,nodes,scale,suppressClick,onScroll};
+ const animation=useRef<(()=>void)|undefined>(undefined),publish=useCallback((next:ScrollOffsets,changed:ScrollRegion[])=>{offsetsRef.current=next;setOffsets(next);for(const r of changed)live.current.onScroll(r.id);},[]);
+ const route=useCallback((id:string,dx:number,dy:number)=>{const {regions,nodes}=live.current,path=enclosingRegions(nodes,id,regions),before=offsetsRef.current,result=routeScroll(path,before,dx,dy),changed=path.filter(r=>result.offsets[r.id]!==before[r.id]);if(changed.length)publish(result.offsets,changed);return changed.length>0;},[publish]);
+ useEffect(()=>{const el=stage.current;if(!el||disabled)return;
+  const wheel=(e:WheelEvent)=>{const id=fromTarget(e.target);if(!id)return;const unit=e.deltaMode===1?LINE:e.deltaMode===2?el.clientHeight:1,zoom=live.current.scale||1;if(route(id,e.deltaX*unit/zoom,e.deltaY*unit/zoom))e.preventDefault();};
+  let drag:{pointer:number;id:string;x:number;y:number;active:boolean}|undefined;
+  const down=(e:PointerEvent)=>{const id=fromTarget(e.target);live.current.hovered=id;if(!id||e.button!==0)return;const {nodes,regions}=live.current,map=new Map(nodes.map(n=>[n.id,n]));let current=map.get(id),guarded=false;const seen=new Set<string>();while(current&&!seen.has(current.id)){seen.add(current.id);if(reactionsFor(current).some(r=>r.enabled&&r.trigger==='drag'))guarded=true;current=map.get(current.parentId??'');}if(!guarded&&enclosingRegions(nodes,id,regions).length)drag={pointer:e.pointerId,id,x:e.clientX,y:e.clientY,active:false};};
+  const move=(e:PointerEvent)=>{const hovered=fromTarget(e.target);if(hovered)live.current.hovered=hovered;if(!drag||e.pointerId!==drag.pointer)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!drag.active&&Math.hypot(dx,dy)<DRAG_START)return;drag.active=true;live.current.suppressClick();const zoom=live.current.scale||1;route(drag.id,-dx/zoom,-dy/zoom);drag.x=e.clientX;drag.y=e.clientY;};
+  const up=(e:PointerEvent)=>{if(drag?.pointer===e.pointerId)drag=undefined;};
+  const key=(e:KeyboardEvent)=>{if(e.metaKey||e.ctrlKey||e.altKey||(e.target as Element)?.closest?.('input,textarea,select,button'))return;const {regions}=live.current,page=el.clientHeight*.8,amount=e.key==='ArrowDown'?LINE:e.key==='ArrowUp'?-LINE:e.key==='PageDown'?page:e.key==='PageUp'?-page:e.key==='End'?1e6:e.key==='Home'?-1e6:0;if(!amount||!regions.length)return;const id=live.current.hovered??regions[0].id;if(route(enclosingRegions(live.current.nodes,id,regions).length?id:regions[0].id,0,amount/(live.current.scale||1)))e.preventDefault();};
+  el.addEventListener('wheel',wheel,{passive:false});el.addEventListener('pointerdown',down,true);window.addEventListener('pointermove',move,true);window.addEventListener('pointerup',up,true);window.addEventListener('pointercancel',up,true);window.addEventListener('keydown',key,true);
+  return()=>{el.removeEventListener('wheel',wheel);el.removeEventListener('pointerdown',down,true);window.removeEventListener('pointermove',move,true);window.removeEventListener('pointerup',up,true);window.removeEventListener('pointercancel',up,true);window.removeEventListener('keydown',key,true);};
+ },[stage,disabled,route]);
+ useEffect(()=>()=>animation.current?.(),[]);
+ /** Scroll-to reaches a layer through every enclosing region; the frame's own scroller then aims at the outermost one. */
+ const reveal=useCallback((nodes:DesignNode[],id:string,rootId:string,transition?:{duration:number;easing:Easing})=>{const {offsets:target,anchor}=revealInRegions(nodes,id,nestedScrollRegions(nodes,rootId)),ids=Object.keys(target);animation.current?.();animation.current=undefined;if(!ids.length)return anchor;if(!transition){publish({...offsetsRef.current,...target},[]);return anchor;}const el=stage.current;if(!el)return anchor;const stops=ids.map(id=>{const from=offsetsRef.current[id]??{x:0,y:0},proxy={scrollLeft:from.x,scrollTop:from.y,addEventListener:el.addEventListener.bind(el),removeEventListener:el.removeEventListener.bind(el)};let y=from.y;Object.defineProperty(proxy,'scrollTop',{get:()=>y,set:(value:number)=>{y=value;publish({...offsetsRef.current,[id]:{x:proxy.scrollLeft,y}},[]);}});return animateScroll(proxy as never,target[id],transition);});animation.current=()=>stops.forEach(stop=>stop());return anchor;},[publish,stage]);
+ const reset=useCallback((ids?:readonly string[])=>{animation.current?.();animation.current=undefined;const next=ids?Object.fromEntries(Object.entries(offsetsRef.current).filter(([id])=>!ids.includes(id))):{};offsetsRef.current=next;setOffsets(next);},[]);
+ return {offsets,reveal,reset};
+}

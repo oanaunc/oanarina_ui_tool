@@ -1,0 +1,15 @@
+/* Generic drawn shells. They name no real device and sit over the artwork without taking input. */
+.prototype-device{margin:auto}
+.prototype-device.device-laptop{border:10px solid #0b0a0d;border-bottom-width:26px;border-radius:12px 12px 6px 6px}
+.prototype-device.device-foldable{border:9px solid #0b0a0d;border-radius:20px}
+.prototype-device.device-watch{border:12px solid #0b0a0d;border-radius:42px}
+.device-shell{position:absolute;inset:0;pointer-events:none;z-index:30}
+.device-shell>i{position:absolute;display:block;background:#0b0a0d}
+.device-shell-phone .device-sensor{top:8px;left:50%;width:84px;height:22px;margin-left:-42px;border-radius:12px}
+.device-shell-phone .device-indicator{bottom:8px;left:50%;width:112px;height:4px;margin-left:-56px;border-radius:2px;opacity:.55}
+.device-shell-phone.device-landscape .device-sensor{top:50%;left:8px;width:22px;height:84px;margin:-42px 0 0;border-radius:12px}
+.device-shell-phone.device-landscape .device-indicator{bottom:6px}
+.device-shell-tablet .device-sensor,.device-shell-laptop .device-sensor{top:3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#2c2a31}
+.device-shell-tablet.device-landscape .device-sensor{top:50%;left:3px;margin:-2.5px 0 0}
+.device-shell-foldable .device-hinge{top:0;bottom:0;left:50%;width:2px;margin-left:-1px;background:#0003}
+.device-shell-foldable.device-landscape .device-hinge{top:50%;right:0;bottom:auto;left:0;width:auto;height:2px;margin:-1px 0 0}

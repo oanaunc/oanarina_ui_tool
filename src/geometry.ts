@@ -27,6 +27,10 @@ export function contourPath(points:VectorPoint[],closed=false){
  for(let i=1;i<points.length+(closed?1:0);i++){const a=points[(i-1)%points.length],b=points[i%points.length];if(a.out||b.in)d+=`C${at({x:a.x+(a.out?.x??0),y:a.y+(a.out?.y??0)})} ${at({x:b.x+(b.in?.x??0),y:b.y+(b.in?.y??0)})} ${at(b)}`;else d+='L'+at(b);}
  return d+(closed?'Z':'');
 }
+export interface PathCurve {c1:{x:number;y:number};c2:{x:number;y:number};to:{x:number;y:number};}
+export interface PathContour {start:{x:number;y:number};curves:PathCurve[];closed:boolean;}
+/** Plain cubic contours for writers that have no SVG path parser. Arcs and shorthands arrive already converted. */
+export function cubicContours(d:string):PathContour[]{if(!d)return [];scope.activate();const item=scope.PathItem.create(d);item.remove();const paths=(item as paper.CompoundPath).children?[...(item as paper.CompoundPath).children] as paper.Path[]:[item as paper.Path];const out=paths.filter(p=>p.segments.length).map(p=>({start:{x:p.firstSegment.point.x,y:p.firstSegment.point.y},closed:p.closed,curves:p.curves.map(c=>({c1:{x:c.point1.x+c.handle1.x,y:c.point1.y+c.handle1.y},c2:{x:c.point2.x+c.handle2.x,y:c.point2.y+c.handle2.y},to:{x:c.point2.x,y:c.point2.y}}))}));return out;}
 export function localPath(n:DesignNode):string {
  if(n.type==='path'&&n.vectorNetwork)return networkPath(n.vectorNetwork);
  if(n.type==='path')return n.contours!==undefined?n.contours.map(c=>contourPath(c.points,c.closed)).join(' '):n.points.length?contourPath(n.points,n.closed):n.path;

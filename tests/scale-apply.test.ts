@@ -1,0 +1,23 @@
+import {beforeEach,describe,expect,it} from 'vitest';
+import {node,parseDocument} from '../src/model';
+import type {DesignNode} from '../src/model';
+import {createEffect} from '../src/effects';
+import {createStroke} from '../src/paints';
+import {applyLayerScale,layerScale,scaleApplyRefusal} from '../src/scale-apply';
+import {useEditor} from '../src/store';
+import {worldMatrix} from '../src/transforms';
+const s=()=>useEditor.getState();
+const page=()=>s().doc.pages[0];
+const n=(id:string)=>page().nodes.find(a=>a.id===id)!;
+const seed=(nodes:DesignNode[])=>s().edit(d=>{d.pages[0].nodes=nodes;});
+const corners=(id:string)=>{const a=n(id),m=worldMatrix(a,page().nodes);return [[0,0],[a.width,0],[a.width,a.height],[0,a.height]].map(([x,y])=>[m[0]*x+m[2]*y+m[4],m[1]*x+m[3]*y+m[5]]);};
+const apply=(id:string)=>s().edit(d=>applyLayerScale(d,d.pages[0].id,id));
+beforeEach(()=>{s().newDocument();});
+describe('applying a layer scale to values',()=>{
+ it('keeps every layer exactly in place and doubles stroke, radius, type and effects',()=>{seed([node('frame',{id:'f',x:100,y:50,width:200,height:100,motionScaleX:2,motionScaleY:2,rotation:30,clip:false}),node('rectangle',{id:'r',parentId:'f',x:120,y:60,width:40,height:20,radius:4,strokes:[{...createStroke(),width:3,dash:[2,1]}],effects:[{...createEffect(),x:1,y:2,radius:3,spread:4}]}),node('text',{id:'t',parentId:'f',x:170,y:60,width:100,height:30,text:'Hi',fontSize:12,textResize:'fixed'})]);const before=['f','r','t'].map(corners);apply('f');['f','r','t'].forEach((id,i)=>corners(id).flat().forEach((v,j)=>expect(v).toBeCloseTo(before[i].flat()[j],6)));expect(n('f')).toMatchObject({width:400,height:200,rotation:30});expect(n('f').motionScaleX).toBeUndefined();expect(n('r')).toMatchObject({width:80,height:40,radius:8});expect(n('r').strokes![0]).toMatchObject({width:6,dash:[4,2]});expect(n('r').effects![0]).toMatchObject({x:2,y:4,radius:6,spread:8});expect(n('t').fontSize).toBe(24);expect(parseDocument(JSON.stringify(s().doc))).toEqual(s().doc);s().undo();expect(n('f').motionScaleX).toBe(2);expect(n('r').radius).toBe(4);});
+ it('maps uneven group scale to size only',()=>{seed([node('group',{id:'g',x:0,y:0,width:100,height:100,fill:'none',motionScaleX:2,motionScaleY:.5}),node('rectangle',{id:'r',parentId:'g',x:20,y:20,width:40,height:40,radius:6,strokes:[{...createStroke(),width:2}]})]);const before=corners('r');apply('g');corners('r').flat().forEach((v,j)=>expect(v).toBeCloseTo(before.flat()[j],6));expect(n('r')).toMatchObject({width:80,height:20,radius:6});expect(n('r').strokes![0].width).toBe(2);});
+ it('rescales a path through its stored size',()=>{seed([node('line',{id:'l',x:0,y:0,width:100,height:50,points:[{x:0,y:0},{x:100,y:50}] as never,motionScaleX:2,motionScaleY:2})]);apply('l');expect(n('l')).toMatchObject({width:200,height:100,pathWidth:100,pathHeight:50});});
+ it('explains each refusal and leaves the document alone',()=>{const refuse=(nodes:DesignNode[],text:string)=>{seed(nodes);expect(scaleApplyRefusal(page(),nodes[0].id)).toContain(text);const doc=s().doc;expect(()=>apply(nodes[0].id)).toThrow(text);expect(s().doc).toBe(doc);};const base={id:'a',motionScaleX:2,motionScaleY:2};refuse([node('rectangle',{id:'a'})],'no scale');refuse([node('rectangle',{...base,motionScaleX:-1})],'mirrored');refuse([node('rectangle',{...base,locked:true})],'Unlock');refuse([node('frame',base),node('text',{id:'t',parentId:'a',text:'Rich',textRuns:[{start:0,end:4}] as never})],'Rich text');refuse([node('frame',base),node('rectangle',{id:'i',parentId:'a',motionScaleX:3})],'inner scale');refuse([node('frame',{...base,motionScaleY:3}),node('rectangle',{id:'r',parentId:'a',rotation:10})],'skew');});
+ it('refuses animated layers',()=>{seed([node('rectangle',{id:'a',motionScaleX:2,motionScaleY:2})]);s().edit(d=>{d.pages[0].motion={duration:2,fps:30,loop:true,tracks:[{id:'t',nodeId:'a',property:'x' as never,visible:true,keyframes:[]}]};});expect(scaleApplyRefusal(page(),'a')).toContain('Animated');});
+ it('reports only a real scale',()=>{expect(layerScale(node('rectangle'))).toBeUndefined();expect(layerScale(node('rectangle',{motionScaleX:1.5}))).toEqual({x:1.5,y:1});});
+});

@@ -5,11 +5,11 @@ import {exportVisibility,validateExportHierarchy} from './svg-export-options';
 import {exportDimensions,layerExportGeometry,EXPORT_ASSET_LIMIT} from './export-plan';
 export const PDF_PIXEL_LIMIT=80_000_000;
 export type DesignPdfMode='artwork'|'selected-frames'|'page-frames';
-export interface DesignPdfOptions {mode:DesignPdfMode;scale:number;includeHidden:boolean;includeGuides:boolean;includeOverlaps:boolean;}
+export interface DesignPdfOptions {mode:DesignPdfMode;scale:number;includeHidden:boolean;includeGuides:boolean;includeOverlaps:boolean;vector?:boolean;}
 export interface DesignPdfPagePlan {id:string;name:string;nodes:DesignNode[];viewport:{x:number;y:number;width:number;height:number};transform?:import('./transforms').Matrix;width:number;height:number;scale:number;}
 /** Pure, ordered geometry plan; PDF pages ignore layer export profiles. */
 export function designPdfPlan(page:Page,ids:readonly string[],options:DesignPdfOptions):DesignPdfPagePlan[]{
- if(!['artwork','selected-frames','page-frames'].includes(options.mode)||!Number.isFinite(options.scale)||options.scale<.25||options.scale>4||[options.includeHidden,options.includeGuides,options.includeOverlaps].some(v=>typeof v!=='boolean'))throw Error('Choose valid PDF page and resolution options.');
+ if(!['artwork','selected-frames','page-frames'].includes(options.mode)||!Number.isFinite(options.scale)||options.scale<.25||options.scale>4||[options.includeHidden,options.includeGuides,options.includeOverlaps].some(v=>typeof v!=='boolean')||options.vector!==undefined&&typeof options.vector!=='boolean')throw Error('Choose valid PDF page and resolution options.');
  const available=new Set(page.nodes.map(n=>n.id));if(ids.some(id=>!available.has(id)))throw Error('The PDF selection changed. Select existing layers again.');
  validateExportHierarchy(page.nodes);const nodes=exportVisibility(page.nodes,options.includeHidden),snapshot={...page,nodes},selected=new Set(ids),map=new Map(nodes.map(n=>[n.id,n]));
  const size=(width:number,height:number)=>{if(width*.75>14400||height*.75>14400)throw Error('PDF pages support at most 14,400 points per edge. Export smaller frames.');return exportDimensions(width,height,{id:'pdf',format:'png',scale:options.scale,includeGuides:options.includeGuides,bounds:'frame',suffix:''});};
