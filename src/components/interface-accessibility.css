@@ -11,6 +11,8 @@
 .app .file-subtitle span{color:var(--muted)}
 .app.theme-light :is(.toolbar>button,.tool-group>button){color:var(--text)}
 .app .action-palette-modes [aria-pressed=true]{background:var(--accent-fill);color:var(--on-accent)}
+.app.theme-light .code-preview{color:var(--text)}
+.app .resource-filters [role=tab][aria-selected=true]{background:var(--accent-fill);color:var(--on-accent)}
 
 /* Tooltips shown on keyboard focus. Pointer events pass through, so a tip can never block a click. */
 .focus-tooltip{position:fixed;z-index:1000;transform:translate(-50%,-100%);max-width:min(320px,calc(100vw - 24px));padding:5px 8px;border-radius:5px;background:#111014;color:#fff;border:1px solid #ffffff59;font-size:11px;line-height:1.35;pointer-events:none;white-space:normal;text-align:center;box-shadow:0 4px 14px #0006}

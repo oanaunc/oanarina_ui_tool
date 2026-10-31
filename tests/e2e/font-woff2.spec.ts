@@ -4,10 +4,11 @@ import {blankDocument,node} from '../../src/model';
 import {VARIABLE_FONT_FAMILY,variableFontBytes} from '../support/variable-font';
 import {encodeWoff2} from '../support/woff2';
 import fs from 'node:fs';
+import {openTextOptions} from './inspector-helpers';
 
 const asset=()=>({family:VARIABLE_FONT_FAMILY,weight:'100 900',source:'google' as const,embeddable:true,data:'data:font/woff2;base64,'+Buffer.from(encodeWoff2(variableFontBytes())).toString('base64')});
 function doc(){const d=blankDocument(),n=node('text',{id:'copy',text:'AAA',fontFamily:VARIABLE_FONT_FAMILY,fontSize:100,fill:'#ffffff',x:60,y:60,width:600,height:130});d.fonts=[asset()];d.pages[0].nodes=[n];return d;}
-async function load(page:Page){const d=doc();await page.addInitScript(d=>{if(!localStorage.getItem('oui-active'))localStorage.setItem('oui-active',JSON.stringify(d));},d);await page.goto('/');await page.locator('[data-layer-id="copy"]').click();await page.evaluate(async()=>{const p='/src/store.ts',{useEditor}=await import(p);useEditor.getState().set({grid:false,zoom:1,pan:{x:40,y:40},past:[],future:[]});});await page.getByRole('tab',{name:'OpenType',exact:true}).click();}
+async function load(page:Page){const d=doc();await page.addInitScript(d=>{if(!localStorage.getItem('oui-active'))localStorage.setItem('oui-active',JSON.stringify(d));},d);await page.goto('/');await page.locator('[data-layer-id="copy"]').click();await page.evaluate(async()=>{const p='/src/store.ts',{useEditor}=await import(p);useEditor.getState().set({grid:false,zoom:1,pan:{x:40,y:40},past:[],future:[]});});await openTextOptions(page);await page.getByRole('tab',{name:'OpenType',exact:true}).click();}
 const history=(page:Page)=>page.evaluate(async()=>{const p='/src/store.ts',{useEditor}=await import(p),s=useEditor.getState();return {past:s.past.length,axes:s.doc.pages[0].nodes[0].fontAxes??s.doc.pages[0].nodes[0].textRuns?.[0]?.fontAxes};});
 const painted=(page:Page)=>page.locator('svg.canvas [data-node-id="copy"] text').first().evaluate(el=>(el as SVGElement).style.fontVariationSettings);
 
