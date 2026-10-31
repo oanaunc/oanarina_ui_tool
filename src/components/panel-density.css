@@ -85,6 +85,7 @@
 .app .left-panel .layer-row>.layer-action{position:absolute;top:50%;transform:translateY(-50%);right:8px;width:18px;height:18px;padding:0;display:grid;place-items:center;border-radius:3px;background:#2c2a33}
 .app .left-panel .layer-row>.layer-action:nth-last-of-type(2){right:27px}
 .app .left-panel .layer-row:not(:hover)>.layer-action:not(.visible){pointer-events:none}
+.app .left-panel .layer-row:has(.layer-mask-indicator){padding-right:48px}
 .instance-layer-note{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:10px;color:var(--muted);margin-bottom:6px}
 .app .override-reset{display:flex;flex-wrap:wrap;gap:0 10px}
 .variable-color{display:grid;grid-template-columns:26px minmax(0,1fr);gap:6px;align-items:center;margin-top:4px}
