@@ -315,5 +315,18 @@ const trustedImportDiagnostics=new Set<string>([
  "Variable alias cycle.",
  "Variable type does not match property.",
  "Variant not found.",
+ // Fixed scene and conversion limits from fig-scene and fig-import.
+ ".fig conversion exceeded its 60-second work limit. Try a smaller file.",
+ ".fig decoding exceeded its 15-second work limit. Try a smaller file.",
+ "Cyclic Figma component dependencies.",
+ "Cyclic Figma hierarchy.",
+ "Duplicate Figma node identity.",
+ "Expanded Figma scene exceeds 20,000 layers on one page or 60,000 layers in total.",
+ "Figma file has no supported visible design pages.",
+ "Figma geometry exceeds the bounded conversion work limit.",
+ "Figma hierarchy exceeds 256 levels.",
+ "Figma references exceed the bounded resolution limit.",
+ "Figma world artwork exceeds the one-million-unit coordinate limit.",
+ "Imported Figma scene exceeds the 50 MB saved-project limit.",
 ]);
 export function trustedImportDiagnostic(message:string){return trustedImportDiagnostics.has(message)?message:undefined;}

@@ -9,4 +9,7 @@ export const FIG_LIMITS = Object.freeze({
   zstdWindow: 64 * 1024 * 1024,
   zstdBlocks: 8192,
   workerTimeoutMs: 15000,
+  sceneTimeoutMs: 60000,
+  sceneLayers: 60000,
+  pageLayers: 20000,
 });

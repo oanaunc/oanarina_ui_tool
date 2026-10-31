@@ -1,9 +1,9 @@
 import {trustedImportDiagnostic} from './trusted-import-diagnostics';
 /** Ephemeral import delivery state. Never serialized into a project or exported. */
 export type ImportFormat='project'|'fig'|'rest'|'pdf'|'sketch'|'audio'|'raster'|'svg';
-export type ImportStage='reading'|'validating'|'decoding'|'retaining'|'opening';
-export interface ImportTaskState {id:number;format:ImportFormat;stage:ImportStage;status:'active'|'cancelled'|'failed';file:number;files:number;bytes:number;totalBytes:number;reason?:string;}
-const labels:Record<ImportStage,string>={reading:'Reading selected bytes',validating:'Validating file structure',decoding:'Decoding embedded artwork',retaining:'Keeping the current project',opening:'Preparing the imported project'};
+export type ImportStage='reading'|'validating'|'decoding'|'converting'|'retaining'|'opening';
+export interface ImportTaskState {id:number;format:ImportFormat;stage:ImportStage;status:'active'|'cancelled'|'failed';file:number;files:number;bytes:number;totalBytes:number;layers?:number;reason?:string;}
+const labels:Record<ImportStage,string>={reading:'Reading selected bytes',validating:'Validating file structure',decoding:'Decoding embedded artwork',converting:'Converting layers and components',retaining:'Keeping the current project',opening:'Preparing the imported project'};
 export const importStageLabel=(stage:ImportStage)=>labels[stage];
 let serial=0,state:ImportTaskState|undefined,active:AbortController|undefined;
 const listeners=new Set<()=>void>();
@@ -26,7 +26,7 @@ export function importFailureReason(error:unknown,stage:ImportStage){
  if(message.startsWith('Choose an Oanarina .oui file'))return 'Choose a Forma or Figma Bridge project with supported .oui version 1 or 2. Use File → Open for a supported binary .fig Design file.';
  if(message==='Layer values out of range.')return 'A layer contains geometry or opacity outside the supported range.';
  if(stage==='reading')return 'The selected file could not be read completely. Select the file again from local storage.';
- if(stage==='decoding')return 'The selected artwork could not be decoded, or exceeded the supported image limits.';
+ if(stage==='decoding'||stage==='converting')return 'The selected artwork could not be decoded, or exceeded the supported image limits.';
  if(stage==='retaining')return 'Your current project could not be retained in local recovery. Save a .oui backup before trying again.';
  if(stage==='opening')return 'The imported project could not be prepared safely. Your current project is unchanged.';
  return 'The file is damaged, unsupported, or exceeds an import limit. Try a new export from the original app.';
@@ -35,7 +35,7 @@ export function beginImportTask(format:ImportFormat,files:number,totalBytes:numb
  active?.abort();const controller=new AbortController(),id=++serial;active=controller;
  state={id,format,files,file:1,totalBytes,bytes:0,stage:'reading',status:'active'};emit();
  const check=()=>{controller.signal.throwIfAborted();if(active!==controller||state?.id!==id)throw new DOMException('Import superseded.','AbortError');};
- const update=(patch:Partial<Pick<ImportTaskState,'stage'|'bytes'|'file'|'files'|'format'>>)=>{check();state={...state!,...patch};emit();};
+ const update=(patch:Partial<Pick<ImportTaskState,'stage'|'bytes'|'file'|'files'|'format'|'layers'>>)=>{check();state={...state!,...patch};emit();};
  return {signal:controller.signal,abort:()=>controller.abort(),check,update,
   async checkpoint(stage:ImportStage){update({stage});await new Promise<void>(r=>setTimeout(r,0));check();},
   finish(){check();active=undefined;state=undefined;emit();},

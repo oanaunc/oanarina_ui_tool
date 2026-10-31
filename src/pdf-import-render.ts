@@ -2,6 +2,8 @@ import {ImportInputError} from './import-task';
 import {PDF_IMPORT_LIMITS,pdfRasterPlans,pdfRasterDocument,validatePdfHeader,pdfImportFailure} from './pdf-import-plan';
 import type {PdfRasterPage} from './pdf-import-plan';
 import ParserWorker from './pdf-import.worker?worker';
+import {pdfEditableDocument,pdfPageLayers} from './pdf-import-layers';
+import type {PdfVectorResult} from './pdf-import-vector';
 import type {PDFDocumentLoadingTask,RenderTask} from 'pdfjs-dist';
 // Statically enumerated package assets: PDF content cannot choose an arbitrary path or URL.
 const assets=import.meta.glob<string>(['/node_modules/pdfjs-dist/cmaps/*.bcmap','/node_modules/pdfjs-dist/standard_fonts/*.pfb','/node_modules/pdfjs-dist/standard_fonts/*.ttf'],{query:'?url',import:'default',eager:true});
@@ -33,13 +35,13 @@ export async function renderPdfImport(bytes:Uint8Array,name:string,signal:AbortS
   workerSource=loading.docId+'_worker';workerTarget=loading.docId;
   const pdfDocument=await loading.promise;check();if(pdfDocument.numPages<1||pdfDocument.numPages>PDF_IMPORT_LIMITS.pages)throw new ImportInputError('PDF import supports between 1 and 32 pages.');
   const pages=[];for(let i=1;i<=pdfDocument.numPages;i++){check();const page=await pdfDocument.getPage(i);check();pages.push(page);}const plans=pdfRasterPlans(pages.map(page=>{const v=page.getViewport({scale:96/72});return{width:v.width,height:v.height};}));
-  const rasters:PdfRasterPage[]=[];let totalOperators=0,totalBytes=0;
+  const rasters:PdfRasterPage[]=[],layered:PdfVectorResult[]=[];let totalOperators=0,totalBytes=0;
   for(const [i,page]of pages.entries()){
    check();onProgress(i+1,pages.length);const operators=await page.getOperatorList({annotationMode:pdf.AnnotationMode.DISABLE});check();totalOperators+=operators.fnArray.length;if(operators.fnArray.length>PDF_IMPORT_LIMITS.operators||totalOperators>PDF_IMPORT_LIMITS.totalOperators)throw new ImportInputError('PDF artwork exceeds 100,000 drawing operations per page or 300,000 in total.');
    const plan=plans[i],canvas=document.createElement('canvas');primary=canvas;reserved=plan.pixelWidth*plan.pixelHeight;canvas.width=plan.pixelWidth;canvas.height=plan.pixelHeight;
    try{const context=canvas.getContext('2d');if(!context)throw new ImportInputError('PDF Canvas rendering is unavailable.');render=page.render({canvas,canvasContext:context,viewport:page.getViewport({scale:96/72}),annotationMode:pdf.AnnotationMode.DISABLE,background:'#ffffff'});render.onContinue=(next:()=>void)=>setTimeout(()=>{if(controller.signal.aborted)render?.cancel();else next();},0);await render.promise;check();const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(v=>v?resolve(v):reject(new ImportInputError('A PDF page could not be encoded.')),'image/png'));check();totalBytes+=blob.size;if(totalBytes>PDF_IMPORT_LIMITS.pngBytes)throw new ImportInputError('Rendered PDF pages exceed 24 MB of PNG data. Import a smaller PDF.');const buffer=await blob.arrayBuffer();check();let binary='';const data=new Uint8Array(buffer);for(let at=0;at<data.length;at+=32768)binary+=String.fromCharCode(...data.subarray(at,at+32768));rasters.push({...plan,image:'data:image/png;base64,'+btoa(binary)});
-   }finally{canvas.width=canvas.height=0;if(primary===canvas)primary=undefined;reserved=0;render=undefined;page.cleanup();}
+   check();layered.push(await pdfPageLayers(page,operators,pdf.OPS,plan,check));check();}finally{canvas.width=canvas.height=0;if(primary===canvas)primary=undefined;reserved=0;render=undefined;page.cleanup();}
   }
-  check();return pdfRasterDocument(rasters,name);
+  check();const flat=pdfRasterDocument(rasters,name);return {document:flat,...pdfEditableDocument(flat,layered)};
  })()]);}catch(error){throw pdfImportFailure(error);}finally{clearTimeout(timer);signal.removeEventListener('abort',abort);port?.removeEventListener('message',workerMessage);port?.removeEventListener('error',workerError);kill();}
 }

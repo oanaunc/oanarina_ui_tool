@@ -163,5 +163,9 @@ export const messages=[
  'Drag to Finder to save this file','Use Edit > Sample Screen Color (Control-Command-C) to sample from the screen.',
 
  'Knife',
+
+ // Import fidelity batch
+ 'Converting layers and components','{count} layers converted','Kept live in Forma','Live instances: {count}','Instances kept as plain layers: {count}','Variant sets: {count}','Auto layout frames: {count}','Auto layout frames kept positioned: {count}','Styles: {count}','Prototype interactions: {count}','Vectors with editable anchors: {count}',
+ 'Paths, images and text become editable layers. Text uses fonts available on this Mac. A page using a feature Forma cannot state exactly stays a rendered image.','Keep every page as an image','Pages kept as images',
 ] as const;
 export type Message=typeof messages[number];

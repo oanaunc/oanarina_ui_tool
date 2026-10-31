@@ -1,0 +1,43 @@
+import type {BindingField,DesignVariable,VariableCollection,VariableType,VariableValue} from './design-systems';
+import {color,flag,guid,list,number,object,optional,reference,string} from './fig-values';
+import type {Raw} from './fig-values';
+/** Local variable collections become real Forma collections. Mode choice is an explicit input everywhere, so a
+ * value is never read from an arbitrary first entry when the owning collection is known. */
+export type FigModes=ReadonlyMap<string,string>;
+export interface FigVariableTable {collections:VariableCollection[];variables:DesignVariable[];variableId:Map<string,string>;collectionId:Map<string,string>;modeId:Map<string,string>;setOf:Map<string,string>;defaultMode:Map<string,string>;modeCount:number;}
+const kinds:Record<string,VariableType>={COLOR:'color',FLOAT:'number',STRING:'string',BOOLEAN:'boolean'};
+const modeRecords=(raw:Raw)=>{const value=raw.variableSetModes,items=Array.isArray(value)?value:list(optional(value).entries,200);return items.map(object).map((m,i)=>({guid:guid(m.id??m.modeID),name:string(m.name,'Mode '+(i+1)).slice(0,512),sort:string(m.sortPosition)})).sort((a,b)=>a.sort<b.sort?-1:a.sort>b.sort?1:0);};
+export const figVariableEntries=(raw:Raw)=>list(optional(raw.variableDataValues).entries,1000).map(object);
+const entryMode=(entry:Raw)=>entry.modeID===undefined?undefined:guid(entry.modeID);
+export function figLiteral(data:Raw,type:VariableType):string|number|boolean|undefined{
+ const value=optional(data.value);
+ if(type==='color'&&value.colorValue!==undefined)return color(value.colorValue).hex;
+ if(type==='number'&&value.floatValue!==undefined)return number(value.floatValue);
+ if(type==='string'&&value.textValue!==undefined)return string(value.textValue).slice(0,100000);
+ if(type==='boolean'&&value.boolValue!==undefined)return flag(value.boolValue,false);
+}
+/** The chosen mode, then the set default, then the first entry for files whose collection is absent. */
+export function figVariableEntry(variable:Raw,modes:FigModes,table:Pick<FigVariableTable,'defaultMode'>){
+ const entries=figVariableEntries(variable),set=reference(variable.variableSetID),wanted=set?modes.get(set)??table.defaultMode.get(set):undefined;
+ return entries.find(e=>entryMode(e)===wanted)??entries.find(e=>set!==undefined&&entryMode(e)===table.defaultMode.get(set))??entries[0];
+}
+export function figVariableTable(records:readonly Raw[],byId:ReadonlyMap<string,Raw>,issue:(code:string,message:string,raw?:Raw)=>void):FigVariableTable{
+ const table:FigVariableTable={collections:[],variables:[],variableId:new Map(),collectionId:new Map(),modeId:new Map(),setOf:new Map(),defaultMode:new Map(),modeCount:0},live=(r:Raw)=>r.phase!=='REMOVED'&&r.isSoftDeleted!==true;
+ for(const raw of records.filter(r=>r.type==='VARIABLE_SET'&&live(r))){const id=guid(raw.guid),modes=modeRecords(raw);if(!modes.length||modes.length>100||new Set(modes.map(m=>m.guid)).size!==modes.length){issue('variable-set','A variable collection with an unsupported mode list kept its current values on each layer.',raw);continue;}if(table.collections.length>=1000){issue('variable-limit','Variable collections beyond the first 1,000 kept their current values on each layer.');break;}const out:VariableCollection={id:crypto.randomUUID(),name:string(raw.name,'Collection').slice(0,512),modes:modes.map(m=>{const mode=crypto.randomUUID();table.modeId.set(id+'|'+m.guid,mode);return {id:mode,name:m.name};}),defaultModeId:''};out.defaultModeId=out.modes[0].id;table.collections.push(out);table.collectionId.set(id,out.id);table.defaultMode.set(id,modes[0].guid);table.modeCount+=modes.length;}
+ const planned=records.filter(r=>r.type==='VARIABLE'&&live(r)).flatMap(raw=>{const set=reference(raw.variableSetID),type=kinds[string(raw.variableResolvedType)];if(!set||!table.collectionId.has(set)){issue('variable-orphan','A variable without an importable collection kept its current value on each layer.',raw);return [];}if(!type){issue('variable-type','A variable of an unsupported type kept its current value on each layer.',raw);return [];}if(table.variableId.size>=20000){issue('variable-limit','Variables beyond the first 20,000 kept their current values on each layer.');return [];}const id=guid(raw.guid);table.variableId.set(id,crypto.randomUUID());table.setOf.set(id,set);return [{raw,id,set,type}];});
+ const types=new Map(planned.map(p=>[p.id,p.type]));let work=0;
+ // Follow an alias to a literal so every mode has a value even when its target is not representable.
+ const literalFor=(data:Raw,type:VariableType,seen:Set<string>):string|number|boolean|undefined=>{if(++work>400000)throw Error('Figma references exceed the bounded resolution limit.');const value=optional(data.value);if(data.dataType!=='ALIAS')return figLiteral(data,type);const id=reference(value.alias);if(!id||seen.has(id)||seen.size>64)return;const target=byId.get(id);if(!target)return;seen.add(id);const entry=figVariableEntry(target,new Map(),table);return entry?literalFor(object(entry.variableData),type,seen):undefined;};
+ const dropped=new Set<string>();
+ for(const {raw,id,set,type} of planned){const collection=table.collections.find(c=>c.id===table.collectionId.get(set))!,entries=figVariableEntries(raw),modes=[...table.modeId.entries()].filter(([key])=>key.startsWith(set+'|')).map(([key,value])=>({source:key.slice(set.length+1),target:value})),values:Record<string,VariableValue>={};
+  const fallbackEntry=entries.find(e=>entryMode(e)===table.defaultMode.get(set))??entries[0];
+  for(const mode of modes){const entry=entries.find(e=>entryMode(e)===mode.source)??fallbackEntry;if(!entry){values[mode.target]=type==='color'?'#000000':type==='number'?0:type==='string'?'':false;issue('variable-value','A variable mode without a saved value uses a neutral default.',raw);continue;}const data=object(entry.variableData),alias=data.dataType==='ALIAS'?reference(optional(data.value).alias):undefined,mapped=alias?table.variableId.get(alias):undefined;if(mapped&&types.get(alias!)===type&&alias!==id){values[mode.target]={alias:mapped};continue;}const literal=literalFor(data,type,new Set([id]));if(literal===undefined){dropped.add(id);break;}values[mode.target]=literal;if(type==='color'&&data.dataType!=='ALIAS'&&color(optional(data.value).colorValue).alpha<1)issue('variable-alpha','Color variables store opaque colors; layers keep their current alpha.',raw);}
+  if(!dropped.has(id))table.variables.push({id:table.variableId.get(id)!,name:string(raw.name,'Variable').slice(0,512),collectionId:collection.id,type,description:string(raw.description).slice(0,4096),values,scopes:[],codeSyntax:{}});}
+ // An alias cycle or a value that never resolves leaves the bindings as plain values.
+ const variables=new Map(table.variables.map(v=>[v.id,v])),active=new Set<string>(),done=new Set<string>(),bad=new Set<string>(),visit=(v:DesignVariable):boolean=>{if(done.has(v.id))return !bad.has(v.id);if(active.has(v.id))return false;active.add(v.id);let ok=true;for(const value of Object.values(v.values))if(typeof value==='object'){const next=variables.get(value.alias);if(!next||!visit(next))ok=false;}active.delete(v.id);done.add(v.id);if(!ok)bad.add(v.id);return ok;};for(const v of table.variables)visit(v);
+ if(bad.size||dropped.size){issue('variable-cycle','Variables with unresolved or circular aliases kept their current values on each layer.');table.variables=table.variables.filter(v=>!bad.has(v.id));for(const [source,target] of [...table.variableId])if(bad.has(target)||dropped.has(source))table.variableId.delete(source);}
+ return table;
+}
+const fields:Record<string,BindingField>={CORNER_RADIUS:'radius',WIDTH:'width',HEIGHT:'height',STACK_SPACING:'gap',FONT_SIZE:'fontSize',OPACITY:'opacity',STROKE_WEIGHT:'strokeWidth',TEXT_DATA:'text',VISIBLE:'visible'};
+/** Source field to Forma binding. Fields without an equivalent stay as resolved literals. */
+export const figBindingField=(field:string):BindingField|undefined=>fields[field];
