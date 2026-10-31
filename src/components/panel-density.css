@@ -79,6 +79,21 @@
 .app .forma-color-picker-panel .color-picker-square{height:110px;margin-bottom:3px}
 .app .recent-color-details>summary{font-size:9px;color:var(--muted)}
 .app .forma-color-picker-panel .button-row button{font-size:9px;padding:3px 0;color:var(--muted)}
+.app .left-panel .layer-row{position:relative}
+.app .left-panel .layer-row>.layer-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app .left-panel .layer-row>.layer-action{position:absolute;top:50%;transform:translateY(-50%);right:8px;width:18px;height:18px;padding:0;display:grid;place-items:center;border-radius:3px;background:#2c2a33}
+.app .left-panel .layer-row>.layer-action:nth-last-of-type(2){right:27px}
+.app .left-panel .layer-row:not(:hover)>.layer-action:not(.visible){pointer-events:none}
+.instance-layer-note{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:10px;color:var(--muted);margin-bottom:6px}
+.app .override-reset{display:flex;flex-wrap:wrap;gap:0 10px}
+.variable-color{display:grid;grid-template-columns:26px minmax(0,1fr);gap:6px;align-items:center;margin-top:4px}
+.variable-color>input[type=color]{width:26px;height:24px;padding:0}
+.variable-color>input:not([type=color]){height:26px;font-size:11px;min-width:0}
+.app .variables-table>.system-card{padding:8px 10px;margin-bottom:6px}
+.app .variables-table .system-field>span{font-size:10px}
+.app .variables-table .variable-values{gap:10px}
+.app .variables-table .variable-mode-value{min-width:0}
+.app .variables-table details>summary{font-size:10px}
 /* Colors */
 .app .paint-item{position:relative;margin-bottom:6px}
 .app .paint-item>summary{min-height:22px;padding-right:96px;display:flex;align-items:center;gap:6px;font-size:10px}
