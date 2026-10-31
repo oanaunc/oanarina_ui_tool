@@ -1,4 +1,4 @@
-import menuPlan from '../public/menu-order.json';
+import menuPlan from './menu-order.json';
 
 /** Commands are registered in history order; menus read in the order someone reaches for them. The native menus read the same file. Unlisted commands keep their place in a final group. */
 const groups:Record<string,string[][]>=menuPlan;
