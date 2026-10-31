@@ -31,11 +31,12 @@ await forma.propose({
 });
 ```
 
-A view uses only `stack`, `text`, `button` and `box`, with at most 200 nodes and 8 levels. Forma lays it out and generates ordinary layers from it. Guest code supplies data, never markup or event handlers. State is at most 32 KB of plain JSON, and a view at most 64 KB. A menu has at most 12 `action`, `toggle` and `choice` items. `forma.log` writes to a bounded console in the widget panel.
+A view uses only `stack`, `text`, `button`, `box` and `input`, with at most 200 nodes and 8 levels. Forma lays it out and generates ordinary layers from it. Guest code supplies data, never markup or event handlers. State is at most 32 KB of plain JSON, and a view at most 64 KB. A menu has at most 12 `action`, `toggle`, `choice`, `color` and `separator` items. `forma.log` writes to a bounded console in the widget panel.
 
 ## On the canvas
 
 - **Interaction:** Forma places its own transparent buttons over generated widget buttons. A press sends only the action name to a fresh worker. Each update is one Undo step. If the saved state changed while a run was in progress, its result is refused.
+- **Input:** `{type:'input',action,value,placeholder}` draws a field as ordinary layers. Selecting it opens a host-owned text box in place, and Enter or leaving the box sends the text as `value` with that action. Escape discards it. Guest code never touches the box.
 - **Properties:** selecting a widget opens a host-rendered panel with its menu, permissions, console, **Refresh widget** and **Convert to layers**.
 - **Resizing:** the frame's canvas handles and size fields work when the package allows it, clamped to its limits. Layers are regenerated from the saved view. Code receives the new size with its next event but does not run on each resize.
 - **State:** state and view are saved on the frame, so they follow Undo, duplicate, copy, paste, page moves and `.oui` save and reopen. A duplicate has independent state. Synchronization means the state, its layers and the saved file stay together on this device. Nothing is shared live between people or windows.

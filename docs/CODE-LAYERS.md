@@ -12,11 +12,13 @@ Code from a file never runs on open, reload, import, paste or selection. The onl
 
 ## Sandbox
 
-Each run loads the bundled `local-guest-frame.html` into an `iframe` with only `sandbox="allow-scripts"`, so its origin is opaque. The frame's own CSP denies `connect-src`, `frame-src`, `worker-src`, `object-src`, `form-action` and `base-uri`; images, fonts and media may only be inline `data:` or `blob:`. WebRTC has no CSP directive, so the bootstrap removes it and the connection constructors in the realm that guest markup then shares. Navigating the frame elsewhere is refused by the editor's own `frame-src` fallback. Source reaches the frame as message data, is written into that same document and is never placed in the editor realm.
+Each run loads the bundled `local-guest-frame.html` into an `iframe` with only `sandbox="allow-scripts"`, so its origin is opaque. The frame's own CSP denies `connect-src`, `frame-src`, `object-src`, `form-action` and `base-uri`; images, fonts and media may only be inline `data:` or `blob:`. Guest scripts do not run in that frame at all: its only script is a hash-pinned trusted one, and guest scripts run in a dedicated worker. See [guest script isolation](GUEST-SCRIPT-ISOLATION.md).
 
 Browser tests cover opaque origin, denied fetch, XHR, WebSocket, Worker, remote image, storage and parent DOM access, and zero requests reaching a local counter server, including a self-navigation attempt.
 
-**Limit:** the opaque frame shares the editor's thread. Measured in Chromium and WebKit through Playwright, a `while(true){}` in guest DOM code blocks the page and Forma cannot interrupt it. That is why code never runs without an explicit action, and the dialog says so. Recovery is closing the app and reopening; autosave recovery applies. The plugin worker sandbox does not have this limit because it uses a terminable worker, but DOM code cannot run in a worker.
+A script that runs for more than 5 seconds without yielding is stopped and reported, and the markup stays visible. The editor keeps working meanwhile, and Stop or Cancel ends the worker at once.
+
+**Script limits:** the DOM a script sees is a mirror, so geometry lags one frame, `getComputedStyle` returns inline values and measured size only, and `preventDefault` applies from the next event on. The guide lists the rest.
 
 ## Properties
 

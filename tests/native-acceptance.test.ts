@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {describe,expect,it} from 'vitest';
 import {isSvgMarkup} from '../src/clipboard-svg';
 import {CODE_LAYER_PAINTER} from '../src/code-layer-paint';
@@ -37,9 +38,9 @@ describe('dragged asset name',()=>{
 });
 describe('code layer capture',()=>{
  it('falls back to the DOM painter only when the canvas is tainted',()=>{
-  const html=codeLayerDocument(defaultCodeLayer());
-  expect(html).toContain('async function paintDom(');
-  expect(html).toContain("if(error?.name!=='SecurityError')throw error;dataUrl=await paintDom(w,h,m.scale,paint);");
+  const frame=readFileSync('public/local-guest-frame.html','utf8');
+  expect(frame).toContain(CODE_LAYER_PAINTER);
+  expect(frame).toContain("if(error?.name!=='SecurityError')throw error;dataUrl=await paintDom(w,h,m.scale,paint);");
   expect(CODE_LAYER_PAINTER).not.toMatch(/fetch|XMLHttpRequest|localStorage/);
  });
  it('escapes its patterns through two template literals',()=>{
