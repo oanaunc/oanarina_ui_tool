@@ -25,13 +25,11 @@
 @media(max-width:700px){.app .top-actions{flex:1;min-width:0;justify-content:flex-end;flex-wrap:wrap}.app .topbar .menubar .menu-container>button{font-size:9px;padding:4px 3px}}
 @media(max-width:1000px){.app .topbar{flex-wrap:wrap;height:auto;min-height:49px;padding-block:6px 0;border-bottom:0}.app .topbar .menubar{order:5;width:calc(100% + 22px);margin-inline:-12px -10px;padding:2px 8px;border-bottom:1px solid var(--line)}.app .document-tab{justify-content:flex-start}}
 
-/* Sidebars: collapse and reset stay available without their own header row. */
-.sidebar-layout .sidebar-slot{position:relative}
-.sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls{position:absolute;top:6px;right:4px;z-index:9;min-height:0;padding:0;border:0;background:transparent;gap:0}
-.sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls button{min-height:20px;padding:3px;color:var(--muted);opacity:0}
+/* Sidebars: collapse and reset move to a quiet strip at the foot, so the panels open on their own content. */
+.sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls{order:1;min-height:22px;padding:0 4px;border-bottom:0;border-top:1px solid var(--line)}
+.sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls button{min-height:18px;padding:2px;color:var(--muted)}
 .sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-.sidebar-layout .sidebar-slot:hover>.sidebar-layout-controls button,.sidebar-layout .sidebar-slot>.sidebar-layout-controls button:focus-visible{opacity:1}
-
+.app .window-conflict{top:auto;bottom:calc(72px * var(--ui-scale,1))}
 .app .sidebar-compact .sidebar-overlay{position:absolute;top:0;bottom:0;right:0}
 
 /* File panel. */
