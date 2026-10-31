@@ -1,4 +1,5 @@
 import {arrowStyle} from './arrowheads';
+import {linearGradientPoints} from './linear-gradient';
 import {effectiveStrokeWidth} from './edge-strokes';
 import {effectsFor} from './effects';
 import {cubicContours,scaledLocalPath} from './geometry';
@@ -25,7 +26,9 @@ export interface PdfRasterOp {kind:'raster';ids:string[];clips:PdfClip[];box:Box
 export interface PdfTextOp extends PdfTextPlan {kind:'text';matrix:Matrix;clips:PdfClip[];box:Box;}
 export interface PdfImageOp extends PdfImagePlan {kind:'image';contours:PathContour[];matrix:Matrix;clips:PdfClip[];evenOdd:boolean;opacity:number;box:Box;}
 export interface PdfVectorResolvers {text?:(n:DesignNode)=>PdfTextPlan|undefined;images?:boolean;}
-export type PdfOp=PdfFillOp|PdfStrokeOp|PdfRasterOp|PdfTextOp|PdfImageOp;
+/** Coordinates stay in the paint's 0-1 space, as in SVG object bounding box units, so a stretched layer keeps an elliptical radial. */
+export interface PdfGradientOp {kind:'gradient';contours:PathContour[];matrix:Matrix;clips:PdfClip[];evenOdd:boolean;opacity:number;box:Box;form:'linear'|'radial';coords:number[];stops:{position:number;color:string}[];size:{width:number;height:number};}
+export type PdfOp=PdfFillOp|PdfStrokeOp|PdfRasterOp|PdfTextOp|PdfImageOp|PdfGradientOp;
 export interface PdfLink {url:string;quad:{x:number;y:number}[];}
 export interface PdfSelectableText {text:string;x:number;y:number;size:number;rotation:number;}
 export interface PdfVectorPage {ops:PdfOp[];}
@@ -39,8 +42,10 @@ function selfContained(n:DesignNode){return !n.liveRepeat&&!n.code&&!n.widget&&!
 const solid=(paint:{type:string;visible:boolean;opacity:number;color?:unknown})=>paint.type==='solid'&&typeof paint.color==='string'&&hex.test(paint.color);
 /** An image paint that maps to one placed picture: original PNG or JPEG bytes, untiled and unadjusted. */
 const imagePaintable=(p:Paint)=>{if(p.type!=='image'||!p.image||p.surface||imageHasAdjustments(p)||p.scaleMode==='tile')return false;try{return ['image/png','image/jpeg'].includes(embeddedImageInfo(p.image).mime);}catch{return false;}};
+/** Opaque linear and radial stops map to a PDF shading. Transparent stops would need a soft mask, so they stay raster. */
+const gradientPaintable=(p:Paint)=>(p.type==='linear'||p.type==='radial')&&!p.surface&&p.stops.length>=1&&p.stops.length<=256&&p.stops.every(s=>s.opacity>=1&&hex.test(s.color)&&s.position>=0&&s.position<=1);
 /** Whether one layer's own paint maps exactly to PDF path operators. */
-function paintable(n:DesignNode,hasChildren:boolean,images=false){if(!SHAPES.has(n.type)||!selfContained(n))return false;const fills=fillsFor(n).filter(p=>p.visible&&p.opacity>0),strokes=strokesFor(n).filter(s=>s.visible&&effectiveStrokeWidth(s,n)>0&&s.paint.visible);if(fills.some(p=>!solid(p)&&!(images&&imagePaintable(p)))||strokes.some(s=>!solid(s.paint)||s.edgeWidths||s.variableWidth||s.dynamic||s.calligraphic||!Number.isFinite(s.width)))return false;if(n.opacity<1&&(hasChildren||fills.length+strokes.length>1))return false;return true;}
+function paintable(n:DesignNode,hasChildren:boolean,images=false){if(!SHAPES.has(n.type)||!selfContained(n))return false;const fills=fillsFor(n).filter(p=>p.visible&&p.opacity>0),strokes=strokesFor(n).filter(s=>s.visible&&effectiveStrokeWidth(s,n)>0&&s.paint.visible);if(n.width<=0||n.height<=0)return false;if(fills.some(p=>!solid(p)&&!gradientPaintable(p)&&!(images&&imagePaintable(p)))||strokes.some(s=>!solid(s.paint)||s.edgeWidths||s.variableWidth||s.dynamic||s.calligraphic||!Number.isFinite(s.width)))return false;if(n.opacity<1&&(hasChildren||fills.length+strokes.length>1))return false;return true;}
 /** A pure page plan: exact path operators where a layer allows them, and raster areas in paint order everywhere else. */
 export function planVectorPage(nodes:DesignNode[],transform?:Matrix,resolvers:PdfVectorResolvers={}):PdfVectorPage|undefined{
  const ids=new Set(nodes.map(n=>n.id)),children=new Map<string|null,DesignNode[]>();for(const n of nodes){const parent=n.parentId&&ids.has(n.parentId)?n.parentId:null;const list=children.get(parent)??[];list.push(n);children.set(parent,list);}
@@ -52,7 +57,7 @@ export function planVectorPage(nodes:DesignNode[],transform?:Matrix,resolvers:Pd
  const visit=(n:DesignNode,clips:PdfClip[]):boolean=>{if(!n.visible||n.type==='slice')return true;const kids=children.get(n.id)??[];if(n.exportGhost){for(const c of ordered(kids,n))if(!visit(c,clips))return false;return true;}
   if(n.type==='text'){const text=resolvers.text?.(n);if(!text)return raster(n,clips);const m=multiply(root,worldMatrix(n,nodes)),base=quadBox(quadOf(m,n)),pad=n.fontSize*Math.max(Math.hypot(m[0],m[1]),Math.hypot(m[2],m[3]))*.5;ops.push({kind:'text',...text,matrix:m,clips,box:{x:base.x-pad,y:base.y-pad,width:base.width+2*pad,height:base.height+2*pad}});return true;}if(!paintable(n,kids.length>0,resolvers.images)||kids.some(c=>c.mask))return raster(n,clips);
   const m=multiply(root,worldMatrix(n,nodes)),fills=fillsFor(n).filter(p=>p.visible&&p.opacity>0),strokes=strokesFor(n).filter(s=>s.visible&&effectiveStrokeWidth(s,n)>0&&s.paint.visible),d=fills.length||strokes.length||n.clip?scaledLocalPath(n):'';let contours:PathContour[]=[];if(d)contours=parse(d);const box=quadBox(quadOf(m,n)),evenOdd=n.fillRule==='evenodd',alpha=n.opacity;
-  for(const p of [...fills].reverse())if(p.type==='image')ops.push({kind:'image',...planPdfImage(p,n),contours,matrix:m,clips,evenOdd,opacity:p.opacity*alpha,box});else ops.push({kind:'fill',contours,matrix:m,clips,color:p.color as string,opacity:p.opacity*alpha,evenOdd,box});
+  for(const p of [...fills].reverse())if(p.type==='image')ops.push({kind:'image',...planPdfImage(p,n),contours,matrix:m,clips,evenOdd,opacity:p.opacity*alpha,box});else if(p.type==='linear'||p.type==='radial'){const [a,b]=linearGradientPoints(p);ops.push({kind:'gradient',contours,matrix:m,clips,evenOdd,opacity:p.opacity*alpha,box,form:p.type,coords:p.type==='linear'?[a.x,a.y,b.x,b.y]:[p.cx,p.cy,0,p.cx,p.cy,p.radius],stops:[...p.stops].sort((x,y)=>x.position-y.position).map(s=>({position:s.position,color:s.color})),size:{width:n.width,height:n.height}});}else ops.push({kind:'fill',contours,matrix:m,clips,color:p.color as string,opacity:p.opacity*alpha,evenOdd,box});
   for(const s of [...strokes].reverse()){const width=effectiveStrokeWidth(s,n),outset=width*(s.align==='center'?.5:s.align==='outside'?1:0),closed=contours.length===1&&contours[0].closed,local:PdfClip|undefined=s.align==='inside'?{contours,matrix:m,evenOdd}:s.align==='outside'?{contours:[...parse('M-100000 -100000H100000V100000H-100000Z'),...contours],matrix:m,evenOdd:true}:undefined;if(s.align!=='center'&&!closed)return raster(n,clips);const scale=Math.max(Math.hypot(m[0],m[1]),Math.hypot(m[2],m[3]));ops.push({kind:'stroke',contours,matrix:m,clips:local?[...clips,local]:clips,color:s.paint.color as string,opacity:s.paint.opacity*alpha,width:s.align==='center'?width:width*2,dash:s.dash??[],dashOffset:s.dashOffset??0,cap:s.cap==='round'||s.cap==='square'?s.cap:'butt',join:s.join==='round'||s.join==='bevel'?s.join:'miter',miterLimit:s.miterLimit??4,box:{x:box.x-outset*scale,y:box.y-outset*scale,width:box.width+2*outset*scale,height:box.height+2*outset*scale}});}
   const inner=n.clip&&contours.length?[...clips,{contours,matrix:m,evenOdd}]:clips;for(const c of ordered(kids,n))if(!visit(c,inner))return false;return true;};
  const ordered=(list:DesignNode[],parent?:DesignNode)=>parent?.layout!=='none'&&parent?.layoutStacking==='first-on-top'?[...list].reverse():list;
