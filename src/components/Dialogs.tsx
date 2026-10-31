@@ -1,3 +1,4 @@
+import ComponentPlayground from './ComponentPlayground';
 import FigmaRestReview from './FigmaRestReview';
 import FigmaRestImportButton from './FigmaRestImportButton';
 import LocalNavigationLinks from './LocalNavigationLinks';
@@ -46,6 +47,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{setQuery('');setCategory('All');setFilter('All');setValue(modal==='rename-file'?s.doc.name:modal==='rename-page'?page.name:modal==='rename'?n?.name??'':modal==='text-link'?n?.hyperlink??'':'');if(modal==='roadmap')fetch('./features.json').then(r=>r.json()).then(setFeatures).catch(notifyError);},[modal]);
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
+ if(modal==='component-playground')return <ComponentPlayground/>;
  if(modal==='figma-rest-review')return <FigmaRestReview key={s.doc.id}/>;
  if(modal==='local-links')return <LocalNavigationLinks key={s.doc.id}/>;
  if(modal==='icons')return <IconLibrary key={s.doc.id}/>;
