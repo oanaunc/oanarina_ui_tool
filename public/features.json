@@ -14867,7 +14867,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Scale reaches 150%, with presets at 135% and 150%. Menu bar, top bar, toolbar, sidebars, menus and root dialogs were checked at 1440×900, 1280×720 and 1024×640, with exact drawing and sidebar drag. Main menus now cap to the window. Not checked in native WKWebView above 125%; not every specialized dialog was opened at 150%."
+    "notes": "Scale reaches 150%, with presets at 135% and 150%. Menu bar, top bar, toolbar, sidebars, menus and root dialogs were checked at 1440×900, 1280×720 and 1024×640, with exact drawing and sidebar drag. Main menus now cap to the window. Not checked in native WKWebView above 125%; not every specialized dialog was opened at 150%. At 125% a real click selected the layer under it in the shipped shell."
   },
   {
     "id": "UI-45-005",
@@ -18907,7 +18907,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "MP4 encodes frame by frame through WebCodecs as H.264 (High realtime, then Baseline) with exact timestamps and frame count, a stall watchdog, and optional AAC from a frame's audio or a picked WAV. Verified through the UI with ffprobe in Chromium and Playwright WebKit, and at encoder level in system WKWebView; the packaged app and older macOS were not run. Embedded video layers export their poster, and MediaRecorder remains the fallback. docs/ANIMATION-VIDEO-EXPORT.md."
+    "notes": "MP4 encodes frame by frame through WebCodecs as H.264 (High realtime, then Baseline) with exact timestamps and frame count, a stall watchdog, and optional AAC from a frame's audio or a picked WAV. Verified through the UI with ffprobe in Chromium and Playwright WebKit, and at encoder level in system WKWebView; the packaged app and older macOS were not run. Embedded video layers export their poster, and MediaRecorder remains the fallback. docs/ANIMATION-VIDEO-EXPORT.md. The real app also records, saves and decodes MP4 with AVFoundation in native acceptance."
   },
   {
     "id": "UI-56-053",
@@ -18927,7 +18927,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "WebM encodes VP9, then VP8, with Opus audio through the same path, plus a sized segment, duration and Cues index. Video is opaque. Same verification and limits as MP4."
+    "notes": "WebM encodes VP9, then VP8, with Opus audio through the same path, plus a sized segment, duration and Cues index. Video is opaque. Same verification and limits as MP4. The real app also records, saves and plays the file in WebKit in native acceptance."
   },
   {
     "id": "UI-56-055",

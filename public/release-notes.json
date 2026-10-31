@@ -3,6 +3,25 @@
   "asOf": "2026-10-31",
   "releases": [
     {
+      "version": "0.2.0-dev.14",
+      "channel": "preview",
+      "title": "Mac fixes, real video export and prototype comments",
+      "notes": [
+        "Fixes for the Mac app: every file picker now opens, PowerPoint, Markdown, palette and code exports save, full screen works in Slides and prototypes, and restarting from safe mode keeps your file.",
+        "Export MP4 and WebM frame by frame with sound, using H.264, VP9, AAC and Opus. Exported WebM now plays in WebKit, and shaders animate in preview and export.",
+        "Comment on running prototypes, annotate and measure on the canvas, and resize groups so their layers keep real sizes.",
+        "Convert a file between sRGB and Display P3 with appearance preserved, generate SwiftUI and Compose code, use layout-aware shortcuts and scale the interface to 150%.",
+        "Paste text, images and SVG from other apps, drop files from Finder, and sample screen colors from the Edit menu. Native acceptance now runs 85 checks in the real app."
+      ],
+      "limits": [
+        "This is a development preview. Exact installer metadata and checksums are published on the Forma website after release validation.",
+        "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
+        "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
+        "VoiceOver, physical trackpad, printer and tablet acceptance, Intel hardware, and real PowerPoint and Figma round trips remain open.",
+        "Complete Figma parity and binary .fig export remain unfinished."
+      ]
+    },
+    {
       "version": "0.2.0-dev.13",
       "channel": "preview",
       "title": "Components, drawing, branches and offline resources",
