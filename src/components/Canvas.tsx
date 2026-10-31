@@ -40,7 +40,7 @@ import {boxSelectionIndex,querySelectionBox,parentHoverTarget} from '../selectio
 import {SelectionBoxOverlay} from './KeyboardSelectionBox';
 import {advancePrecisionPointer,precisionPointer,rotationFeedback} from '../pointer-precision';
 import type {PrecisionPointer} from '../pointer-precision';
-import MaskCanvasArtwork from './MaskCanvasArtwork';
+import ViewportCanvasArtwork from './ViewportCanvasArtwork';
 import VectorBendOverlay from './VectorBendOverlay';
 import {defaultShapeClick,shapeDragGeometry,supportsCenterDrawing} from '../shape-drawing';
 import {ConstraintGuideOverlay} from './ConstraintGuides';
@@ -165,7 +165,7 @@ export default function Canvas(){
  <defs><pattern id="dots" width={s.zoom*16} height={s.zoom*16} patternUnits="userSpaceOnUse" x={s.pan.x} y={s.pan.y}><circle cx="1" cy="1" r=".7" fill="#77717e"/></pattern></defs>
  {s.grid&&<rect width="100%" height="100%" fill="url(#dots)" pointerEvents="none"/>}
  <g transform={`translate(${s.pan.x} ${s.pan.y}) scale(${s.zoom})`}>
- <CanvasImageDiagnostics nodes={page.nodes} zoom={s.zoom} previewing={ns!==page.nodes}><MaskCanvasArtwork nodes={ns} mediaMode={s.motionOpen?undefined:'editor'} outlines={s.outlines} zoom={s.zoom} onNode={(e,id)=>begin(e,id)}/></CanvasImageDiagnostics>
+ <CanvasImageDiagnostics nodes={page.nodes} zoom={s.zoom} previewing={ns!==page.nodes}><ViewportCanvasArtwork nodes={ns} canvasRef={svg} activeId={editText} drafting={ns!==page.nodes} onNode={(e,id)=>begin(e,id)}/></CanvasImageDiagnostics>
  <CanvasNames nodes={ns} zoom={s.zoom} onNode={(e,id)=>begin(e,id,undefined,true)}/>
  {s.mode==='prototype'&&<PrototypeConnections nodes={ns}/>}
  <GridOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>{s.mode==='design'&&!s.vectorEditId&&!multi.context&&<ConstraintGuideOverlay nodes={ns} selection={s.selection} zoom={s.zoom}/>}
