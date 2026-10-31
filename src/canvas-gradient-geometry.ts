@@ -1,14 +1,12 @@
 import type {DesignNode} from './model';
 import type {Paint} from './paints';
 import {validatePaint} from './paints';
+import {layerPaintBox} from './paint-box';
 import {inverseMatrix,point,worldMatrix} from './transforms';
 import {linearGradientPoints,linearGradientAngle,LINEAR_GRADIENT_LIMITS} from './linear-gradient';
 export type GradientHandle='start'|'end'|'move'|'center'|'radius'|`stop:${string}`;
 const clamp=(v:number,min:number,max:number)=>Math.max(min,Math.min(max,v));
-/** The local box a paint maps to. Paths and text map to their drawn bounds, which can differ from the layer box. */
-export interface GradientBox {x:number;y:number;width:number;height:number;}
-export const layerGradientBox=(n:Pick<DesignNode,'width'|'height'>):GradientBox=>({x:0,y:0,width:n.width,height:n.height});
-export function validateCanvasGradient(n:DesignNode,p:Paint,nodes:DesignNode[],box=layerGradientBox(n)){
+export function validateCanvasGradient(n:DesignNode,p:Paint,nodes:DesignNode[],box=layerPaintBox(n)){
  if(n.media)throw Error('Video layers paint their poster, so a gradient has no handles here.');
  if(![box.x,box.y,box.width,box.height].every(Number.isFinite)||!(box.width>0&&box.height>0&&box.width<=1e6&&box.height<=1e6))throw Error('Gradients map to the drawn shape, and this one has no area. Give it width and height first.');validatePaint(p);
  if(!['linear','radial','diamond','angular'].includes(p.type)||!p.visible||p.opacity<=0||p.stops.length<2||new Set(p.stops.map(s=>s.id)).size!==p.stops.length)throw Error('Choose one visible gradient fill with at least two distinct stop IDs.');
@@ -21,7 +19,7 @@ const turn=(p:Paint,reach:number,degrees=p.angle)=>({x:p.cx+reach*Math.cos(degre
 export function gradientAxis(p:Paint){return p.type==='linear'?linearGradientPoints(p):p.type==='radial'?[{x:p.cx,y:p.cy},{x:p.cx+p.radius,y:p.cy}] as const:[{x:p.cx,y:p.cy},turn(p,p.type==='angular'?ANGULAR_RING:p.radius)] as const;}
 const wrapped=(degrees:number)=>{const v=((degrees+180)%360+360)%360-180;return v===-180?180:v;};
 /** Null holds the last valid draft when endpoints approach a degenerate line. */
-export function gradientHandlePatch(n:DesignNode,p:Paint,nodes:DesignNode[],handle:GradientHandle,dx:number,dy:number,box=layerGradientBox(n)):Partial<Paint>|null{
+export function gradientHandlePatch(n:DesignNode,p:Paint,nodes:DesignNode[],handle:GradientHandle,dx:number,dy:number,box=layerPaintBox(n)):Partial<Paint>|null{
  validateCanvasGradient(n,p,nodes,box);if(![dx,dy].every(Number.isFinite))throw Error('Invalid gradient movement.');const checked=(patch:Partial<Paint>)=>{validateCanvasGradient(n,{...p,...patch},nodes,box);return patch;},m=inverseMatrix(worldMatrix(n,nodes)),x=(m[0]*dx+m[2]*dy)/box.width,y=(m[1]*dx+m[3]*dy)/box.height;
  if(handle.startsWith('stop:')&&p.type==='angular'){const id=handle.slice(5),stop=p.stops.find(s=>s.id===id);if(!stop)throw Error('This gradient stop no longer exists.');const from=turn(p,ANGULAR_RING,p.angle+stop.position*360),to={x:from.x+x,y:from.y+y},sweep=wrapped((Math.atan2(to.y-p.cy,to.x-p.cx)-Math.atan2(from.y-p.cy,from.x-p.cx))*180/Math.PI);return checked({stops:p.stops.map(s=>s.id===id?{...s,position:clamp(s.position+sweep/360,0,1)}:s)});}
  if(handle.startsWith('stop:')){const id=handle.slice(5),stop=p.stops.find(s=>s.id===id);if(!stop)throw Error('This gradient stop no longer exists.');const [a,b]=gradientAxis(p),wm=worldMatrix(n,nodes),localX=(b.x-a.x)*box.width,localY=(b.y-a.y)*box.height,vx=wm[0]*localX+wm[2]*localY,vy=wm[1]*localX+wm[3]*localY,position=clamp(stop.position+(dx*vx+dy*vy)/(vx*vx+vy*vy),0,1);return checked({stops:p.stops.map(s=>s.id===id?{...s,position}:s)});}

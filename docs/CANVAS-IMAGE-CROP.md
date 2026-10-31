@@ -1,6 +1,6 @@
 # Crop image fills on the canvas
 
-Unreleased source extends UI-20-012 with a real on-canvas workflow. In an image **fill** inspector, choose **Crop image on canvas** with one unlocked visible layer selected in Design mode. Drag inside its highlighted rectangle to pan; drag the dashed image-element box's lower corner to scale uniformly. Release commits one ordinary Undo step. Arrow keys pan in layer axes by 1 px (Shift: 10 px); plus/minus change scale by one percentage point (Shift: ten). **Exit canvas crop**, Enter, Escape, or clicking outside exits. A click without movement and movement clamped at a current limit preserve the document, links and Undo history.
+In an image fill or stroke inspector, choose **Crop image on canvas** with one unlocked visible layer selected in Design mode. Drag inside its highlighted rectangle to pan; drag the dashed image-element box's lower corner to scale uniformly. Release commits one ordinary Undo step. Arrow keys pan in layer axes by 1 px (Shift: 10 px); plus/minus change scale by one percentage point (Shift: ten). **Exit canvas crop**, Enter, Escape, or clicking outside exits. A click without movement and movement clamped at a current limit preserve the document, links and Undo history.
 
 During a gesture the shared Canvas Artwork scene receives temporary paint values. The document, saved project, autosave and exports continue to use the committed values until release. Existing paint opacity, tone adjustments, other fills/strokes, ancestor transforms, clipping and sibling masks remain in that scene. An alpha-mask source previews the affected masked artwork rather than an isolated image thumbnail. The operation changes image placement, not layer geometry or the crop window dimensions.
 
@@ -10,13 +10,15 @@ Changes from main-component sources propagate to generated instances through the
 
 ## Supported scope and refusals
 
-The initial canvas mode supports image, rectangle, frame, group, component and section fill boxes, plus complete ellipses (including complete rings). These shapes share the layer's full paint bounding box. Text, arbitrary paths, polygons/stars, partial ellipse arcs, image strokes, live boolean results/ancestors and video poster fills are refused rather than guessing their paint coordinates. The inspector crop preview remains available for other image paints. Choose Fill or Crop mode first; Fit, Tile and Stretch are not silently converted by canvas cropping.
+Canvas crop works on any image fill or image stroke, on every drawn layer, including text, paths and partial arcs. A non-tiled image maps to the drawn element's bounds, so the overlay reads those bounds from the canvas and scales its movement to match. Strokes drawn in layer space, which means independent edges and arrowheads, use the layer box.
+
+Every image mode works. Dragging a Fill image makes it Crop, as it always has. Fit, Stretch and Tile keep their mode. A tile's dashed box is its first repeat: panning shifts the whole repeat and scaling changes the tile size. Tiled offsets now shift the repeat itself, where they used to leave a gap inside each tile, so a file with a saved tile offset paints without that gap.
+
+White corner handles resize the crop window on rectangles and image layers. The layer changes size and position, and the picture stays exactly where it is at the same size, including under a saved image angle and a rotated layer. The handles are absent on layers with children, layers placed by auto layout, flipped layers and strokes, and for images whose source size is unknown, because a stationary result cannot be guaranteed there. Perspective correction is not offered.
 
 One visible embedded image fill with an unambiguous local paint ID is required. Scale is bounded to 0.01–10, offsets to ±1,000,000 local units and saved image angles to ±3,600 degrees. Layer dimensions must be positive and within the existing document limit, transforms invertible, and transformed layer corners within ±1,000,000,000 canvas units. Up to 64 ancestors are accepted. Managed instance children and instance roots, inherited locks/hidden layers, other workspaces, Motion, outlines and vector-point editing are refused. Main component source fills remain editable.
 
 Escape, pointer cancellation/lost capture, blur, resize, changed canvas geometry during a drag, page/document/selection/camera/mode/tool changes, hidden UI, source edits, mask preview activation and UI-scale changes discard the pending gesture. Inspector and canvas crop gestures exclude each other. A final live context check and post-derivation paint/geometry check reject stale or overwritten commits atomically. The mode and its temporary paints are editor-only; `.oui` versions 1 and 2 need no schema changes.
-
-UI-20-012 remains **partial**: arbitrary paint-box mapping, image-stroke canvas crop, changing the crop window, perspective transforms and exact Figma/native reference acceptance are unfinished. This is source implementation and DOM/browser verification, not a new native release.
 
 ## Verification
 

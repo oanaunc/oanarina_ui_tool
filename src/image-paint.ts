@@ -17,7 +17,7 @@ export function imageChannelOffsets(adjustments:ImageAdjustments={}){
 }
 export function imagePaintGeometry(p:Paint,width:number,height:number){
  const scale=p.scale??1,tile=p.scaleMode==='tile',w=(p.imageWidth??width)*scale,h=(p.imageHeight??height)*scale;
- return {tile,width:tile?w:width*scale,height:tile?h:height*scale,x:p.offsetX??0,y:p.offsetY??0,patternWidth:tile?w:1,patternHeight:tile?h:1,viewBox:tile?`0 0 ${w} ${h}`:`0 0 ${width} ${height}`,aspect:p.scaleMode==='stretch'?'none':p.scaleMode==='fit'?'xMidYMid meet':'xMidYMid slice',transform:tile?undefined:`rotate(${p.angle} ${width/2} ${height/2})`,patternTransform:tile?`rotate(${p.angle})`:undefined};
+ return {tile,width:tile?w:width*scale,height:tile?h:height*scale,x:tile?0:p.offsetX??0,y:tile?0:p.offsetY??0,patternWidth:tile?w:1,patternHeight:tile?h:1,viewBox:tile?`0 0 ${w} ${h}`:`0 0 ${width} ${height}`,aspect:p.scaleMode==='stretch'?'none':p.scaleMode==='fit'?'xMidYMid meet':'xMidYMid slice',transform:tile?undefined:`rotate(${p.angle} ${width/2} ${height/2})`,patternTransform:tile?`rotate(${p.angle}) translate(${p.offsetX??0} ${p.offsetY??0})`:undefined};
 }
 export function resetImageTransform():Partial<Paint>{return {scaleMode:'fill',scale:1,angle:0,offsetX:0,offsetY:0};}
 export function embeddedImageInfo(data:string){
