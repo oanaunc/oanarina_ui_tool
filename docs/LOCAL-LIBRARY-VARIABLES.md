@@ -24,8 +24,8 @@ Removals need a decision when they are in use:
 
 - A removed mode that a layer or the document uses refuses until it is mapped to an incoming mode. Accepting moves those saved choices in the same Undo step. An unused removed mode is listed and needs no mapping.
 - A removed variable used by layers or by another collection's alias refuses until **Detach those bindings and keep their current values** is checked. Aliases are baked to their current value through the existing variable removal.
-- A removed variable used by a prototype action always refuses. Change the action first.
-- A type change on a variable in use refuses. Remove the bindings or detach first.
+- A removed variable used by a prototype action refuses until it is mapped to an incoming variable of the same type. **Map … to** retargets its layers, aliases, form inputs and prototype actions. Expressions that name a variable in text are not rewritten.
+- A type change on a variable in use refuses until it is mapped the same way, or, when no prototype action uses it, until **Detach those bindings** is checked.
 
 Accepting is one Undo step. Partial selections still take the dependency closure.
 
@@ -35,7 +35,7 @@ Accepting is one Undo step. Partial selections still take the dependency closure
 
 ## Conflict resolution
 
-A style, guide or collection edited after installation shows as a conflict in review, and Accept refuses as before. The row now offers two explicit choices. **Replace with library version** discards the local edit for that group. **Keep my version as local** detaches it, and a later accept can add the library's version beside it. Neither merges. Component definitions have no overwrite: revert the edit, or detach instances.
+A style, guide or collection edited after installation shows as a conflict in review, and Accept refuses as before. The row now offers two explicit choices. **Replace with library version** discards the local edit for that group. **Keep my version as local** detaches it, and a later accept can add the library's version beside it. Neither merges. Component and variant-set groups get the same two choices: replacing keeps instances linked and their ordinary override checks still apply, and keeping refuses while another installed group nests that component.
 
 ## Analytics
 
