@@ -10,6 +10,8 @@ import type {EmbeddedVideo} from './media';
 import type {TextOutline} from './text-outline';
 import type {FrameExportSetting} from './frame-export-settings';
 import {validateDocumentMetadata} from './document-metadata';
+import {validateColorProfile} from './color-profile';
+import {validateDocumentShaders} from './shaders';
 import {validateGrids} from './grid';
 import type {GridTrack,GridAlignment} from './grid';
 import {validateMasks} from './masks';
@@ -62,7 +64,7 @@ export interface DesignNode {prototypeInput?:import('./prototype-input').Prototy
 }
 export interface Comment {reactions?:import('./comment-reactions').CommentReaction[];id:string; x:number;y:number; text:string; resolved:boolean;author?:string;createdAt?:string;editedAt?:string;replies?:import('./comment-threads').CommentReply[];anchor?:import('./comment-threads').CommentAnchor;}
 export interface Page {developmentStatus?:DevelopmentStatus;background?:{color:string;opacity:number;visible:boolean};id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;flows?:PrototypeFlow[];prototypeSettings?:PrototypeSettings;guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
-export interface DesignDocument {fileCover?:DocumentCover;libraryPublication?:LibraryPublication;componentLibraries?:ComponentLibrary[];format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides';whiteboard?:WhiteboardData;slides?:SlideDeck;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
+export interface DesignDocument {colorProfile?:import('./color-profile').DocumentColorProfile;shaders?:import('./shaders').ShaderDefinition[];fileCover?:DocumentCover;libraryPublication?:LibraryPublication;componentLibraries?:ComponentLibrary[];format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides';whiteboard?:WhiteboardData;slides?:SlideDeck;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
 export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
@@ -92,7 +94,7 @@ export function parseDocument(raw:string):DesignDocument {
   const d=JSON.parse(raw);
   if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file or a Figma Bridge .oui file. Direct .fig files are not supported yet.');
   if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
-  validateDocumentMetadata(d);
+  validateDocumentMetadata(d);validateColorProfile(d.colorProfile);validateDocumentShaders(d);
   validateDocumentSurfaces(d);
   if(d.pages.length>1000)throw Error('Too many pages.');
   const ids=new Set<string>();

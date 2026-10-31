@@ -1,6 +1,7 @@
 import {useId,useState} from 'react';
 import {applyDocumentDescription,DOCUMENT_DESCRIPTION_LIMIT,normalizedDocumentDescription} from '../document-metadata';
 import {useEditor} from '../store';
+import ColorProfileControl from './ColorProfileControl';
 import './file-information.css';
 
 export default function FileInformation(){
@@ -17,6 +18,7 @@ export default function FileInformation(){
    <div><dt>Pages</dt><dd>{doc.pages.length.toLocaleString()}</dd></div><div><dt>Layers</dt><dd>{doc.pages.reduce((count,page)=>count+page.nodes.length,0).toLocaleString()}</dd></div>
    <div className="file-information-modified"><dt>Last changed</dt><dd><time dateTime={doc.updatedAt}>{new Date(doc.updatedAt).toLocaleString()}</time></dd></div>
   </dl>
+  <ColorProfileControl/>
   <label className="file-information-description"><span>File description</span><textarea aria-label="File description" aria-describedby={hint} autoFocus rows={6} maxLength={DOCUMENT_DESCRIPTION_LIMIT} value={description} onChange={e=>{setDescription(e.target.value);setEdited(true);setError('');}} placeholder="What is this file for?"/></label>
   <div className="file-information-help" id={hint}><span>Plain text, saved with your .oui project.</span><span>{description.length.toLocaleString()} / {DOCUMENT_DESCRIPTION_LIMIT.toLocaleString()}</span></div>
   {(error||validation)&&<p className="file-information-error" role="alert">{error||validation}</p>}
