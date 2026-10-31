@@ -1,8 +1,8 @@
-import {describe,expect,it} from 'vitest';
+import {afterEach,describe,expect,it,vi} from 'vitest';
 import {aacSpecificConfig,muxMp4,muxWebm,opusHead} from '../src/video-mux';
 import {mixSoundtrack,pickedSoundtrack,soundtrackChoices} from '../src/animation-audio';
 import {animationFrameTime} from '../src/animation-export';
-import {encodedDimensions} from '../src/animation-video';
+import {encodeAnimationVideo,encodedDimensions,ENCODER_WATCH,EncoderStall} from '../src/animation-video';
 import {blankDocument,node} from '../src/model';
 import {audioDataUrl,canonicalPcmWav} from '../src/prototype-audio';
 const sample=(i:number,us:number,key=i===0,size=20)=>({data:new Uint8Array(size).fill(i+1),time:Math.round(i*us),duration:Math.round(us),key});
@@ -35,4 +35,14 @@ describe('soundtrack mix',()=>{
 describe('frame sampling',()=>{
  it('stops one frame short of a looping seam and reaches the end otherwise',()=>{expect(animationFrameTime(59,60,2,true)).toBeCloseTo(59/30);expect(animationFrameTime(59,60,2,false)).toBeCloseTo(2);expect(animationFrameTime(0,60,2,true)).toBe(0);});
  it('keeps H.264 dimensions even without touching WebM',()=>{expect(encodedDimensions('mp4',101,99)).toEqual({width:102,height:100});expect(encodedDimensions('webm',101,99)).toEqual({width:101,height:99});});
+});
+describe('encoder stall handling',()=>{
+ /** Stands in for a platform encoder. Pixels are not involved here, only whether frames come back. */
+ function fakeEncoder(silent:(codec:string)=>boolean){const seen:string[]=[];class Fake{state='configured';encodeQueueSize=0;codec='';count=0;constructor(private init:{output:(chunk:unknown,meta?:unknown)=>void}){}configure(c:{codec:string}){this.codec=c.codec;seen.push(c.codec);}encode(_frame:unknown,o:{keyFrame:boolean}){if(silent(this.codec))return;const key=o.keyFrame,index=this.count++;this.init.output({byteLength:4,timestamp:index*33333,duration:33333,type:key?'key':'delta',copyTo:(d:Uint8Array)=>d.fill(1)},{decoderConfig:{description:new Uint8Array([1,2,3]).buffer}});}flush(){return silent(this.codec)?new Promise(()=>{}):Promise.resolve();}close(){this.state='closed';}}vi.stubGlobal('VideoEncoder',Fake);vi.stubGlobal('VideoFrame',class{close(){}});return seen;}
+ const run=(configs:string[],count=30)=>encodeAnimationVideo({format:'mp4',configs:configs.map(codec=>({codec,width:64,height:48})),count,fps:30,canvas:{} as HTMLCanvasElement,draw:async()=>{},signal:new AbortController().signal,onProgress:()=>{}});
+ afterEach(()=>{vi.unstubAllGlobals();ENCODER_WATCH.stallMs=6000;});
+ it('moves past an encoder that accepts frames and never answers',async()=>{ENCODER_WATCH.stallMs=30;const seen=fakeEncoder(c=>c==='silent');const blob=await run(['silent','working']);expect(seen).toEqual(['silent','working']);expect(blob.type).toBe('video/mp4');});
+ it('notices a stall when the file is shorter than the first check too',async()=>{ENCODER_WATCH.stallMs=30;fakeEncoder(c=>c==='silent');await expect(run(['silent'],4)).rejects.toBeInstanceOf(EncoderStall);});
+ it('reports a stall when nothing finishes, so the caller can fall back',async()=>{ENCODER_WATCH.stallMs=30;fakeEncoder(()=>true);await expect(run(['a','b'])).rejects.toBeInstanceOf(EncoderStall);});
+ it('honours cancellation instead of trying the next encoder',async()=>{const seen=fakeEncoder(()=>false),controller=new AbortController();controller.abort();await expect(encodeAnimationVideo({format:'mp4',configs:[{codec:'a',width:64,height:48}],count:4,fps:30,canvas:{} as HTMLCanvasElement,draw:async()=>{},signal:controller.signal,onProgress:()=>{}})).rejects.toThrow(/cancelled/);expect(seen).toEqual([]);});
 });
