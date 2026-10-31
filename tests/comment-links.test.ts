@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {blankDocument,parseDocument} from '../src/model';
-import {createComment} from '../src/comment-threads';
+import {createComment,deleteCommentReply,replyToComment} from '../src/comment-threads';
 import {commentLink,resolveCommentLink} from '../src/comment-links';
 function fixture(){const d=blankDocument();d.id='file / ? # é';d.pages[0].id='page # / é';createComment(d,d.pages[0].id,{text:'Private text',author:'Private author',x:10,y:20},'thread / # é');return d;}
 it('local link round trips special identifiers without including content, paths, page titles or authors and survives save',()=>{const d=fixture(),before=JSON.stringify(d),link=commentLink(d,d.pages[0].id,d.pages[0].comments[0].id);expect(link).toMatch(/^forma-comment:/);expect(decodeURIComponent(link)).not.toContain('Private');expect(link).not.toContain(d.pages[0].name);expect(resolveCommentLink(parseDocument(before),link)).toEqual({pageId:d.pages[0].id,threadId:d.pages[0].comments[0].id});expect(JSON.stringify(d)).toBe(before);});
@@ -9,3 +9,4 @@ it('resolved threads remain linked and bounded catalog refusal never invents an 
 it('unsupported generated link size and oversized IDs refuse without modifying source',()=>{for(const value of ['x'.repeat(513),'\u0000']){const d=fixture();d.id=value;const before=JSON.stringify(d);expect(()=>commentLink(d,d.pages[0].id,d.pages[0].comments[0].id)).toThrow();expect(JSON.stringify(d)).toBe(before);}});
 
 it('percent-encoded identifiers still enforce the total local link size limit',()=>{const d=fixture();d.id='💡'.repeat(256);d.pages[0].id='💡'.repeat(256);d.pages[0].comments[0].id='💡'.repeat(256);expect(()=>commentLink(d,d.pages[0].id,d.pages[0].comments[0].id)).toThrow(/4,096/);});
+it('a reply link targets one reply, keeps older thread links working, and refuses a deleted reply',()=>{const d=fixture(),thread=d.pages[0].comments[0].id;replyToComment(d,d.pages[0].id,thread,'Answer','Writer','reply / é');const link=commentLink(d,d.pages[0].id,thread,'reply / é');expect(decodeURIComponent(link)).not.toContain('Answer');expect(resolveCommentLink(parseDocument(JSON.stringify(d)),link)).toEqual({pageId:d.pages[0].id,threadId:thread,replyId:'reply / é'});expect(resolveCommentLink(d,commentLink(d,d.pages[0].id,thread)).replyId).toBeUndefined();expect(()=>commentLink(d,d.pages[0].id,thread,'gone')).toThrow(/missing/);deleteCommentReply(d,d.pages[0].id,thread,'reply / é');expect(()=>resolveCommentLink(d,link)).toThrow(/missing/);});
