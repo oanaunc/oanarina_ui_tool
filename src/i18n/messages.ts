@@ -155,5 +155,8 @@ export const messages=[
  'Skin tone','Default skin tone','Light skin tone','Medium-light skin tone','Medium skin tone','Medium-dark skin tone','Dark skin tone','{count} local emoji. Search by name to find more. Appearance depends on the fonts on this Mac, so newer emoji can show as boxes on older systems.',
 
  'Knife',
+
+ // Import fidelity batch
+ 'Converting layers and components','{count} layers converted','Kept live in Forma','{count} live instances','{count} instances stayed as plain layers','{count} variant sets','{count} auto layout frames','{count} auto layout frames stayed positioned','{count} variables','{count} styles','{count} prototype interactions','{count} vectors with editable anchors',
 ] as const;
 export type Message=typeof messages[number];

@@ -63,7 +63,7 @@ export async function openSelectedProject(file:File){
   if(file.size>=50_000_000)throw new ImportInputError('Choose a project smaller than 50 MB.');
   const raw=await readImportFile(file,isFig?'bytes':'text',task.signal,bytes=>task.update({bytes}));session.check();
   await task.checkpoint('validating');session.check();
-  const result=isFig?await importFigBytes(new Uint8Array(raw as ArrayBuffer),file.name,task.signal,stage=>task.update({stage})):undefined;
+  const result=isFig?await importFigBytes(new Uint8Array(raw as ArrayBuffer),file.name,task.signal,(stage,layers)=>task.update({stage,layers})):undefined;
   let source=result?.document;
   if(!isFig){projectText=raw;const json=JSON.parse(raw as string);if(isFigmaRestJson(json)){task.update({format:'rest'});if(file.size>FIGMA_REST_LIMITS.bytes)throw new ImportInputError('Choose Figma REST JSON smaller than 20 MB.');const converted=importFigmaRestJson(json,file.name.replace(/\.json$/i,''));session.check();session.dispose();task.finish();const review=await requestFigmaRestReview(converted);return review?openReviewedFigmaRest(review):undefined;}source=parseDocument(raw as string);}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
   await task.checkpoint('retaining');session.check();
