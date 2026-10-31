@@ -15,6 +15,7 @@ extension Studio:NSMenuItemValidation {
         case "native-share":active?.shareDocument()
         case "native-revert":active?.revertToSaved()
         case "native-live-context":active?.toggleLiveContext()
+        case "native-sample-color":active?.sampleScreenColor()
         case "native-guide":NSWorkspace.shared.open(URL(string:"https://www.oanarinaldi.com/ui-tool-guide.html")!)
         default:return false}
         return true
@@ -23,6 +24,7 @@ extension Studio:NSMenuItemValidation {
         guard let id=item.representedObject as? String else{return true}
         let document=active
         if id=="native-print"||id=="native-share"{return document?.ready==true&&document?.delivering==false}
+        if id=="native-sample-color"{return document?.ready==true&&document?.colorSampler==nil}
         if id=="native-revert"{return document?.ready==true&&document?.session.file != nil&&document?.state?.dirty==true}
         if id=="native-live-context"{item.state=document?.session.shareLive==true ? .on:.off;return document?.ready==true&&document?.session.file != nil}
         guard let menu=document?.state?.menu else{return true}
@@ -54,6 +56,22 @@ extension Studio:NSMenuItemValidation {
         CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),Unmanaged.passUnretained(self).toOpaque(),{_,observer,_,_,_ in guard let observer else{return};let studio=Unmanaged<Studio>.fromOpaque(observer).takeUnretainedValue();DispatchQueue.main.async{studio.systemFontsChanged()}},kCTFontManagerRegisteredFontsChangedNotification,nil,.deliverImmediately)
         NotificationCenter.default.addObserver(forName:NSFont.fontSetChangedNotification,object:nil,queue:.main){[weak self] _ in self?.systemFontsChanged()}
     }
+    /** Names and CSS-reachable traits of one installed family, the same kind of data as the family list. Never a font file or path.
+     * Width variants share a family's weights, and CSS weight alone cannot reach them, so they are left out. */
+    static func installedFaces(_ family:String)->[[String:Any]] {
+        let scale:[(CGFloat,Int)]=[(-0.8,100),(-0.6,200),(-0.4,300),(0,400),(0.23,500),(0.3,600),(0.4,700),(0.56,800),(0.62,900)]
+        var faces:[[String:Any]]=[],seen=Set<String>()
+        for member in NSFontManager.shared.availableMembers(ofFontFamily:family) ?? [] {
+            guard member.count>=2,let postscript=member[0] as? String,let label=member[1] as? String,faces.count<64 else{continue}
+            let font=CTFontCreateWithName(postscript as CFString,12,nil)
+            guard let traits=CTFontCopyTraits(font) as? [CFString:Any],let weight=traits[kCTFontWeightTrait] as? CGFloat else{continue}
+            let slant=traits[kCTFontSlantTrait] as? CGFloat ?? 0,width=traits[kCTFontWidthTrait] as? CGFloat ?? 0,symbolic=CTFontGetSymbolicTraits(font)
+            guard abs(width)<0.05 else{continue}
+            let css=scale.min{abs($0.0-weight)<abs($1.0-weight)}!.1,italic=symbolic.contains(.traitItalic)||abs(slant)>0.02
+            if seen.insert("\(css):\(italic)").inserted{faces.append(["label":label,"postscript":postscript,"weight":css,"italic":italic])}
+        }
+        return faces
+    }
     func systemFontsChanged(){fontRefresh?.cancel();let work=DispatchWorkItem{[weak self] in guard let self else{return};for document in self.documents where document.ready{document.web.callAsyncJavaScript("return await window.__studioNative('fonts-changed');",arguments:[:],in:nil,in:.page,completionHandler:nil)}};fontRefresh=work;DispatchQueue.main.asyncAfter(deadline:.now()+0.3,execute:work)}
 }
 
@@ -70,6 +88,19 @@ extension DocumentWindow {
                 completion(name,mime,data)
             }
         }
+    }
+    /** The shell starts the system sampler; the page only ever receives the one color a person clicked. */
+    func sampleScreenColor(){
+        guard ready,colorSampler==nil else{return}
+        let sampler=NSColorSampler();colorSampler=sampler
+        if studio.smoke,let scripted=studio.smokeScreenColor{finishSample(scripted);return}
+        sampler.show{[weak self] color in self?.finishSample(color)}
+    }
+    func finishSample(_ color:NSColor?){
+        colorSampler=nil
+        func hex(_ space:NSColorSpace)->String? {color?.usingColorSpace(space).map{c in "#"+[c.redComponent,c.greenComponent,c.blueComponent].map{String(format:"%02x",Int((min(1,max(0,$0))*255).rounded()))}.joined()}}
+        guard let srgb=hex(.sRGB),let p3=hex(.displayP3),ready else{return}
+        web.callAsyncJavaScript("return await window.__studioNative('screen-color',value);",arguments:["value":["srgb":srgb,"p3":p3]],in:nil,in:.page){[weak self] result in if case .failure(let error)=result,let self{self.studio.showError("Unable to use the sampled color",error,window:self.window)}}
     }
     /** `destination` skips the panel so the same real print job can be verified without a person. */
     func printDocument(destination:URL?=nil,completion:((Int)->Void)?=nil){

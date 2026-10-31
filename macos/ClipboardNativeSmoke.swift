@@ -154,10 +154,58 @@ extension Studio {
                             self.smokeJS(document,"window.__studioCommand('undo');return true;"){_ in
                                 self.clipboardWait(document,"document.querySelectorAll('.layer-row').length===2"){
                                     self.check(true,"copied PNG paste has one undo without a Copy history entry")
-                                    self.smokeFinishing=true;for document in Array(self.documents){document.closeApproved()};self.nodePasteboard.releaseGlobally();if let directory=self.smokeDirectory{try? FileManager.default.removeItem(at:directory)}
-                                    print(self.json(["nativeClipboard":true,"checks":self.smokeChecks,"count":self.smokeChecks.count]));fflush(stdout);self.smokeTerminate()
+                                    self.clipboardTextTests(document)
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    func clipboardPut(_ item:NSPasteboardItem){nodePasteboard.clearContents();nodePasteboard.writeObjects([item])}
+    func clipboardTextTests(_ document:DocumentWindow){
+        let layers="document.querySelectorAll('.layer-row').length"
+        smokeJS(document,"return \(layers);"){value in
+            guard let start=value as? Int else{self.smokeFail("layer count")}
+            let text="Line one\nLinia doi ș ț 日本語",plain=NSPasteboardItem();plain.setString(text,forType:.string);self.clipboardPut(plain);document.command("paste")
+            self.clipboardWait(document,"\(layers)===\(start+1)"){
+                self.check(true,"multi-line Unicode text from another app pastes as one editable layer")
+                let rich=NSPasteboardItem();rich.setData(try! NSAttributedString(string:"Rich only",attributes:[.font:NSFont.boldSystemFont(ofSize:18)]).data(from:NSRange(location:0,length:9),documentAttributes:[.documentType:NSAttributedString.DocumentType.rtf]),forType:.rtf);self.clipboardPut(rich);document.command("paste")
+                self.clipboardWait(document,"\(layers)===\(start+2) && document.body.textContent.includes('Rich only')"){
+                    self.check(true,"rich text offered without plain text pastes its words as a text layer")
+                    let svg=NSPasteboardItem();svg.setString("<?xml version='1.0'?>\n<svg xmlns='http://www.w3.org/2000/svg' width='60' height='40'><rect width='60' height='40'/></svg>\n",forType:.string);self.clipboardPut(svg);document.command("paste")
+                    self.clipboardWait(document,"document.querySelector('[role=dialog]') && document.body.textContent.includes('Import editable layers')"){
+                        self.check(true,"SVG received only as plain text reaches the validated import review")
+                        self.smokeJS(document,"[...document.querySelectorAll('button')].find(b=>b.textContent==='Cancel SVG import').click();return true;"){_ in self.clipboardFinderTests(document,start+2)}
+                    }
+                }
+            }
+        }
+    }
+    /** Finder publishes a file URL beside the file's icon and name, as this fixture does. */
+    func clipboardFinderFile(_ file:URL)->NSPasteboardItem {let item=NSPasteboardItem();item.setString(file.absoluteString,forType:.fileURL);item.setData(clipboardRasterFixture(true),forType:.tiff);item.setString(file.lastPathComponent,forType:.string);return item}
+    func clipboardFinderTests(_ document:DocumentWindow,_ count:Int){
+        let directory=smokeDirectory!,image=directory.appendingPathComponent("Copied.png"),vector=directory.appendingPathComponent("Copied.svg"),other=directory.appendingPathComponent("Notes.txt"),missing=directory.appendingPathComponent("Gone.png"),layers="document.querySelectorAll('.layer-row').length"
+        let context=CGContext(data:nil,width:9,height:5,bitsPerComponent:8,bytesPerRow:36,space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue)!,output=NSMutableData(),destination=CGImageDestinationCreateWithData(output,"public.png" as CFString,1,nil)!
+        CGImageDestinationAddImage(destination,context.makeImage()!,nil);CGImageDestinationFinalize(destination)
+        do{try (output as Data).write(to:image);try Data("<svg xmlns='http://www.w3.org/2000/svg' width='60' height='40'><rect width='60' height='40'/></svg>".utf8).write(to:vector);try Data("plain".utf8).write(to:other)}catch{smokeFail(error.localizedDescription)}
+        clipboardPut(clipboardFinderFile(image));document.command("paste")
+        clipboardWait(document,"\(layers)===\(count+1)"){
+            self.smokeJS(document,"return [...document.querySelectorAll('input')].find(e=>e.getAttribute('aria-label')==='W')?.value==='9' && [...document.querySelectorAll('input')].find(e=>e.getAttribute('aria-label')==='H')?.value==='5';"){value in
+                self.check(value as? Bool==true,"an image copied in Finder pastes its real file, not Finder's icon")
+                let before=document.state?.revision
+                self.clipboardPut(self.clipboardFinderFile(other));document.command("paste")
+                self.clipboardWait(document,"document.body.textContent.includes('The Mac clipboard has no supported layers, SVG, image or text.')"){
+                    self.check(document.state?.revision==before,"a copied non-image file pastes nothing, neither its icon nor its name")
+                    self.clipboardPut(self.clipboardFinderFile(missing));document.command("paste")
+                    self.later(0.4){
+                        self.check(document.state?.revision==before,"a copied file that no longer exists pastes nothing")
+                        self.clipboardPut(self.clipboardFinderFile(vector));document.command("paste")
+                        self.clipboardWait(document,"document.querySelector('[role=dialog]') && document.body.textContent.includes('Import editable layers')"){
+                            self.check(true,"an SVG copied in Finder reaches the validated import review")
+                            self.smokeFinishing=true;for document in Array(self.documents){document.closeApproved()};self.nodePasteboard.releaseGlobally();if let directory=self.smokeDirectory{try? FileManager.default.removeItem(at:directory)}
+                            print(self.json(["nativeClipboard":true,"checks":self.smokeChecks,"count":self.smokeChecks.count]));fflush(stdout);self.smokeTerminate()
                         }
                     }
                 }

@@ -7,6 +7,8 @@ import {getPreferences,subscribePreferences} from './preferences';
 import type {EditorPreferences} from './preferences';
 import type {SlideDocument} from './slides';
 import {useEditor} from './store';
+import {dragAssetName} from './drag-asset';
+import {receiveScreenColor} from './screen-color';
 import {visualBounds} from './transforms';
 
 export type ExternalReload='reloaded'|'dirty'|'busy'|'invalid';
@@ -66,6 +68,8 @@ export function installDesktopNative(onFonts:(families:string[])=>void){
   if(name==='external-notice'&&typeof value==='string'&&value.length<=300){useEditor.getState().set({toast:value});return true;}
   if(name==='live-context'&&typeof value==='string')return desktopLiveContext(value);
   if(name==='delivery'&&(value==='print'||value==='share'))return desktopDelivery(value);
+  if(name==='drag-asset-name')return dragAssetName();
+  if(name==='screen-color')return receiveScreenColor(value);
   if(name==='fonts-changed'){const families=await desktop.fonts?.()??[];onFonts(families);useEditor.getState().refreshFonts();window.dispatchEvent(new Event('oanarina-fonts-changed'));window.dispatchEvent(new Event('oanarina-system-fonts-changed'));return families.length;}
   throw Error('Unsupported native request.');
  });

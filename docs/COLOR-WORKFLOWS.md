@@ -20,8 +20,11 @@ labels and guides. Click a pixel or use arrow keys and Enter. Transparency is
 preserved. This samples the artwork export, not an OS screenshot or an exact
 physical display pixel. Unsupported/failed rendering reports an error.
 
-Sample screen color uses the browser EyeDropper API only when available. It is
-not a native macOS screen picker and is unavailable in the shipping WKWebView.
+Sample screen color uses the browser EyeDropper API only when available, which
+the shipping WKWebView does not provide. On Mac, Edit > Sample Screen Color
+(Control-Command-C) runs the system NSColorSampler from the shell and hands the
+one clicked color to the open picker. See
+[Mac system integration](MAC-SYSTEM-INTEGRATION.md).
 Delayed sampling results are discarded after document, selection, page or editor
 mode changes; unmount aborts pending screen sampling. Figma screen-picker parity
 remains unimplemented. Gradient canvas handles and shader fills remain separate

@@ -159,6 +159,9 @@ export const messages=[
 
  'Skin tone','Default skin tone','Light skin tone','Medium-light skin tone','Medium skin tone','Medium-dark skin tone','Dark skin tone','{count} local emoji. Search by name to find more. Appearance depends on the fonts on this Mac, so newer emoji can show as boxes on older systems.',
 
+ // Native Mac acceptance batch
+ 'Drag to Finder to save this file','Use Edit > Sample Screen Color (Control-Command-C) to sample from the screen.',
+
  'Knife',
 ] as const;
 export type Message=typeof messages[number];

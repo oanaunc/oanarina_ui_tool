@@ -7,6 +7,7 @@ import {useEditor} from './store';
 import {readClipboardRaster} from './raster-clipboard';
 import {pngClipboardDimensions,renderClipboardPng} from './png-clipboard';
 import {visualBounds} from './transforms';
+import {isSvgMarkup} from './clipboard-svg';
 
 export interface NativeClipboardRead {kind:'nodes'|'svg'|'image'|'text'|'empty';data?:string;}
 let localCopy:{raw:string;document:ReturnType<typeof useEditor.getState>['doc']}|undefined;
@@ -49,7 +50,7 @@ export async function pasteEditorClipboard(parentId?:string,isCurrentTarget:()=>
  const content=await window.desktop.clipboardRead(),current=useEditor.getState();if(current.doc!==initial.doc||current.pageId!==initial.pageId||!isCurrentTarget())throw Error('The project changed while reading the clipboard. Paste again.');
  if(content.kind==='empty'){current.set({toast:'The Mac clipboard has no supported layers, SVG, image or text.'});return;}
  if(typeof content.data!=='string'||new TextEncoder().encode(content.data).length>CLIPBOARD_LIMIT)throw Error('Clipboard content exceeds 20 MB.');
- if(content.kind==='svg'){if(parentId)throw Error('SVG clipboard paste is available on the design canvas. Paste there, review the import, then copy its editable layers into your slide.');await importSvg(content.data,'Pasted SVG');return;}
+ if(content.kind==='svg'||content.kind==='text'&&isSvgMarkup(content.data)){if(parentId)throw Error('SVG clipboard paste is available on the design canvas. Paste there, review the import, then copy its editable layers into your slide.');await importSvg(content.data,'Pasted SVG');return;}
  if(content.kind!=='nodes'&&content.kind!=='text'&&content.kind!=='image')throw Error('Unsupported clipboard content.');
  let payload;
  if(content.kind==='image'){

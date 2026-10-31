@@ -1,7 +1,7 @@
 import AppKit
 import ImageIO
 
-/** Fixed representations only. Never accepts pasteboard names, arbitrary UTIs or file paths. */
+/** Fixed representations only. The renderer can name no pasteboard, UTI or path; a file a person copied in Finder is read here and reaches it as normalized bytes. */
 // Clipboard intents can cross asynchronous WebKit focus queries. Only the newest
 // intent may authorize a write or route its native/editor clipboard command.
 struct ClipboardCommandOrder {
@@ -14,6 +14,10 @@ enum NodePasteboard {
     static let nodes=NSPasteboard.PasteboardType("com.oanarinaldi.forma.nodes-json")
     static let svg=NSPasteboard.PasteboardType("public.svg-image")
     static let jpeg=NSPasteboard.PasteboardType("public.jpeg")
+    static let heic=NSPasteboard.PasteboardType("public.heic")
+    static let webp=NSPasteboard.PasteboardType("org.webmproject.webp")
+    static let gif=NSPasteboard.PasteboardType("com.compuserve.gif")
+    static let rasters:[NSPasteboard.PasteboardType]=[.png,.tiff,jpeg,heic,webp,gif]
     static let limit=20_000_000
     static let rasterPixelLimit=16_000_000
     /** Inspect dimensions before pixel decoding, then normalize the first oriented frame to PNG. */
@@ -52,12 +56,24 @@ enum NodePasteboard {
         let item=NSPasteboardItem();guard item.setData(data,forType:nodes),item.setData(svgData,forType:svg),item.setData(textData,forType:.string) else{throw NSError(domain:"Unable to prepare clipboard data.",code:6)}
         pasteboard.clearContents();return pasteboard.writeObjects([item])
     }
+    /** Finder also offers the file's icon and its name, so a file URL decides first. Only images and SVG paste; a path never leaves the shell. */
+    static func copiedFile(_ item:NSPasteboardItem)throws->[String:String]? {
+        guard let raw=item.string(forType:.fileURL),let url=URL(string:raw),url.isFileURL else{return nil}
+        guard let data=try? ProjectFileSafety.readBounded(url),data.count<=limit else{return ["kind":"empty"]}
+        if url.pathExtension.lowercased()=="svg"{guard let text=String(data:data,encoding:.utf8) else{return ["kind":"empty"]};return ["kind":"svg","data":text]}
+        guard let source=CGImageSourceCreateWithData(data as CFData,[kCGImageSourceShouldCache:false] as CFDictionary),let actual=CGImageSourceGetType(source) as String?,rasters.map(\.rawValue).contains(actual) else{return ["kind":"empty"]}
+        return ["kind":"image","data":try raster(data,type:NSPasteboard.PasteboardType(actual))]
+    }
     static func read(from pasteboard:NSPasteboard = .general)throws->[String:String] {
-        guard let item=pasteboard.pasteboardItems?.first,let type=item.availableType(from:[nodes,svg,.png,.tiff,jpeg,.string]) else{return ["kind":"empty"]}
-        if type == .png || type == .tiff || type==jpeg {
+        guard let item=pasteboard.pasteboardItems?.first else{return ["kind":"empty"]}
+        if item.availableType(from:[nodes,svg])==nil,let file=try copiedFile(item){return file}
+        guard let type=item.availableType(from:[nodes,svg]+rasters+[.string,.rtf]) else{return ["kind":"empty"]}
+        if rasters.contains(type) {
             guard let data=item.data(forType:type) else{throw NSError(domain:"Unable to read clipboard image.",code:8)}
             return ["kind":"image","data":try raster(data,type:type)]
         }
+        // Some apps offer only rich text. Layers take plain text, so its styling is dropped.
+        if type == .rtf {guard let data=item.data(forType:type),data.count<=limit,let text=NSAttributedString(rtf:data,documentAttributes:nil)?.string else{throw NSError(domain:"Clipboard content is invalid or exceeds 20 MB.",code:7)};return ["kind":"text","data":text]}
         guard let data=item.data(forType:type),data.count<=limit,let raw=String(data:data,encoding:.utf8) else{throw NSError(domain:"Clipboard content is invalid or exceeds 20 MB.",code:7)}
         if type==nodes{try validateNodes(data)}
         return ["kind":type==nodes ? "nodes":type==svg ? "svg":"text","data":raw]

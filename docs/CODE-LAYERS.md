@@ -30,7 +30,7 @@ The canvas never runs code. The layer's artwork is an ordinary image paint holdi
 
 Capture happens inside the frame: the live DOM is cloned, canvases and form state are copied in, CSSOM rules are collected, and the result is drawn through an SVG `foreignObject` image into a PNG at up to 2× scale and 2,048 pixels on a side. It is a snapshot, so animation stops at the capture moment. Remote content cannot appear because the frame cannot load it, and fonts are limited to what the frame itself can use: the document's editor fonts are not available inside it. A guest can post its own PNG in place of the capture; the host accepts only a bounded `data:image/png` for that layer's own preview, so this cannot affect anything else.
 
-Capture passes its pixel checks in Chromium and in Playwright's WebKit engine on macOS. **Limit:** a real Forma app build in WKWebView has not been smoke-tested. If capture fails, the source still saves, the old preview stays, and the state reads stale.
+Capture passes its pixel checks in Chromium and in the real WKWebView shell (`--acceptance-smoke-test`). Older WebKit taints a canvas that draws `foreignObject`. On that `SecurityError` capture falls back to a small DOM painter inside the same opaque frame, which redraws solid backgrounds, per-side borders, rounded corners, opacity, overflow clipping, text, images, canvases and inline SVG. Gradients, shadows, filters, rotation and z-index stacking are not reproduced in that fallback. macOS 27 does not taint, so the fallback is proven by forcing the error. If capture fails, the source still saves, the old preview stays, and the state reads stale.
 
 ## Export and transfer
 

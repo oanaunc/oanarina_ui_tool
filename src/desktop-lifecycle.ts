@@ -1,7 +1,8 @@
 import type {DesignDocument} from './model';
 import {useEditor} from './store';
+import {isUntouchedPlaceholder} from './startup-health';
 export interface DesktopMenuState {undo:boolean;redo:boolean;selection:boolean;editing:boolean;checked:string[];}
-export interface DesktopDocumentState {id:string;name:string;revision:number;dirty:boolean;menu?:DesktopMenuState;}
+export interface DesktopDocumentState {id:string;name:string;revision:number;dirty:boolean;menu?:DesktopMenuState;placeholder?:boolean;}
 export interface DesktopBootstrap {kind:'new'|'file'|'recovery'|'fig';data?:string;name?:string;command?:string;raw?:string;documentId?:string;restoreActive?:boolean;dirty?:boolean;explicitOpen?:boolean;}
 /** One tracker per renderer. Timestamps do not turn undo-to-saved content dirty. */
 export class DesktopDocumentTracker {
@@ -16,7 +17,8 @@ export const desktopDocuments=new DesktopDocumentTracker();
 /** Window titles may name a local branch; the document's own name and file remain unchanged. */
 let documentLabel:((doc:DesignDocument)=>string)|undefined;
 export const setDocumentLabel=(label:typeof documentLabel)=>{documentLabel=label;};
-export function desktopDocumentState(){const doc=useEditor.getState().doc,state=desktopDocuments.state(doc);return documentLabel?{...state,name:documentLabel(doc)}:state;}
+/** Safe mode's untouched placeholder must not take over the window's session, or Restart normally loses its file. */
+export function desktopDocumentState():DesktopDocumentState{const doc=useEditor.getState().doc,state=desktopDocuments.state(doc),named=documentLabel?{...state,name:documentLabel(doc)}:state;return isUntouchedPlaceholder(doc)?{...named,placeholder:true}:named;}
 let menuProvider:(()=>DesktopMenuState)|undefined;
 export function setDesktopMenuProvider(provider:(()=>DesktopMenuState)|undefined){menuProvider=provider;}
 export async function reportDesktopDocument(){if(typeof window!=='undefined'&&window.desktop?.reportDocument)await window.desktop.reportDocument({...desktopDocumentState(),...(menuProvider?{menu:menuProvider()}:{})});}
