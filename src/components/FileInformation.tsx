@@ -3,6 +3,7 @@ import {useId,useState} from 'react';
 import {applyDocumentDescription,DOCUMENT_DESCRIPTION_LIMIT,normalizedDocumentDescription} from '../document-metadata';
 import {useEditor} from '../store';
 import ColorProfileControl from './ColorProfileControl';
+import LibraryFileInformation from './LibraryFileInformation';
 import './file-information.css';
 
 export default function FileInformation(){
@@ -20,6 +21,7 @@ export default function FileInformation(){
    <div className="file-information-modified"><dt>{t('Last changed')}</dt><dd><time dateTime={doc.updatedAt}>{formatDateTime(doc.updatedAt)}</time></dd></div>
   </dl>
   <ColorProfileControl/>
+  <LibraryFileInformation/>
   <label className="file-information-description"><span>{t('File description')}</span><textarea aria-label={t('File description')} aria-describedby={hint} autoFocus rows={6} maxLength={DOCUMENT_DESCRIPTION_LIMIT} value={description} onChange={e=>{setDescription(e.target.value);setEdited(true);setError('');}} placeholder={t('What is this file for?')}/></label>
   <div className="file-information-help" id={hint}><span>{t('Plain text, saved with your .oui project.')}</span><span>{formatNumber(description.length)} / {formatNumber(DOCUMENT_DESCRIPTION_LIMIT)}</span></div>
   {(error||validation)&&<p className="file-information-error" role="alert">{error||validation}</p>}
