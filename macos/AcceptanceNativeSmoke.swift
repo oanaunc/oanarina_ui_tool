@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("workflow",{self.acceptWorkflow(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -522,6 +522,87 @@ extension Studio {
         killRenderer(document)
     }
     /** A person's click on the screen cannot be scripted, so this drives the menu item and everything after the sampler's answer. */
+    /** Builds a small screen the way a person does: real mouse and key events through AppKit into the shipped editor, then the saved file is read back. */
+    func acceptWorkflow(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        typealias Point=(CGFloat,CGFloat)
+        let codes:[Character:UInt16]=["f":3,"r":15,"t":17,"v":9,"H":4,"e":14,"l":37,"o":31]
+        func drag(_ from:Point,_ to:Point,_ flags:NSEvent.ModifierFlags=[],_ then:@escaping()->Void){
+            self.mouse(document,.leftMouseDown,from.0,from.1,flags)
+            func step(_ i:Int){
+                if i>5{self.mouse(document,.leftMouseUp,to.0,to.1,flags);self.later(0.25){then()};return}
+                let t=CGFloat(i)/5;self.mouse(document,.leftMouseDragged,from.0+(to.0-from.0)*t,from.1+(to.1-from.1)*t,flags);self.later(0.03){step(i+1)}
+            }
+            self.later(0.05){step(1)}
+        }
+        func press(_ text:String,_ then:@escaping()->Void){
+            for c in text{self.key(document,String(c),codes[c] ?? 0)}
+            self.later(0.15){then()}
+        }
+        func saved(_ name:String)->[[String:Any]]{
+            guard let data=try? ProjectFileSafety.readBounded(directory.appendingPathComponent(name)),let doc=try? JSONSerialization.jsonObject(with:data) as? [String:Any],let pages=doc["pages"] as? [[String:Any]],let nodes=pages[0]["nodes"] as? [[String:Any]] else{self.smokeFail("workflow file missing")}
+            return nodes
+        }
+        let edit=integrationMenu("Edit")
+        loadDocument(document,acceptanceDocument("accept-workflow","Workflow"){nodes in nodes.removeAll()}){
+            self.page(document,"await window.__studioCommand('deselect');const r=document.querySelector('#forma-design-canvas').getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2,r.width,r.height];"){value in
+                guard let at=value as? [Double] else{self.smokeFail("canvas point")}
+                let x=CGFloat(at[0]),y=CGFloat(at[1])
+                document.window.makeFirstResponder(document.web)
+                press("f"){drag((x-200,y-150),(x+100,y+200)){
+                    press("r"){drag((x-150,y-100),(x-50,y-20)){
+                        press("t"){
+                            self.mouse(document,.leftMouseDown,x-150,y+60);self.mouse(document,.leftMouseUp,x-150,y+60)
+                            self.later(0.3){
+                                self.page(document,"await wait(()=>document.activeElement?.getAttribute('aria-label')==='Edit text','canvas text editor focused');return true;"){_ in
+                                    press("Hello"){
+                                        self.key(document,"\u{1b}",53)
+                                        self.later(0.3){
+                                            press("r"){drag((x+160,y-100),(x+240,y-20)){
+                                                drag((x+200,y-60),(x+20,y+120)){
+                                                    self.mouse(document,.leftMouseDown,x-300,y+260);self.mouse(document,.leftMouseUp,x-300,y+260)
+                                                    self.later(0.2){drag((x-100,y-60),(x+10,y-60),[.option]){
+                                                        self.later(0.2){
+                                                            document.session.file=directory.appendingPathComponent("Workflow.oui")
+                                                            self.js(document,"return await window.__studioSave();"){_ in
+                                                                let nodes=saved("Workflow.oui"),frames=nodes.filter{$0["type"] as? String=="frame"},rects=nodes.filter{$0["type"] as? String=="rectangle"},texts=nodes.filter{$0["type"] as? String=="text"},frame=frames.first?["id"] as? String
+                                                                self.check(frames.count==1,"dragging with the Frame tool draws one frame (\(frames.count))")
+                                                                self.check(texts.count==1 && texts.first?["text"] as? String=="Hello","typing after the Text tool replaces the placeholder (\(texts.first?["text"] as? String ?? "none"))")
+                                                                self.check(frame != nil && texts.first?["parentId"] as? String==frame,"text placed in a frame belongs to that frame")
+                                                                self.check(rects.count==3,"drawing two rectangles and Option-dragging one gives three (\(rects.count))")
+                                                                self.check(rects.count==3 && rects.allSatisfy{$0["parentId"] as? String==frame},"a rectangle dragged in from the page joins the frame, with the others")
+                                                                self.invoke(edit,"undo")
+                                                                self.later(0.3){
+                                                                    self.js(document,"return await window.__studioSave();"){_ in
+                                                                        self.check(saved("Workflow.oui").filter{$0["type"] as? String=="rectangle"}.count==2,"one Undo removes the whole Option-drag copy")
+                                                                        self.invoke(edit,"redo")
+                                                                        self.later(0.3){
+                                                                            self.js(document,"return await window.__studioSave();"){_ in
+                                                                                guard let data=try? ProjectFileSafety.readBounded(directory.appendingPathComponent("Workflow.oui")) else{self.smokeFail("workflow reopen")}
+                                                                                self.loadDocument(document,String(decoding:data,as:UTF8.self)){
+                                                                                    self.page(document,"await wait(()=>document.querySelectorAll('[data-layer-id]').length===5,'five layers after reopening');return [...document.querySelectorAll('#forma-design-canvas text')].map(e=>e.textContent).join(' ');"){value in
+                                                                                        self.check((value as? String)?.contains("Hello")==true,"the saved screen reopens and paints its text")
+                                                                                        document.session.file=nil;document.session.fingerprint=nil;done()
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }}
+                                                }
+                                            }}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }}
+                }}
+            }
+        }
+    }
     func acceptSampler(_ document:DocumentWindow,_ done:@escaping()->Void){
         let edit=integrationMenu("Edit"),item=menuItem(edit,"native-sample-color")
         check(item.keyEquivalent=="c" && item.keyEquivalentModifierMask==[.control,.command],"Edit has Sample Screen Color on Control-Command-C")
@@ -716,9 +797,9 @@ extension Studio {
             }
         }
     }
-    func mouse(_ document:DocumentWindow,_ type:NSEvent.EventType,_ x:CGFloat,_ y:CGFloat){
+    func mouse(_ document:DocumentWindow,_ type:NSEvent.EventType,_ x:CGFloat,_ y:CGFloat,_ flags:NSEvent.ModifierFlags=[]){
         let point=document.web.convert(NSPoint(x:x,y:y),to:nil)
-        guard let event=NSEvent.mouseEvent(with:type,location:point,modifierFlags:[],timestamp:ProcessInfo.processInfo.systemUptime,windowNumber:document.window.windowNumber,context:nil,eventNumber:1,clickCount:1,pressure:1) else{smokeFail("mouse event")}
+        guard let event=NSEvent.mouseEvent(with:type,location:point,modifierFlags:flags,timestamp:ProcessInfo.processInfo.systemUptime,windowNumber:document.window.windowNumber,context:nil,eventNumber:1,clickCount:1,pressure:1) else{smokeFail("mouse event")}
         document.window.sendEvent(event)
     }
     /** Drags through the real WebKit drag destination methods with a real pasteboard holding real file URLs. */
