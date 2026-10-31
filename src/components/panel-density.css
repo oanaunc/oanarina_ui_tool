@@ -98,6 +98,27 @@
 [data-testid=prototype-connections] g[role=button]:focus-visible>path:nth-of-type(2){stroke:#e4d9ff}
 .app .left-panel .pages-list{max-height:128px}
 .app section[data-testid=fill-section]>.system-field-row:first-of-type{margin-top:6px}
+.stroke-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 6px;margin-top:3px}
+.stroke-body>section,.stroke-body>.field-grid,.stroke-body>fieldset,.stroke-body>label,.stroke-body>div{grid-column:1/-1}
+.stroke-body>select,.stroke-body>.number-field{grid-column:auto;height:26px;margin:0;font-size:10px}
+.stroke-body>select:nth-last-of-type(1){grid-column:1/-1;order:-3}
+.stroke-body>fieldset:last-child{order:-2}
+.stroke-body>section .check-row{margin-top:0}
+.app .stroke-body>.field-grid{margin-top:0;gap:5px 6px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.app .stroke-body select{padding-block:0;height:26px}
+.stroke-body>.field-grid>select{height:26px;font-size:10px;margin:0}
+.app .paint-item .stack-buttons{position:absolute;top:0;right:0;margin:0;height:22px;display:flex;align-items:center;gap:0;opacity:.65}
+.app .paint-item .stack-buttons>button{padding:3px}
+.app .paint-item[open] .stack-buttons:hover{opacity:1}
+[data-testid=effects-section] .paint-item>fieldset{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 6px}
+[data-testid=effects-section] .paint-item>fieldset>select,[data-testid=effects-section] .paint-item>fieldset>p,[data-testid=effects-section] .paint-item>fieldset>section,[data-testid=effects-section] .paint-item>fieldset>div:not(.stack-buttons){grid-column:1/-1}
+[data-testid=effects-section] .paint-item>fieldset>.number-field{padding:0 6px;gap:3px}
+[data-testid=effects-section] .paint-item>fieldset>.number-field>span{overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.app section[aria-label='Layer'] ,.app .inspector-section fieldset:has(>legend.visually-hidden){min-width:0}
+.app .inspector-section>fieldset:has(>legend.visually-hidden){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 6px;align-items:center}
+.app .inspector-section>fieldset:has(>legend.visually-hidden)>select{margin:0;height:30px;font-size:10px}
+.app .inspector-section>fieldset:has(>legend.visually-hidden)>label,.app .inspector-section>fieldset:has(>legend.visually-hidden)>p{grid-column:1/-1;margin-top:0}
+.app .inspector-section>fieldset:has(>legend.visually-hidden)>.number-field{grid-column:1}
 /* Colors */
 .app .paint-item{position:relative;margin-bottom:6px}
 .app .paint-item>summary{min-height:22px;padding-right:96px;display:flex;align-items:center;gap:6px;font-size:10px}
