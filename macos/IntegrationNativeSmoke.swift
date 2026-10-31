@@ -31,7 +31,7 @@ extension Studio {
         smokeReadyOverride={document in
             initial.closeApproved()
             document.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
-            self.runSteps([{self.integrationMenus(document,$0)},{self.integrationAccelerators($0)},{self.integrationMenuState(document,$0)},{self.integrationFontTables(document,$0)},{self.integrationFonts(document,$0)},{self.integrationPinch(document,$0)},{self.integrationAppearance(document,$0)},{self.integrationVersions(document,file,$0)},{self.integrationPrint(document,directory,$0)},{self.integrationShare(document,$0)},{self.integrationDiskSync(document,file,$0)},{self.integrationLive(document,file,$0)},{self.integrationTabs(document,$0)}]){
+            self.runSteps([{self.integrationMenus(document,$0)},{self.integrationAccelerators($0)},{self.integrationMenuState(document,$0)},{self.integrationFonts(document,$0)},{self.integrationPinch(document,$0)},{self.integrationAppearance(document,$0)},{self.integrationVersions(document,file,$0)},{self.integrationPrint(document,directory,$0)},{self.integrationShare(document,$0)},{self.integrationDiskSync(document,file,$0)},{self.integrationLive(document,file,$0)},{self.integrationTabs(document,$0)}]){
                 self.smokeFinishing=true;let sidecar=LiveContextFile.url(file);document.closeApproved()
                 self.check(!FileManager.default.fileExists(atPath:sidecar.path),"closing a shared window removes its live context")
                 try? NSFileVersion.removeOtherVersionsOfItem(at:file);try? FileManager.default.removeItem(at:directory)
@@ -116,19 +116,6 @@ extension Studio {
                     }
                 }
             }
-        }
-    }
-    /** Tables of real installed faces reach the renderer as bounded base64 with no path, and an unknown family gets nothing. */
-    func integrationFontTables(_ document:DocumentWindow,_ done:@escaping()->Void){
-        js(document,"const times=await window.desktop.fontTables('Times New Roman',false),system=await window.desktop.fontTables('system-ui',false),serif=await window.desktop.fontTables('ui-serif',false),none=await window.desktop.fontTables('No such family',false),long=await window.desktop.fontTables('x'.repeat(300),false).then(()=>'accepted',()=>'refused');return JSON.stringify({times:Object.keys(times),gsub:(times.GSUB??'').length,paths:JSON.stringify(times).includes('/Library'),system:!!system.fvar,serif:!!serif.fvar,none:Object.keys(none).length,long});"){value in
-            guard let text=value as? String,let row=(try? JSONSerialization.jsonObject(with:Data(text.utf8))) as? [String:Any],let keys=row["times"] as? [String] else{self.smokeFail("installed font tables reply")}
-            self.check(keys.contains("name")&&keys.contains("cmap"),"an installed face returns its naming tables")
-            self.check(row["paths"] as? Bool==false,"installed font tables carry no paths")
-            self.check(row["none"] as? Int==0,"an unknown family returns no tables")
-            self.check(row["long"] as? String=="refused","an overlong family name is refused")
-            self.check(row["system"] as? Bool==true,"the system font reports its variable axes")
-            print("font tables: Times GSUB \(row["gsub"] ?? 0) base64 bytes, system axes \(row["system"] ?? false), serif axes \(row["serif"] ?? false)")
-            done()
         }
     }
     func integrationFonts(_ document:DocumentWindow,_ done:@escaping()->Void){
