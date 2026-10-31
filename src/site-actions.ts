@@ -1,0 +1,14 @@
+/** Ordered click steps for a published page. Each step can wait on the state of a layer, so a menu can close the panel that is open and open the one that is not. No visitor code runs. */
+export const SITE_ACTION_KINDS=['toggle','show','hide','scroll','focus','copy'] as const;
+export type SiteActionKind=typeof SITE_ACTION_KINDS[number];
+export interface SiteCondition {layerId:string;state:'visible'|'hidden';}
+export interface SiteClickAction {kind:SiteActionKind;layerId?:string;text?:string;when?:SiteCondition;}
+export const SITE_ACTION_LIMIT=8,SITE_ACTION_TEXT=500;
+export const siteActionNeedsLayer=(kind:SiteActionKind)=>kind!=='copy';
+export const siteActionLabels:Record<SiteActionKind,string>={toggle:'Toggle layer',show:'Show layer',hide:'Hide layer',scroll:'Scroll to layer',focus:'Move focus to layer',copy:'Copy text'};
+/** Layers an action changes the visibility of; a hidden one must still be written to the page. */
+export const siteActionShows=(a:SiteClickAction)=>a.kind==='toggle'||a.kind==='show'||a.kind==='hide';
+export const siteActionLayers=(a:SiteClickAction)=>[...(a.layerId?[a.layerId]:[]),...(a.when?[a.when.layerId]:[])];
+export function validateSiteActions(value:unknown,self:string,hasLayer:(id:string)=>boolean){if(!Array.isArray(value)||!value.length||value.length>SITE_ACTION_LIMIT)throw Error('Use 1 to 8 click actions on a layer.');for(const raw of value){if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Invalid click action.');const a=raw as SiteClickAction;for(const key of Object.keys(a))if(!['kind','layerId','text','when'].includes(key))throw Error('Unknown click action setting.');if(!SITE_ACTION_KINDS.includes(a.kind))throw Error('Invalid click action.');if(siteActionNeedsLayer(a.kind)){if(typeof a.layerId!=='string'||!hasLayer(a.layerId)||a.layerId===self&&siteActionShows(a))throw Error('A click action needs another layer.');if(a.text!==undefined)throw Error('Only a copy action has text.');}else if(a.layerId!==undefined||typeof a.text!=='string'||!a.text.length||a.text.length>SITE_ACTION_TEXT)throw Error('A copy action needs text of 1 to 500 characters.');if(a.when!==undefined){const w=a.when;if(!w||typeof w!=='object'||Array.isArray(w)||Object.keys(w).some(k=>!['layerId','state'].includes(k))||typeof w.layerId!=='string'||!hasLayer(w.layerId)||!['visible','hidden'].includes(w.state))throw Error('A click action condition needs a layer and a state.');}}}
+export function pruneSiteActions(list:SiteClickAction[],hasLayer:(id:string)=>boolean){return list.flatMap(a=>{if(a.layerId&&!hasLayer(a.layerId))return [];if(a.when&&!hasLayer(a.when.layerId)){const {when:_,...rest}=a;return [rest];}return [a];});}
+export function remapSiteActions(list:SiteClickAction[],map:ReadonlyMap<string,string>){return list.map(a=>({...a,...(a.layerId&&map.has(a.layerId)?{layerId:map.get(a.layerId)!}:{}),...(a.when&&map.has(a.when.layerId)?{when:{...a.when,layerId:map.get(a.when.layerId)!}}:{})}));}
