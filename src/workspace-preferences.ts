@@ -4,18 +4,24 @@ import {useSyncExternalStore} from 'react';
 export interface WorkspacePreferences {
  flipWhileResizing:boolean;hideCanvasUiDuringChanges:boolean;commandOptionRotation:boolean;
  trashRetentionDays:number;exportDestination:'browser'|'ask';exportNaming:'layer'|'document-layer'|'page-layer';
+ pinchZoom:boolean;pinchSpeed:number;outlineStyle:'shapes'|'bounds';statusSeconds:number;helperLiveContext:boolean;
 }
 export const WORKSPACE_PREFERENCES_KEY='forma-workspace-preferences';
 export const trashRetentionChoices=[0,7,30,90] as const;
-export const defaultWorkspacePreferences:Readonly<WorkspacePreferences>=Object.freeze({flipWhileResizing:false,hideCanvasUiDuringChanges:false,commandOptionRotation:false,trashRetentionDays:0,exportDestination:'browser',exportNaming:'layer'});
+export const pinchSpeedChoices=[.5,1,1.5,2] as const;
+export const statusSecondsChoices=[2,4,8,15] as const;
+export const defaultWorkspacePreferences:Readonly<WorkspacePreferences>=Object.freeze({flipWhileResizing:false,hideCanvasUiDuringChanges:false,commandOptionRotation:false,trashRetentionDays:0,exportDestination:'browser',exportNaming:'layer',pinchZoom:true,pinchSpeed:1,outlineStyle:'shapes',statusSeconds:4,helperLiveContext:true});
 export function validateWorkspacePreferences(value:unknown):WorkspacePreferences {
  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Workspace preferences must be an object.');
  const r=value as Record<string,unknown>,fields=Object.keys(defaultWorkspacePreferences);
  if(Object.keys(r).some(k=>!fields.includes(k))||fields.some(k=>!Object.hasOwn(r,k)))throw Error('Invalid workspace preference fields.');
- for(const k of ['flipWhileResizing','hideCanvasUiDuringChanges','commandOptionRotation'])if(typeof r[k]!=='boolean')throw Error('Invalid workspace preference toggle.');
+ for(const k of ['flipWhileResizing','hideCanvasUiDuringChanges','commandOptionRotation','pinchZoom','helperLiveContext'])if(typeof r[k]!=='boolean')throw Error('Invalid workspace preference toggle.');
  if(!trashRetentionChoices.includes(r.trashRetentionDays as 0))throw Error('Choose how long Trash keeps files.');
  if(!['browser','ask'].includes(r.exportDestination as string))throw Error('Choose a valid export destination.');
  if(!['layer','document-layer','page-layer'].includes(r.exportNaming as string))throw Error('Choose a valid export naming pattern.');
+ if(!pinchSpeedChoices.includes(r.pinchSpeed as 1))throw Error('Choose a valid pinch speed.');
+ if(!['shapes','bounds'].includes(r.outlineStyle as string))throw Error('Choose a valid outline style.');
+ if(!statusSecondsChoices.includes(r.statusSeconds as 4))throw Error('Choose how long status messages stay.');
  return {...r} as unknown as WorkspacePreferences;
 }
 let cached:Readonly<WorkspacePreferences>=defaultWorkspacePreferences,lastRaw:string|null|undefined;

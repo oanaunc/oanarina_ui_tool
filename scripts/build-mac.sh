@@ -24,7 +24,7 @@ rm -rf "$APP/Contents/Resources/editor"
 ditto dist "$APP/Contents/Resources/editor"
 SDK="$(xcrun --show-sdk-path)"
 for arch in arm64 x86_64; do
- xcrun swiftc macos/main.swift macos/NativeSmoke.swift macos/ProjectFileSafety.swift macos/NodePasteboard.swift macos/ClipboardNativeSmoke.swift macos/LiveContext.swift macos/NativeIntegration.swift macos/IntegrationNativeSmoke.swift macos/NativeDrop.swift macos/AcceptanceNativeSmoke.swift -O -sdk "$SDK" -target "$arch-apple-macos13.0" -framework AppKit -framework WebKit -o "build/OanarinaUITool-$arch"
+ xcrun swiftc macos/main.swift macos/NativeSmoke.swift macos/ProjectFileSafety.swift macos/NodePasteboard.swift macos/ClipboardNativeSmoke.swift macos/LiveContext.swift macos/NativeIntegration.swift macos/IntegrationNativeSmoke.swift macos/NativeDrop.swift macos/NativeServices.swift macos/ServicesNativeSmoke.swift macos/extensions/OuiProject.swift macos/extensions/OuiRenderer.swift macos/AcceptanceNativeSmoke.swift -O -sdk "$SDK" -target "$arch-apple-macos13.0" -framework AppKit -framework WebKit -framework PDFKit -o "build/OanarinaUITool-$arch"
 done
 lipo -create build/OanarinaUITool-arm64 build/OanarinaUITool-x86_64 -output "$APP/Contents/MacOS/OanarinaUITool"
 # A sandboxed extension's container belongs to its signer, and macOS raises a consent prompt when an ad-hoc copy and a

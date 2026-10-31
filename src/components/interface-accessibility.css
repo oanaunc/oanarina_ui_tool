@@ -39,6 +39,8 @@
 :root[data-accent=green] .app.theme-light{--accent:#1f7a3f;--focus-ring:#1f7a3f;--accent-fill:#1f7a3f;--on-accent:#fff}
 :root[data-accent=graphite] .app{--accent:#c8c8cd;--focus-ring:#c8c8cd;--accent-fill:#c8c8cd;--on-accent:#1f1f22}
 :root[data-accent=graphite] .app.theme-light{--accent:#55555b;--focus-ring:#55555b;--accent-fill:#55555b;--on-accent:#fff}
+:root[data-accent=system] .app{--accent:var(--system-accent-dark);--focus-ring:var(--system-accent-dark);--accent-fill:var(--system-accent-dark);--on-accent:var(--system-accent-ondark)}
+:root[data-accent=system] .app.theme-light{--accent:var(--system-accent-light);--focus-ring:var(--system-accent-light);--accent-fill:var(--system-accent-light);--on-accent:var(--system-accent-onlight)}
 :root[data-accent] .toolbar .active{background:var(--accent-fill)!important;color:var(--on-accent)!important}
 :root[data-accent] .panel-tabs>button.active:after{background:var(--accent-fill)}
 :root[data-accent] .layer-row.selected{background:color-mix(in srgb,var(--accent-fill) 16%,transparent);box-shadow:inset 2px 0 var(--accent-fill)}

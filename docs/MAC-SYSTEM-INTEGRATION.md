@@ -46,13 +46,23 @@ WKWebView reports a pinch as Safari `gesturestart/gesturechange/gestureend` even
 
 Save first stores the bytes it is about to replace in the system document version store through `NSFileVersion`. **File → Revert To** lists up to 20 versions by date. Choosing one replaces the window's content as one Undo step and leaves the saved file alone until Save. **Last Saved File** returns to the file on disk, also as one Undo step, and is clean.
 
-Limits: this is not `NSDocument` and does not offer the full-screen Browse All Versions interface. Versions are recorded only by Save, so autosaved recovery states and MCP transactions are not separate versions, although a transaction's result is stored when a later Save replaces it. Storage follows macOS rules and failure to record a version never blocks Save. It is separate from Forma's own version history.
+**File → Revert To → Browse All Versions…** opens a sheet that lists the same versions, previews the selected one from its own bytes with the Quick Look renderer, and restores it as one Undo step.
+
+Limits: this is not `NSDocument`, so it is Forma's own sheet rather than the system's full-screen browser, and its preview is the simplified one. Versions are recorded only by Save, so autosaved recovery states and MCP transactions are not separate versions, although a transaction's result is stored when a later Save replaces it. Storage follows macOS rules and failure to record a version never blocks Save. It is separate from Forma's own version history.
 
 ## Print and Share
 
 **File → Print…** shows the macOS print dialog as a sheet for the selection, or for each outermost frame of the page, or the page artwork when there are no frames. Slides print each visible slide. Pages are flattened 2× raster PDFs from the editor's PDF path, so printed text is not vector.
 
-**File → Share…** prepares a private temporary file, a 2× PNG of a selection or otherwise the same PDF, and shows the system share picker. The file is removed on the next share or when the window closes. The acceptance run confirms the picker opens and proposes services; no service was carried through to delivery. There is no format choice.
+**File → Share…** prepares a private temporary file, a 2× PNG of a selection or otherwise the same PDF, and shows the system share picker. **File → Share As** chooses PNG, PDF or the Forma project itself; a shared project passes the same validation as Save. The file is removed on the next share or when the window closes. The acceptance run confirms the picker opens and proposes services; no service was carried through to delivery. 
+
+## Export destination
+
+**File → Export Destination** is Ask Every Time or Choose Folder…. With a folder chosen, exports from every window go there with no panel. A repeat takes the next free name and never overwrites. If the folder is gone or refuses the write, the save panel returns. The folder lives in the shell's own defaults and the renderer is told only that an export finished. Saving a `.oui` is unaffected.
+
+## Version links
+
+Forma registers the `forma-version:` scheme, so a link copied from Version history opens from Finder, Notes or `open`. The shell reads the document id and refuses anything else. If that project is open its window comes forward. If not, up to ten recent files are checked for that id. Otherwise an alert asks you to open the project. The renderer then checks the whole reference against its own document and shows the read-only preview, with the same restore rules as a pasted link. Saved versions stay in this Mac's local storage, so a link does nothing on another Mac.
 
 ## Appearance and clipboard images
 
@@ -61,7 +71,7 @@ Setting the application appearance while running changes the actual WKWebView's 
 ## Not done
 
 - **Dragging canvas layers to Finder**: starting a native drag from the canvas needs a new renderer-to-shell message, which the current rule against broadening IPC excludes. Needs a decision. The Export dialog preview can be dragged.
-- **App Sandbox**: not adopted. It needs entitlements, security-scoped bookmarks for session restoration and sibling access for the lock, MCP history and live files. It changes release signing, so it needs a decision.
+- **App Sandbox**: not adopted. A copy under a separate bundle identifier, with the sandbox, network server, network client, print and user-selected file entitlements, passed `--smoke-test` and the save, export and drop acceptance groups, so the 127.0.0.1:51981 server, WKWebView, the clipboard and panels work. It failed `--integration-smoke-test` at the MCP checks, which spawn `node`, and it cannot ship for three reasons those runs do not reach, because their files sit inside the container. Save takes a sibling `.oanarina-mcp.lock` next to the project, and live context writes a sibling `.oanarina-live.json`, neither of which a user-selected file grants. Window restoration stores paths, which need security-scoped bookmarks. And WebKit's data store moves into the container, so every existing person's local files, recovery copies and versions would disappear unless a container migration is built and tested against real data.
 - **Update checks and release notes**: there is no release feed to read. They need one published first.
 
 ## Quick Look and Spotlight

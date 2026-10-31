@@ -8,11 +8,17 @@ import UniformTypeIdentifiers
  * bounded content from it through the existing page-world call path and keeps file URLs native. */
 extension Studio:NSMenuItemValidation {
     static let selectionCommands:Set<String>=["cut","copy","copy-as-png","delete","duplicate","rename","select-child","select-parent","select-next-sibling","select-previous-sibling","select-same-fill","select-same-stroke","select-same-text","group","ungroup","frame-selection","component","mask","mask-alpha","mask-vector","mask-luminance","move-to-page","lock","hide","flip-x","flip-y","rotate-left","rotate-right","rotate-180","forward","backward","front","back","auto-layout","union","subtract","intersect","exclude","flatten","fit-selection","find-selection","left","center","right","top","middle","bottom"]
-    static let checkableCommands:Set<String>=["grid","snap","rulers","outlines","frame-names","section-names","canvas-scrollbars","overview-minimap"]
+    static let checkableCommands:Set<String>=["grid","snap","rulers","outlines","frame-names","section-names","canvas-scrollbars","overview-minimap","live-context-blocked"]
     func nativeCommand(_ id:String)->Bool {
         switch id{
         case "native-print":active?.printDocument()
         case "native-share":active?.shareDocument()
+        case "native-share-png":active?.shareDocument(kind:"share-png")
+        case "native-share-pdf":active?.shareDocument(kind:"share-pdf")
+        case "native-share-project":active?.shareDocument(kind:"share-project")
+        case "native-export-ask":UserDefaults.standard.removeObject(forKey:Self.exportFolderKey)
+        case "native-export-folder":chooseExportFolder()
+        case "native-browse-versions":active?.browseVersions()
         case "native-revert":active?.revertToSaved()
         case "native-live-context":active?.toggleLiveContext()
         case "native-sample-color":active?.sampleScreenColor()
@@ -23,10 +29,13 @@ extension Studio:NSMenuItemValidation {
     func validateMenuItem(_ item:NSMenuItem)->Bool {
         guard let id=item.representedObject as? String else{return true}
         let document=active
-        if id=="native-print"||id=="native-share"{return document?.ready==true&&document?.delivering==false}
+        if id=="native-print"||id.hasPrefix("native-share"){return document?.ready==true&&document?.delivering==false}
+        if id=="native-export-ask"{item.state=exportFolder==nil ? .on:.off;return true}
+        if id=="native-export-folder"{item.state=exportFolder==nil ? .off:.on;item.title=exportFolder.map{"Choose Folder… ("+$0.lastPathComponent+")"} ?? "Choose Folder…";return true}
+        if id=="native-browse-versions"{return document?.ready==true&&document?.session.file != nil}
         if id=="native-sample-color"{return document?.ready==true&&document?.colorSampler==nil}
         if id=="native-revert"{return document?.ready==true&&document?.session.file != nil&&document?.state?.dirty==true}
-        if id=="native-live-context"{item.state=document?.session.shareLive==true ? .on:.off;return document?.ready==true&&document?.session.file != nil}
+        if id=="native-live-context"{item.state=document?.session.shareLive==true ? .on:.off;return document?.ready==true&&document?.session.file != nil&&document?.state?.menu?.checked.contains("live-context-blocked") != true}
         guard let menu=document?.state?.menu else{return true}
         if Self.checkableCommands.contains(id){item.state=menu.checked.contains(id) ? .on:.off}
         if menu.editing{return true}
@@ -42,7 +51,7 @@ extension Studio:NSMenuItemValidation {
     }
     func addRevertMenu(_ menu:NSMenu){let revert=NSMenu(title:"Revert To");revert.delegate=self;versionMenu=revert;let item=NSMenuItem(title:"Revert To",action:nil,keyEquivalent:"");item.submenu=revert;menu.addItem(item)}
     func versionItems(_ menu:NSMenu){
-        menu.removeAllItems();let target=NSMenuItem(title:"Last Saved File",action:#selector(menuAction(_:)),keyEquivalent:"");target.target=self;target.representedObject="native-revert";menu.addItem(target)
+        menu.removeAllItems();let target=NSMenuItem(title:"Last Saved File",action:#selector(menuAction(_:)),keyEquivalent:"");target.target=self;target.representedObject="native-revert";menu.addItem(target);add(menu,"Browse All Versions…","native-browse-versions")
         let versions=active?.systemVersions() ?? [];menu.addItem(.separator())
         for version in versions.prefix(20){let item=NSMenuItem(title:version.modificationDate.map{DateFormatter.localizedString(from:$0,dateStyle:.medium,timeStyle:.short)} ?? "Earlier version",action:#selector(restoreVersion(_:)),keyEquivalent:"");item.target=self;item.representedObject=version;menu.addItem(item)}
         if versions.isEmpty{let empty=NSMenuItem(title:"No Earlier macOS Versions",action:nil,keyEquivalent:"");empty.isEnabled=false;menu.addItem(empty)}
@@ -84,7 +93,7 @@ extension DocumentWindow {
             switch result{
             case .failure(let error):self.studio.showError(kind=="print" ? "Unable to prepare the document for printing":"Unable to prepare the document for sharing",error,window:self.window)
             case .success(let value):
-                guard let body=value as? [String:Any],let name=body["name"] as? String,let mime=body["mime"] as? String,["application/pdf","image/png"].contains(mime),let encoded=body["data"] as? String,encoded.utf8.count<150_000_000,let data=Data(base64Encoded:encoded) else{self.studio.showError("Unable to prepare the document",NSError(domain:"The editor returned an invalid document.",code:1),window:self.window);return}
+                guard let body=value as? [String:Any],let name=body["name"] as? String,let mime=body["mime"] as? String,["application/pdf","image/png","application/vnd.forma.project+json"].contains(mime),let encoded=body["data"] as? String,encoded.utf8.count<150_000_000,let data=Data(base64Encoded:encoded) else{self.studio.showError("Unable to prepare the document",NSError(domain:"The editor returned an invalid document.",code:1),window:self.window);return}
                 completion(name,mime,data)
             }
         }
@@ -113,9 +122,10 @@ extension DocumentWindow {
             completion?(pdf.pageCount)
         }
     }
-    func shareDocument(present:Bool=true,completion:((URL)->Void)?=nil){
-        deliver("share"){name,mime,data in
-            let safe=(name as NSString).lastPathComponent.replacingOccurrences(of:"/",with:"-"),base=(safe as NSString).deletingPathExtension,file=(base.isEmpty ? "Forma":base)+(mime=="image/png" ? ".png":".pdf")
+    func shareDocument(kind:String="share",present:Bool=true,completion:((URL)->Void)?=nil){
+        deliver(kind){name,mime,data in
+            let safe=(name as NSString).lastPathComponent.replacingOccurrences(of:"/",with:"-"),base=(safe as NSString).deletingPathExtension,file=(base.isEmpty ? "Forma":base)+["image/png":".png","application/pdf":".pdf"][mime,default:".oui"]
+            if !file.hasSuffix(".png"),!file.hasSuffix(".pdf"){do{_ = try self.studio.project(data)}catch{self.studio.showError("Unable to share",error,window:self.window);return}}
             if let previous=self.shareDirectory{try? FileManager.default.removeItem(at:previous)}
             let directory=FileManager.default.temporaryDirectory.appendingPathComponent("forma-share-"+UUID().uuidString,isDirectory:true),url=directory.appendingPathComponent(file)
             do{try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:true,attributes:[.posixPermissions:0o700]);try data.write(to:url,options:[.atomic]);try FileManager.default.setAttributes([.posixPermissions:0o600],ofItemAtPath:url.path)}catch{self.studio.showError("Unable to share",error,window:self.window);return}

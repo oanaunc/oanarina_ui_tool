@@ -1,9 +1,13 @@
 import {desktopDocuments,desktopDocumentState,reportDesktopDocument,setDesktopMenuProvider} from './desktop-lifecycle';
 import type {DesktopMenuState} from './desktop-lifecycle';
-import {exportNodes,exportSvg} from './files';
+import {exportNodes,exportSvg,serializedProject} from './files';
+import {setSystemAccent} from './interface-accessibility';
+import {parseLocalVersionLink} from './version-links';
+import {requestVersionLink} from './version-link-request';
 import {parseDocument} from './model';
 import {renderClipboardPng} from './png-clipboard';
 import {getPreferences,subscribePreferences} from './preferences';
+import {getWorkspacePreferences,subscribeWorkspacePreferences} from './workspace-preferences';
 import type {EditorPreferences} from './preferences';
 import type {SlideDocument} from './slides';
 import {useEditor} from './store';
@@ -50,14 +54,19 @@ export async function desktopLiveContext(previous:string){
  return {key,documentId:state.id,documentName:state.name,dirty:state.dirty,pageId:page.id,pageName:page.name,selection:s.selection.slice(0,5000),viewport:{zoom:s.zoom,panX:s.pan.x,panY:s.pan.y},artwork:await liveArtwork(s)};
 }
 /** Print and Share reuse the editor's own PDF/PNG delivery paths; the shell supplies only the system UI. */
-export async function desktopDelivery(kind:'print'|'share'){
+export type DesktopDelivery='print'|'share'|'share-png'|'share-pdf'|'share-project';
+export async function desktopDelivery(kind:DesktopDelivery){
  const s=useEditor.getState();if(s.home)throw Error('Open a project first.');
- if(s.doc.workspace==='slides'){const {exportSlidePdf}=await import('./slides-export');return {name:safeName(s.doc.name,'pdf'),mime:'application/pdf',data:bytesToBase64(await exportSlidePdf(s.doc as SlideDocument))};}
- if(kind==='share'&&s.selection.length){const nodes=exportNodes(),bounds=visualBounds(nodes),{pngClipboardDimensions}=await import('./png-clipboard'),data=await renderClipboardPng(exportSvg(nodes),pngClipboardDimensions(bounds.width,bounds.height));return {name:safeName(s.doc.name,'png'),mime:'image/png',data:data.slice('data:image/png;base64,'.length)};}
+ if(kind==='share-project')return {name:safeName(s.doc.name,'oui'),mime:'application/vnd.forma.project+json',data:bytesToBase64(new TextEncoder().encode(serializedProject()))};
+ if(s.doc.workspace==='slides'&&kind!=='share-png'){const {exportSlidePdf}=await import('./slides-export');return {name:safeName(s.doc.name,'pdf'),mime:'application/pdf',data:bytesToBase64(await exportSlidePdf(s.doc as SlideDocument))};}
+ if(kind==='share-png'||kind==='share'&&s.selection.length){const nodes=exportNodes(),bounds=visualBounds(nodes),{pngClipboardDimensions}=await import('./png-clipboard'),data=await renderClipboardPng(exportSvg(nodes),pngClipboardDimensions(bounds.width,bounds.height));return {name:safeName(s.doc.name,'png'),mime:'image/png',data:data.slice('data:image/png;base64,'.length)};}
  const {prepareDesignPdf,renderDesignPdf}=await import('./design-pdf'),base={scale:2,includeHidden:false,includeGuides:false,includeOverlaps:false};let source;
  if(s.selection.length)source=prepareDesignPdf({...base,mode:'artwork'});else try{source=prepareDesignPdf({...base,mode:'page-frames'});}catch{source=prepareDesignPdf({...base,mode:'artwork'});}
  return {name:safeName(s.doc.name,'pdf'),mime:'application/pdf',data:bytesToBase64(await renderDesignPdf(source))};
 }
+const DELIVERIES:DesktopDelivery[]=['print','share','share-png','share-pdf','share-project'];
+/** A link opened from outside the app. It only opens the read-only preview; the reference is checked against this document first. */
+export function openVersionLink(value:string){const s=useEditor.getState();if(s.home)throw Error('Open the project first.');parseLocalVersionLink(value,s.doc.id);requestVersionLink(value);s.set({modal:'history'});return true;}
 /** Shell-initiated calls only. No renderer-to-shell message type is added by any of these. */
 export function installDesktopNative(onFonts:(families:string[])=>void){
  if(typeof window==='undefined'||!window.desktop?.onNative)return ()=>{};
@@ -67,14 +76,16 @@ export function installDesktopNative(onFonts:(families:string[])=>void){
   if(name==='revert'&&typeof value==='string')return revertToSavedFile(value);
   if(name==='external-notice'&&typeof value==='string'&&value.length<=300){useEditor.getState().set({toast:value});return true;}
   if(name==='live-context'&&typeof value==='string')return desktopLiveContext(value);
-  if(name==='delivery'&&(value==='print'||value==='share'))return desktopDelivery(value);
+  if(name==='delivery'&&DELIVERIES.includes(value as DesktopDelivery))return desktopDelivery(value as DesktopDelivery);
+  if(name==='system-accent'&&typeof value==='string')return setSystemAccent(value);
+  if(name==='version-link'&&typeof value==='string')return openVersionLink(value);
   if(name==='drag-asset-name')return dragAssetName();
   if(name==='screen-color')return receiveScreenColor(value);
   if(name==='fonts-changed'){const families=await desktop.fonts?.()??[];onFonts(families);useEditor.getState().refreshFonts();window.dispatchEvent(new Event('oanarina-fonts-changed'));window.dispatchEvent(new Event('oanarina-system-fonts-changed'));return families.length;}
   throw Error('Unsupported native request.');
  });
- let last='';const menu=()=>desktopMenuState(useEditor.getState(),getPreferences(),editingFocus()),changed=()=>{const next=JSON.stringify(menu());if(next!==last){last=next;void reportDesktopDocument().catch(()=>{});}};
- setDesktopMenuProvider(menu);const down=()=>{pointerDown=true;},up=()=>{pointerDown=false;},offStore=useEditor.subscribe(changed),offPreferences=subscribePreferences(changed);
+ let last='';const menu=()=>{const state=desktopMenuState(useEditor.getState(),getPreferences(),editingFocus());return getWorkspacePreferences().helperLiveContext?state:{...state,checked:[...state.checked,'live-context-blocked']};},changed=()=>{const next=JSON.stringify(menu());if(next!==last){last=next;void reportDesktopDocument().catch(()=>{});}};
+ setDesktopMenuProvider(menu);const down=()=>{pointerDown=true;},up=()=>{pointerDown=false;},offStore=useEditor.subscribe(changed),offPreferences=subscribePreferences(changed),offWorkspace=subscribeWorkspacePreferences(changed);
  window.addEventListener('pointerdown',down,true);window.addEventListener('pointerup',up,true);window.addEventListener('pointercancel',up,true);document.addEventListener('focusin',changed);document.addEventListener('focusout',changed);changed();
- return ()=>{off();setDesktopMenuProvider(undefined);offStore();offPreferences();window.removeEventListener('pointerdown',down,true);window.removeEventListener('pointerup',up,true);window.removeEventListener('pointercancel',up,true);document.removeEventListener('focusin',changed);document.removeEventListener('focusout',changed);};
+ return ()=>{off();setDesktopMenuProvider(undefined);offStore();offPreferences();offWorkspace();window.removeEventListener('pointerdown',down,true);window.removeEventListener('pointerup',up,true);window.removeEventListener('pointercancel',up,true);document.removeEventListener('focusin',changed);document.removeEventListener('focusout',changed);};
 }
