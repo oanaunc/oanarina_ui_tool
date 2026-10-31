@@ -13,3 +13,7 @@ Inspect, Motion and ambiguous legacy threads are read-only. Captured handlers ca
 Reactions remain private review metadata in the original project. Layer clipboard payloads, SVG artwork and reusable local library snapshots omit threads and reaction labels. Figma Bridge source validates the metadata before creating pages and reports its generic omission without private names. The downloadable Bridge archive is frozen; source API mocks do not establish a real Figma plugin round trip. No native IPC, filesystem/resource scope, network service or app package changes.
 
 Validation: 23 focused comment core checks and all 24 new/adjacent comment browser checks pass, along with editor/MCP TypeScript checks. Combined source checks are recorded by the aggregate checkpoint report. No app/native build, signing, release or archive refresh is performed.
+
+## Any emoji
+
+The picker keeps the eight quick choices and adds a search across the whole local emoji catalog, with skin tones. A message holds up to 24 different reactions. Other limits are unchanged. Older builds refuse a file carrying an emoji outside the original eight.
