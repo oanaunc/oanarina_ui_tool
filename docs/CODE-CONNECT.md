@@ -1,5 +1,7 @@
 # Code Connect and code generators
 
+Mappings on published components travel in local library snapshots. Enabling or accepting a group adds its mappings, remapped to the installed definitions, in the same Undo step. A mapping this file already has for that component and language stays as it is, and a mapping change alone does not mark a group as updated.
+
 Both live in Inspect. They are Forma-specific local features: they do not use the Figma Code Connect CLI, its file formats or Figma's servers, and no reference verification has been done.
 
 ## Mapping a component
