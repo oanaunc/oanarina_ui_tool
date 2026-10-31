@@ -6,6 +6,8 @@ export interface DesktopBootstrap {kind:'new'|'file'|'recovery'|'fig';data?:stri
 export class DesktopDocumentTracker {
  private baseline=new Map<string,{content:string;dirty:boolean}>();private last='';private revision=0;
  private content(doc:DesignDocument){return JSON.stringify({...doc,updatedAt:undefined});}
+ /** Register only a proven untouched startup document; never erase an explicit dirty baseline. */
+ markInitial(doc:DesignDocument){if(!this.baseline.has(doc.id))this.mark(doc);}
  mark(doc:DesignDocument,dirty=false){this.baseline.set(doc.id,{content:this.content(doc),dirty});}
  state(doc:DesignDocument):DesktopDocumentState{const content=this.content(doc),key=doc.id+'\0'+content;if(key!==this.last){this.last=key;this.revision++;}const baseline=this.baseline.get(doc.id);return {id:doc.id,name:doc.name,revision:this.revision,dirty:!baseline||baseline.dirty||baseline.content!==content};}
 }

@@ -1,3 +1,4 @@
+import {trustedImportDiagnostic} from './trusted-import-diagnostics';
 /** Ephemeral import delivery state. Never serialized into a project or exported. */
 export type ImportFormat='project'|'fig'|'raster'|'svg';
 export type ImportStage='reading'|'validating'|'decoding'|'retaining'|'opening';
@@ -17,6 +18,7 @@ export function importFailureReason(error:unknown,stage:ImportStage){
  if(error instanceof SyntaxError)return 'The selected project is not valid JSON. Export a new .oui copy from the original app.';
  if(error instanceof RangeError)return 'The selected file exceeds the supported complexity or memory limits.';
  const message=error instanceof Error?error.message:'';
+ const fixed=trustedImportDiagnostic(message);if(fixed)return fixed;
  // Only fixed schema diagnostics are admitted. Never display parser excerpts, user names, URLs or raw bytes.
  if(/^Invalid (?:page\.|or duplicate layer\.|document identity or timestamp\.|canvas background\.|layer flag\.|layer settings\.|text property\.|layer property: (?:x|y|width|height|rotation|opacity|fontSize|strokeWidth|radius|gap|padding|columns|lineHeight|letterSpacing|blur))$/.test(message))return message+' The source project was left unchanged.';
  if(/Figma.*(?:geometry|numeric|dimensions|size)|(?:geometry|numeric|dimensions).*Figma/i.test(message))return 'Invalid Figma geometry or numeric values. Export a new Design file from the original app.';

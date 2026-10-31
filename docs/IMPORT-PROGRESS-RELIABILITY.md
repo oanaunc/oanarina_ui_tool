@@ -30,3 +30,11 @@ Synchronous JSON/SVG parsing, schema validation and Figma scene mapping cannot b
 - No app build, native package, release archive or website change was made.
 
 Status recommendations: UI-39-040 and UI-53-009 are partial across the complete application because native dialogs and synchronous phases are not interruptible; the listed browser import paths are implemented. UI-53-011 is partial across all import formats; the listed paths now provide bounded, explicit corrupt-input reporting and preserve source data. No reference verification claim is made.
+
+## Startup and detailed-diagnostic compatibility
+
+Browser startup registers an initial clean tracker baseline synchronously only for the untouched startup document/history. Registration is absent-baseline-only: it never clears an explicit dirty marker, and it does not run again on restored or imported documents. This preserves browser File Open's in-memory fallback when local recovery is denied without allowing dirty zero-history RAM artwork to be discarded.
+
+Detailed failure reasons may use an exact, checked-in allowlist of fixed public validator diagnostics. Interpolated messages, unknown errors, JSON parser excerpts and messages with appended source data or URLs are not admitted. The list is static at runtime; changing a validator does not automatically authorize its new message for display. The generic reason remains the fallback for messages outside the list.
+
+Additional regressions cover unavailable-storage opening, delayed startup restoration with edited/replaced documents, trusted diagnostic preservation and private-prefix/suffix spoof refusal. Native bootstrap and trusted native file APIs remain unchanged.
