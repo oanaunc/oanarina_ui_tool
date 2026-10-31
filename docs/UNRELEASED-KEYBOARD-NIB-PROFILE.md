@@ -1,0 +1,21 @@
+# Keyboard preferences, calligraphic strokes and local profiles
+
+This continues the [text-path, variant and inspection checkpoint](UNRELEASED-TEXT-PATHS-VARIANTS-INSPECTION.md). The same 2,022 requirements record **1,314 implemented, 262 partial and 446 planned** items. Seven planned requirements gained bounded source workflows; none were added and Forma remains unfinished. Implementation checks and exact Figma reference acceptance remain separate.
+
+| Area | Reachable source behavior | Explicit limits |
+| --- | --- | --- |
+| [Keyboard preferences](KEYBOARD-PREFERENCES.md) | Physical US key-position or logical typed-key matching, additional named-command bindings, local storage/reset, live menu/help labels and conflict diagnostics. | Three partial requirements: defaults/native shortcuts stay active, supported primary-modifier letter chords only, additional dispatch in eligible Design contexts. No arbitrary default replacement, national-layout tables, OS-wide conflict discovery or native menu remapping. |
+| [Calligraphic strokes](CALLIGRAPHIC-STROKES.md) | Fixed elliptical nib with editable angle/roundness, exact straight-segment sweeps, one alpha fill, shared SVG/export/bounds, Undo/save. | Partial: bounded open straight contours with a solid centered round stroke. No pressure, tilt, cubic brushes, masks, components, effects or animation. Text-path glyph strokes refuse this metadata; canvas culling retains nib roots conservatively. |
+| [Local profiles and version authors](LOCAL-PROFILE-AND-VERSION-AUTHORS.md) | Explicit local name and cropped avatar, cross-window persistence/reset and immutable optional author labels on new named versions. | Three partial requirements: user-entered device labels, no verified identity, collaboration attribution, remote sync or per-edit historical authorship. Legacy snapshots remain valid; profile metadata stays outside `.oui` artwork. |
+
+Independent composition review found an existing two-step auto-layout action that committed a wrapper before an unsupported descendant caused layout validation to refuse. [Atomic auto-layout wrapping](ATOMIC-AUTO-LAYOUT.md) now groups and sets initial layout in the same unpublished edit. Refusal preserves the exact document, selection and Undo history; ordinary wrapping produces one usable Undo transaction. Direct and nested text-path/nib content, default/additional shortcuts, menus and the browser native-command adapter have dedicated checks.
+
+Optional nib metadata remains compatible with `.oui` versions one and two and is validated before publication. Keyboard/profile preferences and optional snapshot authors are separate local records. No native IPC, loopback server, filesystem access or font redistribution policy is expanded. Tests use synthetic fixtures and no private Figma reference artifacts.
+
+## Validation
+
+Before the atomic correction, combined source passed **2,159 core tests in 187 files**, **82 direct-source MCP checks**, both TypeScript checks and **123 affected browser cases**. Final atomic composition `536e306` passes **2,173 core tests in 188 files**, both TypeScript checks and **all 1,475 browser cases** in its complete development-source run. The downloadable Bridge archive/source-comparison case is explicitly excluded because archives remain frozen; this is not bundled/production/native acceptance. Independent atomic-workflow validation additionally passed all 49 affected browser cases and 82 direct-source MCP checks.
+
+Checks include real avatar decode/crop pixels, storage failures and cross-window updates; immutable optional version authors and malformed saved headers without deletion; semantic no-op bindings; actual nib pixels/alpha, affine bounds and exports; source/local callback ownership, same-event context cycles with fresh recovery; keyboard conflicts/labels and native Enter/Space; one-step Undo, save/reopen and short windows at 125%. Browser adapters and API mocks do not establish AppKit, OS clipboard, screen-reader or real Figma plugin round-trip acceptance.
+
+No app/native build, installer/package, version/release bump, signing/notarization, standalone MCP/Bridge/source archive refresh or website deployment is created. Dev.12 downloads stay frozen. Bundled-server and downloadable archive acceptance remain deferred. This checkpoint does not complete the feature register or Figma parity.
