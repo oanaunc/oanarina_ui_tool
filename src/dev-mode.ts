@@ -7,3 +7,8 @@ export function devModeRefuses(mode:string,id:string,category:string|undefined){
 /** Unmodified keys that nudge or set opacity on the selection. Tool letters are covered by the canvas: a placement click only returns to Move. */
 export const devModeRefusesKey=(mode:string,key:string)=>mode==='inspect'&&(key.startsWith('arrow')||/^[0-9]$/.test(key));
 export const devModeBlocksPlacement=(mode:string,tool:string)=>mode==='inspect'&&!['move','scale','hand','comment'].includes(tool);
+/** Handoff metadata Dev Mode exists to edit. Everything else in the document counts as artwork. */
+const DEV_MODE_METADATA=new Set(['annotations','devResources','developmentStatus','comments','codeConnect','exportSettings','updatedAt']);
+const artwork=(d:unknown)=>JSON.stringify(d,(key,value)=>DEV_MODE_METADATA.has(key)?undefined:value);
+/** Every edit path in the store passes here, so a panel or dialog cannot change artwork in Dev Mode even without its own guard. */
+export function assertDevModeEdit(mode:string,before:unknown,after:unknown){if(mode==='inspect'&&artwork(before)!==artwork(after))throw Error('Artwork is read-only in Dev Mode. Exit Dev Mode to edit it.');}
