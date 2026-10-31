@@ -24,8 +24,9 @@ live canvas. Style, variable and guide definitions have bounded textual previews
 A set preview can show any variant; insertion uses its default component. Large
 previews explicitly refuse instead of rendering incomplete artwork.
 
-Enable installs editable cached definitions on a dedicated library page and
-saves a dependency with stable source-to-local IDs. **Insert linked instance**
+Enable installs cached definitions on a dedicated library page and saves a
+dependency with stable source-to-local IDs. Components and styles stay editable;
+linked variable collections are read-only until detached. **Insert linked instance**
 creates a real linked component instance at the visible canvas center.
 **Go to cached source** navigates to its editable main. The existing style/token
 inspector can use installed shared styles and variables. Disable blocks this
