@@ -60,3 +60,5 @@ Recommend implemented for the named **file-local** behaviors UI-36-003/004/005/0
 Final isolated source checks: **1,840 core tests / 156 files**, editor TypeScript, source MCP TypeScript, **29 browser checks** (15 new threads + 14 existing page/accessibility cases), and **71 source MCP checks**. Independent read-only review cleared the final pin proof, bounded identity scan, reply deletion, legacy preservation, graph lifecycle and privacy boundaries. No app/package/archive/native builds were run.
 
 The explicit Export for Figma download also strips whole local threads before serializing the delivery clone. Ordinary .oui saves and authorized project-scoped MCP reads retain them. This is independent of the Bridge preflight, which still validates and reports omission when a user imports an ordinary project file directly.
+
+Comments left while presenting are ordinary threads with an optional `surface` marker. See docs/PROTOTYPE-COMMENTS.md.
