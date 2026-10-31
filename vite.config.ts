@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { prototypePlayer } from './scripts/prototype-player-plugin.mjs';
 export default defineConfig({
- plugins: [react()],
+ plugins: [react(), prototypePlayer()],
  base: './',
  // Worktrees may share node_modules; keep optimizer/worker caches local to this root.
  cacheDir: '.vite',

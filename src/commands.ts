@@ -49,6 +49,8 @@ import type {DesignNode,Tool} from './model';
 export const commands=[
  ['branches','Branches…','File',''],['storage','Storage and recovery…','File',''],['safe-mode','Restart in safe mode','Help',''],['design-health','Design health report…','Resources',''],['palette-exchange','Import or export color palette…','Resources',''],['batch-transforms','Batch transforms…','Object',''],['code-export','Design-to-code export…','File',''],['export-queue','Export queue…','File',''],['workspace-layouts','Workspace layouts…','View',''],['device-preview','Side-by-side device preview…','View',''],['command-usage','Command usage…','Help',''],['bug-report','Create bug report bundle…','Help',''],['privacy-dashboard','Privacy dashboard…','Help',''],
  ['icons','Free icon library…','Resources',''],
+ ['resource-library','UI kits, illustrations and tutorials…','Resources',''],
+ ['share-prototype','Export prototype file…','File',''],
  ['templates','Templates and personal starter kits…','Resources',''],
  ['linear-repeat','Linear repeat…','Object',''],['radial-repeat','Radial repeat…','Object',''],
  ['vector-separate','Separate vector regions…','Vector',''],
@@ -81,6 +83,8 @@ function executeCommand(id:string,event?:Event){if(devModeRefuses(useEditor.getS
  case 'branches':if(s.motionOpen||s.uiHidden)throw Error('Close Motion and show the interface before opening Branches.');s.set({modal:'branches'});break;
  case 'storage':s.set({modal:'storage'});break;
  case 'safe-mode':requestSafeMode();void saveDocument(s.doc).catch(()=>{}).finally(()=>location.reload());break;
+ case 'resource-library':if(s.motionOpen||s.uiHidden)throw Error('Close Motion and show the interface before opening the resource library.');s.set({modal:'resource-library'});break;
+ case 'share-prototype':if(s.motionOpen||s.uiHidden)throw Error('Close Motion and show the interface before exporting a prototype.');if((s.doc.workspace??'design')!=='design')throw Error('Prototype files are made from Design files.');s.set({modal:'share-prototype'});break;
  case 'icons':if(s.motionOpen||s.uiHidden)throw Error('Close Motion and show the interface before opening the icon library.');s.set({modal:'icons'});break;
  case 'templates':if(s.motionOpen||s.uiHidden)throw Error('Close Motion and show the interface before opening Templates.');s.set({modal:'templates'});break;
  case 'vector-offset':openVectorOffset();break;

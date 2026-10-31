@@ -1,0 +1,16 @@
+html,body,#root{height:100%;margin:0;background:#17161b;color:#eee;font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+button,select,input{font:inherit;color:#eee;background:#2d2b34;border:1px solid #4a4755;border-radius:6px;padding:6px 10px;min-height:32px}
+button:not(:disabled){cursor:pointer}button:disabled{opacity:.45}
+:focus-visible{outline:2px solid #b49be8;outline-offset:1px}
+/* There is no editor behind an exported file. */
+.prototype-viewer header>button:first-child,.prototype-viewer [aria-label="Close presentation"],.prototype-shortcuts{display:none}
+.prototype-viewer{height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.prototype-stage{min-height:0;flex:1}
+.player-card{max-width:420px;margin:0 auto;padding:12vh 24px 24px}.player-card h1{font-size:22px;margin:0 0 8px}.player-card form{display:flex;flex-direction:column;gap:12px;margin-top:20px}.player-card label{display:flex;flex-direction:column;gap:6px}.player-card input{min-height:44px;width:100%}.player-card button{min-height:44px;background:#6d4fc4;border-color:#6d4fc4}.player-card [role=alert]{color:#ffb4b4}
+.player-notice{position:fixed;top:calc(8px + env(safe-area-inset-top));right:calc(8px + env(safe-area-inset-right));z-index:1100;display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:min(320px,calc(100vw - 16px))}.player-notice button{width:32px;height:32px;min-height:32px;padding:0;border-radius:50%}.player-notice p{margin:0;padding:10px 12px;background:#2d2b34;border:1px solid #4a4755;border-radius:8px}
+@media (max-width:640px){
+ .prototype-viewer header,.prototype-viewer footer{flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:6px 8px;-webkit-overflow-scrolling:touch}
+ .prototype-viewer header{padding-right:48px}.prototype-viewer header span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45vw}
+ .prototype-viewer header button,.prototype-viewer footer button,.prototype-viewer select{min-height:44px;min-width:44px;flex:none}
+}

@@ -1,6 +1,8 @@
 import BrandDialogs from './BrandDialogs';
 import LearningDialog from './EditorLearning';
 import LocalToolDialog,{isLocalToolModal} from './LocalToolDialog';
+import PrototypeShare from './PrototypeShare';
+import ResourceLibrary from './ResourceLibrary';
 import SketchImport from './SketchImport';
 import LocalPlugins from './LocalPlugins';
 import CodeLayerEditor from './CodeLayerEditor';
@@ -68,6 +70,8 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  if(modal==='figma-rest-review')return <FigmaRestReview key={s.doc.id}/>;
  if(modal==='local-links')return <LocalNavigationLinks key={s.doc.id}/>;
  if(modal==='icons')return <IconLibrary key={s.doc.id}/>;
+ if(modal==='share-prototype')return <PrototypeShare key={s.doc.id}/>;
+ if(modal==='resource-library')return <ResourceLibrary key={s.doc.id}/>;
  if(modal==='templates')return <TemplateGallery key={s.doc.id}/>;
  if(modal==='comments'||modal.startsWith('comment:'))return <LocalCommentsDialog key={s.doc.id+':'+modal}/>;
  const close=()=>{if(modal==='fig-import-report')clearFigImportReport();if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
