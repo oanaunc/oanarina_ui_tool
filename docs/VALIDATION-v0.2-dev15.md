@@ -37,4 +37,8 @@ Native acceptance now includes a design flow driven by real mouse and key events
 - VoiceOver in-page, Intel hardware, physical trackpads, older macOS, real PowerPoint and Figma round trips remain open. The older macOS path above is forced by a test on macOS 27, not run on an older system.
 - Found and not fixed: a single auto-sized text line is only as tall as its font size, double-click puts the caret at the end of text, and a 2x PNG is not named `@2x`. See [the design pass notes](DESIGN-WORKFLOW-PASS.md).
 
-Installer details are published on the Forma website after notarization and Gatekeeper validation.
+## Installer
+
+`Forma-0.2.0-dev.15.dmg` is 38,784,279 bytes, SHA-256 `1c1391ec11ef1e3147f4d58c26e025c16eb6d8bf7327ef28b1e193b8b4d03ad2`. Apple notarization returned Accepted for the app and the disk image, both tickets are stapled, and Gatekeeper reports Notarized Developer ID for both. It is a universal build for macOS 13 or later. Intel runtime is not validated on real hardware.
+
+The notarized app, run from a read-only mount of a quarantined copy of that disk image, passes all seven native checks: smoke, lifecycle (37), clipboard (38), renderer restart, synthetic `.fig` import (13), integration (85) and acceptance (92).
