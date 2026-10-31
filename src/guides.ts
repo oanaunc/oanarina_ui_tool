@@ -4,7 +4,7 @@ import {point,worldMatrix} from './transforms';
 export interface LayoutGuide {id:string;type:'grid'|'columns'|'rows';visible:boolean;color:string;opacity:number;size:number;count:number;gutter:number;margin:number;alignment:'stretch'|'start'|'center'|'end';offset:number;}
 export interface LayoutGuideStyle {id:string;name:string;guides:LayoutGuide[];}
 export interface CanvasGuide {id:string;axis:'x'|'y';position:number;}
-export interface SnapPreferences {vectorPoints?:boolean;enabled:boolean;pixel:'none'|'pixel'|'half';objects:boolean;centers:boolean;guides:boolean;frames:boolean;layout:boolean;spacing:boolean;}
+export interface SnapPreferences {vectorPoints?:boolean;enabled:boolean;pixel:'none'|'pixel'|'half'|'device';objects:boolean;centers:boolean;guides:boolean;frames:boolean;layout:boolean;spacing:boolean;}
 export interface GuideNode extends DesignNode {layoutGuides?:LayoutGuide[];layoutGuideStyleId?:string;}
 export interface GuidePage extends Page {guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
 export interface GuideDocument extends DesignDocument {layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
@@ -12,6 +12,8 @@ export interface Rect {x:number;y:number;width:number;height:number;}
 export interface GuideLine {axis:'x'|'y';position:number;start:number;end:number;kind:'object'|'guide'|'layout'|'spacing';distance?:number;}
 export interface GuideCell {x:number;y:number;width:number;height:number;}
 export interface Measurement {x1:number;y1:number;x2:number;y2:number;value:number;kind:'gap'|'overlap'|'padding';}
+/** Device mode is local-only: one physical pixel of the current display at 100% zoom, read on every snap so a window can change screens. */
+export function pixelSnapUnit(mode:'pixel'|'half'|'device'){if(mode==='pixel')return 1;if(mode==='half')return .5;const ratio=typeof window==='undefined'?1:window.devicePixelRatio;return Number.isFinite(ratio)&&ratio>0?1/Math.min(8,Math.max(1,ratio)):1;}
 export const defaultSnapping:SnapPreferences={enabled:true,pixel:'pixel',objects:true,centers:true,guides:true,frames:true,layout:true,spacing:true};
 export function createLayoutGuide(type:LayoutGuide['type']='grid'):LayoutGuide{return {id:crypto.randomUUID(),type,visible:true,color:'#ef4444',opacity:.12,size:type==='grid'?8:64,count:5,gutter:20,margin:20,alignment:type==='grid'?'start':'stretch',offset:0};}
 export function validateGuides(doc:GuideDocument){
@@ -44,7 +46,7 @@ export function snapMove(o:SnapOptions):{dx:number;dy:number;lines:GuideLine[]}{
  const add=(position:number,start:number,end:number,distanceValue:number)=>{const delta=position-b[axis],distance=Math.abs(delta);if(distance<=threshold&&(!best||distance<best.distance))best={distance,delta,line:{axis,position,start,end,kind:'spacing',distance:distanceValue}};};
  for(let i=0;i+1<rs.length;i++){const a=rs[i],c=rs[i+1],sizeKey=axis==='x'?'width':'height',gap=c[axis]-(a[axis]+a[sizeKey]);if(gap<0)continue;const lo=Math.min(a[cross],c[cross],b[cross]),hi=Math.max(a[cross]+a[extent],c[cross]+c[extent],b[cross]+b[extent]);add(c[axis]+c[sizeKey]+gap,lo,hi,gap);add(a[axis]-gap-otherSize,lo,hi,gap);const between=(c[axis]-a[axis]-a[sizeKey]-otherSize)/2;if(between>=0)add(a[axis]+a[sizeKey]+between,lo,hi,between);}}
  if(best){if(axis==='x')dx+=best.delta;else dy+=best.delta;const cross=axis==='x'?'y':'x',extent=axis==='x'?'height':'width';lines.push({...best.line,start:best.line.kind==='guide'?b[cross]-40/Math.max(.05,o.zoom):Math.min(best.line.start,b[cross]),end:best.line.kind==='guide'?b[cross]+b[extent]+40/Math.max(.05,o.zoom):Math.max(best.line.end,b[cross]+b[extent])});}
- else if(pref.pixel!=='none'){const unit=pref.pixel==='half'?.5:1;if(axis==='x')dx=Math.round((o.box.x+dx)/unit)*unit-o.box.x;else dy=Math.round((o.box.y+dy)/unit)*unit-o.box.y;}}
+ else if(pref.pixel!=='none'){const unit=pixelSnapUnit(pref.pixel);if(axis==='x')dx=Math.round((o.box.x+dx)/unit)*unit-o.box.x;else dy=Math.round((o.box.y+dy)/unit)*unit-o.box.y;}}
  return {dx,dy,lines};}
 export function snapResize(o:SnapOptions&{handle:string}):{dx:number;dy:number;lines:GuideLine[]}{const x=o.handle.includes('w')?o.box.x:o.box.x+o.box.width,y=o.handle.includes('n')?o.box.y:o.box.y+o.box.height,activeX=/[we]/.test(o.handle),activeY=/[ns]/.test(o.handle);const result=snapMove({...o,box:{x,y,width:0,height:0},axis:activeX&&!activeY?'x':activeY&&!activeX?'y':undefined,preferences:{...o.preferences,spacing:false,centers:false}});return {dx:activeX?result.dx:o.dx,dy:activeY?result.dy:o.dy,lines:result.lines};}
 export function measurements(a:Rect,b:Rect):Measurement[]{const out:Measurement[]=[],acx=a.x+a.width/2,acy=a.y+a.height/2,bcx=b.x+b.width/2,bcy=b.y+b.height/2,inside=a.x>=b.x&&a.y>=b.y&&a.x+a.width<=b.x+b.width&&a.y+a.height<=b.y+b.height;

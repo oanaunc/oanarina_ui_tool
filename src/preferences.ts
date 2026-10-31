@@ -5,7 +5,7 @@ import type {DesignNode,NodeKind} from './model';
 export interface EditorPreferences {
  uiScale:number;fontPreview:boolean;autosaveIntervalMs:number;recentFileLimit:number;
  exportHiddenLayers:boolean;defaultExportFormat:'svg'|'png'|'jpg';colorPickerFormat:'HEX'|'RGB'|'HSL'|'HSB';duplicateNaming:'preserve'|'copy'|'increment';keyboardZoomSelection:boolean;controlClickContextMenu:boolean;numberKeyOpacity:boolean;smartTextSubstitution:boolean;
- pixelSnapping:'document'|'none'|'pixel'|'half';objectSnapping:'document'|'on'|'off';vectorGeometrySnapping:'document'|'on'|'off';
+ pixelSnapping:'document'|'none'|'pixel'|'half'|'device';objectSnapping:'document'|'on'|'off';vectorGeometrySnapping:'document'|'on'|'off';
  smallNudge:number;largeNudge:number;rotationSnapIncrement:number;
  showFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;showSlices:boolean;
  viewportCulling:boolean;highContrastSelection:boolean;keepDrawingTool:boolean;hoverHighlight:boolean;parentHoverOutline:boolean;showSelectionDimensions:boolean;
@@ -37,7 +37,7 @@ export function validatePreferences(value:unknown):EditorPreferences {
  const out={} as EditorPreferences;
  for(const key of fields){let v=record[key];const range=ranges[key];
   if(range){if(typeof v!=='number'||!Number.isFinite(v)||v<range[0]||v>range[1])throw Error(`${key} must be between ${range[0]} and ${range[1]}.`);}
-  else if(key==='pixelSnapping'){if(!['document','none','pixel','half'].includes(v as string))throw Error('Choose document, off, pixels or half pixels for local pixel snapping.');}
+  else if(key==='pixelSnapping'){if(!['document','none','pixel','half','device'].includes(v as string))throw Error('Choose document, off, pixels, half pixels or device pixels for local pixel snapping.');}
   else if(key==='objectSnapping'||key==='vectorGeometrySnapping'){if(!['document','on','off'].includes(v as string))throw Error('Choose document, on or off for local snapping.');}
   else if(key==='defaultExportFormat'){if(!['svg','png','jpg'].includes(v as string))throw Error('Choose SVG, PNG or JPG as the default export format.');}
   else if(key==='colorPickerFormat'){if(!['HEX','RGB','HSL','HSB'].includes(v as string))throw Error('Choose HEX, RGB, HSL or HSB as the color picker format.');}
