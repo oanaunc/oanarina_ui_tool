@@ -1,11 +1,11 @@
 import {parseDocument} from './model';
 import type {DesignDocument} from './model';
 export interface LocalFolder {id:string;name:string;createdAt:string;}
-export interface LocalFileMetadata {id:string;folderId:string|null;starred:boolean;pinned:boolean;archived:boolean;trashedAt?:string;deleted?:boolean;lastOpenedAt?:string;revision:number;}
+export interface LocalFileMetadata {id:string;folderId:string|null;starred:boolean;pinned:boolean;archived:boolean;trashedAt?:string;deleted?:boolean;lastOpenedAt?:string;revision:number;ownerName?:string;}
 export interface FileBrowserState {version:1;folders:LocalFolder[];files:LocalFileMetadata[];}
 export interface LocalFileEntry {doc:DesignDocument;metadata:LocalFileMetadata;}
 export type FileView='recent'|'all'|'drafts'|'starred'|'pinned'|'archive'|'trash';
-export type FileSort='modified-desc'|'modified-asc'|'name-asc'|'name-desc'|'opened-desc';
+export type FileSort='modified-desc'|'modified-asc'|'name-asc'|'name-desc'|'opened-desc'|'owner-asc';
 export interface FileBrowserPreferences {layout:'grid'|'list';sort:FileSort;type:'all'|'design'|'whiteboard'|'slides';}
 export const FILE_BROWSER_PREFERENCES_KEY='oui-file-browser';
 export const defaultFileBrowserPreferences:FileBrowserPreferences={layout:'grid',sort:'modified-desc',type:'all'};
@@ -21,9 +21,10 @@ export function validateFileBrowserState(value:unknown):FileBrowserState{
  if(s.version!==1||!Array.isArray(s.folders)||s.folders.length>200||!Array.isArray(s.files)||s.files.length>10000)throw invalid();
  const folders=new Set<string>(),files=new Set<string>();
  for(const f of s.folders){if(!f||!validId(f.id)||folders.has(f.id)||typeof f.name!=='string'||f.name!==localName(f.name,'Folder name')||!validDate(f.createdAt))throw invalid();folders.add(f.id);}
- for(const f of s.files){if(!f||!validId(f.id)||files.has(f.id)||!(f.folderId===null||typeof f.folderId==='string'&&folders.has(f.folderId))||typeof f.starred!=='boolean'||typeof f.pinned!=='boolean'||typeof f.archived!=='boolean'||!Number.isSafeInteger(f.revision)||f.revision<0||f.trashedAt!==undefined&&!validDate(f.trashedAt)||f.lastOpenedAt!==undefined&&!validDate(f.lastOpenedAt)||f.deleted!==undefined&&typeof f.deleted!=='boolean'||f.deleted&&!f.trashedAt)throw invalid();files.add(f.id);}
+ for(const f of s.files){if(!f||!validId(f.id)||files.has(f.id)||!(f.folderId===null||typeof f.folderId==='string'&&folders.has(f.folderId))||typeof f.starred!=='boolean'||typeof f.pinned!=='boolean'||typeof f.archived!=='boolean'||!Number.isSafeInteger(f.revision)||f.revision<0||f.trashedAt!==undefined&&!validDate(f.trashedAt)||f.lastOpenedAt!==undefined&&!validDate(f.lastOpenedAt)||f.deleted!==undefined&&typeof f.deleted!=='boolean'||f.deleted&&!f.trashedAt||f.ownerName!==undefined&&(typeof f.ownerName!=='string'||!f.ownerName.trim()||f.ownerName.length>120||/[\u0000-\u001f]/.test(f.ownerName)))throw invalid();files.add(f.id);}
  return structuredClone(s);
 }
+export const fileOwnerLabel=(m:Pick<LocalFileMetadata,'ownerName'>)=>m.ownerName?'Owner: '+m.ownerName:'Owner not recorded';
 export function fileMetadata(state:FileBrowserState,id:string){return state.files.find(f=>f.id===id)??defaultFileMetadata(id);}
 export function cloneLocalDocument(doc:DesignDocument,name=doc.name+' copy'):DesignDocument{
  // Internal references are document-scoped and intentionally stay intact. Only
@@ -38,10 +39,11 @@ export function queryLocalFiles(entries:readonly LocalFileEntry[],options:{view:
    case'name-asc':order=a.doc.name.localeCompare(b.doc.name,undefined,{numeric:true,sensitivity:'base'});break;
    case'name-desc':order=b.doc.name.localeCompare(a.doc.name,undefined,{numeric:true,sensitivity:'base'});break;
    case'modified-asc':order=a.doc.updatedAt.localeCompare(b.doc.updatedAt);break;
+   case'owner-asc':order=!a.metadata.ownerName!==!b.metadata.ownerName?(a.metadata.ownerName?-1:1):(a.metadata.ownerName??'').localeCompare(b.metadata.ownerName??'',undefined,{sensitivity:'base'})||a.doc.name.localeCompare(b.doc.name,undefined,{numeric:true,sensitivity:'base'});break;
    case'opened-desc':order=(b.metadata.lastOpenedAt??b.doc.updatedAt).localeCompare(a.metadata.lastOpenedAt??a.doc.updatedAt);break;
    default:order=b.doc.updatedAt.localeCompare(a.doc.updatedAt);
   }return order||a.doc.id.localeCompare(b.doc.id);
  });
 }
-export function readFileBrowserPreferences():FileBrowserPreferences{try{const raw=localStorage.getItem(FILE_BROWSER_PREFERENCES_KEY);if(!raw||raw.length>1000)return{...defaultFileBrowserPreferences};const data=JSON.parse(raw);if(data?.version!==1)return{...defaultFileBrowserPreferences};const v=data.values;return{layout:v?.layout==='list'?'list':'grid',sort:['modified-desc','modified-asc','name-asc','name-desc','opened-desc'].includes(v?.sort)?v.sort:'modified-desc',type:['all','design','whiteboard','slides'].includes(v?.type)?v.type:'all'};}catch{return{...defaultFileBrowserPreferences};}}
+export function readFileBrowserPreferences():FileBrowserPreferences{try{const raw=localStorage.getItem(FILE_BROWSER_PREFERENCES_KEY);if(!raw||raw.length>1000)return{...defaultFileBrowserPreferences};const data=JSON.parse(raw);if(data?.version!==1)return{...defaultFileBrowserPreferences};const v=data.values;return{layout:v?.layout==='list'?'list':'grid',sort:['modified-desc','modified-asc','name-asc','name-desc','opened-desc','owner-asc'].includes(v?.sort)?v.sort:'modified-desc',type:['all','design','whiteboard','slides'].includes(v?.type)?v.type:'all'};}catch{return{...defaultFileBrowserPreferences};}}
 export function saveFileBrowserPreferences(value:FileBrowserPreferences){try{localStorage.setItem(FILE_BROWSER_PREFERENCES_KEY,JSON.stringify({version:1,values:value}));}catch{/* Browser preferences do not block project actions. */}}
