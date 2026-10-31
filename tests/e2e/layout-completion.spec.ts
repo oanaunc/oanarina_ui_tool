@@ -5,7 +5,7 @@ import {blankDocument,node,parseDocument} from '../../src/model';
 import type {DesignDocument} from '../../src/model';
 import {createStroke} from '../../src/paints';
 function fixture(){const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('frame',{id:'flow',name:'Flow',x:200,y:180,width:300,height:200,layout:'horizontal',gap:0,padding:0,fill:'none',clip:false,strokes:[]}),node('rectangle',{id:'a',name:'Red card',parentId:'flow',x:200,y:180,width:80,height:40,fill:'#ff0000',stroke:'',strokes:[]}),node('rectangle',{id:'b',name:'Blue card',parentId:'flow',x:280,y:180,width:80,height:40,fill:'#0000ff',stroke:'',strokes:[]})];return d;}
-async function load(page:Page,d:DesignDocument){await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.getByRole('menubar')).toBeVisible();}
+async function load(page:Page,d:DesignDocument){page.on('filechooser',()=>{});await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.getByRole('menubar')).toBeVisible();}
 async function select(page:Page,name:string){await page.getByRole('treeitem',{name,exact:true}).click();}
 async function save(page:Page){const wait=page.waitForEvent('download');await page.keyboard.press('Meta+s');return parseDocument(await fs.readFile((await(await wait).path())!,'utf8'));}
 async function number(page:Page,label:string,value:string){const field=page.getByRole('spinbutton',{name:label,exact:true});await field.fill(value);await field.press('Tab');}
