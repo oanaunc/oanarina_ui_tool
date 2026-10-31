@@ -23,7 +23,7 @@ Local presets stay `forma-brush-presets` version 1 with one additive optional `s
 In Draw mode the toolbar adds two menus after the shape and text tools.
 
 - **Brush presets** lists built-in and saved brushes, marks stretch brushes, and chooses one and activates Brush in one step.
-- **Illustration tools** reaches Edit points, Bend segments, Cut path, Erase path, Lasso points, Shape builder, Offset, Outline stroke, Separate regions, and Linear and Radial repeat.
+- **Illustration tools** reaches Edit points, Bend segments, Cut path, Erase path, Lasso points, Knife, Shape builder, Offset, Outline stroke, Separate regions, and Linear and Radial repeat.
 
 Canvas tools need the Move tool and point editing, so a tool entry switches to Move and enters point editing first. That is the same step as **Edit vector points**, including converting a primitive to a path with its own Undo step. If the tool then refuses, for example Cut on a filled shape, its message appears and point editing stays open. With no selection nothing changes and a message appears.
 

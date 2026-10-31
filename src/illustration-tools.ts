@@ -6,6 +6,7 @@ import {useVectorCut} from './vector-cut';
 import {useVectorEraser} from './vector-eraser';
 import {useVectorLasso} from './vector-lasso';
 import {builderProof,useShapeBuilder} from './shape-builder-actions';
+import {useVectorKnife} from './vector-knife';
 
 export type VectorToolKind='bend'|'cut'|'eraser'|'lasso';
 const vectorTools:Record<VectorToolKind,{getState:()=>{activate:(id:string)=>void;reset:()=>void}}>={bend:useVectorBend,cut:useVectorCut,eraser:useVectorEraser,lasso:useVectorLasso};
@@ -15,4 +16,6 @@ export function startVectorTool(kind:VectorToolKind){if(!Object.hasOwn(vectorToo
 export function editVectorPoints(){const s=useEditor.getState();if(s.vectorEditId)return true;if(s.selection.length!==1)throw Error('Select one vector, then choose a drawing tool.');s.set({tool:'move'});runCommand('edit-vector');return !!useEditor.getState().vectorEditId;}
 /** Shape builder reads the live selection, so a refusal here leaves the current tool and document alone. */
 export function startShapeBuilder(){const s=useEditor.getState(),tool=s.tool;if(s.selection.length<2)throw Error('Select two or more overlapping shapes for Shape builder.');s.set({tool:'move'});try{useShapeBuilder.getState().activate(builderProof());}catch(error){useEditor.getState().set({tool});throw error;}focusCanvas();}
+/** Knife works on whole shapes, so it leaves point editing and starts from the Move tool. */
+export function startVectorKnife(){const s=useEditor.getState(),tool=s.tool;if(s.selection.length!==1)throw Error('Select one filled shape, then choose Knife.');if(s.vectorEditId)runCommand('edit-vector');useEditor.getState().set({tool:'move'});try{useVectorKnife.getState().activate();}catch(error){useEditor.getState().set({tool});throw error;}focusCanvas();}
 export function chooseBrushPreset(id:string){useBrushLibrary.getState().choose(id);runCommand('tool-brush');}

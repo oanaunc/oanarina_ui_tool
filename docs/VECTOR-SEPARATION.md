@@ -2,7 +2,7 @@
 
 Unreleased source implements a bounded subset of UI-14-043. Use **Vector → Separate vector regions…**, or the same button while editing vector points, with one visible unlocked compound path selected in Design mode. The dialog shows isolated SVG images of the original and proposed result. Apply creates editable region layers in one undoable edit; Cancel, Escape, blur and stale editor context do not change the document.
 
-The operation separates existing disjoint filled regions. It does not draw a knife cut (UI-14-042), partition crossing contours, or split arbitrary vector networks. UI-14-043 should remain **partial** until those broader meanings and reference behavior are resolved. Figma desktop and native Mac acceptance are not claimed by the DOM/core tests.
+The operation separates existing disjoint filled regions. It does not partition crossing contours or split arbitrary vector networks. UI-14-043 should remain **partial** until those broader meanings and reference behavior are resolved. Figma desktop and native Mac acceptance are not claimed by the DOM/core tests.
 
 ## Geometry and appearance
 
@@ -21,3 +21,9 @@ Input is bounded to 32 contours, 512 anchors, 200,000 path characters and finite
 ## Verification
 
 Core tests cover nested holes/islands, nonzero winding, exact curved controls, affine world mapping, materialized styles/bindings, compositing metadata, bounded malformed/unsupported input, source component propagation, settled auto-layout footprint, one Undo/Redo entry and `.oui` parsing, plus lock/instance/stale context refusals. Browser tests exercise menu and point-tool entry, real original/result SVG pixels (holes, islands, translucent paint stacks, own and ancestor transforms and overhanging curves), preview/save immutability, actual Apply, independent point editing, Undo/Redo, repository reopen, source component synchronization and cancellation/refusals. Builds, native packaging and release artifacts remain frozen by user request.
+
+## Knife
+
+In Draw mode, **Illustration tools → Knife** slices the one selected shape. Drag a line across it and release: everything on one side separates from everything on the other, and each connected piece becomes an editable path in a group that keeps the original layer's identity, pose, compositing and stack position. One Undo restores the original, and a ring cut across gives two C shapes with their holes accounted for. Rectangles, ellipses, polygons, stars and closed paths work. Escape leaves the tool, and a line that misses the shape, or a drag under one unit, is refused with a message.
+
+The drawn line extends across the whole layer, so this is a straight cut, not a freehand or partial knife. It follows separation's paint rules: solid fills only, with no visible strokes, effects or automatic layout. Limits are 512 anchors and 32 pieces. Curves are split by Paper Booleans. There is no control for this in the point inspector.

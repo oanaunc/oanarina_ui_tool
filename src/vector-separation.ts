@@ -37,13 +37,11 @@ export function separateVectorRegions(n:DesignNode,ids?:string[]):VectorSeparati
   const roots=paths.map((_,i)=>i).filter(i=>depths[i]%2===0);
   if(roots.length<2)throw Error('This path has fewer than two separate filled regions. Holes stay with their surrounding region.');
   if(ids&&(ids.length!==roots.length||new Set(ids).size!==ids.length||ids.some(id=>!id||id===n.id)))throw Error('Invalid separated layer identities.');
-  const group=structuredClone(n),patch:Partial<DesignNode>={type:'group',path:'',points:[],contours:undefined,closed:undefined,pathWidth:undefined,pathHeight:undefined,fill:'none',paints:[],gradient:false,stroke:'',strokeWidth:0,strokes:[],clip:false,radius:0,corners:undefined};
-  detachEditedBindings(group,patch);Object.assign(group,patch);
-  // Geometry and fills are materialized. Group compositing, hierarchy/layout slot and original ID stay intact.
-  if(group.variableBindings)for(const k of ['width','height','radius','fill','stroke','strokeWidth'] as const)delete group.variableBindings[k];
-  const regions=roots.map((i,index)=>node('path',{id:ids?.[index]??crypto.randomUUID(),name:`${n.name} · region ${index+1}`,parentId:n.id,x:n.x,y:n.y,width:n.width,height:n.height,pathWidth:n.width,pathHeight:n.height,contours:[contour(paths[i]),...paths.filter((_,j)=>parents[j]===i).map(contour)],fillRule:'nonzero',fill:n.fill,paints:structuredClone(paints),stroke:'',strokeWidth:0,strokes:[],layout:'none',opacity:1}));
-  return {group,regions,removedContours:inputCount-paths.length};
+  return {...separationPlan(n,roots.map(i=>[contour(paths[i]),...paths.filter((_,j)=>parents[j]===i).map(contour)]),ids),removedContours:inputCount-paths.length};
  }finally{source.remove();base?.remove();}
 }
+
+/** Geometry and fills are materialized. Group compositing, hierarchy/layout slot and original ID stay intact. */
+export function separationPlan(n:DesignNode,regions:VectorContour[][],ids?:string[]):VectorSeparation{if(ids&&(ids.length!==regions.length||new Set(ids).size!==ids.length||ids.some(id=>!id||id===n.id)))throw Error('Invalid separated layer identities.');const paints=structuredClone(fillsFor(n)),group=structuredClone(n),patch:Partial<DesignNode>={type:'group',path:'',points:[],contours:undefined,closed:undefined,pathWidth:undefined,pathHeight:undefined,fill:'none',paints:[],gradient:false,stroke:'',strokeWidth:0,strokes:[],clip:false,radius:0,corners:undefined};detachEditedBindings(group,patch);Object.assign(group,patch);if(group.variableBindings)for(const k of ['width','height','radius','fill','stroke','strokeWidth'] as const)delete group.variableBindings[k];return {group,regions:regions.map((contours,index)=>node('path',{id:ids?.[index]??crypto.randomUUID(),name:`${n.name} · region ${index+1}`,parentId:n.id,x:n.x,y:n.y,width:n.width,height:n.height,pathWidth:n.width,pathHeight:n.height,contours,fillRule:'nonzero',fill:n.fill,paints:structuredClone(paints),stroke:'',strokeWidth:0,strokes:[],layout:'none',opacity:1})),removedContours:0};}
 
 export function applyVectorSeparation(nodes:DesignNode[],id:string,plan:VectorSeparation){const index=nodes.findIndex(n=>n.id===id);if(index<0||plan.group.id!==id||nodes.some(n=>plan.regions.some(r=>r.id===n.id))||nodes.length+plan.regions.length>20000)throw Error('Separated layers exceed the page limit or their identities are no longer available.');nodes.splice(index,1,structuredClone(plan.group),...structuredClone(plan.regions));}

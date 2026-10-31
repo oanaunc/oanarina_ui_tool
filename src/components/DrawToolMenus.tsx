@@ -3,14 +3,14 @@ import {runCommand} from '../commands';
 import {useBrushLibrary} from '../brush-library';
 import {builtInBrushes} from '../brush-presets';
 import {notifyError} from '../files';
-import {chooseBrushPreset,editVectorPoints,startShapeBuilder,startVectorTool} from '../illustration-tools';
+import {chooseBrushPreset,editVectorPoints,startShapeBuilder,startVectorKnife,startVectorTool} from '../illustration-tools';
 import {t} from '../i18n';
 import {useEditor} from '../store';
 import './draw-tools.css';
 
 export const BRUSH_MENU=100,ILLUSTRATION_MENU=101;
 interface Props {open:number|null;focusProps:()=>Record<string,unknown>;show:(i:number,trigger:HTMLButtonElement)=>void;close:(restore?:boolean)=>void;current:()=>boolean;}
-const tools:[string,()=>unknown][]=[['Edit points',editVectorPoints],['Bend segments',()=>startVectorTool('bend')],['Cut path',()=>startVectorTool('cut')],['Erase path',()=>startVectorTool('eraser')],['Lasso points',()=>startVectorTool('lasso')],['Shape builder',startShapeBuilder]];
+const tools:[string,()=>unknown][]=[['Edit points',editVectorPoints],['Bend segments',()=>startVectorTool('bend')],['Cut path',()=>startVectorTool('cut')],['Erase path',()=>startVectorTool('eraser')],['Lasso points',()=>startVectorTool('lasso')],['Knife',startVectorKnife],['Shape builder',startShapeBuilder]];
 const commands:[string,string][]=[['Offset vector path…','vector-offset'],['Outline vector stroke…','vector-outline-stroke'],['Separate vector regions…','vector-separate'],['Linear repeat…','linear-repeat'],['Radial repeat…','radial-repeat']];
 /** Draw-only menus that reach existing tools; each entry runs the same guarded path as its inspector or menu control. */
 export default function DrawToolMenus({open,focusProps,show,close,current}:Props){
