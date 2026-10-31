@@ -22,9 +22,9 @@ export function snapExplicitPixel(position:{x:number;y:number},document:Partial<
  const unit=pixelSnapUnit(mode);return {x:Math.round(position.x/unit)*unit,y:Math.round(position.y/unit)*unit};
 }
 /** Explicit local overrides opt drawing endpoints into existing object/vector solvers. */
-export function snapDrawingEndpoint(o:{position:{x:number;y:number};nodes:DesignNode[];zoom:number;document?:Partial<SnapPreferences>;local:Readonly<LocalSnapping>;geometry?:VectorSnapIndex;disabled?:boolean}):{point:{x:number;y:number};lines:GuideLine[]}{
+export function snapDrawingEndpoint(o:{position:{x:number;y:number};nodes:DesignNode[];zoom:number;document?:Partial<SnapPreferences>;local:Readonly<LocalSnapping>;geometry?:VectorSnapIndex;disabled?:boolean;from?:{x:number;y:number}}):{point:{x:number;y:number};lines:GuideLine[]}{
  if(o.disabled||o.document?.enabled===false)return {point:o.position,lines:[]};
- if(o.local.vectorGeometrySnapping==='on'&&o.geometry){const hit=snapVectorPoint(o.geometry,o.position,o.zoom);if(hit)return {point:hit.point,lines:[]};}
+ if(o.local.vectorGeometrySnapping==='on'&&o.geometry){const hit=snapVectorPoint(o.geometry,o.position,o.zoom,o.from);if(hit)return {point:hit.point,lines:[]};}
  if(o.local.objectSnapping==='on'){const snapped=snapMove({nodes:o.nodes,movingIds:[],box:{...o.position,width:0,height:0},dx:0,dy:0,zoom:o.zoom,preferences:{enabled:true,objects:true,centers:true,frames:true,spacing:false,guides:false,layout:false,pixel:o.local.pixelSnapping==='document'?'none':o.local.pixelSnapping}});return {point:{x:o.position.x+snapped.dx,y:o.position.y+snapped.dy},lines:snapped.lines};}
  return {point:snapExplicitPixel(o.position,o.document,o.local),lines:[]};
 }

@@ -1,4 +1,4 @@
-import {layerTreeIndex,flattenLayerTree} from './layer-tree-index';
+import {layerTreeIndex,flattenLayerTree,listsInFlowOrder} from './layer-tree-index';
 import {surfaceAppearance} from './surface-paint';
 import {linearGradientPoints} from './linear-gradient';
 import {effectiveVisible,isLocked} from './model';
@@ -8,8 +8,8 @@ import type {Paint} from './paints';
 import {baseTextStyle} from './rich-text';
 export const selectionEligible=(n:DesignNode,nodes:DesignNode[])=>effectiveVisible(n,nodes)&&!isLocked(n,nodes);
 /** Front-to-back order, matching the visible layer tree. */
-export function selectionSiblings(nodes:DesignNode[],parentId:string|null){return nodes.filter(n=>n.parentId===parentId&&selectionEligible(n,nodes)).reverse();}
-export function selectionChildren(nodes:DesignNode[],selection:string[]){const selected=new Set(selection),children=nodes.filter(n=>n.parentId&&selected.has(n.parentId)&&selectionEligible(n,nodes)).reverse().map(n=>n.id);return children.length?children:selection.filter(id=>nodes.some(n=>n.id===id&&selectionEligible(n,nodes)));}
+export function selectionSiblings(nodes:DesignNode[],parentId:string|null){const list=nodes.filter(n=>n.parentId===parentId&&selectionEligible(n,nodes));return listsInFlowOrder(nodes.find(n=>n.id===parentId))?list:list.reverse();}
+export function selectionChildren(nodes:DesignNode[],selection:string[]){const selected=new Set(selection),children=selection.length===1?selectionSiblings(nodes,selection[0]).map(n=>n.id):nodes.filter(n=>n.parentId&&selected.has(n.parentId)&&selectionEligible(n,nodes)).reverse().map(n=>n.id);return children.length?children:selection.filter(id=>nodes.some(n=>n.id===id&&selectionEligible(n,nodes)));}
 export function selectionParents(nodes:DesignNode[],selection:string[]){const parents=selection.flatMap(id=>{const n=nodes.find(n=>n.id===id),parent=nodes.find(p=>p.id===n?.parentId);return parent&&selectionEligible(parent,nodes)?[parent.id]:[];});return parents.length?[...new Set(parents)]:selection.filter(id=>nodes.some(n=>n.id===id&&selectionEligible(n,nodes)));}
 export function selectionSibling(nodes:DesignNode[],selection:string[],direction:1|-1){const selected=nodes.filter(n=>selection.includes(n.id)&&selectionEligible(n,nodes)),anchor=selected.at(-1),siblings=selectionSiblings(nodes,anchor?.parentId??null);if(!siblings.length)return [];if(!anchor)return [(direction===1?siblings[0]:siblings.at(-1))!.id];const indices=siblings.flatMap((n,i)=>selection.includes(n.id)?[i]:[]),index=direction===1?Math.max(...indices):Math.min(...indices);return [siblings[(index+direction+siblings.length)%siblings.length].id];}
 /** A hit is already geometrically resolved by the canvas; this only resolves hierarchy. Page-level frames and sections work as artboards, so a click reaches what is on them. */

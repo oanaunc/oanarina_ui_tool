@@ -1,7 +1,8 @@
 import {useCanvasGradient} from '../canvas-gradient';
 import {useEffect,useMemo} from 'react';
 import type {DesignNode} from '../model';
-import {canvasNameIndex,placeCanvasNames} from '../canvas-names';
+import {CANVAS_NAME_LIMITS,canvasNameIndex,placeCanvasNames} from '../canvas-names';
+import {canvasCorners} from '../canvas-geometry';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import {useEditor} from '../store';
 import {usePreferences} from '../preferences';
@@ -9,6 +10,8 @@ import {useCanvasImageCrop} from '../canvas-image-crop';
 const fontFamily='Inter, system-ui, sans-serif';
 let measurement:CanvasRenderingContext2D|null=null;
 function measure(text:string){measurement??=document.createElement('canvas').getContext('2d');if(!measurement)return {width:text.length*8};measurement.font='11px '+fontFamily;measurement.direction='ltr';const m=measurement.measureText(text);return {width:m.width,left:Math.min(0,-m.actualBoundingBoxLeft),right:Math.max(m.width,m.actualBoundingBoxRight),ascent:Math.max(11,m.actualBoundingBoxAscent),descent:Math.max(3,m.actualBoundingBoxDescent)};}
+/** Where a shown name sits in world space, so selection chrome can step around it. */
+export function canvasNameBox(n:DesignNode,nodes:DesignNode[],zoom:number,prefs:{showFrameNames:boolean;showSectionNames:boolean;showNestedFrameNames:boolean}){if(!['frame','component','section'].includes(n.type)||!(n.type==='section'?prefs.showSectionNames:prefs.showFrameNames)||n.parentId&&n.type==='frame'&&!prefs.showNestedFrameNames)return undefined;const corners=canvasCorners(n,nodes),x=Math.min(...corners.map(p=>p.x)),top=Math.min(...corners.map(p=>p.y)),width=Math.min(CANVAS_NAME_LIMITS.width,measure((n.type==='component'?'◇  ':'▦  ')+n.name).width);return {x:x-2/zoom,y:top-27/zoom,width:(width+4)/zoom,height:21/zoom};}
 /** Editor-only names. Artwork and exports never read this overlay. */
 export default function CanvasNames({nodes,zoom,onNode}:{nodes:DesignNode[];zoom:number;onNode:(e:React.PointerEvent,id:string)=>void}){
  const s=useEditor(),prefs=usePreferences(),crop=useCanvasImageCrop(),gradient=useCanvasGradient(),excluded=useMemo(()=>new Set([...(s.doc.whiteboard?.stickies.map(n=>n.frameId)??[]),...(s.doc.whiteboard?.tables.map(n=>n.frameId)??[]),...(s.doc.slides?.slides.map(n=>n.frameId)??[])]),[s.doc]),index=useMemo(()=>{const open=new Set(s.selection);for(const n of nodes)if(n.parentId&&s.selection.includes(n.parentId))open.add(n.id);return canvasNameIndex(nodes,excluded).filter(entry=>prefs.showNestedFrameNames||entry.type!=='frame'||!entry.nested||open.has(entry.id));},[nodes,excluded,s.selection,prefs.showNestedFrameNames]),names=useMemo(()=>placeCanvasNames(index,zoom,{frames:prefs.showFrameNames,sections:prefs.showSectionNames},measure),[index,zoom,prefs.showFrameNames,prefs.showSectionNames,s.fontRevision]),proof=useMemo(()=>({context:captureColorContext(s),tool:s.tool,zoom:s.zoom,pan:s.pan,valid:true}),[s.doc,s.pageId,s.selection,s.mode,s.home,s.modal,s.uiHidden,s.motionOpen,s.motionTime,s.tool,s.zoom,s.pan]);

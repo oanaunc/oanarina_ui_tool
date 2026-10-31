@@ -44,5 +44,7 @@ export function placeCanvasNames(index:CanvasNameIndexEntry[],zoom:number,option
   let clip=n.clips,allowed=true;while(clip){if(!corners.every(p=>inside(clip!,p))){allowed=false;break;}clip=clip.parent;}if(!allowed)continue;
   result.push({id:n.id,type:n.type,text,title:n.title,x,y,locked:n.locked,...(n.nested?{plate:{x:(left-x)*zoom,y:(top-y)*zoom,width:(right-left)*zoom,height:(bottom-top)*zoom}}:{})});if(result.length>=CANVAS_NAME_LIMITS.labels)break;
  }
- return result;
+ return yieldToNeighbors(result,zoom,measure);
 }
+/** Names on one row stop short of the next name. A name with no room left for even one letter steps aside. */
+function yieldToNeighbors(names:CanvasName[],zoom:number,measure:(text:string)=>NameMetrics){const rows=new Map<number,CanvasName[]>();for(const n of names){const key=Math.round(n.y*zoom/6),row=rows.get(key)??[];row.push(n);rows.set(key,row);}const dropped=new Set<string>();for(const row of rows.values()){row.sort((a,b)=>a.x-b.x);for(let i=0;i+1<row.length;i++){const a=row[i],next=row[i+1],room=(next.x-a.x)*zoom-8,shown=measure(a.text);if(next.x<=a.x||(shown.right??shown.width)<=room)continue;const prefix=Array.from(a.text).slice(0,3).join(''),chars=Array.from(a.text).slice(3).filter((c,at,all)=>!(c==='…'&&at===all.length-1));let lo=0,hi=chars.length;while(lo<hi){const mid=Math.ceil((lo+hi)/2),m=measure(prefix+chars.slice(0,mid).join('')+'…');if((m.right??m.width)<=room)lo=mid;else hi=mid-1;}if(!lo){dropped.add(a.id);continue;}a.text=prefix+chars.slice(0,lo).join('')+'…';if(a.plate){const m=measure(a.text);a.plate={...a.plate,width:(m.right??m.width)-(m.left??0)+4};}}}return dropped.size?names.filter(n=>!dropped.has(n.id)):names;}

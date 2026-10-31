@@ -48,7 +48,7 @@ import MotionTimeline from './components/MotionTimeline';
 import {isStorageQuotaError,markDocumentOpened,openDocumentForEditing,saveDocument} from './repository';
 import {Component,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import type {ErrorInfo,ReactNode} from 'react';
-import {ArrowLeft,ArrowUpRight,Check,Home as HomeIcon,LayoutGrid,Plus,Search,Play,Settings2} from 'lucide-react';
+import {ArrowLeft,ArrowUpRight,Check,Home as HomeIcon,LayoutGrid,Plus,Search,Play,Settings2,X} from 'lucide-react';
 import Canvas from './components/Canvas';
 import Toolbar from './components/Toolbar';
 import DevModeBar from './components/DevModeBar';
@@ -96,7 +96,7 @@ function Editor(){const safeMode=useSafeMode(),[nativeReady,setNativeReady]=useS
  <RecoveryAlert/>
  <DevModeBar/>
  {s.doc.workspace==='slides'?<SlidesWorkspace/>:<SidebarLayout left={s.doc.brand?<BrandLeftPanel/>:<EditorRail><LeftPanel/></EditorRail>} right={s.doc.brand?<BrandRightPanel/>:<RightPanel/>} hidden={s.uiHidden} context={s.doc} pageId={s.pageId} modal={s.modal} properties={properties} onPropertiesChange={open=>{setProperties(open);if(!open)requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('.compact-inspector')?.focus());}}><div className={'canvas-area '+(s.motionOpen?'with-timeline':'')}><div className="canvas-stage"><Canvas/><Toolbar/><ContextualHelpButton/>{s.doc.workspace==='site'&&<SitesWorkspace/>}</div>{s.motionOpen&&<MotionTimeline/>}</div></SidebarLayout>}</>}
- {s.home&&<Home/>}<Dialogs/><WindowConflictBanner/>{safeMode.active&&<SafeModeBanner reason={safeMode.reason} onRestart={restartNormally}/>}<LearningTour/><ImportTaskPanel/><SelectionAnnouncements/><InterfaceAccessibility/>{s.toast&&<div className="toast" role="status"><Check size={14}/>{s.toast}</div>}{s.uiHidden&&<button className="restore-ui" onClick={()=>s.set({uiHidden:false})}><ArrowLeft size={14}/>{t('Show UI')}</button>}
+ {s.home&&<Home/>}<Dialogs/><WindowConflictBanner/>{safeMode.active&&<SafeModeBanner reason={safeMode.reason} onRestart={restartNormally}/>}<LearningTour/><ImportTaskPanel/><SelectionAnnouncements/><InterfaceAccessibility/>{s.toast&&(s.toastError?<div className="toast toast-error" role="status"><span>{s.toast}</span><button aria-label="Dismiss message" onClick={()=>s.set({toast:'',toastError:false})}><X size={12}/></button></div>:<div className="toast" role="status"><Check size={14}/>{s.toast}</div>)}{s.uiHidden&&<button className="restore-ui" onClick={()=>s.set({uiHidden:false})}><ArrowLeft size={14}/>{t('Show UI')}</button>}
  </div>;
 }
 export default function App(){return <ErrorBoundary><Editor/></ErrorBoundary>;}

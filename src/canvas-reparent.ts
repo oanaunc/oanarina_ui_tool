@@ -18,5 +18,5 @@ export function canvasDropParent(nodes:DesignNode[],ids:readonly string[],moved:
 }
 /** Whole-pixel world positions mean nothing inside a rotated, flipped or scaled frame, so drawing there stays exact. */
 export function overTransformedFrame(nodes:DesignNode[],p:{x:number;y:number}){return nodes.some(n=>{if(!['frame','section','component'].includes(n.type)||!holds(n,nodes,p))return false;const [a,b,c,d]=worldMatrix(n,nodes);return Math.abs(a-1)>1e-9||Math.abs(d-1)>1e-9||Math.abs(b)>1e-9||Math.abs(c)>1e-9;});}
-/** The tree lists the front layer first, so "after" a row is earlier in flow order. */
-export function applyCanvasDropParent(nodes:DesignNode[],ids:string[],drop:CanvasDropParent,doc:DesignDocument){return drop.afterId?planLayerMove(nodes,ids,drop.afterId,'after',doc):planLayerMove(nodes,ids,drop.parentId,'inside',doc);}
+/** `afterId` is the first flow sibling past the pointer. Stacks list in flow order, so the layer lands on the row before it. */
+export function applyCanvasDropParent(nodes:DesignNode[],ids:string[],drop:CanvasDropParent,doc:DesignDocument){return drop.afterId?planLayerMove(nodes,ids,drop.afterId,'before',doc):planLayerMove(nodes,ids,drop.parentId,'inside',doc);}
