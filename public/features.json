@@ -5834,10 +5834,10 @@
     "category": "Effects and compositing",
     "name": "Background blur",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: real shared SVG authored-backdrop replacement over the original earlier scene, with guarded radius/strength/visibility/type/removal, Undo/save. One independent root rectangle/ellipse at opacity 1, one effect, opaque square authored underlay and bounded contained static prefix; no nested targets, text/media/masks/networks/instances/source effects/affected Motion or presentation. No synthetic page background or CSS-only blur. Hidden/zero exact bypass, premultiplied mix and affine target pixels validated. See docs/BACKGROUND-BLUR.md. Native/reference acceptance pending; downloads frozen."
   },
   {
     "id": "UI-19-005",
@@ -6154,10 +6154,10 @@
     "category": "Effects and compositing",
     "name": "Backdrop filter clipping",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: the supported background blur is clipped through its real shared target geometry, including eligible rounded rectangles and affine ellipse arcs, while original outside pixels are preserved. Integer-aligned filter regions avoid fractional mask leakage; source ownership/size and exact prefix-export retention validate before publication. General backdrop roots, nested/masked targets and effect stacks remain unsupported. See docs/BACKGROUND-BLUR.md. Browser/core/source-MCP/mock Bridge and independent reads are not native or Figma round-trip acceptance."
   },
   {
     "id": "UI-19-037",
@@ -11204,10 +11204,10 @@
     "category": "Advanced prototype behavior",
     "name": "Form input simulation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: authored labeled text, textarea, number, checkbox and select simulation on eligible leaf boxes uses actual native presenter controls and typed resolved variable defaults. Values stay ephemeral across navigation, Restart/reset restore defaults; IME/caret, local numeric errors, disabled/clipped controls, input event ownership, definition Undo/save and typed copy/page/library/MCP remaps validated. Conservative square clips, bounded counts/aliases and source/runtime receipts; Motion/transitions/nested presentation restrictions, no submission, arbitrary control skins or cloud forms. Static SVG/Bridge disclose omitted interaction. See docs/PROTOTYPE-FORM-INPUTS.md. Native/reference acceptance pending."
   },
   {
     "id": "UI-34-021",
@@ -13674,10 +13674,10 @@
     "category": "Dev Mode and inspection",
     "name": "Automatic icon detection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Partial: Inspect automatically compares eligible transparent vector-container geometry with all 1,951 installed licensed Lucide icons in a bounded local worker. Normalized contour comparison accepts reversal/order/start offsets within explicit tolerance, keeps ambiguous known results and never guesses semantics/provenance. Names/colors/stroke weights/root pose are excluded; private IDs/text/comments/assets never enter numeric signatures. Deadline/cancel and permanent source/local-session receipts reject stale results; artwork/Undo remain unchanged. Unsupported composites, raster/network/special-stroke geometry refuse. See docs/AUTOMATIC-ICON-GEOMETRY.md. Native/reference coverage pending."
   },
   {
     "id": "UI-41-020",
