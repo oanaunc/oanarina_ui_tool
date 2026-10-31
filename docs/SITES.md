@@ -8,7 +8,7 @@ The workspace adds a tool bar (Design/Preview, breakpoint, Site panel, Export si
 
 ## Pages
 
-The page tree supports add, child, duplicate, delete, reorder, nest and unnest, all through document history. A page's slug sets its output folder. The home page is written at the site root and adds no folder to its children. `assets` is reserved, slugs are unique per level, and a site always keeps one top-level static home page. Pages added or removed from the regular page list join or leave the site automatically. Duplicating from the Site panel keeps breakpoint values and interactions; the regular page list copies only the canvas layers.
+The page tree supports add, child, duplicate, delete, reorder, nest and unnest, all through document history. A page's slug sets its output folder. The home page is written at the site root and adds no folder to its children. `assets` is reserved, slugs are unique per level, and a site always keeps one top-level static home page. Pages added or removed from the regular page list join or leave the site automatically. Duplicating from the Site panel keeps breakpoint values and interactions; the regular page list and copy and paste carry only canvas layers. Design-only tools that are unavailable in a Whiteboard, such as brushes, resize previews and local plugins, are also unavailable in a site.
 
 ## Breakpoints
 
