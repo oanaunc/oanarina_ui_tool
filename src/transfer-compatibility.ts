@@ -16,7 +16,7 @@ const rules:Rule[]=[
  {id:'calligraphic',label:'Calligraphic strokes',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses these. Export SVG or PNG to keep the appearance.',test:n=>stroke(n,s=>s.calligraphic!==undefined)},
  {id:'dynamic-stroke',label:'Dynamic strokes',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses these. Export SVG or PNG to keep the appearance.',test:n=>stroke(n,s=>s.dynamic!==undefined)},
  {id:'variable-width',label:'Per-anchor variable-width strokes',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses these. Export SVG or PNG to keep the appearance.',test:n=>stroke(n,s=>s.variableWidth==='points')},
- {id:'edge-strokes',label:'Independent edge strokes',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses these. Export SVG or PNG to keep the appearance.',test:n=>stroke(n,s=>s.edgeWidths!==undefined)},
+ {id:'edge-strokes',label:'Independent edge strokes',outcomes:{bridge:'approximate',...appearance},note:'Edge widths transfer on frames and rectangles. Other layers report the loss. Export SVG or PNG to keep the appearance.',test:n=>stroke(n,s=>s.edgeWidths!==undefined)},
  {id:'vector-network',label:'Vector networks',outcomes:{bridge:'refused',...appearance},note:'Flatten the network before Bridge transfer.',test:n=>n.vectorNetwork!==undefined},
  {id:'live-repeat',label:'Live repeat',outcomes:{bridge:'refused',...appearance},note:'Expand the repeat to layers before Bridge transfer.',test:n=>n.liveRepeat!==undefined},
  {id:'text-path',label:'Text on path',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses text on a path.',test:n=>n.textPath!==undefined},

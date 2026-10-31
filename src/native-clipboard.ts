@@ -8,8 +8,11 @@ import {readClipboardRaster} from './raster-clipboard';
 import {pngClipboardDimensions,renderClipboardPng} from './png-clipboard';
 import {visualBounds} from './transforms';
 import {isSvgMarkup} from './clipboard-svg';
+import {figClipboardBytes,figClipboardRoots} from './fig-clipboard';
+import {importFigBytes} from './fig-import';
+import {beginImportSession} from './import-session';
 
-export interface NativeClipboardRead {kind:'nodes'|'svg'|'image'|'text'|'empty';data?:string;}
+export interface NativeClipboardRead {kind:'nodes'|'svg'|'image'|'text'|'fig'|'empty';data?:string;}
 let localCopy:{raw:string;document:ReturnType<typeof useEditor.getState>['doc']}|undefined;
 let pngGeneration=0;
 /** Read-only raster copy; a stale task must never consume a newer copy grant. */
@@ -43,6 +46,19 @@ export async function copyEditorSelection(cut=false,onCut?:()=>void){
  const current=useEditor.getState();if(current.doc!==doc||current.pageId!==pageId||current.selection.join('\0')!==selection){current.set({toast:'Selection copied. The editor changed, so Cut was cancelled.'});return true;}
  localCopy={raw,document:doc};current.copy();if(cut)(onCut??current.remove)();current.set({toast:cut?'Selection cut to the Mac clipboard.':'Selection copied to the Mac clipboard.'});return true;
 }
+/** Conversion runs in the owned .fig worker behind the import panel's Cancel, and nothing reaches the document until the whole paste validates. */
+export async function pasteFigClipboard(html:string,parentId?:string,isCurrentTarget:()=>boolean=()=>true){
+ const session=beginImportSession('fig',1,html.length),{task}=session;
+ try{
+  const bytes=figClipboardBytes(html);task.update({stage:'decoding',bytes:html.length});
+  const result=await importFigBytes(bytes,'Pasted layers',task.signal,(stage,layers)=>task.update({stage,layers}),true);session.check();if(!isCurrentTarget())throw new DOMException('Import target changed.','AbortError');
+  const roots=figClipboardRoots(result.document);if(!roots)throw new Error('The clipboard has no layers Forma can paste.');
+  const payload=makeDesignClipboard(result.document,roots.pageId,roots.roots);payload.project.fonts=assetsForUsage(projectFontUsage(payload.project),payload.project.fonts);
+  const live=session.check(),candidate=structuredClone(live.doc),ids=pasteDesignClipboard(candidate,live.pageId,payload,parentId,false);parseDocument(JSON.stringify(candidate));
+  session.dispose();task.finish();live.edit(d=>{Object.assign(d,candidate);});
+  const reduced=result.issues.length,first=result.issues[0]?.message;live.set({selection:ids,toast:'Layers pasted from the design clipboard. Undo is available.'+(reduced?` ${reduced} reduction${reduced===1?'':'s'}${first?`, first: ${first}`:''}`:'')});
+ }catch(error){const reason=task.fail(error);if(!task.signal.aborted)throw new Error(reason??'The paste could not finish.');}finally{session.dispose();}
+}
 /** Reads once on explicit Paste. A changed document cancels the pending transfer. */
 export async function pasteEditorClipboard(parentId?:string,isCurrentTarget:()=>boolean=()=>true){
  pngGeneration++;
@@ -50,6 +66,7 @@ export async function pasteEditorClipboard(parentId?:string,isCurrentTarget:()=>
  const content=await window.desktop.clipboardRead(),current=useEditor.getState();if(current.doc!==initial.doc||current.pageId!==initial.pageId||!isCurrentTarget())throw Error('The project changed while reading the clipboard. Paste again.');
  if(content.kind==='empty'){current.set({toast:'The Mac clipboard has no supported layers, SVG, image or text.'});return;}
  if(typeof content.data!=='string'||new TextEncoder().encode(content.data).length>CLIPBOARD_LIMIT)throw Error('Clipboard content exceeds 20 MB.');
+ if(content.kind==='fig')return pasteFigClipboard(content.data,parentId,isCurrentTarget);
  if(content.kind==='svg'||content.kind==='text'&&isSvgMarkup(content.data)){if(parentId)throw Error('SVG clipboard paste is available on the design canvas. Paste there, review the import, then copy its editable layers into your slide.');await importSvg(content.data,'Pasted SVG');return;}
  if(content.kind!=='nodes'&&content.kind!=='text'&&content.kind!=='image')throw Error('Unsupported clipboard content.');
  let payload;

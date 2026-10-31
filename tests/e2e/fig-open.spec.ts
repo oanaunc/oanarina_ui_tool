@@ -23,9 +23,9 @@ async function library(page:Page){return page.evaluate(async()=>{
 async function holdWorkers(page:Page){await page.evaluate(()=>{
  const w=window as any,Original=window.Worker;w.figHeld=[];
  w.Worker=class extends Original{
-  slot:any;constructor(url:string|URL,options?:WorkerOptions){super(url,options);this.slot={terminated:false,release:null};w.figHeld.push(this.slot);}
-  override postMessage(data:any,transfer:any){this.slot.release=()=>{if(!this.slot.terminated)super.postMessage(data,transfer);};}
-  override terminate(){this.slot.terminated=true;super.terminate();}
+  slot:any;constructor(url:string|URL,options?:WorkerOptions){super(url,options);if(String(url).includes('fig-import')){this.slot={terminated:false,release:null};w.figHeld.push(this.slot);}}
+  override postMessage(data:any,transfer:any){if(!this.slot){super.postMessage(data,transfer);return;}this.slot.release=()=>{if(!this.slot.terminated)super.postMessage(data,transfer);};}
+  override terminate(){if(this.slot)this.slot.terminated=true;super.terminate();}
  };
 });}
 
@@ -92,7 +92,7 @@ test('unretained outgoing edits require a .oui backup before a valid incoming fi
 
 async function nativeFig(page:Page,bytes:Uint8Array,hold=false){await page.addInitScript(({data,hold})=>{
  const w=window as any;w.figNativeReports=[];w.figNativeReady=0;w.figNativeWrites=[];
- if(hold){const Original=window.Worker;w.Worker=class extends Original{override postMessage(data:any,transfer:any){w.releaseNativeFig=()=>super.postMessage(data,transfer);}};}
+ if(hold){const Original=window.Worker;w.Worker=class extends Original{override postMessage(data:any,transfer:any){if(data?.bytes)w.releaseNativeFig=()=>super.postMessage(data,transfer);else super.postMessage(data,transfer);}};}
  w.desktop={bootstrap:async()=>({kind:'fig',name:'Native synthetic scene',data}),ready:async()=>{w.figNativeReady++;w.figReadyState=w.figNativeReports.at(-1);return true;},reportDocument:async(state:any)=>{w.figNativeReports.push(state);return true;},onCommand:()=>()=>{},onDocument:()=>()=>{},onStateRequested:(fn:any)=>{w.figNativeState=fn;return()=>{};},onSaveRequested:(fn:any)=>{w.figNativeSave=fn;return()=>{};},fonts:async()=>[],save:async(name:string,raw:string)=>{w.figNativeWrites.push({name,document:JSON.parse(raw)});return true;}};
  },{data:Buffer.from(bytes).toString('base64'),hold});await page.goto('/');}
 test('native fig bootstrap reports converted document dirty before ready and saves a new .oui',async({page})=>{

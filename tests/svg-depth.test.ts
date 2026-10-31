@@ -1,4 +1,5 @@
-import {expect,it} from 'vitest';
+import {describe,expect,it} from 'vitest';
+import {blankDocument,parseDocument} from '../src/model';
 import {parseEditableSvg} from '../src/svg-import';
 import {parseSvgStylesheet,svgDeclarations,SVG_CSS_LIMITS} from '../src/svg-css';
 import {createElement} from 'react';
@@ -12,7 +13,7 @@ it('applies class, id, type, descendant and child selectors in cascade order',()
  expect(named(r,'p').paints![0].color).toBe('#ff0000');expect(named(r,'q').paints![0].color).toBe('#008000');expect(named(r,'b').paints![0].color).toBe('#0000ff');expect(named(r,'c1').strokes![0]).toMatchObject({width:3});expect(named(r,'d1').opacity).toBe(.5);expect(named(r,'i').paints![0].color).toBe('#ffa500');expect(named(r,'s').paints![0].color).toBe('#000000');expect(r.issues).toEqual([]);
 });
 it('never applies, fetches or chokes on at-rules, pseudo selectors, comments or unsupported properties',()=>{
- const r=parse('<style>/* note */@import url("https://example.invalid/x.css");@media print{rect{fill:red}}rect:hover{fill:red}rect{fill:blue;cursor:pointer}</style><rect width="1" height="1"/>');expect(r.nodes.find(n=>n.type==='rectangle')!.paints![0].color).toBe('#0000ff');expect(r.issues.map(i=>i.code)).toEqual(expect.arrayContaining(['external-reference','css-unsupported','css-selector-unsupported','css-property-unsupported']));
+ const r=parse('<style>/* note */@import url("https://example.invalid/x.css");@media print{rect{fill:red}}rect:hover{fill:red}rect::after{fill:red}rect{fill:blue;cursor:pointer}</style><rect width="1" height="1"/>');expect(r.nodes.find(n=>n.type==='rectangle')!.paints![0].color).toBe('#0000ff');expect(r.issues.map(i=>i.code)).toEqual(expect.arrayContaining(['external-reference','css-unsupported','css-selector-unsupported','css-property-unsupported']));
  const issues:string[]=[];expect(parseSvgStylesheet('a{'.repeat(1000),c=>issues.push(c)).rules).toEqual([]);expect(parseSvgStylesheet('x'.repeat(2_000_001),c=>issues.push(c)).rules).toEqual([]);expect(issues).toContain('css-unsupported');
 });
 it('knows the full CSS color names',()=>{expect(parse('<rect width="1" height="1" fill="rebeccapurple"/><rect width="1" height="1" fill="tomato"/>').nodes.filter(n=>n.type==='rectangle').map(n=>n.paints![0].color)).toEqual(['#663399','#ff6347']);});
@@ -43,3 +44,22 @@ it('imports per-character positions, curved text and falls back to plain text on
 });
 it('carries mix-blend-mode onto layers',()=>{const r=parse('<rect id="a" width="1" height="1" style="mix-blend-mode:multiply"/><rect id="b" width="1" height="1" style="mix-blend-mode:plus-darker"/>');expect(named(r,'a').blendMode).toBe('multiply');expect(named(r,'b').blendMode).toBeUndefined();expect(r.issues.some(i=>i.code==='presentation-unsupported')).toBe(true);});
 it('stays fast on hostile stylesheet text and stops matching at its work budget',()=>{const started=performance.now(),issues:string[]=[];parseSvgStylesheet('/*'.repeat(500000),c=>issues.push(c));parseSvgStylesheet(' '.repeat(1500000)+'>a{fill:red}',c=>issues.push(c));parseSvgStylesheet('a{fill:'+' '.repeat(1500000)+'x}',c=>issues.push(c));parseSvgStylesheet('@media{'.repeat(200000),c=>issues.push(c));expect(performance.now()-started).toBeLessThan(2000);const sheet=parseSvgStylesheet('rect{fill:red}',()=>{});sheet.work=SVG_CSS_LIMITS.work;const reported:string[]=[];expect(svgDeclarations(sheet,{} as never,c=>reported.push(c)).normal).toEqual({});expect(reported).toEqual(['css-unsupported']);});
+describe('selectors, markers and focal gradients',()=>{
+ const fills=(r:ReturnType<typeof parse>)=>r.nodes.filter(n=>n.type==='rectangle').map(n=>n.paints?.[0]?.color??n.fill);
+ it('applies structural pseudo classes, :not and sibling combinators, and ignores state a drawing never has',()=>{
+  const r=parse('<style>rect{fill:#000000}rect:first-child{fill:#ff0000}rect:nth-child(3n){fill:#00ff00}rect:last-of-type{fill:#0000ff}g rect:not(.x):nth-child(even){fill:#111111}.a + rect{fill:#222222}.b ~ .c{fill:#333333}rect:hover{fill:#ffffff}</style><g><rect/><rect width="9" height="9" x="1" class="x"/><rect width="9" height="9" x="2"/><rect width="9" height="9" x="3"/></g><g><rect class="a" width="9" height="9"/><rect width="9" height="9"/><rect class="b" width="9" height="9"/><rect width="9" height="9" class="x"/><rect class="c" width="9" height="9"/></g>');
+  expect(fills(r)).toEqual(['#000000','#00ff00','#111111','#ff0000','#111111','#00ff00','#000000','#333333']);expect(r.issues.filter(i=>i.code.startsWith('css'))).toEqual([]);
+ });
+ it('keeps odd, even and negative nth formulas, and reports what it cannot read',()=>{
+  const r=parse('<style>rect:nth-child(odd){fill:#ff0000}rect:nth-child(even){fill:#00ff00}rect:nth-last-child(-n+1){fill:#0000ff}rect::before{fill:#ffffff}</style><g><rect width="9" height="9"/><rect width="9" height="9"/><rect width="9" height="9"/></g>');expect(fills(r)).toEqual(['#ff0000','#00ff00','#0000ff']);expect(r.issues.some(i=>i.code==='css-selector-unsupported')).toBe(true);
+ });
+ it('places marker artwork as editable layers at each vertex, turned to the path, scaled by stroke width',()=>{
+  const r=parse('<defs><marker id="m" markerWidth="4" markerHeight="4" refX="1" refY="1" orient="auto" viewBox="0 0 2 2"><rect width="2" height="2" fill="#ff0000"/></marker></defs><polyline fill="none" stroke="#000000" stroke-width="2" points="10,10 50,10 50,50" marker-start="url(#m)" marker-mid="url(#m)" marker-end="url(#m)"/>'),marks=r.nodes.filter(n=>n.type==='rectangle'||n.paints?.[0]?.color==='#ff0000');expect(marks).toHaveLength(3);expect(r.issues).toEqual([]);const groups=r.nodes.filter(n=>n.name==='m'||n.name==='Marker');expect(groups).toHaveLength(3);
+ });
+ it('refuses a cyclic marker and omits a missing one with a report',()=>{
+  expect(()=>parse('<defs><marker id="a"><path d="M0 0L9 9" marker-end="url(#a)"/></marker></defs><path d="M0 0L9 9" marker-end="url(#a)"/>')).toThrow(/Cyclic/);const r=parse('<path d="M0 0L9 9" stroke="#000000" marker-end="url(#gone)"/>');expect(r.issues.some(i=>i.code==='marker-unsupported')).toBe(true);
+ });
+ it('validates a focal point and keeps it through a saved document',()=>{
+  const r=parse('<defs><radialGradient id="f" fx="30%" fy="30%"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/></radialGradient></defs><rect width="100" height="100" fill="url(#f)"/>'),n=r.nodes.find(n=>n.type==='rectangle')!;const doc=blankDocument();n.parentId=null;doc.pages[0].nodes=[n];expect(parseDocument(JSON.stringify(doc)).pages[0].nodes[0].paints![0].focalX).toBeCloseTo(-.4,6);expect(()=>{const bad=structuredClone(doc);bad.pages[0].nodes[0].paints![0].focalX=2;parseDocument(JSON.stringify(bad));}).toThrow(/focal/);
+ });
+});

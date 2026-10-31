@@ -22,3 +22,20 @@ test('stylesheet, arbitrary clip, luminance mask and user-space gradient render 
  const points:[number,number][]=[[100,60],[60,60],[58,20],[150,20],[20,20],[10,160],[60,160],[150,160],[190,190],[100,115]],source=await raster(page,sample,points),imported=await raster(page,exported.svg,points);
  for(let i=0;i<points.length;i++)expect(near(source[i],imported[i]),`point ${points[i]}: ${source[i]} vs ${imported[i]}`).toBe(true);
 });
+const markerSample=`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+<style>#list rect:nth-child(2){fill:#ff0000}#list rect:first-child{fill:#00aa00}#list rect:not(:first-child):not(:nth-child(2)){fill:#0000ff}</style>
+<defs>
+<marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto" markerUnits="strokeWidth" viewBox="0 0 6 6"><path d="M0 0L6 3L0 6Z" fill="#ff00ff"/></marker>
+<radialGradient id="focus" cx="50%" cy="50%" r="50%" fx="25%" fy="50%"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/></radialGradient>
+</defs>
+<rect width="200" height="200" fill="#ffffff"/>
+<g id="list"><rect x="10" y="10" width="20" height="20"/><rect x="40" y="10" width="20" height="20"/><rect x="70" y="10" width="20" height="20"/></g>
+<polyline points="20,60 100,60 100,120" fill="none" stroke="#000000" stroke-width="4" marker-end="url(#arrow)" marker-mid="url(#arrow)"/>
+<rect x="120" y="120" width="80" height="80" fill="url(#focus)"/>
+</svg>`;
+test('markers, structural selectors and a focal radial render like the source',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'New design file',exact:true}).click();await expect(page.locator('svg.canvas')).toBeVisible();
+ const exported=await page.evaluate(async sample=>{const importer='/src/svg-import.ts',files='/src/files.tsx',store='/src/store.ts',{parseEditableSvg}=await import(importer),{exportSvg}=await import(files),{useEditor}=await import(store),out=parseEditableSvg(sample,'Depth',{x:0,y:0});useEditor.getState().edit((d:any)=>{const p=d.pages.find((p:any)=>p.id===useEditor.getState().pageId);p.nodes=out.nodes;});const nodes=useEditor.getState().doc.pages[0].nodes;return {svg:exportSvg(nodes,{x:0,y:0,width:200,height:200}),issues:out.issues};},markerSample);
+ expect(exported.issues).toEqual([]);const points:[number,number][]=[[20,20],[50,20],[80,20],[100,60],[100,120],[101,126],[130,160],[140,160],[160,160],[190,160],[160,125]],source=await raster(page,markerSample,points),imported=await raster(page,exported.svg,points);
+ for(let i=0;i<points.length;i++)expect(near(source[i],imported[i]),`point ${points[i]}: ${source[i]} vs ${imported[i]}`).toBe(true);
+});

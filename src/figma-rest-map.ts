@@ -29,3 +29,11 @@ export function figRestReactions(raw:Raw,ctx:FigRestContext):PrototypeReaction[]
  if(!interactions.length&&typeof raw.transitionNodeID==='string'){const target=ctx.target(raw.transitionNodeID);if(target){const t=defaultTransition();t.duration=Math.max(0,Math.min(10000,finite(raw.transitionDuration,300)));out.push(reaction('click',[{id:crypto.randomUUID(),type:'navigate',targetId:target.id,transition:t}]));}else ctx.issue('prototype','A prototype action points at a layer on another page or outside this file.');}
  return out;
 }
+/** Component properties in the shape the shared linker reads. A definition key is opaque text, so each gets one small numeric identity. */
+const propertyIdentity=(key:string,ids:Map<string,Raw>)=>{let id=ids.get(key);if(!id){id={sessionID:1,localID:ids.size+1};ids.set(key,id);}return id;};
+const propertyData=(type:unknown,value:unknown):Raw|undefined=>type==='TEXT'&&typeof value==='string'?{textValue:{characters:value}}:type==='BOOLEAN'&&typeof value==='boolean'?{boolValue:value}:type==='INSTANCE_SWAP'&&typeof value==='string'?{guidValue:value}:undefined;
+const identityText=(id:Raw)=>id.sessionID+':'+id.localID;
+export function restPropertyDefinitions(raw:Raw,ids:Map<string,Raw>):Raw[]{return Object.entries(record(raw.componentPropertyDefinitions)).slice(0,1000).flatMap(([key,definition])=>{const d=record(definition),value=propertyData(d.type,d.defaultValue);return value?[{id:propertyIdentity(key,ids),name:key.replace(/#[^#]*$/,''),initialValue:value}]:[];});}
+const consumedFields:Record<string,string>={characters:'TEXT_DATA',visible:'VISIBLE',mainComponent:'OVERRIDDEN_SYMBOL_ID'};
+export function restPropertyUses(raw:Raw,ids:Map<string,Raw>){return Object.entries(record(raw.componentPropertyReferences)).flatMap(([field,key])=>consumedFields[field]&&typeof key==='string'?[{definition:identityText(propertyIdentity(key,ids)),field:consumedFields[field]}]:[]);}
+export function restPropertyValues(raw:Raw,ids:Map<string,Raw>){const out=new Map<string,Raw>();for(const [key,assigned] of Object.entries(record(raw.componentProperties)).slice(0,1000)){const a=record(assigned),value=propertyData(a.type,a.value);if(value)out.set(identityText(propertyIdentity(key,ids)),{value});}return out;}

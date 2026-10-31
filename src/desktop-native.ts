@@ -54,7 +54,7 @@ export async function desktopDelivery(kind:'print'|'share'){
  const s=useEditor.getState();if(s.home)throw Error('Open a project first.');
  if(s.doc.workspace==='slides'){const {exportSlidePdf}=await import('./slides-export');return {name:safeName(s.doc.name,'pdf'),mime:'application/pdf',data:bytesToBase64(await exportSlidePdf(s.doc as SlideDocument))};}
  if(kind==='share'&&s.selection.length){const nodes=exportNodes(),bounds=visualBounds(nodes),{pngClipboardDimensions}=await import('./png-clipboard'),data=await renderClipboardPng(exportSvg(nodes),pngClipboardDimensions(bounds.width,bounds.height));return {name:safeName(s.doc.name,'png'),mime:'image/png',data:data.slice('data:image/png;base64,'.length)};}
- const {prepareDesignPdf,renderDesignPdf}=await import('./design-pdf'),base={scale:2,includeHidden:false,includeGuides:false,includeOverlaps:false};let source;
+ const {prepareDesignPdf,renderDesignPdf}=await import('./design-pdf'),base={scale:2,includeHidden:false,includeGuides:false,includeOverlaps:false,vector:true,embedAssets:true};let source;
  if(s.selection.length)source=prepareDesignPdf({...base,mode:'artwork'});else try{source=prepareDesignPdf({...base,mode:'page-frames'});}catch{source=prepareDesignPdf({...base,mode:'artwork'});}
  return {name:safeName(s.doc.name,'pdf'),mime:'application/pdf',data:bytesToBase64(await renderDesignPdf(source))};
 }

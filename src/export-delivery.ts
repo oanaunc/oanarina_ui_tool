@@ -67,9 +67,18 @@ export async function renderExportJob(job:ExportJob,signal?:AbortSignal):Promise
 }
 export async function exportLayerArtwork(id:string,setting:FrameExportSetting,signal?:AbortSignal){return exportPreparedJob(layerExportJob(id,structuredClone(setting)),signal);}
 export async function exportChecksum(bytes:Uint8Array){if(!globalThis.crypto?.subtle)throw Error('SHA-256 checksums are unavailable in this environment.');const digest=await crypto.subtle.digest('SHA-256',new Uint8Array(bytes).buffer);return [...new Uint8Array(digest)].map(v=>v.toString(16).padStart(2,'0')).join('');}
-export async function renderExportBatch(batch:ExportBatch,onProgress?:(done:number,total:number)=>void,signal?:AbortSignal){
+export async function renderExportBatch(batch:ExportBatch,onProgress?:(done:number,total:number)=>void,signal?:AbortSignal){const zip=zipSync(await renderExportFiles(batch,onProgress,signal),{level:0});if(zip.byteLength>EXPORT_BYTE_LIMIT)throw Error('The assets archive exceeds 100 MB. Export fewer assets.');check(signal);return zip;}
+/** The same files either way: assets/ and a checksum manifest, whether they end up in a ZIP or a folder. */
+export async function renderExportFiles(batch:ExportBatch,onProgress?:(done:number,total:number)=>void,signal?:AbortSignal){
  if(!batch.jobs.length||batch.jobs.length>EXPORT_ASSET_LIMIT)throw Error('Choose between 1 and 200 export assets.');batch={...batch,jobs:batch.jobs.map(job=>({...job,images:job.images?[...job.images]:undefined}))};const files:Record<string,Uint8Array>={},assets=[];let total=0;
  for(const [i,job] of batch.jobs.entries()){check(signal);const bytes=await renderExportJob(job,signal);total+=bytes.byteLength;if(total>EXPORT_BYTE_LIMIT)throw Error('The assets exceed 100 MB. Export fewer assets.');const file='assets/'+job.name;if(file in files)throw Error('Export asset names must be unique.');files[file]=bytes;assets.push({file,format:job.format,width:job.width,height:job.height,scale:job.scale,pngColorProfile:job.format==='png'?job.pngColorProfile:undefined,bytes:bytes.byteLength,sha256:await exportChecksum(bytes)});check(signal);onProgress?.(i+1,batch.jobs.length);}
- files['manifest.json']=new TextEncoder().encode(JSON.stringify({format:'forma-export-manifest',version:1,documentName:batch.documentName,pageName:batch.pageName,assets},null,2));check(signal);const zip=zipSync(files,{level:0});if(zip.byteLength>EXPORT_BYTE_LIMIT)throw Error('The assets archive exceeds 100 MB. Export fewer assets.');check(signal);return zip;
+ files['manifest.json']=new TextEncoder().encode(JSON.stringify({format:'forma-export-manifest',version:1,documentName:batch.documentName,pageName:batch.pageName,assets},null,2));check(signal);return files;
+}
+/** Mac only: the shell asks where, in its own panel, and answers whether it finished. No path reaches the renderer. */
+export const assetFolderAvailable=()=>typeof window!=='undefined'&&typeof window.desktop?.saveFolder==='function';
+const fileBase64=(bytes:Uint8Array)=>{let text='';for(let i=0;i<bytes.length;i+=32_768)text+=String.fromCharCode(...bytes.subarray(i,i+32_768));return btoa(text);};
+export async function exportAssetFolder(batch:ExportBatch,onProgress?:(done:number,total:number)=>void,signal?:AbortSignal){
+ if(!assetFolderAvailable())throw Error('Folder export is available in the Mac app. Use the assets ZIP here.');
+ const files=await renderExportFiles(batch,onProgress,signal);check(signal);return window.desktop!.saveFolder!(exportFilename(batch.name.replace(/\.zip$/i,''),'','zip').replace(/\.zip$/i,''),Object.entries(files).map(([path,bytes])=>({path,data:fileBase64(bytes)})));
 }
 export async function exportAssetBatch(batch:ExportBatch,onProgress?:(done:number,total:number)=>void,signal?:AbortSignal){const name=exportFilename(batch.name.replace(/\.zip$/i,''),'','zip');const bytes=await renderExportBatch(batch,onProgress,signal);check(signal);return deliverExport(name,new Blob([bytes],{type:'application/zip'}));}

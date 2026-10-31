@@ -13,7 +13,7 @@
 - Vector networks rebuild editable anchors. The reader accepts a blob only when every count and byte is accounted for, and the rebuilt outline must match the baked `fillGeometry` in bounds and area. Otherwise the baked outline stays and is reported. Junctions become separate contours sharing a point, with a notice. Rounded vertices keep the baked outline.
 - Booleans keep live operands when they are upright, built only from shapes and recompute to the stored result. Otherwise the baked path stays.
 - `fig-settle.ts` runs the edit pipeline on a clone before the document is returned. An instance that moves or changes is detached; an auto layout frame that moves children becomes positioned; a Boolean that recomputes differently keeps its outline; a style or variable link that changes the layer is dropped. Six rounds at most, then every remaining link is dropped together.
-- Native rich-document annotation blocks use their own embedded raster preview. They are editable image layers, not editable native rich-document text. The whole-file thumbnail is never used as the document or as a replacement for missing art.
+- Spec blocks become frames of editable text where any readable text exists, and keep their embedded raster preview as an image layer only where none does. See the spec block section of [FIG-IMPORT.md](FIG-IMPORT.md). The whole-file thumbnail is never used as the document or as a replacement for missing art.
 
 ## Editable text with original glyph appearance
 
