@@ -1,0 +1,2 @@
+.toolbar .tool-arrow.draw-menu-button{display:inline-flex;align-items:center;gap:1px;width:auto;min-width:32px;padding:0 4px}
+.toolbar .tool-group .tool-menu [role=menuitemradio][aria-checked=true]{font-weight:600}

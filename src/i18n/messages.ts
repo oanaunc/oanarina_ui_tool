@@ -139,5 +139,7 @@ export const messages=[
  'Whole file','Selected layer trees when search opened','Match case','Whole words','Include hidden layers','Searches literal base text. Locked results are read-only. Main-component edits can update linked instances. Page and selection scopes use the context where this search opened.',
  'Previous match','Next match','Reveal selected layer','Selected text match','Text matches','Previous results',
  'Next results','Close the motion timeline to replace base text.','Replace match','Replace all editable matches','Close search',
+
+ 'Brush presets','Brush preset choices','Illustration tools','Illustration tool choices','Edit points','Bend segments','Cut path','Erase path','Lasso points','Shape builder','Stretch',
 ] as const;
 export type Message=typeof messages[number];
