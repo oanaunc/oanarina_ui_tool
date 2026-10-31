@@ -30,6 +30,7 @@ export function watchRecoverySession(){
   conflict:reportWindowConflict,quota:reportStorageFull,
  });
  const initial=useEditor.getState().doc;observeDocumentRevision(initial.id,initial.updatedAt);
- const off=useEditor.subscribe((state,previous)=>{if(state.doc===previous.doc)return;const switched=state.doc.id!==previous.doc.id;if(switched)observeDocumentRevision(state.doc.id,state.doc.updatedAt);if(switched||!state.past.length&&!state.future.length&&(previous.past.length||previous.future.length)){clearTimer();void afterLoad(state.doc);return;}if(timer===undefined)timer=setTimeout(flushJournal,journalDelay);});
- return()=>{off();clearTimer();setRecoveryHooks({});};
+ const off=useEditor.subscribe((state,previous)=>{if(state.doc===previous.doc)return;const switched=state.doc.id!==previous.doc.id;if(switched)observeDocumentRevision(state.doc.id,state.doc.updatedAt);if(switched||!state.past.length&&!state.future.length&&(previous.past.length||previous.future.length)){clearTimer();void afterLoad(state.doc);return;}if(state.doc===persisted){clearTimer();flushJournal();return;}if(timer===undefined)timer=setTimeout(flushJournal,journalDelay);});
+ const leaving=()=>{if(timer!==undefined){clearTimer();flushJournal();}};globalThis.addEventListener?.('pagehide',leaving);
+ return()=>{off();clearTimer();globalThis.removeEventListener?.('pagehide',leaving);setRecoveryHooks({});};
 }
