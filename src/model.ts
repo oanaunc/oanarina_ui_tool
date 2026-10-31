@@ -1,3 +1,4 @@
+import {validateDocumentationLink} from './documentation-link';
 import type {LayerAnnotationSet} from './layer-annotations';
 import type {DevelopmentStatus} from './development-status';
 import {validateLayerParentPaths} from './layer-parent-validation';
@@ -68,7 +69,7 @@ export interface DesignNode {autoFit?:{padding:number};liveRepeat?:import('./liv
   clip:boolean; componentId:string|null; targetId:string|null; gradient:boolean;
 }
 export interface Comment {surface?:'prototype';reactions?:import('./comment-reactions').CommentReaction[];id:string; x:number;y:number; text:string; resolved:boolean;author?:string;createdAt?:string;editedAt?:string;replies?:import('./comment-threads').CommentReply[];anchor?:import('./comment-threads').CommentAnchor;}
-export interface Page {developmentStatus?:DevelopmentStatus;background?:{color:string;opacity:number;visible:boolean};id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;flows?:PrototypeFlow[];prototypeSettings?:PrototypeSettings;guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
+export interface Page {documentation?:import('./component-documentation').DocumentationLink;developmentStatus?:DevelopmentStatus;background?:{color:string;opacity:number;visible:boolean};id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;flows?:PrototypeFlow[];prototypeSettings?:PrototypeSettings;guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
 export interface DesignDocument {codeConnect?:import('./code-connect').CodeConnectMapping[];colorProfile?:import('./color-profile').DocumentColorProfile;shaders?:import('./shaders').ShaderDefinition[];fileCover?:DocumentCover;libraryPublication?:LibraryPublication;componentLibraries?:ComponentLibrary[];format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides'|'site';whiteboard?:WhiteboardData;slides?:SlideDeck;brand?:import('./brand-assets').BrandWorkspace;site?:SiteData;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
@@ -103,7 +104,7 @@ export function parseDocument(raw:string):DesignDocument {
   validateDocumentSurfaces(d);
   if(d.pages.length>1000)throw Error('Too many pages.');
   const ids=new Set<string>();
-  for(const p of d.pages){if(typeof p.id!=='string'||ids.has(p.id)||typeof p.name!=='string'||!Array.isArray(p.nodes)||!Array.isArray(p.comments)||p.nodes.length>20000)throw Error('Invalid page.');ids.add(p.id);
+  for(const p of d.pages){if(typeof p.id!=='string'||ids.has(p.id)||typeof p.name!=='string'||!Array.isArray(p.nodes)||!Array.isArray(p.comments)||p.nodes.length>20000)throw Error('Invalid page.');ids.add(p.id);validateDocumentationLink(p.documentation);
     if(p.background!==undefined&&(!p.background||typeof p.background!=='object'||!/^#[0-9a-f]{6}$/i.test(p.background.color)||!Number.isFinite(p.background.opacity)||p.background.opacity<0||p.background.opacity>1||typeof p.background.visible!=='boolean'))throw Error('Invalid canvas background.');
     const nodeIds=new Set<string>();for(const n of p.nodes){if(typeof n.id!=='string'||nodeIds.has(n.id)||!['frame','section','slice','rectangle','ellipse','line','arrow','polygon','star','text','path','image','group','component','instance','code'].includes(n.type))throw Error('Invalid or duplicate layer.');nodeIds.add(n.id);
       for(const k of ['x','y','width','height','rotation','opacity','fontSize','strokeWidth','radius','gap','padding','columns','lineHeight','letterSpacing','blur'])if(!Number.isFinite(n[k]))throw Error(`Invalid layer property: ${k}`);
