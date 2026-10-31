@@ -98,3 +98,15 @@ The ICC profile comes from `src/display-p3-icc.ts`, a small ICC v4.3 matrix/shap
 ## Figma Bridge
 
 The bridge refuses shader paints, in the same way it refuses editable surfaces. Use SVG or PNG to carry their appearance. This is an original local implementation; shader parity with Figma has not been verified.
+
+## Sampling layer pixels
+
+**Sample layer** is a third shader effect mode. The layer and its contents are drawn once, without the layer's own effects and in its unrotated axes, at up to 1024 px, then bound as a texture that source reads through `f_source(uv)`. Direct `sampler` and `texture` use stays refused. Pixelate and Channel Split are bundled examples. The output replaces the layer at that point in the stack, so effects below it in the stack are not seen by the shader.
+
+The pixels arrive a moment after the layer changes, and the layer shows unfiltered until they do. Canvas sampling repeats while the layer animates. Animation export draws each frame's sample before writing it. A static SVG, PNG or PDF export uses the sample the canvas already made, and says so if one was not ready. The self-contained prototype player has no SVG writer, so sampled effects pass through there, and the inspector preview shows them with an empty texture.
+
+Files using this mode store `shaderMode: "sample"`, which older Forma builds refuse. Nothing changes for files that do not use it.
+
+## Timeline and presentation
+
+The timeline's property picker lists shader parameters for the selected layers, alongside the Motion inspector buttons. A frame whose only animation is a shader on time opens Preview animated frame. Interactive shaders follow the pointer in frame preview and in prototypes, as they do on the Motion canvas with the toggle on. The pointer is never saved or exported.

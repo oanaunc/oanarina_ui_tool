@@ -60,6 +60,14 @@ export const SHADER_CATALOG:ShaderDefinition[]=[
  float y=uv.y*u_resolution.y/u_spacing+u_time*u_speed;
  return vec4(u_tint,step(.5,fract(y))*u_amount);
 }`}]},
+ {id:'forma.pixelate',name:'Pixelate',description:'Reads the layer and rebuilds it from square cells. Use Sample layer mode.',kinds:['effect'],tags:['distortion','pixels'],fallback:['#808080','#808080'],params:[n('cells','Cells',24,2,256,1)],versions:[{version:1,glsl:`vec4 shade(vec2 uv){
+ vec2 cell=vec2(u_cells,u_cells*u_resolution.y/max(1.,u_resolution.x));
+ return f_source((floor(uv*cell)+.5)/cell);
+}`}]},
+ {id:'forma.channels',name:'Channel Split',description:'Reads the layer and offsets red and blue in opposite directions. Use Sample layer mode.',kinds:['effect'],tags:['distortion','pixels'],fallback:['#808080','#808080'],params:[n('amount','Amount',.02,0,.2,.001)],versions:[{version:1,glsl:`vec4 shade(vec2 uv){
+ vec4 r=f_source(uv+vec2(u_amount,0.)),g=f_source(uv),b=f_source(uv-vec2(u_amount,0.));
+ return vec4(r.r,g.g,b.b,max(max(r.a,g.a),b.a));
+}`}]},
  {id:'forma.ripple',name:'Ripple Field',description:'Concentric rings. Use Displace mode to bend the layer around the pointer.',kinds:['effect'],tags:['distortion','interactive'],interactive:true,animated:true,fallback:['#808080','#808080'],params:[n('rings','Rings',18,2,60,1),n('speed','Speed',2,0,10,.1),n('falloff','Falloff',2.5,.2,10,.1)],versions:[{version:1,glsl:`vec4 shade(vec2 uv){
  vec2 d=uv-u_pointer;
  float r=length(d);
