@@ -2,9 +2,9 @@
 .canvas-scrollbar{position:absolute;z-index:15;background:var(--panel);border:1px solid var(--line);border-radius:8px;touch-action:none;cursor:default}
 .canvas-scrollbar.horizontal{left:10px;right:26px;bottom:3px;height:12px}
 .canvas-scrollbar.vertical{top:16px;bottom:68px;right:3px;width:12px}
-.canvas-scrollbar-thumb{position:absolute;min-width:1px;min-height:1px;background:#b79bd17a;border:1px solid #b79bd18a;border-radius:6px;pointer-events:none}
+.canvas-scrollbar-thumb{position:absolute;min-width:1px;min-height:1px;background:var(--selection-soft);border:1px solid var(--selection-soft);border-radius:6px;pointer-events:none}
 .horizontal .canvas-scrollbar-thumb{top:1px;bottom:1px}.vertical .canvas-scrollbar-thumb{left:1px;right:1px}
-.canvas-scrollbar:focus-visible,.canvas-overview-map:focus-visible{outline:2px solid #d8b5fa;outline-offset:2px}
+.canvas-scrollbar:focus-visible,.canvas-overview-map:focus-visible{outline:2px solid var(--selection);outline-offset:2px}
 .canvas-scrollbar:hover .canvas-scrollbar-thumb{background:var(--selection)}
 .canvas-overview{position:absolute;z-index:15;right:14px;bottom:86px;width:202px;max-width:calc(100% - 28px);background:var(--panel);border:1px solid var(--line);border-radius:7px;box-shadow:0 4px 20px #0003;overflow:hidden}
 .canvas-overview.with-scrollbars{right:22px}

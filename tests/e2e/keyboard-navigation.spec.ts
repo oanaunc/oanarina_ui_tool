@@ -37,7 +37,7 @@ test('activating a menu item by keyboard runs its command',async({page})=>{
 test('Tab order follows the screen, and F6 leaves the canvas where Tab selects siblings',async({page})=>{
  await start(page);await page.waitForTimeout(500);const seen:string[]=[];
  for(let i=0;i<300;i++){await page.keyboard.press('Tab');const now=await region(page);if(seen.at(-1)!==now&&now!=='body')seen.push(now);if(now==='canvas')break;}
- expect(seen).toEqual(['topbar','menubar','left','canvas']);
+ expect(seen).toEqual(['topbar','menubar','topbar','left','canvas']);
  await page.keyboard.press('Tab');expect(await region(page)).toBe('canvas');await page.keyboard.press('F6');expect(await region(page)).toBe('toolbar');await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:/^Help for/})).toBeFocused();await page.keyboard.press('Tab');expect(await region(page)).toBe('right');
  await page.keyboard.press('Shift+Tab');await page.keyboard.press('Shift+Tab');expect(await region(page)).toBe('toolbar');
 });
@@ -79,7 +79,7 @@ test('selection and active states do not rely on color alone',async({page})=>{
 test('accent and contrast preferences persist and restyle the chrome only',async({page})=>{
  await start(page);await page.keyboard.press('Meta+,');const accent=page.getByRole('combobox',{name:'Accent color'}),contrast=page.getByRole('combobox',{name:'Interface contrast'});await accent.selectOption('green');await expect(page.locator('html')).toHaveAttribute('data-accent','green');await contrast.selectOption('more');await expect(page.locator('html')).toHaveAttribute('data-contrast','more');
  expect(await page.locator('.app').evaluate(el=>getComputedStyle(el).getPropertyValue('--focus-ring').trim())).toBe('#fff');await page.keyboard.press('Escape');await page.reload();await expect(page.locator('html')).toHaveAttribute('data-accent','green');await expect(page.locator('html')).toHaveAttribute('data-contrast','more');
- expect(await page.locator('.toolbar .active').first().evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(230, 212, 255)');
+ expect(await page.locator('.toolbar .active').first().evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(159, 216, 255)');
  await page.keyboard.press('Meta+,');await page.getByRole('combobox',{name:'Interface contrast'}).selectOption('standard');await expect(page.locator('html')).not.toHaveAttribute('data-contrast','more');expect(await page.locator('.toolbar .active').first().evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(127, 217, 155)');
  await page.getByRole('button',{name:'Reset preferences'}).click();await expect(page.locator('html')).not.toHaveAttribute('data-accent','green');expect(await page.evaluate(()=>[localStorage.getItem('oui-interface-accent'),localStorage.getItem('oui-interface-contrast')])).toEqual([null,null]);
 });

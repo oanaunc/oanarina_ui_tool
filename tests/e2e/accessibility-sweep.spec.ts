@@ -34,7 +34,7 @@ test('Slides and whiteboard workspaces expose a computed name for every control'
 });
 test('every focused control in the editor chrome shows a 2px focus ring in the theme color',async({page})=>{
  await page.addInitScript(()=>localStorage.setItem('oui-theme','light'));await openEditor(page);
- for(let i=0;i<40;i++){await page.keyboard.press('Tab');const state=await page.evaluate(()=>{const el=document.activeElement!,style=getComputedStyle(el);return {name:el.tagName+'.'+String(el.className),width:style.outlineStyle==='none'?0:parseFloat(style.outlineWidth),color:style.outlineColor,parent:getComputedStyle(el.parentElement!).borderColor};});if(!state.name.includes('INPUT')||state.width){expect(state.width,state.name).toBeGreaterThanOrEqual(2);expect(state.color,state.name).toBe('rgb(109, 74, 150)');}}
+ for(let i=0;i<40;i++){await page.keyboard.press('Tab');const state=await page.evaluate(()=>{const el=document.activeElement!,style=getComputedStyle(el);return {name:el.tagName+'.'+String(el.className),width:style.outlineStyle==='none'?0:parseFloat(style.outlineWidth),color:style.outlineColor,parent:getComputedStyle(el.parentElement!).borderColor};});if(!state.name.includes('INPUT')||state.width){expect(state.width,state.name).toBeGreaterThanOrEqual(2);expect(state.color,state.name).toBe('rgb(10, 120, 207)');}}
 });
 test('home exposes a computed name for every control',async({page})=>{
  await openEditor(page);await page.getByRole('button',{name:'Back to files'}).click();

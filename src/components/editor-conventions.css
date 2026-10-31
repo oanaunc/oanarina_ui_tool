@@ -22,14 +22,17 @@
 .app .zoom-control:hover{background:var(--hover)}
 .app .zoom-control select{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:inherit;padding:5px 12px 5px 2px;margin-right:-12px;width:auto;min-width:42px;font-size:11px;font-variant-numeric:tabular-nums;text-align:right;cursor:pointer}
 .app .zoom-control svg{pointer-events:none;color:var(--muted)}
-@media(max-width:1000px){.app .topbar{flex-wrap:wrap;height:auto;min-height:49px;padding-block:6px}.app .topbar .menubar{order:5;width:100%}.app .document-tab{justify-content:flex-start}}
+@media(max-width:700px){.app .top-actions{flex:1;min-width:0;justify-content:flex-end;flex-wrap:wrap}.app .topbar .menubar .menu-container>button{font-size:9px;padding:4px 3px}}
+@media(max-width:1000px){.app .topbar{flex-wrap:wrap;height:auto;min-height:49px;padding-block:6px 0;border-bottom:0}.app .topbar .menubar{order:5;width:calc(100% + 22px);margin-inline:-12px -10px;padding:2px 8px;border-bottom:1px solid var(--line)}.app .document-tab{justify-content:flex-start}}
 
 /* Sidebars: collapse and reset stay available without their own header row. */
 .sidebar-layout .sidebar-slot{position:relative}
-.sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls{position:absolute;top:6px;right:4px;z-index:3;min-height:0;padding:0;border:0;background:transparent;gap:0}
+.sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls{position:absolute;top:6px;right:4px;z-index:9;min-height:0;padding:0;border:0;background:transparent;gap:0}
 .sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls button{min-height:20px;padding:3px;color:var(--muted);opacity:0}
 .sidebar-layout .sidebar-slot:not(.sidebar-collapsed)>.sidebar-layout-controls span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .sidebar-layout .sidebar-slot:hover>.sidebar-layout-controls button,.sidebar-layout .sidebar-slot>.sidebar-layout-controls button:focus-visible{opacity:1}
+
+.app .sidebar-compact .sidebar-overlay{position:absolute;top:0;bottom:0;right:0}
 
 /* File panel. */
 .app .left-panel .file-heading{padding:12px 12px 8px;gap:2px 8px}
@@ -54,7 +57,8 @@
 .app .layer-row{position:relative;font-size:11px;gap:6px;color:var(--text)}
 .app .layer-row:before{content:'';position:absolute;inset-block:0;inset-inline-start:17px;width:calc(var(--layer-depth,0) * 14px);pointer-events:none;background:repeating-linear-gradient(to right,var(--line) 0 1px,transparent 1px 14px)}
 .app .layer-row>svg{color:var(--muted)}
-.app .layer-row>.purple,.app .layer-row.component-layer .layer-name{color:var(--component)}
+.app .layer-row>.purple{color:var(--component)}
+.app .layer-row.component-layer .layer-name{color:var(--component-text)}
 .app .layer-row.selected{background:var(--selection-soft);box-shadow:inset 2px 0 var(--selection)}
 .app .layer-row.selected.component-layer{background:var(--component-soft);box-shadow:inset 2px 0 var(--component)}
 .app .layer-row.inside-selected{background:color-mix(in srgb,var(--selection) 8%,transparent)}

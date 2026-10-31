@@ -47,8 +47,8 @@
 :root[data-accent] :is(input,textarea,select):focus{border-color:var(--focus-ring)}
 
 /* Increased contrast: strong text, visible control boundaries (3:1) and heavier focus. */
-:root[data-contrast=more] .app{--panel:#181818;--field:#262626;--canvas:#101010;--text:#fff;--muted:#dcdcdc;--line:#ffffff80;--hover:#ffffff24;--focus-ring:#fff;--accent:#9fd8ff;--accent-fill:#9fd8ff;--on-accent:#04223a;--selection:#9fd8ff;--on-selection:#04223a;--component:#d4b5ff;--measure:#ff8fa3;--on-measure:#3a0410}
-:root[data-contrast=more] .app.theme-light{--panel:#fff;--field:#fff;--canvas:#f2f2f2;--text:#000;--muted:#333333;--line:#00000099;--hover:#0000001f;--focus-ring:#000;--accent:#084f8a;--accent-fill:#084f8a;--on-accent:#fff;--selection:#084f8a;--on-selection:#fff;--component:#6a22c9;--measure:#c0112e;--on-measure:#fff}
+:root[data-contrast=more] .app{--panel:#181818;--field:#262626;--canvas:#101010;--text:#fff;--muted:#dcdcdc;--line:#ffffff80;--hover:#ffffff24;--focus-ring:#fff;--accent:#9fd8ff;--accent-fill:#9fd8ff;--on-accent:#04223a;--selection:#9fd8ff;--on-selection:#04223a;--component:#d4b5ff;--component-text:#e2ccff;--measure:#ff8fa3;--on-measure:#3a0410}
+:root[data-contrast=more] .app.theme-light{--panel:#fff;--field:#fff;--canvas:#f2f2f2;--text:#000;--muted:#333333;--line:#00000099;--hover:#0000001f;--focus-ring:#000;--accent:#084f8a;--accent-fill:#084f8a;--on-accent:#fff;--selection:#084f8a;--on-selection:#fff;--component:#6a22c9;--component-text:#5a1ab0;--measure:#c0112e;--on-measure:#fff}
 :root[data-contrast=more] :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea,.number-field,.outline-button){border:1px solid var(--line)}
 :root[data-contrast=more] :is(button,a,summary,input,select,textarea,[tabindex],[role=button]):focus-visible{outline-width:3px}
 :root[data-contrast=more] .toolbar .active{background:var(--accent-fill)!important;color:var(--on-accent)!important}

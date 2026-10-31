@@ -4,7 +4,7 @@ import type {Language,LanguageChoice} from '../i18n';
 import {INTERFACE_ACCENTS,updateInterfaceAccent,updateInterfaceContrast,useInterfaceAccent,useInterfaceContrast} from '../interface-accessibility';
 import type {InterfaceAccent,InterfaceContrast} from '../interface-accessibility';
 
-const accentLabels:Record<InterfaceAccent,string>={forma:'Forma lavender',blue:'Blue',purple:'Purple',pink:'Pink',red:'Red',orange:'Orange',green:'Green',graphite:'Graphite'};
+const accentLabels:Record<InterfaceAccent,string>={forma:'Forma blue',blue:'Blue',purple:'Purple',pink:'Pink',red:'Red',orange:'Orange',green:'Green',graphite:'Graphite'};
 const packLabel=(code:Language)=>{const pack=languagePacks[code];return pack.status==='source'?pack.name:t(pack.status==='preview'?'{language} (preview)':'{language} (partial)',{language:pack.name});};
 /** Language, accent and contrast persist per device through their own keys, never in a project file. */
 export default function InterfacePreferences({onSaved}:{onSaved:(message?:string)=>void}){
