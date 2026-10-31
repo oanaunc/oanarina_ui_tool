@@ -1,5 +1,5 @@
 import {useEffect,useRef} from 'react';
-import type {ReactNode} from 'react';
+import type {KeyboardEvent,ReactNode} from 'react';
 import {X} from 'lucide-react';
 import {useEditor} from '../store';
 import DesignHealth from './DesignHealth';
@@ -24,6 +24,8 @@ const tools:Record<string,{title:string;render:()=>ReactNode}>={
  'workspace-layouts':{title:'Workspace layouts',render:()=><WorkspaceLayouts/>},
  'device-preview':{title:'Side-by-side device preview',render:()=><DevicePreview/>},
 };
+/** Left and Right move between tabs; Home and End jump to the ends. */
+export function tabListKeys(e:KeyboardEvent<HTMLElement>){if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;const tabs=[...e.currentTarget.querySelectorAll<HTMLElement>('[role=tab]')],at=tabs.indexOf(document.activeElement as HTMLElement),next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(at+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;e.preventDefault();tabs[next]?.focus();tabs[next]?.click();}
 export const isLocalToolModal=(modal:string)=>Object.hasOwn(tools,modal);
 /** Shared shell for local audit and automation tools, so each stays out of the main dialog switch. */
 export default function LocalToolDialog({modal}:{modal:string}){

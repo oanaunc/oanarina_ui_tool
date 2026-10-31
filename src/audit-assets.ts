@@ -47,12 +47,14 @@ export function auditDetachedInstances(doc:DesignDocument):DetachedAudit{
  }}
  return {findings,instances,mains:mains.size};
 }
+/** Saved links to a child would dangle once the frame's subtree is replaced by generated instance layers. */
+function referencesLayers(d:DesignDocument,ids:ReadonlySet<string>,removed:ReadonlySet<string>){if(!ids.size)return false;const mentions=(value:unknown)=>{if(!value)return false;const text=JSON.stringify(value);for(const id of ids)if(text.includes(JSON.stringify(id)))return true;return false;};for(const page of d.pages){for(const n of page.nodes)if(!removed.has(n.id)&&((n.targetId&&ids.has(n.targetId))||mentions(n.reactions)))return true;if(mentions(page.motion?.tracks.map(t=>t.nodeId))||mentions(page.flows)||mentions(page.comments.map(c=>c.anchor)))return true;}return false;}
 /** Replaces a detached frame with a fresh instance at the same paint position and keeps the root layer ID. */
 export function restoreDetachedInstance(d:DesignDocument,pageId:string,nodeId:string,componentId:string){
  const page=d.pages.find(p=>p.id===pageId),n=page?.nodes.find(n=>n.id===nodeId);if(!page||!n||!['frame','group'].includes(n.type))throw Error('This detached layer no longer exists.');
  const index=pageIndex(page);if(index.locked(n))throw Error('Unlock this layer first.');if(index.managed(n))throw Error('Detach the parent instance before relinking this layer.');canInstantiate(d,componentId,n.parentId);
  if(descendants(page.nodes,[nodeId]).includes(componentId))throw Error('This layer contains its main component.');if(n.slotInstance||n.mask||n.booleanOp)throw Error('Release this layer’s slot, mask or boolean role before relinking it.');
- const main=d.pages.flatMap(p=>p.nodes).find(m=>m.id===componentId)!,removed=new Set(descendants(page.nodes,[nodeId])),position=page.nodes.indexOf(n),{parentId,x,y,width,height,name,visible,opacity,rotation}=n;
+ const main=d.pages.flatMap(p=>p.nodes).find(m=>m.id===componentId)!,removed=new Set(descendants(page.nodes,[nodeId])),inner=new Set([...removed].filter(id=>id!==nodeId));if(referencesLayers(d,inner,removed))throw Error('A prototype link, Motion track or comment points inside this frame. Remove that link before relinking.');const position=page.nodes.indexOf(n),{parentId,x,y,width,height,name,visible,opacity,rotation}=n;
  page.nodes=page.nodes.filter(item=>!removed.has(item.id));insertInstance(d,pageId,componentId,{id:nodeId,parentId,x,y,name,visible,opacity,rotation,...(width!==main.width||height!==main.height?{width,height}:{})});
  const fresh=page.nodes.pop()!;page.nodes.splice(Math.min(position,page.nodes.length),0,fresh);return nodeId;
 }

@@ -19,7 +19,7 @@ function CommandActions({onClose,valid}:{onClose:()=>void;valid:()=>boolean}){
   if(category==='Recent')return[{label:'Recent actions',items:recents}];
   if(category!=='All')return[{label:category,items:matching.filter(c=>c[2]===category)}];
   if(query.trim())return[{label:'Search results',items:matching}];
-  const recentIds=new Set(recents.map(c=>c[0])),frequent=frequentCommands(usage,matching.map(c=>c[0])).filter(id=>!recentIds.has(id)).flatMap(id=>byId.has(id)?[byId.get(id)!]:[]),shown=new Set([...recentIds,...frequent.map(c=>c[0])]);return[{label:'Recent actions',items:recents},{label:'Frequently used',items:frequent},...groups.map(label=>({label,items:matching.filter(c=>c[2]===label&&!shown.has(c[0]))}))].filter(section=>section.items.length);
+  const recentIds=new Set(recents.map(c=>c[0])),frequent=(usage.enabled?frequentCommands(usage,matching.map(c=>c[0])):[]).filter(id=>!recentIds.has(id)).flatMap(id=>byId.has(id)?[byId.get(id)!]:[]),shown=new Set([...recentIds,...frequent.map(c=>c[0])]);return[{label:'Recent actions',items:recents},{label:'Frequently used',items:frequent},...groups.map(label=>({label,items:matching.filter(c=>c[2]===label&&!shown.has(c[0]))}))].filter(section=>section.items.length);
  },[query,category,recent,groups,commandRows,usage]);
  const results=sections.flatMap(section=>section.items),index=results.length?Math.max(0,Math.min(active,results.length-1)):-1,selected=results[index];
  useEffect(()=>{input.current?.focus();},[]);
