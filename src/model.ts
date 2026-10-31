@@ -48,7 +48,7 @@ import type {Effect} from './effects';
 import {validatePaint} from './paints';
 import type {Paint,StrokeStyle} from './paints';
 export type NodeKind = 'frame'|'section'|'slice'|'rectangle'|'ellipse'|'line'|'arrow'|'polygon'|'star'|'text'|'path'|'image'|'group'|'component'|'instance'|'code';
-export type Tool = NodeKind|'move'|'hand'|'scale'|'pen'|'pencil'|'brush'|'comment';
+export type Tool = NodeKind|'move'|'hand'|'zoom'|'scale'|'pen'|'pencil'|'brush'|'comment';
 export interface VectorPoint {x:number;y:number;in?:{x:number;y:number};out?:{x:number;y:number};mode?:'mirrored'|'aligned'|'independent';widthScale?:number;widthBias?:number;}
 export interface VectorContour {points:VectorPoint[];closed:boolean;}
 export interface DesignNode {autoFit?:{padding:number};liveRepeat?:import('./live-repeat').LiveRepeat;siteMirror?:import('./site-canvas').SiteMirror;code?:import('./code-layer').CodeLayer;widget?:import('./local-widget-document').WidgetRecord;widgetAction?:string;widgetField?:string;widgetHover?:string;derivedLayers?:import('./derived-layers').DerivedLayers;linkCard?:import('./whiteboard-link-cards').LinkCard;slidePoll?:import('./slide-polls').SlidePoll;slidePrototypeEmbed?:string;prototypeInput?:import('./prototype-input').PrototypeInput;vectorNetwork?:import('./vector-network-geometry').VectorNetwork;strokeScaleMode?:import('./stroke-scaling').StrokeScaleMode;rotationOrigin?:{x:number;y:number};cornerSmoothing?:number;

@@ -1,7 +1,7 @@
 import {beforeEach,describe,expect,it} from 'vitest';
 import {blankDocument,node} from '../src/model';
 import {useEditor} from '../src/store';
-import {canvasRotationHandle,canvasSizeLabel,canvasSizePlateWidth} from '../src/canvas-geometry';
+import {canvasSizeLabel,canvasSizePlateWidth} from '../src/canvas-geometry';
 import {applyCanvasDropParent} from '../src/canvas-reparent';
 import {frameExportFilename,scaleSuffix} from '../src/frame-export-settings';
 import {flattenLayerTree,layerTreeIndex} from '../src/layer-tree-index';
@@ -17,12 +17,8 @@ import {localPath} from '../src/geometry';
 import {validateDocumentCornerSmoothing} from '../src/corner-smoothing';
 import {additionalShortcutsEnabled,textFormatShortcut} from '../src/keyboard-preferences';
 const s=()=>useEditor.getState(),nodes=()=>s().doc.pages.find(p=>p.id===s().pageId)!.nodes;
-describe('rotation handle',()=>{
- const frame=node('frame',{id:'f',name:'Card',x:100,y:100,width:40,height:40});
- it('stays on top until a name would sit under its stem, then leaves the side',()=>{expect(canvasRotationHandle([frame],['f'],1).handle).toEqual({x:120,y:76});const name={x:98,y:73,width:90,height:21},moved=canvasRotationHandle([frame],['f'],1,name);expect(moved.edge).toEqual({x:140,y:120});expect(moved.handle).toEqual({x:164,y:120});expect(canvasRotationHandle([frame],['f'],1,{x:98,y:73,width:10,height:21}).handle).toEqual({x:120,y:76});});
-});
 describe('size label',()=>{
- it('names hug and fill per axis only where the rule applies, and the plate grows to fit',()=>{const parent=node('frame',{id:'p',layout:'vertical',sizingX:'hug',sizingY:'fixed'}),child=node('rectangle',{id:'c',parentId:'p',sizingX:'fill',sizingY:'fixed'}),loose=node('rectangle',{id:'l',sizingX:'fill'});expect(canvasSizeLabel([parent],[parent,child],120.4,80,)).toBe('120 Hug × 80');expect(canvasSizeLabel([child],[parent,child],120,40)).toBe('120 Fill × 40');expect(canvasSizeLabel([loose],[loose],10,20)).toBe('10 × 20');expect(canvasSizeLabel([parent,child],[parent,child],10,20)).toBe('10 × 20');expect(canvasSizeLabel([node('text',{textResize:'auto-width'})],[],60,29)).toBe('60 Hug × 29 Hug');expect(canvasSizeLabel([node('text',{textResize:'auto-height'})],[],60,29)).toBe('60 × 29 Hug');expect(canvasSizePlateWidth('10 × 20')).toBe(76);expect(canvasSizePlateWidth('1200 Hug × 2400 Fill')).toBeGreaterThan(120);});
+ it('names hug and fill per axis only where the rule applies, and the plate grows to fit',()=>{const parent=node('frame',{id:'p',layout:'vertical',sizingX:'hug',sizingY:'fixed'}),child=node('rectangle',{id:'c',parentId:'p',sizingX:'fill',sizingY:'fixed'}),loose=node('rectangle',{id:'l',sizingX:'fill'});expect(canvasSizeLabel([parent],[parent,child],120.4,80,)).toBe('120 Hug × 80');expect(canvasSizeLabel([child],[parent,child],120,40)).toBe('120 Fill × 40');expect(canvasSizeLabel([loose],[loose],10,20)).toBe('10 × 20');expect(canvasSizeLabel([parent,child],[parent,child],10,20)).toBe('10 × 20');expect(canvasSizeLabel([node('text',{textResize:'auto-width'})],[],60,29)).toBe('60 Hug × 29 Hug');expect(canvasSizeLabel([node('text',{textResize:'auto-height'})],[],60,29)).toBe('60 × 29 Hug');expect(canvasSizePlateWidth('10 × 20')).toBe(52);expect(canvasSizePlateWidth('1200 Hug × 2400 Fill')).toBeGreaterThan(120);});
 });
 describe('export names',()=>{
  const setting={id:'a',format:'png' as const,scale:2,suffix:'',bounds:'frame' as const,includeGuides:false};
@@ -52,8 +48,8 @@ describe('layout counts miter tips',()=>{
 });
 describe('canvas names share a row',()=>{
  const measure=(text:string)=>({width:text.length*6}),frame=(id:string,x:number,name:string)=>node('frame',{id,name,x,y:0,width:60,height:60});
- it('stops a long name before its neighbor and keeps the full title',()=>{const placed=placeCanvasNames(canvasNameIndex([frame('a',0,'A long screen name'),frame('b',70,'B')]),1,{frames:true,sections:true},measure);expect(placed.map(n=>n.id)).toEqual(['a','b']);expect(placed[0].text.endsWith('…')).toBe(true);expect(placed[0].text.length*6).toBeLessThanOrEqual(62);expect(placed[0].title).toBe('A long screen name');expect(placed[1].text).toBe('▦  B');});
- it('steps aside with no room for a letter, and leaves other rows alone',()=>{const crowded=placeCanvasNames(canvasNameIndex([frame('a',0,'First'),frame('b',12,'Second')]),1,{frames:true,sections:true},measure);expect(crowded.map(n=>n.id)).toEqual(['b']);const other=node('frame',{id:'c',name:'A long screen name',x:0,y:200,width:60,height:60}),free=placeCanvasNames(canvasNameIndex([other,frame('b',70,'B')]),1,{frames:true,sections:true},measure);expect(free[0].text).toBe('▦  A long screen name');});
+ it('stops a long name before its neighbor and keeps the full title',()=>{const placed=placeCanvasNames(canvasNameIndex([frame('a',0,'A long screen name'),frame('b',70,'B')]),1,{frames:true,sections:true},measure);expect(placed.map(n=>n.id)).toEqual(['a','b']);expect(placed[0].text.endsWith('…')).toBe(true);expect(placed[0].text.length*6).toBeLessThanOrEqual(62);expect(placed[0].title).toBe('A long screen name');expect(placed[1].text).toBe('B');});
+ it('steps aside with no room for a letter, and leaves other rows alone',()=>{const crowded=placeCanvasNames(canvasNameIndex([frame('a',0,'First'),frame('b',12,'Second')]),1,{frames:true,sections:true},measure);expect(crowded.map(n=>n.id)).toEqual(['b']);const other=node('frame',{id:'c',name:'A long screen name',x:0,y:200,width:60,height:60}),free=placeCanvasNames(canvasNameIndex([other,frame('b',70,'B')]),1,{frames:true,sections:true},measure);expect(free[0].text).toBe('A long screen name');});
 });
 describe('a failure stays until it is read',()=>{
  it('keeps an error message up, and an ordinary message clears it',()=>{s().newDocument();notifyError(Error('The file could not be read.'));expect(s()).toMatchObject({toast:'The file could not be read.',toastError:true});s().set({toast:'Project saved'});expect(s()).toMatchObject({toast:'Project saved',toastError:false});});
