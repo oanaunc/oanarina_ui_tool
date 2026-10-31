@@ -38,6 +38,7 @@ import {createInstance,download,exportArtwork,importImages,notifyError,serialize
 import {descendants,effectiveVisible,isLocked,node} from './model';
 import type {DesignNode,Tool} from './model';
 export const commands=[
+ ['design-health','Design health report…','Resources',''],
  ['icons','Free icon library…','Resources',''],
  ['templates','Templates and personal starter kits…','Resources',''],
  ['linear-repeat','Linear repeat…','Object',''],['radial-repeat','Radial repeat…','Object',''],
