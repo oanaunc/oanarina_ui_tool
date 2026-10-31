@@ -18,6 +18,7 @@ const rules:Rule[]=[
  {id:'variable-width',label:'Per-anchor variable-width strokes',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses these. Export SVG or PNG to keep the appearance.',test:n=>stroke(n,s=>s.variableWidth==='points')},
  {id:'edge-strokes',label:'Independent edge strokes',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses these. Export SVG or PNG to keep the appearance.',test:n=>stroke(n,s=>s.edgeWidths!==undefined)},
  {id:'vector-network',label:'Vector networks',outcomes:{bridge:'refused',...appearance},note:'Flatten the network before Bridge transfer.',test:n=>n.vectorNetwork!==undefined},
+ {id:'live-repeat',label:'Live repeat',outcomes:{bridge:'refused',...appearance},note:'Expand the repeat to layers before Bridge transfer.',test:n=>n.liveRepeat!==undefined},
  {id:'text-path',label:'Text on path',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses text on a path.',test:n=>n.textPath!==undefined},
  {id:'progressive-blur',label:'Progressive blur',outcomes:{bridge:'refused',...appearance},note:'The Bridge refuses this approximated effect.',test:n=>!!n.effects?.some(e=>e.type==='progressive-blur')},
  {id:'surface-paint',label:'Pattern, noise and texture paints',outcomes:{bridge:'refused',...appearance},note:'Surface source metadata is refused by the Bridge.',test:n=>fillsFor(n).some(p=>p.surface!==undefined)},

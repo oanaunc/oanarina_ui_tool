@@ -9,6 +9,7 @@ import VectorNetworkControls from './VectorNetworkControls';
 import ComponentSlots from './ComponentSlots';
 import MixedFillEditor from './MixedFillEditor';
 import TextPathControls from './TextPathControls';
+import LiveRepeatControls from './LiveRepeatControls';
 import CalligraphicStrokeControls from './CalligraphicStrokeControls';
 import DynamicStrokeControls from './DynamicStrokeControls';
 import {ImageAssetStatus} from './CanvasImageDiagnostics';
@@ -153,7 +154,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
  {sel.length>1?<MixedFillEditor key={JSON.stringify([page.id,s.selection])}/>:n.media?<VideoInspector key={n.id} n={n}/>:n.type==='code'?<CodeLayerPanel key={n.id} n={n}/>:<section className="inspector-section" data-testid="fill-section"><FillEditor n={n} patch={patch}/></section>}
  <section className="inspector-section" data-testid="stroke-section"><StrokeEditor n={n} patch={patch}/><DynamicStrokeControls n={n}/><CalligraphicStrokeControls n={n}/><StrokeScaleControl/></section><TextPathControls n={n}/>
  {sel.length===1&&<Section name="Reusable vector brush"><BrushSampling key={'brush-sample:'+n.id}/></Section>} <SelectionColors/><Section name="Design system"><DesignSystemInspector n={n}/></Section>
- {n.type==='text'&&<Section name="Character formatting"><TextVariants n={n}/><RichTextInspector n={n}/></Section>}<Section name="Layer"><BlendControl n={n}/></Section>
+ {n.type==='text'&&<Section name="Character formatting"><TextVariants n={n}/><RichTextInspector n={n}/></Section>}<Section name="Layer"><BlendControl n={n}/><LiveRepeatControls n={n}/></Section>
 
  <section className="inspector-section" data-testid="effects-section"><EffectsEditor n={n} patch={patch}/></section>
  {sel.length===1&&<ComponentSlots key={'component-slots:'+n.id} selected={n}/>}

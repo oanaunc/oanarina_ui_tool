@@ -3,6 +3,7 @@ import type {BackgroundBlurPlan} from '../background-blur';
 import {BackgroundBlurFilter} from './BackgroundBlurFilter';
 import {networkRegionPath} from '../vector-network-region';
 import {networkFacePath} from '../vector-network-faces';
+import {liveRepeatMatrices} from '../live-repeat';
 import {validatePassThroughNodes} from '../pass-through';
 import {textPathDirection,textPathLayout,textPathResourceId,textPathAnchor} from '../text-path';
 import TextPathRuns from './TextPathRuns';
@@ -14,7 +15,7 @@ import {isProgressiveBlurRegionError,validateDocumentProgressiveBlur} from '../p
 import {variableWidthPath} from '../variable-width';
 import {fontFamilyStack} from '../font-fallback';
 import {GradientPaintDefinition} from './GradientPaintDefinition';
-import {edgeStrokePath,effectiveStrokeWidth} from '../edge-strokes';
+import {edgeDashSides,edgeStrokePath,effectiveStrokeWidth} from '../edge-strokes';
 import {textLinePlacement} from '../text-direction';
 import {textBackgroundColor} from '../text-background';
 import {textAccessibleName} from '../text-description';
@@ -72,6 +73,7 @@ function Stroke({n,s,id,maskVector=false}:{n:DesignNode;s:StrokeStyle;id:string;
  if(s.calligraphic)return <path data-calligraphic-stroke={s.id} d={calligraphicStrokeGeometry(n,s).path} fillRule="nonzero" fill={maskVector?'#ffffff':paintValue(s.paint,id,profile)} opacity={maskVector?1:s.paint.opacity}/>;
  if(s.dynamic)return <path data-dynamic-stroke={s.id} d={dynamicStrokePath(n,s)} fillRule="nonzero" fill={maskVector?'#ffffff':paintValue(s.paint,id,profile)} opacity={maskVector?1:s.paint.opacity}/>;
  if(s.variableWidth)return <path data-variable-width-stroke={s.id} d={variableWidthPath(n,s)} fillRule="nonzero" fill={maskVector?'#ffffff':paintValue(s.paint,id,profile)} opacity={maskVector?1:s.paint.opacity}/>;
+ if(s.edgeWidths&&s.dash.length){const clip=`edge-dash-${n.id}-${s.id}`,color=maskVector?'#ffffff':paintValue(s.paint,id,profile);return <g data-edge-stroke={s.id} opacity={maskVector?1:s.paint.opacity}><clipPath id={clip}><path d={edgeStrokePath(n,s)} clipRule="evenodd"/></clipPath><g clipPath={`url(#${clip})`}>{edgeDashSides(n,s).map(side=><path key={side.side} data-edge-dash={side.side} d={side.d} fill="none" stroke={color} strokeWidth={side.width} strokeLinecap="butt" strokeDasharray={s.dash.join(' ')} strokeDashoffset={s.dashOffset}/>)}</g></g>;}
  if(s.edgeWidths)return <path data-edge-stroke={s.id} d={edgeStrokePath(n,s)} fillRule="evenodd" fill={maskVector?'#ffffff':paintValue(s.paint,id,profile)} opacity={maskVector?1:s.paint.opacity}/>;
  const alignment=['line','arrow'].includes(n.type)||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none'?'center':s.align;
  const props={fill:'none',stroke:maskVector?'#ffffff':paintValue(s.paint,id,profile),strokeWidth:s.width*(alignment==='center'?1:2),opacity:1,strokeLinecap:s.cap,strokeLinejoin:s.join,strokeMiterlimit:s.miterLimit,strokeDasharray:s.dash.length?s.dash.join(' '):undefined,strokeDashoffset:s.dashOffset};
@@ -90,7 +92,8 @@ function ArtworkContent({nodes,outlines=false,hyperlinks=false,onNode,onInteract
  const stack=(siblings:DesignNode[],parent?:DesignNode)=>parent?.layout!=='none'&&parent?.layoutStacking==='first-on-top'?[...siblings].reverse():siblings;
  const normalSiblings=(siblings:DesignNode[],parent?:DesignNode,sourceMode?:MaskMode,masked=false):React.ReactNode=>outlines?stack(siblings,parent).map(n=>render(n,parent,sourceMode,masked)):(parent?.layout!=='none'&&parent?.layoutStacking==='first-on-top'?maskRuns(siblings).reverse():maskRuns(siblings)).map((run,i)=>run.source?<g key={'mask-run-'+run.source.id} data-mask-run={run.source.id}><defs><mask id={'layer-mask-'+run.source.id} maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" {...regionFor(parent)} style={{maskType:sourceMode!=='vector'&&run.source.mask!.mode==='luminance'?'luminance':'alpha'}} data-mask-mode={sourceMode==='vector'?'vector':run.source.mask!.mode}>{render(run.source,parent,sourceMode==='vector'?'vector':run.source.mask!.mode)}</mask></defs><g mask={`url(#layer-mask-${run.source.id})`}>{stack(run.nodes,parent).map(n=>render(n,parent,sourceMode,true))}</g></g>:<g key={'unmasked-'+i}>{stack(run.nodes,parent).map(n=>render(n,parent,sourceMode,masked))}</g>);
  const renderSiblings=(siblings:DesignNode[],parent?:DesignNode,sourceMode?:MaskMode,masked=false):React.ReactNode=>{if(!parent&&!sourceMode&&!outlines&&backgroundPlan&&backgroundPlan.target.visible&&backgroundPlan.effect.visible&&backgroundPlan.effect.radius>0&&backgroundPlan.effect.opacity>0){const index=siblings.findIndex(n=>n.id===backgroundPlan.target.id);return <><g data-background-blur-prefix={backgroundPlan.target.id} filter={`url(#${backgroundId})`}>{normalSiblings(siblings.slice(0,index))}</g>{normalSiblings(siblings.slice(index))}</>;}return normalSiblings(siblings,parent,sourceMode,masked);};
- const render=(n:DesignNode,parent?:DesignNode,sourceMode?:MaskMode,masked=false):React.ReactNode=>{
+ const render=(n:DesignNode,parent?:DesignNode,sourceMode?:MaskMode,masked=false):React.ReactNode=>n.liveRepeat?<Fragment key={n.id}>{renderLayer(n,parent,sourceMode,masked)}{liveRepeatMatrices(n,parent,nodes).map((m,i)=><g key={i} data-live-repeat={i+1} transform={`matrix(${m.join(' ')})`}>{renderLayer(n,parent,sourceMode,masked)}</g>)}</Fragment>:renderLayer(n,parent,sourceMode,masked);
+ const renderLayer=(n:DesignNode,parent?:DesignNode,sourceMode?:MaskMode,masked=false):React.ReactNode=>{
   if(!n.visible||n.type==='slice')return null;
   const mediaVisibility=n.media?mediaClipVisibility(n,nodes):undefined,vector=sourceMode==='vector',interactive=!sourceMode,content=outlines?<g data-mask-outline-kind={outlineKinds?.get(n.id)}><Shape n={n} fill="none" stroke={outlineKinds?(outlineKinds.get(n.id)==='source'||outlineKinds.get(n.id)==='source-content'?'#36e8c0':outlineKinds.get(n.id)==='target'?'#c39aff':'#81798c'):'#a8a3b4'} strokeWidth={maskOutlines?1.25/maskOutlines.zoom:1}/>{maskOutlines&&(()=>{const tips=arrowTips(n);return tips&&(['start','end'] as const).map(end=>arrowStyle(n,end)==='none'?null:<path key={end} data-mask-outline-arrow={end} d={orientedArrowheadPath(arrowStyle(n,end),n.arrowSize??12,tips[end])} fill="none" stroke={outlineKinds?.get(n.id)==='source'||outlineKinds?.get(n.id)==='source-content'?'#36e8c0':outlineKinds?.get(n.id)==='target'?'#c39aff':'#81798c'} strokeWidth={1.25/maskOutlines.zoom}/>);})()}</g>:<>
    {interactive&&(onNode||onInteraction)&&backgroundPlans.has(n.id)&&backgroundPlans.get(n.id)!.effect.visible&&backgroundPlans.get(n.id)!.effect.opacity>0&&backgroundPlans.get(n.id)!.effect.radius>0&&<Shape n={n} fill="transparent" stroke="none" pointerEvents="all"/>}
