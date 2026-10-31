@@ -15,7 +15,7 @@ import {updateTextMetrics} from './text-layout';
 import {updateBooleans} from './geometry';
 import {applyDesignSystems,modesFor,resolveVariable} from './design-systems';
 import {synchronizeComponents} from './components-model';
-import {animateMatchedProperties,textCrossfade} from './smart-animate-properties';
+import {animateMatchedProperties,blendPaint,paintsMatch,textCrossfade} from './smart-animate-properties';
 import {animateShape,smartFamily} from './shape-morph';
 import {easingValue} from './motion';
 import type {Easing} from './motion';
@@ -142,12 +142,17 @@ export function smartAnimate(from:Page,fromId:string,to:Page,toId:string,progres
  const fade=Math.max(0,Math.min(1,progress)),lerp=(a:number,b:number)=>a+(b-a)*progress;
  const leaving:DesignNode[]=[],result=b.map(n=>{const before=byKey.get(kb.get(n.id));if(!before){const enteringParent=n.parentId&&b.some(parent=>parent.id===n.parentId&&!byKey.has(kb.get(parent.id)));return {...n,opacity:n.opacity*(enteringParent?1:fade)};}const out={...n};for(const k of ['x','y','width','height','rotation','opacity','radius'] as const)out[k]=lerp(before[k],n[k]);out.width=Math.max(.01,out.width);out.height=Math.max(.01,out.height);out.opacity=Math.max(0,Math.min(1,lerp(before.visible?before.opacity:0,n.visible?n.opacity:0)));out.visible=progress>=1?n.visible:before.visible||n.visible;out.radius=Math.max(0,out.radius);out.fill=color(before.fill,n.fill,progress);
  const oldPaints=fillsFor(before),newPaints=fillsFor(n);
- if(oldPaints.length===newPaints.length&&oldPaints.every((p,i)=>p.type===newPaints[i].type&&p.stops.length===newPaints[i].stops.length&&(p.type!=='shader'||JSON.stringify(p.shader)===JSON.stringify(newPaints[i].shader))&&(p.type!=='image'||p.image===newPaints[i].image&&p.scaleMode===newPaints[i].scaleMode)))out.paints=newPaints.map((p,i)=>{const old=oldPaints[i],paint={...structuredClone(p),color:color(old.color,p.color,progress),visible:progress>=1?p.visible:old.visible||p.visible,opacity:Math.max(0,Math.min(1,lerp(old.visible?old.opacity:0,p.visible?p.opacity:0)))};for(const key of ['angle','cx','cy','radius'] as const)paint[key]=lerp(old[key],p[key]);paint.radius=Math.max(.001,paint.radius);if(p.type==='image'){for(const key of ['scale','offsetX','offsetY'] as const)if(old[key]!==undefined||p[key]!==undefined)paint[key]=lerp(old[key]??(key==='scale'?1:0),p[key]??(key==='scale'?1:0));if(paint.scale!==undefined)paint.scale=Math.max(.001,paint.scale);}paint.stops=p.stops.map((stop,j)=>({...stop,position:Math.max(0,Math.min(1,lerp(old.stops[j].position,stop.position))),color:color(old.stops[j].color,stop.color,progress),opacity:Math.max(0,Math.min(1,lerp(old.stops[j].opacity,stop.opacity)))}));return paint;});
+ if(oldPaints.length===newPaints.length&&oldPaints.every((p,i)=>paintsMatch(p,newPaints[i])))out.paints=newPaints.map((p,i)=>blendPaint(oldPaints[i],p,progress,color));
  else out.paints=[...oldPaints.map(p=>({...structuredClone(p),opacity:p.opacity*(1-fade)})),...newPaints.map(p=>({...structuredClone(p),id:'entering-'+p.id,opacity:p.opacity*fade}))];animateMatchedProperties(before,n,out,progress,color);const words=textCrossfade(before,n,out,fade,n.parentId);if(words)leaving.push(words);const shape=animateShape(before,n,out,progress,fade,n.parentId);if(shape)leaving.push(shape);return out;});result.push(...leaving);
  for(const n of a)if(!used.has(n.id)){const exitingParent=n.parentId&&!used.has(n.parentId);result.push({...n,id:'exiting-'+n.id,parentId:n.parentId?mapping.get(n.parentId)??'exiting-'+n.parentId:null,opacity:n.opacity*(exitingParent?1:1-fade)});}
  return result;
 }
 export function transitionProgress(t:PrototypeTransition,elapsed:number){return t.type==='instant'||t.duration===0?1:easingValue(t.easing,Math.max(0,Math.min(1,elapsed/t.duration)));}
+/** The time at which a transition reaches a progress, so a reversed animation can start from where the old one stopped. */
+export function prototypeElapsed(t:PrototypeTransition,progress:number){if(t.type==='instant'||t.duration===0||progress<=0)return 0;if(progress>=1)return t.duration;let low=0,high=t.duration;for(let i=0;i<32;i++){const mid=(low+high)/2;if(transitionProgress(t,mid)<progress)low=mid;else high=mid;}return high;}
+const opposite={left:'right',right:'left',top:'bottom',bottom:'top'} as const,mirrored:Partial<Record<PrototypeTransition['type'],PrototypeTransition['type']>>={'move-in':'move-out','move-out':'move-in','slide-in':'slide-out','slide-out':'slide-in'};
+/** Plays a transition backward: what arrived leaves the way it came. */
+export function reversedTransition(t:PrototypeTransition):PrototypeTransition{return {...t,type:mirrored[t.type]??t.type,direction:opposite[t.direction]};}
 
 /** Materialize fixed and sticky layers without changing the saved document. */
 export function prototypeScrollNodes(nodes:DesignNode[],frameId:string,offset:{x:number;y:number}){refuseBackgroundBlurPlayback(nodes);refusePassThroughPlayback(nodes);
