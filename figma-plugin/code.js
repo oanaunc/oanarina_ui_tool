@@ -210,6 +210,20 @@ function versions(value) { if (!Array.isArray(value) || value.length > 50)
         throw Error('Duplicate library history entry.');
     seen.add(v.snapshotId);
 } }
+function validateLibraryDeprecation(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== 1 || !Object.hasOwn(value, 'reason') || typeof value.reason !== 'string' || !value.reason.trim() || value.reason.length > 1000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/.test(value.reason))
+        throw Error('Component deprecation needs a plain-text reason from 1 to 1,000 characters.');
+}
+function validateLibraryDeprecations(value) {
+    if (value === undefined) return;
+    if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length > 512)
+        throw Error('Library deprecations support up to 512 component or variant-set groups.');
+    for (const [key, item] of Object.entries(value)) {
+        if (key.length > 512 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/.test(key) || !/^(component|set):[\s\S]+$/.test(key) || !key.slice(key.indexOf(':') + 1).trim())
+            throw Error('A deprecation must reference a published component or variant-set group.');
+        validateLibraryDeprecation(item);
+    }
+}
 function validateLibraryMetadata(d) {
     if (d.libraryPublication !== undefined) {
         const p = d.libraryPublication;
@@ -217,6 +231,7 @@ function validateLibraryMetadata(d) {
             throw Error('Invalid library publication.');
         libraryId(p.id);
         versions(p.history);
+        validateLibraryDeprecations(p.deprecations);
     }
     if (d.componentLibraries === undefined)
         return;
@@ -247,6 +262,10 @@ function validateLibraryMetadata(d) {
             if (keys.has(a.key) || !['component', 'set', 'style', 'collection', 'guide'].includes(a.kind) || a.missing !== undefined && typeof a.missing !== 'boolean')
                 throw Error('Invalid installed library asset.');
             keys.add(a.key);
+            if (a.deprecation !== undefined) {
+                if (!['component', 'set'].includes(a.kind)) throw Error('Only component or variant-set library groups can be deprecated.');
+                validateLibraryDeprecation(a.deprecation);
+            }
             validateLibraryVersion(a.version);
             if (typeof a.sourceFingerprint !== 'string' || !/^[a-f0-9]{64}$/.test(a.sourceFingerprint))
                 throw Error('Invalid library asset fingerprint.');
@@ -472,7 +491,7 @@ function bridgeLayoutMetadata(d,report){const omitted=new Set();for(const page o
  if(n.wrapDirection!==undefined){if(!['forward','reverse'].includes(n.wrapDirection))throw Error('Invalid wrap line direction.');omitted.add('Wrap line direction preferences');}
  if(n.wrapAlign!==undefined){if(!['start','center','end','stretch','space-between','space-around','space-evenly'].includes(n.wrapAlign))throw Error('Invalid wrap line alignment.');omitted.add('Wrap line alignment preferences');}
  }for(const label of omitted)report.push(label+' are retained in the Forma file and omitted from editable Figma transfer; native Figma auto layout may arrange transferred children differently.');}
-async function importDocument(d){validate(d);const index=bridgeComponentsIndex(d),report=[],created=[],originalPage=figma.currentPage;bridgeStrokeScaling(d,report);bridgeLayerAnnotations(d,report);bridgeDevelopmentStatuses(d,report);bridgeFileCover(d,report);bridgeComponentWorkflowMetadata(d,report);if(d.whiteboard?.codeBlocks?.length)report.push('Whiteboard code-block language and logical editing metadata are omitted; literal code transfers as ordinary editable frame and text layers.');if(d.pages.some(p=>p.comments?.length))report.push('File-local comments, authors, timestamps and replies are omitted from editable Figma transfer; keep the original Forma file.');if(d.pages.some(p=>p.nodes.some(n=>n.devResources?.length)))report.push('Developer resource links are omitted from editable Figma transfer; keep the original Forma file.');if(d.libraryPublication||d.componentLibraries?.length)report.push('Local library publication, cached snapshot provenance and update-review state are omitted; editable cached components transfer as local Figma definitions. Style and variable links follow the separate Bridge limitation.');bridgeLayoutMetadata(d,report);if(d.variables?.length||d.styles?.length)report.push('Variables and style links are materialized as literal values; editable definitions are not transferred.');if(d.pages.some(p=>p.motion?.tracks?.length))report.push('Motion timelines are not transferred; import uses the saved base artwork.');const fonts=await figma.listAvailableFontsAsync();
+async function importDocument(d){validate(d);const index=bridgeComponentsIndex(d),report=[],created=[],originalPage=figma.currentPage;bridgeStrokeScaling(d,report);bridgeLayerAnnotations(d,report);bridgeDevelopmentStatuses(d,report);bridgeFileCover(d,report);bridgeComponentWorkflowMetadata(d,report);if(d.whiteboard?.codeBlocks?.length)report.push('Whiteboard code-block language and logical editing metadata are omitted; literal code transfers as ordinary editable frame and text layers.');if(d.pages.some(p=>p.comments?.length))report.push('File-local comments, authors, timestamps and replies are omitted from editable Figma transfer; keep the original Forma file.');if(d.pages.some(p=>p.nodes.some(n=>n.devResources?.length)))report.push('Developer resource links are omitted from editable Figma transfer; keep the original Forma file.');if(d.libraryPublication||d.componentLibraries?.length)report.push('Local library publication, cached snapshot provenance and update-review state are omitted; local component deprecation status and reasons are also omitted; editable cached components transfer as local Figma definitions. Style and variable links follow the separate Bridge limitation.');bridgeLayoutMetadata(d,report);if(d.variables?.length||d.styles?.length)report.push('Variables and style links are materialized as literal values; editable definitions are not transferred.');if(d.pages.some(p=>p.motion?.tracks?.length))report.push('Motion timelines are not transferred; import uses the saved base artwork.');const fonts=await figma.listAvailableFontsAsync();
  // Validate before mutation. On failure, remove every newly created page to avoid half-imported files.
  try{const map=new Map(),source=index.nodes,parentIds=new Set([...source.values()].map(n=>n.parentId)),pageMap=new Map(),linkedNodeIds=new Set(),linkedRoots=[];
  for(const p of d.pages){const page=figma.createPage();page.name=p.name;created.push(page);if(p.background)page.backgrounds=[{...paint(p.background.color),opacity:p.background.opacity,visible:p.background.visible}];await figma.setCurrentPageAsync(page);pageMap.set(p.id,page);}
