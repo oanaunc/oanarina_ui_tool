@@ -19,3 +19,7 @@ The shared renderer’s static SVG/PNG/JPG exports contain only the video poster
 The synthetic fixtures contain only locally generated red/blue frames and a sine tone. Browser tests decode H.264/AAC MP4 and VP8/Opus WebM in the test browser. This is not a guarantee for every MP4/WebM codec, Safari/WKWebView configuration or installed OS media decoder. The browser’s [video element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video) and [play promise](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play) define the playback and autoplay behavior used here.
 
 Validation: 12 focused core cases cover additive compatibility, transactional refusal, exact byte limits, original-byte delivery, clipboard transfer, static export, Bridge preflight/omission and affine visibility. Browser checks cover actual MP4/WebM decoding, canvas playback/end/loop/mute/start, replacement, poster pixels, save/reopen/Undo, GIF animation, prototype clips/transforms/restart/navigation, invalid input/context aborts, offscreen audio suppression and scroll visibility. An independent reviewer reproduced and verified both the offscreen audio correction and exact SVG corner ownership. No native release or real Figma round trip was produced.
+
+## Trim end
+
+**Video end time** adds a non-destructive end point beside the start time, saved as optional `endTime`. Presentation pauses there, or returns to the start time when Loop is on. The embedded bytes are not cut.

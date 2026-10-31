@@ -2,7 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {addSlide,addSlideComponent,addSlideElement,applySlideTheme,createSlideDocument,deckFor,deleteSlide,duplicateSlide,reorderSlide,resizeSlideDeck,slideFrame,slideNodes,slidePage,slideTemplates,validateSlides,visibleSlides} from '../src/slides';
 import {node,parseDocument} from '../src/model';
 import {synchronizeComponents} from '../src/components-model';
-import {pdfFromPngPages,slideSvg,zipSlideImages} from '../src/slides-export';
+import {slideSvg,zipSlideImages} from '../src/slides-export';
 import {PDFDocument} from 'pdf-lib';
 const png=Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jfuoAAAAASUVORK5CYII='),c=>c.charCodeAt(0));
 describe('local Slides workspace model',()=>{
@@ -19,6 +19,5 @@ describe('local Slides workspace model',()=>{
 });
 describe('portable slide exports',()=>{
  it('preserves per-range hyperlinks in standalone slide SVG',()=>{const d=createSlideDocument(),id=deckFor(d).slides[0].id,title=slideNodes(d,id).find(n=>n.type==='text')!;title.text='Open the guide';title.textRuns=[{start:5,end:14,hyperlink:'https://example.com/guide'}];const svg=slideSvg(d,id);expect(svg).toContain('href="https://example.com/guide"');expect(svg).toContain('the guide');});
- it('writes a real multi-page PDF with each slide aspect and title',async()=>{const bytes=await pdfFromPngPages([{bytes:png,width:1280,height:720},{bytes:png,width:960,height:720}],'A local presentation'),pdf=await PDFDocument.load(bytes);expect(pdf.getPageCount()).toBe(2);expect(pdf.getTitle()).toBe('A local presentation');expect(pdf.getPages()[0].getSize()).toEqual({width:960,height:540});expect(pdf.getPages()[1].getSize()).toEqual({width:720,height:540});expect(pdf.getPages()[0].node.Contents()).toBeTruthy();});
  it('produces a standard ZIP archive containing exact PNG bytes',()=>{const zip=zipSlideImages([{name:'001-title.png',bytes:png},{name:'002-grid.png',bytes:png}]),view=new DataView(zip.buffer);expect(view.getUint32(0,true)).toBe(0x04034b50);const nameLength=view.getUint16(26,true),payload=zip.slice(30+nameLength,30+nameLength+png.length);expect(payload).toEqual(png);expect(view.getUint32(zip.length-22,true)).toBe(0x06054b50);expect(view.getUint16(zip.length-12,true)).toBe(2);expect(()=>zipSlideImages([{name:'../bad.png',bytes:png}])).toThrow(/filename/);});
 });

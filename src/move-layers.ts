@@ -15,7 +15,7 @@ function validated(doc:DesignDocument){const raw=JSON.stringify(doc);if(new Text
 const fail=(message:string):never=>{throw Error(message);};
 function page(doc:DesignDocument,id:string){return doc.pages.find(p=>p.id===id)??fail('A selected page is no longer available.');}
 function actions(list:PrototypeAction[]):PrototypeAction[]{return list.flatMap(a=>[a,...(a.branches??[]).flatMap(b=>actions(b.actions))]);}
-function localTargets(n:DesignNode){return [...(n.targetId?[n.targetId]:[]),...(n.reactions??[]).flatMap(r=>actions(r.actions).filter(a=>['navigate','open-overlay','swap-overlay','scroll-to','change-variant'].includes(a.type)&&a.targetId).map(a=>a.targetId!))];}
+function localTargets(n:DesignNode){return [...(n.targetId?[n.targetId]:[]),...(n.reactions??[]).flatMap(r=>actions(r.actions).filter(a=>['navigate','open-overlay','swap-overlay','scroll-to','change-variant','play-audio'].includes(a.type)&&a.targetId).map(a=>a.targetId!))];}
 function checkLocalLinks(doc:DesignDocument,moved:Set<string>){const owner=new Map(doc.pages.flatMap(p=>p.nodes.map(n=>[n.id,p.id] as const)));for(const p of doc.pages)for(const n of p.nodes)for(const id of localTargets(n))if((moved.has(n.id)||moved.has(id))&&owner.get(id)!==p.id)fail('This move would split a page-local prototype connection. Move its source and destination together, or remove the connection first.');}
 function sameGeometry(a:DesignNode,ap:Page,b:DesignNode,bp:Page){const am=worldMatrix(a,ap.nodes),bm=worldMatrix(b,bp.nodes);return [...am,a.width,a.height].every((v,i)=>Math.abs(v-[...bm,b.width,b.height][i])<=1e-7+1e-9*Math.abs(v));}
 function sameSettings(a:NonNullable<Page['motion']>,b:NonNullable<Page['motion']>){return a.duration===b.duration&&a.fps===b.fps&&a.loop===b.loop;}

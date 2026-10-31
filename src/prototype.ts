@@ -15,16 +15,16 @@ import {updateTextMetrics} from './text-layout';
 import {updateBooleans} from './geometry';
 import {applyDesignSystems,modesFor,resolveVariable} from './design-systems';
 import {synchronizeComponents} from './components-model';
-import {animateMatchedProperties,textCrossfade} from './smart-animate-properties';
+import {animateMatchedProperties,blendPaint,paintsMatch,textCrossfade} from './smart-animate-properties';
 import {animateShape,smartFamily} from './shape-morph';
 import {easingValue} from './motion';
 import type {Easing} from './motion';
 import {fillsFor} from './paints';
-import {worldMatrix} from './transforms';
+import {inverseMatrix,multiply,point,worldMatrix} from './transforms';
 
 export const prototypeTriggers=['click','drag','hover','press','mouseenter','mouseleave','mousedown','mouseup','delay','key','gamepad','scroll'] as const;
 export type PrototypeTrigger=typeof prototypeTriggers[number];
-export const prototypeActions=['navigate','back','open-link','open-overlay','swap-overlay','close-overlay','scroll-to','change-variant','set-variable','conditional'] as const;
+export const prototypeActions=['navigate','back','open-link','open-overlay','swap-overlay','close-overlay','scroll-to','change-variant','set-variable','conditional','play-audio','stop-audio'] as const;
 export const transitionTypes=['instant','dissolve','smart-animate','move-in','move-out','push','slide-in','slide-out'] as const;
 export interface PrototypeTransition {type:typeof transitionTypes[number];duration:number;easing:Easing;direction:'left'|'right'|'top'|'bottom';}
 export interface OverlayOptions {position:'center'|'manual'|'top-left'|'top-right'|'bottom-left'|'bottom-right';x:number;y:number;background:string;opacity:number;closeOutside:boolean;overflow:boolean;}
@@ -36,9 +36,9 @@ export interface PrototypeAction {
 export interface PrototypeReaction {id:string;trigger:PrototypeTrigger;enabled:boolean;actions:PrototypeAction[];delay:number;key:string;modifiers:('meta'|'control'|'shift'|'alt')[];gamepadButton:number;}
 export interface PrototypeFlow {id:string;name:string;frameId:string;description:string;}
 export const prototypeDevices=['none','phone','foldable','tablet','laptop','desktop','watch'] as const;
-export interface PrototypeSettings {device:typeof prototypeDevices[number];orientation:'portrait'|'landscape';background:string;scale:'fit'|'actual'|'fill';hotspots:boolean;reducedMotion:boolean;}
+export interface PrototypeSettings {device:typeof prototypeDevices[number];orientation:'portrait'|'landscape';background:string;scale:'fit'|'actual'|'fill';hotspots:boolean;reducedMotion:boolean;turnArtwork?:boolean;}
 export interface PrototypeState {frameId:string;history:string[];overlays:{frameId:string;options:OverlayOptions;transition:PrototypeTransition}[];values:Record<string,string|number|boolean>;variants:Record<string,string>;}
-export interface PrototypeEffect {type:'open-link'|'scroll-to';url?:string;targetId?:string;duration?:number;easing?:PrototypeTransition['easing'];}
+export interface PrototypeEffect {type:'open-link'|'scroll-to'|'play-audio'|'stop-audio';url?:string;targetId?:string;duration?:number;easing?:PrototypeTransition['easing'];}
 export const defaultTransition=():PrototypeTransition=>({type:'instant',duration:300,easing:'ease-out',direction:'left'});
 export const defaultOverlay=():OverlayOptions=>({position:'center',x:0,y:0,background:'#000000',opacity:.35,closeOutside:true,overflow:false});
 export const defaultPrototypeSettings=():PrototypeSettings=>({device:'none',orientation:'portrait',background:'#17161b',scale:'fit',hotspots:false,reducedMotion:false});
@@ -101,7 +101,7 @@ export function validateActions(actions:PrototypeAction[],depth=0,budget={count:
  if(a.branches!==undefined){if(!Array.isArray(a.branches)||a.branches.length>32)throw Error('Invalid conditional branches.');for(const b of a.branches){if(typeof b.condition!=='string')throw Error('Invalid branch condition.');if(b.condition)parseExpression(b.condition);validateActions(b.actions,depth+1,budget);}}
  }}
 export function validatePrototype(d:DesignDocument){for(const p of d.pages){if(p.flows!==undefined){if(!Array.isArray(p.flows)||p.flows.length>1000||new Set(p.flows.map(f=>f.id)).size!==p.flows.length)throw Error('Invalid prototype flows.');for(const f of p.flows)for(const k of ['id','name','frameId','description'] as const)if(typeof f[k]!=='string')throw Error('Invalid prototype flow.');}
- if(p.prototypeSettings){const a=p.prototypeSettings;if(!prototypeDevices.includes(a.device)||!['portrait','landscape'].includes(a.orientation)||!['fit','actual','fill'].includes(a.scale)||!/^#[0-9a-f]{6}$/i.test(a.background)||typeof a.hotspots!=='boolean'||typeof a.reducedMotion!=='boolean')throw Error('Invalid prototype settings.');}
+ if(p.prototypeSettings){const a=p.prototypeSettings;if(!prototypeDevices.includes(a.device)||!['portrait','landscape'].includes(a.orientation)||!['fit','actual','fill'].includes(a.scale)||!/^#[0-9a-f]{6}$/i.test(a.background)||typeof a.hotspots!=='boolean'||typeof a.reducedMotion!=='boolean'||a.turnArtwork!==undefined&&typeof a.turnArtwork!=='boolean')throw Error('Invalid prototype settings.');}
  for(const n of p.nodes){if(n.reactions!==undefined){if(!Array.isArray(n.reactions)||n.reactions.length>100||new Set(n.reactions.map(r=>r.id)).size!==n.reactions.length)throw Error('Invalid prototype interactions.');for(const r of n.reactions){if(typeof r.id!=='string'||!prototypeTriggers.includes(r.trigger)||typeof r.enabled!=='boolean'||!Number.isFinite(r.delay)||r.delay<0||r.delay>600000||typeof r.key!=='string'||r.key.length>100||!Array.isArray(r.modifiers)||r.modifiers.some(m=>!['meta','control','shift','alt'].includes(m))||!Number.isInteger(r.gamepadButton)||r.gamepadButton<0||r.gamepadButton>31)throw Error('Invalid prototype trigger.');validateActions(r.actions);}}
  if(n.prototypeScroll!==undefined&&!['none','horizontal','vertical','both'].includes(n.prototypeScroll))throw Error('Invalid scroll setting.');if(n.prototypePosition!==undefined&&!['normal','fixed','sticky'].includes(n.prototypePosition))throw Error('Invalid prototype positioning.');
  }}}
@@ -120,6 +120,8 @@ export function executeActions(d:DesignDocument,pageId:string,initial:PrototypeS
   else if(a.type==='open-overlay'||a.type==='swap-overlay'){const frameId=dest();if(state.overlays.length>=20&&a.type==='open-overlay')throw Error('Too many nested overlays.');const previous=state.overlays.at(-1);if(a.type==='swap-overlay'&&previous)state.overlays.pop();state.overlays.push({frameId,options:a.overlay??previous?.options??defaultOverlay(),transition:a.transition??defaultTransition()});}
   else if(a.type==='close-overlay'){const closed=state.overlays.pop();transition=a.transition??closed?.transition;}
   else if(a.type==='scroll-to'){if(!page.nodes.some(n=>n.id===a.targetId))throw Error('Scroll destination is missing.');effects.push({type:'scroll-to',targetId:a.targetId,duration:a.transition?.type==='instant'?0:a.transition?.duration??300,easing:a.transition?.easing??'ease-out'});}
+  else if(a.type==='play-audio'){if(!page.nodes.find(n=>n.id===a.targetId)?.prototypeAudio)throw Error('Choose a frame with prototype audio.');effects.push({type:'play-audio',targetId:a.targetId});}
+  else if(a.type==='stop-audio')effects.push({type:'stop-audio'});
   else if(a.type==='change-variant'){if(a.targetScope)throw Error('Resolve the interactive action from its receiving instance first.');const current=prototypeDocument(d,state),instance=current.pages.find(p=>p.id===pageId)!.nodes.find(n=>n.id===a.targetId),component=current.pages.flatMap(p=>p.nodes).find(n=>n.id===a.componentId&&n.type==='component');if(!instance||instance.type!=='instance'||!component)throw Error('Choose an instance and a component state.');state.variants={...state.variants,[instance.id]:component.id};transition=a.transition??defaultTransition();}
   else if(a.type==='set-variable'){const v=d.variables?.find(v=>v.id===a.variableId);if(!v)throw Error('Choose a variable.');const value=evaluateExpression(a.expression??'',lookup);if(v.type==='number'?typeof value!=='number'||Math.abs(value)>1e6:v.type==='boolean'?typeof value!=='boolean':typeof value!=='string'||v.type==='color'&&!/^#[0-9a-f]{6}$/i.test(value))throw Error('Expression does not match '+v.name+' ('+v.type+').');state.values={...state.values,[v.id]:value};}
   else if(a.type==='conditional'){for(const b of a.branches??[])if(!b.condition||evaluateExpression(b.condition,lookup)){run(b.actions);break;}}
@@ -127,7 +129,7 @@ export function executeActions(d:DesignDocument,pageId:string,initial:PrototypeS
  run(actions);validatePrototypeStateChange(d,pageId,initial,state,transition);return {state,effects,transition,preserveScroll};
 }
 export function keyMatches(r:PrototypeReaction,e:Pick<KeyboardEvent,'key'|'metaKey'|'ctrlKey'|'altKey'|'shiftKey'>){return r.key.toLowerCase()===e.key.toLowerCase()&&e.metaKey===r.modifiers.includes('meta')&&e.ctrlKey===r.modifiers.includes('control')&&e.shiftKey===r.modifiers.includes('shift')&&e.altKey===r.modifiers.includes('alt');}
-export function brokenConnections(p:Page){const flatten=(actions:PrototypeAction[]):PrototypeAction[]=>actions.flatMap(a=>[a,...(a.branches??[]).flatMap(b=>flatten(b.actions))]);return p.nodes.flatMap(n=>reactionsFor(n).flatMap(r=>flatten(r.actions).filter(a=>['navigate','open-overlay','swap-overlay'].includes(a.type)&&!resolveDestination(p,a.targetId)).map(a=>({nodeId:n.id,reactionId:r.id,actionId:a.id,name:n.name}))));}
+export function brokenConnections(p:Page){const flatten=(actions:PrototypeAction[]):PrototypeAction[]=>actions.flatMap(a=>[a,...(a.branches??[]).flatMap(b=>flatten(b.actions))]);return p.nodes.flatMap(n=>reactionsFor(n).flatMap(r=>flatten(r.actions).filter(a=>['navigate','open-overlay','swap-overlay','play-audio'].includes(a.type)&&!resolveDestination(p,a.targetId)).map(a=>({nodeId:n.id,reactionId:r.id,actionId:a.id,name:n.name}))));}
 function normalizedNodes(p:Page,frameId:string){const frame=p.nodes.find(n=>n.id===frameId);if(!frame)return [];const ids=new Set(descendants(p.nodes,[frameId]));return p.nodes.filter(n=>ids.has(n.id)).map(n=>({...n,x:n.x-frame.x,y:n.y-frame.y,parentId:n.id===frame.id?null:n.parentId}));}
 function pathKeys(nodes:DesignNode[]){const keys=new Map<string,string>();const walk=(parent:string|null,path:string)=>{const counts=new Map<string,number>();for(const n of nodes.filter(n=>n.parentId===parent)){const base=n.name+':'+smartFamily(n),index=counts.get(base)??0;counts.set(base,index+1);const key=parent===null?'':path+'/'+base+':'+index;keys.set(n.id,key);walk(n.id,key);}};walk(null,'');return keys;}
 /** Geometric interpolation and spring overshoot are not preflightable with fixed filter-region budgets. */
@@ -142,20 +144,27 @@ export function smartAnimate(from:Page,fromId:string,to:Page,toId:string,progres
  const fade=Math.max(0,Math.min(1,progress)),lerp=(a:number,b:number)=>a+(b-a)*progress;
  const leaving:DesignNode[]=[],result=b.map(n=>{const before=byKey.get(kb.get(n.id));if(!before){const enteringParent=n.parentId&&b.some(parent=>parent.id===n.parentId&&!byKey.has(kb.get(parent.id)));return {...n,opacity:n.opacity*(enteringParent?1:fade)};}const out={...n};for(const k of ['x','y','width','height','rotation','opacity','radius'] as const)out[k]=lerp(before[k],n[k]);out.width=Math.max(.01,out.width);out.height=Math.max(.01,out.height);out.opacity=Math.max(0,Math.min(1,lerp(before.visible?before.opacity:0,n.visible?n.opacity:0)));out.visible=progress>=1?n.visible:before.visible||n.visible;out.radius=Math.max(0,out.radius);out.fill=color(before.fill,n.fill,progress);
  const oldPaints=fillsFor(before),newPaints=fillsFor(n);
- if(oldPaints.length===newPaints.length&&oldPaints.every((p,i)=>p.type===newPaints[i].type&&p.stops.length===newPaints[i].stops.length&&(p.type!=='shader'||JSON.stringify(p.shader)===JSON.stringify(newPaints[i].shader))&&(p.type!=='image'||p.image===newPaints[i].image&&p.scaleMode===newPaints[i].scaleMode)))out.paints=newPaints.map((p,i)=>{const old=oldPaints[i],paint={...structuredClone(p),color:color(old.color,p.color,progress),visible:progress>=1?p.visible:old.visible||p.visible,opacity:Math.max(0,Math.min(1,lerp(old.visible?old.opacity:0,p.visible?p.opacity:0)))};for(const key of ['angle','cx','cy','radius'] as const)paint[key]=lerp(old[key],p[key]);paint.radius=Math.max(.001,paint.radius);if(p.type==='image'){for(const key of ['scale','offsetX','offsetY'] as const)if(old[key]!==undefined||p[key]!==undefined)paint[key]=lerp(old[key]??(key==='scale'?1:0),p[key]??(key==='scale'?1:0));if(paint.scale!==undefined)paint.scale=Math.max(.001,paint.scale);}paint.stops=p.stops.map((stop,j)=>({...stop,position:Math.max(0,Math.min(1,lerp(old.stops[j].position,stop.position))),color:color(old.stops[j].color,stop.color,progress),opacity:Math.max(0,Math.min(1,lerp(old.stops[j].opacity,stop.opacity)))}));return paint;});
+ if(oldPaints.length===newPaints.length&&oldPaints.every((p,i)=>paintsMatch(p,newPaints[i])))out.paints=newPaints.map((p,i)=>blendPaint(oldPaints[i],p,progress,color));
  else out.paints=[...oldPaints.map(p=>({...structuredClone(p),opacity:p.opacity*(1-fade)})),...newPaints.map(p=>({...structuredClone(p),id:'entering-'+p.id,opacity:p.opacity*fade}))];animateMatchedProperties(before,n,out,progress,color);const words=textCrossfade(before,n,out,fade,n.parentId);if(words)leaving.push(words);const shape=animateShape(before,n,out,progress,fade,n.parentId);if(shape)leaving.push(shape);return out;});result.push(...leaving);
  for(const n of a)if(!used.has(n.id)){const exitingParent=n.parentId&&!used.has(n.parentId);result.push({...n,id:'exiting-'+n.id,parentId:n.parentId?mapping.get(n.parentId)??'exiting-'+n.parentId:null,opacity:n.opacity*(exitingParent?1:1-fade)});}
  return result;
 }
 export function transitionProgress(t:PrototypeTransition,elapsed:number){return t.type==='instant'||t.duration===0?1:easingValue(t.easing,Math.max(0,Math.min(1,elapsed/t.duration)));}
+/** The time at which a transition reaches a progress, so a reversed animation can start from where the old one stopped. */
+export function prototypeElapsed(t:PrototypeTransition,progress:number){if(t.type==='instant'||t.duration===0||progress<=0)return 0;if(progress>=1)return t.duration;let low=0,high=t.duration;for(let i=0;i<32;i++){const mid=(low+high)/2;if(transitionProgress(t,mid)<progress)low=mid;else high=mid;}return high;}
+const opposite={left:'right',right:'left',top:'bottom',bottom:'top'} as const,mirrored:Partial<Record<PrototypeTransition['type'],PrototypeTransition['type']>>={'move-in':'move-out','move-out':'move-in','slide-in':'slide-out','slide-out':'slide-in'};
+/** Plays a transition backward: what arrived leaves the way it came. */
+export function reversedTransition(t:PrototypeTransition):PrototypeTransition{return {...t,type:mirrored[t.type]??t.type,direction:opposite[t.direction]};}
 
+/** The box a sticky layer holds by: its full rotated and scaled outline, in the scroller's own axes. */
+export function stickyBox(n:DesignNode,scroller:DesignNode,nodes:DesignNode[]){let m;try{m=multiply(inverseMatrix(worldMatrix(scroller,nodes)),worldMatrix(n,nodes));}catch{return {x:n.x,y:n.y,width:n.width,height:n.height};}const corners=[[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(m,x,y)),left=Math.min(...corners.map(p=>p.x)),top=Math.min(...corners.map(p=>p.y));return {x:scroller.x+left,y:scroller.y+top,width:Math.max(...corners.map(p=>p.x))-left,height:Math.max(...corners.map(p=>p.y))-top};}
 /** Materialize fixed and sticky layers without changing the saved document. */
 export function prototypeScrollNodes(nodes:DesignNode[],frameId:string,offset:{x:number;y:number}){refuseBackgroundBlurPlayback(nodes);refusePassThroughPlayback(nodes);
  const frame=nodes.find(n=>n.id===frameId);if(!frame||!offset.x&&!offset.y)return nodes;const copy=structuredClone(nodes),inside=new Set(descendants(nodes,[frameId])),positioned=nodes.filter(n=>n.id!==frameId&&inside.has(n.id)&&n.prototypePosition&&n.prototypePosition!=='normal');
  const contentRight=Math.max(frame.x+frame.width,...nodes.filter(n=>inside.has(n.id)).map(n=>n.x+n.width)),contentBottom=Math.max(frame.y+frame.height,...nodes.filter(n=>inside.has(n.id)).map(n=>n.y+n.height));
  for(const n of positioned){let ancestor=nodes.find(p=>p.id===n.parentId),nested=false;const seen=new Set<string>();while(ancestor&&ancestor.id!==frameId&&!seen.has(ancestor.id)){seen.add(ancestor.id);if(ancestor.prototypePosition&&ancestor.prototypePosition!=='normal'){nested=true;break;}ancestor=nodes.find(p=>p.id===ancestor!.parentId);}if(nested)continue;
- const parent=nodes.find(p=>p.id===n.parentId),right=parent&&parent.id!==frameId?parent.x+parent.width:contentRight,bottom=parent&&parent.id!==frameId?parent.y+parent.height:contentBottom;
- let dx=n.prototypePosition==='fixed'?offset.x:Math.max(0,Math.min(offset.x-(n.x-frame.x),right-n.x-n.width)),dy=n.prototypePosition==='fixed'?offset.y:Math.max(0,Math.min(offset.y-(n.y-frame.y),bottom-n.y-n.height));
+ const parent=nodes.find(p=>p.id===n.parentId),limit=parent&&parent.id!==frameId?stickyBox(parent,frame,nodes):undefined,right=limit?limit.x+limit.width:contentRight,bottom=limit?limit.y+limit.height:contentBottom;
+ const box=stickyBox(n,frame,nodes);let dx=n.prototypePosition==='fixed'?offset.x:Math.max(0,Math.min(offset.x-(box.x-frame.x),right-box.x-box.width)),dy=n.prototypePosition==='fixed'?offset.y:Math.max(0,Math.min(offset.y-(box.y-frame.y),bottom-box.y-box.height));
  if(parent){const matrix=worldMatrix(parent,nodes),det=matrix[0]*matrix[3]-matrix[1]*matrix[2];if(Math.abs(det)>1e-10){const x=(matrix[3]*dx-matrix[2]*dy)/det,y=(-matrix[1]*dx+matrix[0]*dy)/det;dx=x;dy=y;}}const moved=new Set(descendants(copy,[n.id]));for(const child of copy)if(moved.has(child.id)){child.x+=dx;child.y+=dy;}
  }return copy;
 }

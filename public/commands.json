@@ -1194,6 +1194,30 @@
     "⌘["
   ],
   [
+    "control-button",
+    "Insert interactive button",
+    "Prototype",
+    ""
+  ],
+  [
+    "control-toggle",
+    "Insert interactive toggle",
+    "Prototype",
+    ""
+  ],
+  [
+    "control-checkbox",
+    "Insert interactive checkbox",
+    "Prototype",
+    ""
+  ],
+  [
+    "control-radio",
+    "Insert interactive radio",
+    "Prototype",
+    ""
+  ],
+  [
     "present",
     "Present prototype",
     "Prototype",

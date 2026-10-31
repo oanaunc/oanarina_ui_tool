@@ -13,7 +13,11 @@ export const emojiCatalog:readonly EmojiEntry[]=buildCatalog();
 const glyphs=new Map(emojiCatalog.map(e=>[e.glyph,e]));
 /** Toning replaces a base's presentation selector; only sequences proven at generation time carry the flag. */
 export function emojiWithTone(e:EmojiEntry,tone:string){if(!tone||!e.tone)return e.glyph;if(!skinTones.some(t=>t[1]===tone))throw Error('Choose a supported skin tone.');const [first,...rest]=[...e.glyph];return first+tone+(rest[0]==='\ufe0f'?rest.slice(1):rest).join('');}
-function knownEmoji(glyph:string){if(glyphs.has(glyph))return true;for(const [,tone] of skinTones)if(tone&&glyph.includes(tone))for(const e of emojiCatalog)if(e.tone&&emojiWithTone(e,tone)===glyph)return true;return false;}
+let toned:Map<string,EmojiEntry>|undefined;
+const tonedGlyphs=()=>toned??=new Map(emojiCatalog.filter(e=>e.tone).flatMap(e=>skinTones.filter(t=>t[1]).map(t=>[emojiWithTone(e,t[1]),e] as const)));
+export function knownEmoji(glyph:string){return glyphs.has(glyph)||skinTones.some(t=>t[1]&&glyph.includes(t[1]))&&tonedGlyphs().has(glyph);}
+/** The Unicode name, for labels on a saved emoji. */
+export const emojiName=(glyph:string)=>(glyphs.get(glyph)??tonedGlyphs().get(glyph))?.code.replaceAll('_',' ')??'Emoji';
 /** Colon codes use underscores where names use spaces, so both spellings find the same emoji. Earlier catalog order breaks ties, keeping everyday short codes first. */
 export function searchEmoji(raw:string,limit=24){const q=raw.trim().toLowerCase().replace(/^:|:$/g,'').slice(0,80),words=q.split(/[\s_]+/).filter(Boolean),key=q.replace(/\s+/g,'_'),rank=(e:EmojiEntry)=>e.code===key?3:e.code.startsWith(key)?2:e.keywords.split(' ').includes(q)?1:0;return emojiCatalog.filter(e=>words.every(w=>(e.code+' '+e.keywords).includes(w))).map((e,i)=>({e,i,r:rank(e)})).sort((a,b)=>b.r-a.r||a.i-b.i).slice(0,Math.max(0,Math.min(EMOJI_SEARCH_LIMIT,limit))).map(v=>v.e);}
 export function colonEmojiToken(text:string,start:number,end:number){if(start!==end||start<0||start>text.length)return;const match=text.slice(Math.max(0,start-44),start).match(/(?:^|\s)(:([a-zA-Z0-9_+-]{1,40}):?)$/);return match?{start:start-match[1].length,end:start,query:match[2]}:undefined;}

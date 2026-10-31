@@ -35,3 +35,11 @@ A frame, component or instance inside the presented frame scrolls independently 
 Fixed layers stay in the region and sticky layers hold until their parent ends, including inside rotated parents. Scroll-to reaches a layer through every enclosing region over the authored duration and easing. A region fires its own While scrolling interactions. Navigation resets the destination frame's regions unless the action preserves scroll, and Restart resets all of them.
 
 Regions have no visible scrollbars, because they scroll artwork rather than a native element. Motion preview keeps its own frame-level scroller and does not support nested regions. Exported prototypes are not covered here. Validation: `tests/prototype-nested-scroll.test.ts`, `tests/e2e/prototype-nested-scroll.spec.ts`, `tests/e2e/prototype-device-shell.spec.ts`.
+
+## Version 1 additions
+
+Smart animate now handles stacks that do not match. A stroke or effect with a partner interpolates, including gradient strokes, dashes and independent edge widths; one without a partner fades, so a shadow can grow from nothing. Rich text with the same words animates size, spacing and color per run. Outlines with different contour counts morph, with spare contours shrinking to their center, and an open line unfolds into a closed shape. Layers with vector networks, text on a path, or dynamic or calligraphic strokes, and frames with progressive blur, still refuse Smart animate.
+
+Interruption works for every transition. Closing an overlay while it arrives turns it around from where it is, and an overlay opened on top leaves the one beneath to finish on its own clock. A state change no longer snaps a running transition. Going back during a move, push or dissolve reverses it; going to a third frame leaves from the frozen picture on screen. Motion preview keeps the earlier frame behavior.
+
+**Turn artwork with device** rotates a portrait frame with a landscape device, as an app locked to portrait behaves. Sticky layers hold by their full rotated outline. **Prototype → Insert interactive button, toggle, checkbox or radio** adds a real component set with its reactions and one instance.

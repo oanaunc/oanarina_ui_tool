@@ -1,0 +1,11 @@
+import {describe,expect,it} from 'vitest';
+import {blankDocument,node,parseDocument} from '../src/model';
+import {INTERACTIVE_CONTROLS,insertInteractiveControl} from '../src/interactive-controls';
+import {createPrototypeState,executeActions,prototypeDocument,reactionsFor} from '../src/prototype';
+import {interactiveActionResolver} from '../src/interactive-variants';
+function scene(){const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('frame',{id:'screen',name:'Screen',width:400,height:300})];return d;}
+describe('interactive control templates',()=>{
+ for(const kind of INTERACTIVE_CONTROLS)it(`builds a valid ${kind} set and instance that survive a save`,()=>{const d=scene(),id=insertInteractiveControl(d,d.pages[0].id,kind,{x:20,y:20,parentId:'screen'}),saved=parseDocument(JSON.stringify(d));expect(saved.componentSets).toHaveLength(1);expect(saved.componentSets![0].variants.length).toBeGreaterThan(1);expect(saved.pages[0].nodes.find(n=>n.id===id)).toMatchObject({type:'instance',parentId:'screen'});});
+ it('a toggle instance changes only itself and keeps independent state',()=>{const d=scene(),page=d.pages[0],a=insertInteractiveControl(d,page.id,'toggle',{x:20,y:20,parentId:'screen'}),source=page.nodes.find(n=>n.id===a)!.componentId!;page.nodes.push(node('instance',{id:'other',name:'Toggle',parentId:'screen',x:20,y:80,componentId:source,width:44,height:24}));const state=createPrototypeState(page,'screen'),live=prototypeDocument(d,state),n=live.pages[0].nodes.find(x=>x.id===a)!,r=reactionsFor(n).find(x=>x.trigger==='click')!,bound=interactiveActionResolver(live,page.id)(a,r.actions,r.id),next=executeActions(d,page.id,state,bound).state;expect(Object.keys(next.variants)).toEqual([a]);const after=prototypeDocument(d,next).pages[0].nodes.find(x=>x.id===a)!;expect(after.fill).toBe('#5b3fb5');const back=reactionsFor(after).find(x=>x.trigger==='click')!;expect(back).toBeDefined();});
+ it('a button answers hover and press while its pressed state only holds',()=>{const d=scene(),id=insertInteractiveControl(d,d.pages[0].id,'button',{x:0,y:0}),n=prototypeDocument(d,createPrototypeState(d.pages[0],'screen')).pages[0].nodes.find(x=>x.id===id)!;expect(reactionsFor(n).map(r=>r.trigger)).toEqual(['hover','press']);});
+});

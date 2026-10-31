@@ -33,3 +33,11 @@ Synthetic WAV fixtures exercise actual RIFF parsing/canonicalization, signed PCM
 References: [Microsoft RIFF overview](https://learn.microsoft.com/en-us/windows/win32/xaudio2/resource-interchange-file-format--riff-), [original RIFF/WAVE PCM specification](https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/Docs/riffmci.pdf), and [W3C Web Audio](https://www.w3.org/TR/webaudio/).
 
 Default MCP `read_document` and `read_nodes` inspection omits embedded audio bytes alongside images/fonts; explicitly authorized `includeAssets:true` returns the exact scoped project data. Omitted output is an inspection view, not a valid replacement document.
+
+## Version 1 additions
+
+The picker now takes any audio the system can decode: MP3, AAC, WAV, AIFF, FLAC and Ogg. A source that is not already canonical PCM16 decodes locally and is saved as the same canonical WAV, resampled only as far as the 8 MB budget needs, so a 60-second stereo clip stays near 32 kHz. Saved files stay readable by older builds unless they use the new optional `autoplay` field or the new actions.
+
+Three ways to play exist. The presenter panel is unchanged. **Play when this frame appears** starts on arrival and stops when the frame is left; if the browser holds audio, the first press in the page starts it. The **Play sound** and **Stop sound** prototype actions play any frame's clip from a reaction, and that sound keeps playing across frames until it ends, Stop sound runs, the window hides or presentation closes. Each voice is its own context, so sounds overlap. Slide embeds skip these two actions.
+
+Checked in Chromium and WebKit, including a real AAC file made by the Mac's own encoder. Output was measured through the audio graph, not listened to, and the native app was not run.
