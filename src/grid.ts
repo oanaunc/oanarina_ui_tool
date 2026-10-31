@@ -1,4 +1,4 @@
-import {layoutPadding,layoutChildOutset} from './layout-settings';
+import {layoutPadding,layoutChildOutset,layoutSpan} from './layout-settings';
 import type {DesignDocument,DesignNode} from './model';
 
 export interface GridTrack {sizing:'fixed'|'fr'|'hug';value:number;min?:number;max?:number;}
@@ -39,7 +39,7 @@ function resolveTracks(tracks:GridTrack[],placements:GridPlacement[],byId:Map<st
 }
 /** Frame-local cell geometry, shared by layout, inspectors and canvas overlays. */
 export function gridGeometry(parent:DesignNode,kids:DesignNode[],width=parent.width,height=parent.height):GridGeometry{
- const {placements,columnCount,rowCount}=placeGrid(parent,kids),byId=new Map(kids.map(n=>{const o=layoutChildOutset(parent,n);return [n.id,o?{...n,width:n.width+2*o,height:n.height+2*o,minWidth:(n.minWidth??0)+2*o,minHeight:(n.minHeight??0)+2*o}:n];})),[top,right,bottom,left]=layoutPadding(parent),gx=parent.gapX??parent.gap,gy=parent.gapY??parent.gap;
+ const {placements,columnCount,rowCount}=placeGrid(parent,kids),byId=new Map(kids.map(n=>{const o=layoutChildOutset(parent,n),width=layoutSpan(n,'width',o),height=layoutSpan(n,'height',o);return [n.id,o||width!==n.width||height!==n.height?{...n,width,height,minWidth:(n.minWidth??0)+2*o,minHeight:(n.minHeight??0)+2*o}:n];})),[top,right,bottom,left]=layoutPadding(parent),gx=parent.gapX??parent.gap,gy=parent.gapY??parent.gap;
  const columns=resolveTracks(Array.from({length:columnCount},(_,i)=>parent.gridColumns?.[i]??{sizing:'fr',value:1}),placements,byId,'width',gx,Math.max(0,width-left-right),parent.sizingX==='hug'),rows=resolveTracks(Array.from({length:rowCount},(_,i)=>parent.gridRowTracks?.[i]??{sizing:'hug',value:0}),placements,byId,'height',gy,Math.max(0,height-top-bottom),parent.sizingY==='hug');
  const offsets=(sizes:number[],gap:number,padding:number)=>{let pos=padding;return sizes.map(size=>{const value=pos;pos+=size+gap;return value;});};
  return {columns,rows,columnOffsets:offsets(columns,gx,left),rowOffsets:offsets(rows,gy,top),placements,width:Math.max(0,sum(columns)+Math.max(0,columnCount-1)*gx+left+right),height:Math.max(0,sum(rows)+Math.max(0,rowCount-1)*gy+top+bottom)};
