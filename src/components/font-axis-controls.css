@@ -1,0 +1,5 @@
+.font-axis-controls{display:grid;gap:6px;margin-bottom:8px}
+.font-axis-row{display:grid;grid-template-columns:minmax(0,1fr) 58px 18px;gap:6px;align-items:end}
+.font-axis-row label{display:grid;gap:2px;min-width:0}
+.font-axis-row input[type=range]{width:100%;margin:0}
+.font-axis-row input[type=number]{width:100%;min-width:0}

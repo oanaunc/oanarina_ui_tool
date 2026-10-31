@@ -141,5 +141,7 @@ export const messages=[
  'Next results','Close the motion timeline to replace base text.','Replace match','Replace all editable matches','Close search',
 
  'Brush presets','Brush preset choices','Illustration tools','Illustration tool choices','Edit points','Bend segments','Cut path','Erase path','Lasso points','Shape builder','Stretch',
+
+ 'Variable axes','Named instance','Custom position','Reset axes','Mixed axis values. Changing one sets all axes for the selected text.','Slider edits apply on release.',
 ] as const;
 export type Message=typeof messages[number];

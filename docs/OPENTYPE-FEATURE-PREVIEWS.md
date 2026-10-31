@@ -14,8 +14,31 @@ The preview clips safely at 512 UTF-16 units and is isolated from the surroundin
 
 At most eight font assets and 14,000,000 combined data-URL characters are considered for metadata inspection (approximately 10.5 MB of base64-decoded payload before URL overhead). Each inspected asset additionally has an exact 10,000,000 decoded-byte cap; the raw table reader has the existing 20 MB font cap, 4,096 directory/feature-record caps, and table/offset bounds checks. The metadata cache holds at most 16 entries. At most eight browser face-loading requests are made for each specimen state; remaining fonts may still render but have no loading assurance. Existing feature-map (100 entries) and rich-run (10,000) validation limits also apply to edits. A full valid 100-entry source map can still compare a 101-entry local CSS candidate; applying that extra entry is atomically refused by the existing document validator.
 
+## Font table discovery
+
+`src/font-table-metadata.ts` reads the tables of uncompressed TTF and OTF assets. No shaping runs. Everything below comes from the font's own bytes.
+
+- **Variable axes.** The OpenType tab lists axes from `fvar` with their real ranges, names and defaults, as a slider and a number field, plus the font's named instances. Hidden axes are not shown. A slider commits once on release, so a drag is one Undo step, and the canvas updates at that point rather than during the drag. Edits use the existing `fontAxes` field, so there is no schema change.
+- **Named features.** `ssXX` and `cvXX` entries show the designer's name from `FeatureParams` and the `name` table. Names that do not resolve are ignored, because some compilers wrote wrong offsets.
+- **Alternates.** The largest alternate set of a feature's type 3 lookups gives the valid value range.
+- **Scripts.** Each feature lists the scripts that reference it.
+- **Reach for this text.** `cmap` maps the text to glyphs, and Coverage tables decide whether a lookup touches them: **applies**, **can change in context**, or **declared but unused here**. A ligature needs its whole component sequence. Contextual rules are checked only against their first input coverage, so they report a possibility, not a result. Mark-attachment and pair positioning check their first coverage, so `kern` means "a pair starting here exists". This reads tables and does not shape text, so it can disagree with what the browser finally renders.
+
+Bundled faces are static, with no axes and no `ssXX` or `cvXX` sets, so those controls appear for fonts people import. Axes are only offered when the rendered face really has them:
+
+| Font source | Axes shown |
+| --- | --- |
+| Imported or embedded TTF/OTF | All visible `fvar` axes and named instances |
+| Catalog WOFF2 download | `wght` only, from the face's own weight range. Downloads request only that axis, so catalog tags such as `wdth` or `opsz` are not offered. |
+| Static TTF/OTF | None, with a plain statement |
+| Compressed static faces and installed fonts | Unknown, with a plain statement |
+
+WOFF2 tables need a Brotli decoder, which the app does not have, and installed fonts are not exposed to the renderer. Named features, alternates and reach are therefore unknown there too. Budgets: 64 axes, 1,024 instances (64 shown), 8,192 lookups, 2,000,000 coverage operations and 512 characters of text. Malformed tables are refused and reported as unknown rather than reaching the inspector as an error.
+
 ## Verification
 
 Core checks cover actual bundled open-license Lato, Inter and JetBrains Mono font declarations, corrupt table refusal, mixed-map preservation, empty-map inheritance, safe Unicode clipping, full-paragraph Auto direction, and Undo. Browser checks compare actual Lato ligature pixels with identical source/font/axes; exercise mixed ranges, save/reopen and Undo; inspect real effective CSS inheritance; verify unknown system/custom metadata, local specimens and RTL source direction; and refuse stale document/range/mode/visibility/candidate drafts.
 
 UI-22-053 has a reachable font-rendered comparison workflow within these stated limits. Reference verification against Figma remains separate; this does not assert exact Figma feature-menu, font-engine or shaping-context parity.
+
+Discovery is covered by `tests/font-table-metadata.test.ts` and `tests/e2e/font-axes.spec.ts`. Fixture coverage uses an original variable font built in `tests/support/variable-font.ts`, with real `fvar`, `gvar`, `GSUB`, `cmap` and `name` tables. Chromium accepts it, and the browser test measures painted canvas pixels growing when `wght` moves, then returning on Undo. Reach also runs on bundled Lato and Inter. The parser was also run once by hand against four macOS system fonts, which are neither committed nor used by any test: it read their axes, named instances and designer feature names.
