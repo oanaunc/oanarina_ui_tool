@@ -49,7 +49,7 @@ export function libraryContext(d:DesignDocument,options:LibraryContextQuery={}){
   const owner=mainFor(n.id);if(!owner)continue;const main=entityKey('component',owner);if(n.type==='component'&&!n.instanceRootId){const parent=mainFor(n.parentId);if(parent)ref(entityKey('component',parent),'component',n.id,'nested-definition');}
   if(n.type==='instance'&&n.componentId)ref(main,'component',n.componentId,'nested-instance');
   for(const value of Object.values(n.styleIds??{}))ref(main,'style',value,'layer-style');
-  for(const value of Object.values(n.variableBindings??{}))ref(main,'variable',value,'layer-variable');
+  for(const value of Object.values(n.variableBindings??{}))ref(main,'variable',value,'layer-variable');if(n.prototypeInput)ref(main,'variable',n.prototypeInput.variableId,'form-input-variable');
   for(const [collection,mode] of Object.entries(n.variableModes??{})){ref(main,'collection',collection,'mode-owner');ref(main,'mode',mode,'selected-mode');}
   if(n.layoutGuideStyleId)ref(main,'guide-style',n.layoutGuideStyleId,'layout-guide-style');
   for(const binding of Object.values(n.layoutGuideBindings??{})){ref(main,'guide',binding.guideId,'responsive-guide');ref(main,'layer',binding.ownerId,'responsive-owner');}
