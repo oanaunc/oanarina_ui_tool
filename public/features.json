@@ -1494,10 +1494,10 @@
     "category": "Pages and document structure",
     "name": "File-level library metadata",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "File information shows publication state, version count and libraries used, and edits owner, license, contact and tags as validated plain text, with Undo, .oui persistence and copying into snapshots shown in consumer review. Implementation validated; reference verification pending."
   },
   {
     "id": "UI-05-030",
@@ -2857,7 +2857,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Groups scale their rendered subtree through the existing transform fields. The inspector continues to show intrinsic dimensions; tight child-derived group bounds and full Figma group resize semantics remain incomplete."
+    "notes": "Group resize still saves one scale. The inspector now states percent and on-canvas size and offers Apply scale to values; an uneven scale changes position and size only and refuses rotated contents. See docs/FRAME-WORKFLOWS.md."
   },
   {
     "id": "UI-10-016",
@@ -2887,7 +2887,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Sixteen rendered group blend modes and explicit isolation are usable; Figma pass-through compositing remains unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Note change only: blend modes and isolation are usable, and pass-through has its own bounded path under UI-19-018."
   },
   {
     "id": "UI-10-019",
@@ -2897,7 +2897,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Explicit guarded fit-to-children is undoable and preserves transforms; automatic tight bounds recomputation remains unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Plain groups refit to direct children on any edit that changes them, inside out, in the same Undo, with no artwork change; generated instance groups follow without an override. Rotated, flipped, scaled, Boolean, mask, clipped, painted, auto layout, guide-bound, fill-sized and animated groups skip it, and headless MCP edits do not refit. Explicit Fit still covers rotated and scaled groups."
   },
   {
     "id": "UI-10-020",
@@ -3447,7 +3447,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The K Scale tool saves one layer scale transform, so stroke stacks and dashes render scaled through the matrix. Inspector numbers keep the authored pre-scale values."
+    "notes": "K Scale still saves a scale. Apply scale to values turns an even scale into real stroke, dash and other values with every layer in place, and refuses instances, rich text, networks, masks, nested scales and animated layers."
   },
   {
     "id": "UI-12-015",
@@ -3457,7 +3457,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The K Scale tool saves one layer scale transform, so stroke stacks and dashes render scaled through the matrix. Inspector numbers keep the authored pre-scale values.: independent corners render scaled, with inspector radii unchanged."
+    "notes": "K Scale still saves a scale. Apply scale to values turns an even scale into real stroke, dash and other values with every layer in place, and refuses instances, rich text, networks, masks, nested scales and animated layers. An even scale applies to corner radii, including independent corners."
   },
   {
     "id": "UI-12-016",
@@ -4344,10 +4344,10 @@
     "category": "Vector pen and editing",
     "name": "Round vector corners",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Circular fillets for straight vector corners work; general curved-corner rounding remains unfinished Evidence and limits: docs/VECTOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Round selected corners fits a circular fillet tangent to straight or cubic neighbors and keeps exact de Casteljau curve pieces, with one Undo, save/reopen and SVG export. It is baked geometry rather than a live per-point radius, is capped at half each adjoining segment and 4,096 corners per request, and refuses smooth anchors, cusps, duplicates, open endpoints and over-tight curves atomically. Exact Figma reference and native acceptance remain pending. docs/VECTOR-WORKFLOWS.md; tests/vector-corner-rounding.test.ts; tests/e2e/vector-corner-rounding.spec.ts."
   },
   {
     "id": "UI-14-033",
@@ -4434,10 +4434,10 @@
     "category": "Vector pen and editing",
     "name": "Offset square or round joins",
     "priority": "must",
-    "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Round joins and explicitly sharp/miter joins with 4× miter limit/bevel fallback work in signed offsets and real previews/exports. A true square-join algorithm and exact Figma join equivalence remain unfinished; the Square label explicitly says miter. Geometry tolerance/topology/size limits apply. docs/VECTOR-OFFSET.md."
+    "notes": "Offset now offers Miter (limit 4, bevel fallback), Round and a true clipped Square join, which cuts straight across at exactly the offset distance from the anchor on outer corners, in closed and open paths, with real preview, Apply and saved geometry. Curves are still flattened to 0.25 units and the existing geometry, topology and size limits apply. Exact Figma join equivalence remains unverified. docs/VECTOR-OFFSET.md."
   },
   {
     "id": "UI-14-042",
@@ -5387,7 +5387,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: actual canvas linear free endpoints, line translation and stop positions; radial center/radius/stops; guarded whole-scene preview, keyboard handles, no-op style preservation, one Undo/save/reopen. Optional paired normalized linearStart/linearEnd preserve legacy angle defaults and validate through nodes/styles/clipboard/MCP/Bridge before mutation. Shared SVG/export/swatch coordinates, compatible Bridge transform mock roundtrip and explicit approximation/CSS omissions. Partial: supported full-box linear/radial fills only; no angular/diamond/stroke/arbitrary paint boxes or skew radial handles. docs/CANVAS-GRADIENT-HANDLES.md; core and real browser pixel/transform/session tests. Real Figma/native acceptance pending."
+    "notes": "Canvas handles now cover diamond and angular fills as well as linear and radial, with the same draft, cancel, Undo and save path. Angular handles sit on a fixed ring; stroke paints, text and paths remain excluded."
   },
   {
     "id": "UI-17-030",
@@ -7627,7 +7627,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row, column, grid cell and spanned track fill, aspect locks, nested chains, wrapped text and min/max redistribution work and are tested. Layout convergence stops after 8 passes, and rotated children use their unrotated box."
+    "notes": "Row, column, grid, aspect, nested and min/max fill work. Layout convergence stops after 8 passes. A rotated child's Fill axis keeps its assigned size and is measured unrotated, while non-fill axes use the rotated box."
   },
   {
     "id": "UI-23-016",
@@ -7637,7 +7637,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row, column, grid cell and spanned track fill, aspect locks, nested chains, wrapped text and min/max redistribution work and are tested. Layout convergence stops after 8 passes, and rotated children use their unrotated box."
+    "notes": "Row, column, grid, aspect, nested and min/max fill work. Layout convergence stops after 8 passes. A rotated child's Fill axis keeps its assigned size and is measured unrotated, while non-fill axes use the rotated box."
   },
   {
     "id": "UI-23-017",
@@ -7707,7 +7707,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row, column, grid cell and spanned track fill, aspect locks, nested chains, wrapped text and min/max redistribution work and are tested. Layout convergence stops after 8 passes, and rotated children use their unrotated box."
+    "notes": "Nested constrained resize works through the shared solver, and layout convergence stops after 8 passes. Rotated and scaled children now take their bounding box, which updates an older layout the next time its page is edited."
   },
   {
     "id": "UI-23-024",
@@ -8054,10 +8054,10 @@
     "category": "Auto layout fundamentals",
     "name": "Baseline alignment",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Unreleased source: first-line SVG baselines through translation-only nested containers. Rotated/flipped/scaled nesting falls back to container bottom; complete font-metric/reference parity remains unfinished. See docs/AUTO-LAYOUT-COMPLETION.md."
+    "notes": "First-line baselines carry through nested, rotated, flipped and scaled containers into the row's axes. They use the app's own text measurement, so native font-metric equivalence is a reference question."
   },
   {
     "id": "UI-24-029",
@@ -8065,9 +8065,9 @@
     "name": "Stroke included in layout",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Unreleased source: explicit stroke inclusion in local axis-aligned linear/grid sizing, gaps, padding, fill and wrap. Arbitrary transformed bounds and miter/cap/arrow extrema remain unfinished; shadows excluded. See docs/AUTO-LAYOUT-COMPLETION.md. Register correction: this bounded working path is partial, rather than planned; arbitrary transformed/extrema coverage remains unfinished."
+    "notes": "Stroke inclusion now covers transformed children's bounding boxes and arrowheads past the line box, in addition to linear, grid, gap, padding, fill and wrap. Miter tips on non-rectangular shapes remain excluded, and shadows are excluded."
   },
   {
     "id": "UI-24-030",
@@ -8164,10 +8164,10 @@
     "category": "Auto layout grid and wrap",
     "name": "Grid row count",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/31289469907863-Use-the-grid-auto-layout-flow",
-    "notes": "Explicit minimum row count preserves empty rows and grows for all objects. Figma fixed-count migration/column creation semantics and deleting rows with their object migration remain unfinished. See docs/GRID-LAYOUT.md."
+    "notes": "Explicit row count plus Add after and Remove on each row and column card. Placed objects shift, spans grow or shrink, an object only in a removed track returns to automatic placement, and no layer is deleted; each action is one Undo. Figma reference semantics are unverified."
   },
   {
     "id": "UI-25-004",
@@ -8994,10 +8994,10 @@
     "category": "Components",
     "name": "Nested instance override",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete."
+    "notes": "A selected nested instance edits its own properties, variants and swap for that outer instance only, at any depth. Generated IDs and overrides stay stable across later syncs, with Undo, reopen, cross-file copy and export tested. Slot-bearing components refuse; Figma Bridge transfer of nested overrides is not validated."
   },
   {
     "id": "UI-27-027",
@@ -9007,7 +9007,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Swaps carry property values by name and type and keep the rest for a swap back. Divergent structure and per-binding override granularity remain limits."
+    "notes": "Property values follow name and type. Layer overrides follow component key or path, then a unique layer of the same type and name, without its old position; one overridden binding leaves the others following the main. Renamed or ambiguously named layers have no match, and unmatched layer overrides do not return on swap back."
   },
   {
     "id": "UI-27-028",
@@ -9064,10 +9064,10 @@
     "category": "Components",
     "name": "Expose nested instance",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Nested sources propagate and compatible paths/component keys preserve overrides on swap. Arbitrary nested override combinations, divergent structures and per-binding override granularity remain incomplete."
+    "notes": "\"Expose properties to instances\" on a nested instance in a main lists it on outer instances, with swap, variant and property controls. Deeper instances appear only when every generated instance on the way is exposed, up to 64 rows. See docs/COMPONENT-WORKFLOWS.md."
   },
   {
     "id": "UI-27-034",
@@ -9254,10 +9254,10 @@
     "category": "Variants and properties",
     "name": "Instance-swap component property",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Instance-swap properties work singly and across a selection through target validation. Multi-level exposure chains remain unvalidated."
+    "notes": "Instance-swap properties work singly, across a selection, and through exposed nested instances, with a three-level chain tested. Recursive, missing and slot-bearing targets refuse."
   },
   {
     "id": "UI-28-017",
@@ -9295,9 +9295,9 @@
     "name": "Expose nested property",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Text/boolean properties and nested instance-swap definitions are exposed. Complex nested swaps and property migration across divergent variants need broader validation; multi-selection starts from the first selected instance."
+    "notes": "Text, Boolean and swap properties of nested instances appear when selected or exposed, and resolve through overrides at each level. Selecting several instances shows root properties only, and Hide irrelevant properties does not filter nested controls."
   },
   {
     "id": "UI-28-021",
@@ -9324,10 +9324,10 @@
     "category": "Variants and properties",
     "name": "Bind swap property",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Instance-swap properties work singly and across a selection through target validation. Multi-level exposure chains remain unvalidated."
+    "notes": "A direct swap of an exposed target writes the owning property at the nearest level rather than a separate override, tested through a nested chain."
   },
   {
     "id": "UI-28-024",
@@ -9337,7 +9337,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: opt-in main-component setting hides authored-hidden text/swap controls, retains restoration Booleans and values, with temporary reveal, Undo/save/library/clipboard validation. Independent documented relevance rules; nested exposure authoring, multi-instance editing and exact current Figma semantics remain outside this path. See docs/COMPONENT-PROPERTY-RELEVANCE.md."
+    "notes": "Note change only: exposed nested controls are now authorable, but they ignore this setting. Multi-instance editing stays outside this path. See docs/COMPONENT-PROPERTY-RELEVANCE.md."
   },
   {
     "id": "UI-28-025",
@@ -9357,7 +9357,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Local main components suggest other available mains for whole-instance swaps. Stale suggestions remain visibly unavailable; clipboard closure prevents destination-only references. Remote libraries and exact preferred-nested-instance semantics remain unfinished or reference-unverified Evidence and limits: docs/COMPONENT-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Note change only: direct nested swaps list the nested main's preferred instances first, and whole-instance suggestions are unchanged. Remote libraries and exact preferred-nested semantics remain unfinished or reference-unverified."
   },
   {
     "id": "UI-28-027",
@@ -9487,7 +9487,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Publish an immutable reusable-only local snapshot file with closed component/set/style/guide/token dependencies and affirmative redistribution font policy; source history/Undo. No hosted/team organization publishing. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Adds collection choice and a changes-since-last-cached-version list by fingerprint. No hosted or team publishing."
   },
   {
     "id": "UI-29-007",
@@ -9527,7 +9527,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Disable blocks this library widget insertion and suppresses its update notification while cached consumers/definitions remain usable. Ordinary local assets still expose cached definitions; no hosted entitlement or remote removal. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Disabled definitions now leave the Assets component browser with a hidden count, and instances stay linked. Styles and variables stay in inspector pickers."
   },
   {
     "id": "UI-29-011",
@@ -9537,7 +9537,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Browse imported/published immutable local snapshots and their cached versions, with explicit download/import/remove controls. No hosted organization/community discovery. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Adds search across cached libraries. No hosted or community discovery."
   },
   {
     "id": "UI-29-012",
@@ -9557,7 +9557,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Isolated incoming/cached SVG component previews plus bounded textual style/token/guide previews support review. Default variant only,256-layer/geometry/SVG budgets and platform font metrics; no universal/reference preview parity. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Set previews now show any variant. The 256-layer, geometry and SVG budgets and font-metric limits remain."
   },
   {
     "id": "UI-29-014",
@@ -9577,7 +9577,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Review named added/changed/unchanged/removed groups, local edit conflicts, bounded before/after geometry/scalar details, dependency closure and installed/source versions. No unrestricted visual diff or automatic merge. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Adds named variable and mode review with up to 200 changed values, 24 shown. No unrestricted visual diff or merge."
   },
   {
     "id": "UI-29-016",
@@ -9587,7 +9587,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Accept all incoming local groups/removal notices in one validated Undo transaction; stable source IDs, actual style/token/component derivation and consumer overrides survive. Unsafe destructive/property/variable/mode changes refuse; removed source groups retain cached definitions. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Removed variables and modes no longer always refuse: those in use need an explicit mapping or confirmation, and all apply in one Undo. A variable used by a prototype action, or a type change on one in use, still refuses."
   },
   {
     "id": "UI-29-017",
@@ -9597,7 +9597,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Accept selected local groups automatically includes required displayed dependency groups in one validated Undo transaction; source changes propagate to real linked consumers. Conservative conflict/removal limits and no cloud synchronization. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Same variable decisions apply to selected updates, with the dependency closure. No cloud sync."
   },
   {
     "id": "UI-29-018",
@@ -9624,10 +9624,10 @@
     "category": "Libraries and design systems",
     "name": "Library analytics",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "An explicit scan counts current references in the local project library plus the open file: files, versions, instances, layers and unused assets, up to 2,000 files. It cannot see other people or devices, .oui files never opened here, history or trends, Trash or branch copies, and the panel says so."
   },
   {
     "id": "UI-29-021",
@@ -9637,7 +9637,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: current-file instance counts by stable installed library/component IDs across pages, separate authored/generated/definition references, bounded search/pagination and read-only navigation. No cache-wide, organization/cloud or longitudinal analytics. See docs/LOCAL-LIBRARY-COMPONENT-LIFECYCLE.md."
+    "notes": "Now also counted across device files and for styles, variables and guides, on top of current-file instance counts. No organization, cloud or longitudinal data."
   },
   {
     "id": "UI-29-022",
@@ -9664,10 +9664,10 @@
     "category": "Libraries and design systems",
     "name": "Move component between libraries",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Consumer-side repair: after a source removal is accepted, a group is re-homed to a cached library with the same topology. Local IDs, instances and overrides are kept in one Undo, and the next review offers the new definition. Sources are not edited. Refuses edited definitions, an already installed target, topology mismatch and changed slot identities."
   },
   {
     "id": "UI-29-025",
@@ -9775,9 +9775,9 @@
     "name": "Style conflict resolution",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slash names and search exist; imports preserve existing assets by generating new identifiers. Folder navigation and an interactive conflict-resolution workflow remain incomplete. Unreleased local snapshot updates additionally identify moved/edited cached definitions and refuse unsafe overwrite/removal; no interactive library merge. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Style, guide and collection conflicts now offer explicit \"Replace with library version\" or \"Keep my version as local\". No merge. Component conflicts still refuse. Folder navigation limit unchanged."
   },
   {
     "id": "UI-29-036",
@@ -10144,20 +10144,20 @@
     "category": "Variables and tokens",
     "name": "Publish variables",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Local snapshots publish collections with modes and aliases, and a file can publish variables alone. Per-collection exclusion is saved with Undo, and dangling aliases or bindings refuse by name. No hosted or team publishing; sharing is by snapshot file. docs/LOCAL-LIBRARY-VARIABLES.md."
   },
   {
     "id": "UI-30-037",
     "category": "Variables and tokens",
     "name": "Remote variables",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A consumer holds a linked read-only copy, enforced in the store edit path, with a per-file mode choice, named update review, mode mapping and detach with Undo. Saved-file MCP writes bypass the store guard but surface as conflicts. No live sync; updates arrive by importing a snapshot."
   },
   {
     "id": "UI-30-038",
@@ -10715,9 +10715,9 @@
     "name": "Smart animate transition",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Smart animate and interrupted transitions work for supported matched properties. Arbitrary topology/effect/text morphs and exact interruption semantics remain incomplete."
+    "notes": "Smart animate now also interpolates scale, corners, solid strokes, effect stacks and plain text size, letter spacing and line height; different words crossfade. Shape topology morphs, rich text size and mismatched stacks do not animate."
   },
   {
     "id": "UI-33-004",
@@ -10995,9 +10995,9 @@
     "name": "Animation interruption",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Smart animate and interrupted transitions work for supported matched properties. Arbitrary topology/effect/text morphs and exact interruption semantics remain incomplete."
+    "notes": "Interrupting a Smart animate frame change continues from what is on screen, tested as jump-free. Layers already fading out vanish at that moment, and overlay transitions keep the earlier behavior."
   },
   {
     "id": "UI-33-032",
@@ -11195,9 +11195,9 @@
     "name": "Nested interactive components",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Variables and authored component variants can model these states, but dedicated control templates and all nested interactive combinations remain incomplete."
+    "notes": "Note change only: nested instances now take per-instance properties and swaps, and authored variants can model states. Dedicated control templates are absent, and nested interactive combinations were not newly tested."
   },
   {
     "id": "UI-34-020",
@@ -11355,9 +11355,9 @@
     "name": "Device frame selection",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Generic drawn shells for phone, foldable, tablet, laptop, desktop and watch; the additive values are refused by older builds. The frame still sets the viewport, and no real device artwork or hardware dimensions are claimed."
   },
   {
     "id": "UI-35-006",
@@ -11365,9 +11365,9 @@
     "name": "Device orientation",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Orientation changes viewport proportions and shell placement; artwork does not rotate."
   },
   {
     "id": "UI-35-007",
@@ -11404,10 +11404,10 @@
     "category": "Prototype presentation",
     "name": "Fill-screen preview",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Fill screen scales to fill, and cropped artwork stays reachable by scrolling the stage from its start."
   },
   {
     "id": "UI-35-011",
@@ -11524,30 +11524,30 @@
     "category": "Prototype presentation",
     "name": "Share prototype link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "File → Export prototype file… saves a ZIP with one offline HTML player and a README, validated on load and blocked from network requests by its page policy. There is no hosted URL; you host or send the file yourself. See docs/PROTOTYPE-SHARING.md."
   },
   {
     "id": "UI-35-023",
     "category": "Prototype presentation",
     "name": "Embed prototype",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "The dialog generates a copyable iframe snippet with sandbox=\"allow-scripts allow-popups allow-popups-to-escape-sandbox\" and no allow-same-origin, tested playing inside a sandboxed iframe on a host page. It embeds a file you host, not a Forma-hosted prototype."
   },
   {
     "id": "UI-35-024",
     "category": "Prototype presentation",
     "name": "Prototype password",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "Real AES-256-GCM encryption with a PBKDF2-SHA-256 key at 600,000 iterations and random salt and IV stored in the file; a canary test confirms the content is unreadable without the password. Anyone with file and password has the content, weak passwords can be guessed offline, a password cannot be recovered or revoked, and files open only from https:// or locally."
   },
   {
     "id": "UI-35-025",
@@ -11564,10 +11564,10 @@
     "category": "Prototype presentation",
     "name": "Mobile preview",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "The exported player works at phone widths with touch, 44 px controls and safe areas, tested with Playwright iPhone 13 emulation in Chromium. Not tested on a physical phone or in mobile Safari, and there is no companion app."
   },
   {
     "id": "UI-35-027",
@@ -11585,39 +11585,39 @@
     "name": "Sticky-position layers",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Sticky works at root and in nested regions, including inside rotated parents in nested regions. A sticky layer that is itself rotated uses conservative box bounds."
   },
   {
     "id": "UI-35-029",
     "category": "Prototype presentation",
     "name": "Horizontal scroll regions",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Root and nested horizontal regions work by wheel, drag and keyboard, with scroll passing outward, Scroll-to over the authored duration, While scrolling interactions and reset rules. Regions have no visible scrollbars; Motion preview is the separate UI-56-050."
   },
   {
     "id": "UI-35-030",
     "category": "Prototype presentation",
     "name": "Vertical scroll regions",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Root and nested vertical regions work by wheel, drag and keyboard, with scroll passing outward, Scroll-to over the authored duration, While scrolling interactions and reset rules. Regions have no visible scrollbars; Motion preview is the separate UI-56-050."
   },
   {
     "id": "UI-35-031",
     "category": "Prototype presentation",
     "name": "Two-axis scroll regions",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Device presets/orientation size the viewport without an exact physical device shell; fill crops overflow. Root scroll regions work; nested regions/rotated sticky bounds and exact scroll-to duration remain incomplete."
+    "notes": "Root and nested regions on both axes work by wheel, drag and keyboard, with scroll passing outward, Scroll-to over the authored duration, While scrolling interactions and reset rules. Regions have no visible scrollbars; Motion preview is the separate UI-56-050. On both axes; unit tests cover two-axis regions and routing, and the browser spec drives vertical regions. Unit tests cover two-axis regions and routing; the browser spec drives vertical regions."
   },
   {
     "id": "UI-35-032",
@@ -13155,9 +13155,9 @@
     "name": "Export PDF",
     "priority": "must",
     "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source after dev.12: Real Design PDF export covers combined artwork or frame pages, shared transformed/overlap crops, hidden snapshots, guides, fixed physical page size, image resolution, preflight bounds and cancellable immutable rendering. PDF pages are flattened raster imagery; vector objects and live hyperlinks remain unfinished. See docs/DESIGN-PDF-AND-PNG.md. Source implementation validation is separate from pending exact Figma reference acceptance; download archives remain unchanged."
+    "notes": "Keep shapes as vectors writes solid fills and strokes as real PDF paths with clips, in paint order, through a dialog-only option off by default. Text, images, gradients, effects, blends and masks stay raster in place, and a page over 64 areas or 200,000 segments flattens. Both modes gain live http, https and mailto links on whole layers and an invisible Helvetica text layer; fonts are not embedded, and part-of-text links are not written. The native save path uses the flattened mode."
   },
   {
     "id": "UI-40-008",
@@ -13327,7 +13327,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Opt-in SVG text outlines generate actual quadratic glyph paths for bounded single-line printable ASCII LTR text with solid/none fills and one exact active static TrueType face. Native character origins preserve supported kerning; cmap agreement, shaping, side-bearing origins and font-source order are proven or refused. Editable source remains unchanged; glyph-only SVG omits font bytes. Composite/variable/CFF/WOFF2/color fonts, complex typography, non-solid paints and unsupported contexts refuse. Native/reference acceptance and broader font coverage remain unfinished. See docs/SVG-TEXT-OUTLINES.md."
+    "notes": "Outlines now cover composite glyphs, line breaks and wrapped lines. Shaping checks read default Latin language systems, and ligatures refuse only when the real sequence is present. A scan of 262 bundled TTFs decoded all printable ASCII; 194 passed the sample text, 50 refused possible substitution and 18 refused positioning. Rich text, non-ASCII and variable, CFF, color or WOFF2 fonts still refuse."
   },
   {
     "id": "UI-40-025",
@@ -15904,10 +15904,10 @@
     "category": "Community and resources",
     "name": "UI kit browsing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Resources → UI kits, illustrations and tutorials… browses two original offline kits of real main components, openable as new files or insertable in one Undo. No community or online catalog is implied. See docs/RESOURCE-LIBRARY.md."
   },
   {
     "id": "UI-47-021",
@@ -15924,30 +15924,30 @@
     "category": "Community and resources",
     "name": "Illustration library browsing",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Eight original vector illustrations, searchable with previews, insert as editable vectors in one Undo. The set is small and fixed."
   },
   {
     "id": "UI-47-023",
     "category": "Community and resources",
     "name": "Education resources",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Six original offline guides, readable in the app, some linking to a tutorial. English only, and a small set."
   },
   {
     "id": "UI-47-024",
     "category": "Community and resources",
     "name": "Tutorial files",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Three original tutorials open as real .oui files with working prototype interactions, variables, conditions and variant changes, exercised headless and with one tutorial played in the browser. Steps are not tracked or checked. English only."
   },
   {
     "id": "UI-47-025",
@@ -17657,7 +17657,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain."
+    "notes": "Note change only: animation export reports progress, cancels, and keeps its 1,800-frame, 4,096-edge and 8-megapixel limits. Layer tree virtualization exists; broader performance acceptance remains."
   },
   {
     "id": "UI-53-020",
