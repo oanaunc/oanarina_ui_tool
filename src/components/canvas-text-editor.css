@@ -1,0 +1,4 @@
+.app .canvas-text-editor{background:transparent;border:0;outline:1px solid #bfa4ef;outline-offset:0;overflow:hidden;resize:none;padding:0;margin:0;caret-color:currentColor}
+.app .canvas-text-editor:focus-visible{outline:1px solid #bfa4ef}
+.app .canvas-text-editor::selection{background:#8f6fe066}
+.app svg.canvas[data-quiet-focus]:focus-visible{outline:none}

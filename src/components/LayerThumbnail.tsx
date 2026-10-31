@@ -17,11 +17,11 @@ export default function LayerThumbnail({tree,page,doc,blocked,resetKey}:{tree:Re
   const root=tree.current;if(!root)return;
   const clear=()=>{if(timer.current!==null)clearTimeout(timer.current);timer.current=null;request.current=null;setPreview(null);};
   const valid=(r:Request)=>{const s=useEditor.getState();return !blocked&&s.doc===doc&&s.pageId===page.id&&!s.modal&&!s.motionOpen&&!s.home&&!s.uiHidden&&s.leftTab==='layers'&&r.row.isConnected&&(r.kind!=='focus'||document.activeElement===r.row);};
-  const arm=(r:Request)=>{clear();if(!valid(r))return;request.current=r;timer.current=setTimeout(()=>{timer.current=null;if(!valid(r)){request.current=null;return;}const {left,right,top}=r.row.getBoundingClientRect();setPreview({...r,anchor:{left,right,top}});},200);};
+  const arm=(r:Request)=>{clear();if(!valid(r))return;request.current=r;timer.current=setTimeout(()=>{timer.current=null;if(!valid(r)){request.current=null;return;}const {left,right,top}=r.row.getBoundingClientRect();setPreview({...r,anchor:{left,right,top}});},r.kind==='hover'?650:200);};
   const row=(e:Event)=>e.target instanceof Element?e.target.closest<HTMLElement>('[data-layer-id]'):null;
-  const enter=(e:PointerEvent)=>{const target=row(e);if(target&&!(e.relatedTarget instanceof Node&&target.contains(e.relatedTarget)))arm({id:target.dataset.layerId!,row:target,kind:document.activeElement===target?'focus':'hover'});};
+  const enter=(e:PointerEvent)=>{const target=row(e);if(target&&!(e.relatedTarget instanceof Node&&target.contains(e.relatedTarget)))arm({id:target.dataset.layerId!,row:target,kind:document.activeElement===target&&target.matches(':focus-visible')?'focus':'hover'});};
   const leave=(e:PointerEvent)=>{const target=row(e);if(target&&request.current?.kind==='hover'&&request.current.row===target&&!(e.relatedTarget instanceof Node&&target.contains(e.relatedTarget)))clear();};
-  const focus=(e:FocusEvent)=>{const target=row(e);if(target&&e.target===target)arm({id:target.dataset.layerId!,row:target,kind:'focus'});else clear();};
+  const focus=(e:FocusEvent)=>{const target=row(e);if(target&&e.target===target&&target.matches(':focus-visible'))arm({id:target.dataset.layerId!,row:target,kind:'focus'});else clear();};
   const escape=(e:KeyboardEvent)=>{if(e.key==='Escape'&&request.current!==null){e.preventDefault();e.stopPropagation();clear();}};
   const hidden=()=>{if(document.hidden)clear();};
   // Keep the focused request after display: browser focus scrolling may arrive after the delay.

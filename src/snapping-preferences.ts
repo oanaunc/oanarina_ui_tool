@@ -15,10 +15,11 @@ export function effectiveSnapping(document:Partial<SnapPreferences>|undefined,lo
  if(local.vectorGeometrySnapping!=='document')effective.vectorPoints=local.vectorGeometrySnapping==='on';
  return effective;
 }
-/** Default/follow-document preserves legacy unsnapped drawing and vector-pixel behavior. */
+/** Follow-document means the alignment the file actually shows; drawing no longer ignores it. */
 export function snapExplicitPixel(position:{x:number;y:number},document:Partial<SnapPreferences>|undefined,local:Readonly<LocalSnapping>){
- if(document?.enabled===false||local.pixelSnapping==='document'||local.pixelSnapping==='none')return position;
- const unit=pixelSnapUnit(local.pixelSnapping);return {x:Math.round(position.x/unit)*unit,y:Math.round(position.y/unit)*unit};
+ const mode=local.pixelSnapping==='document'?{...defaultSnapping,...document}.pixel:local.pixelSnapping;
+ if(document?.enabled===false||mode==='none')return position;
+ const unit=pixelSnapUnit(mode);return {x:Math.round(position.x/unit)*unit,y:Math.round(position.y/unit)*unit};
 }
 /** Explicit local overrides opt drawing endpoints into existing object/vector solvers. */
 export function snapDrawingEndpoint(o:{position:{x:number;y:number};nodes:DesignNode[];zoom:number;document?:Partial<SnapPreferences>;local:Readonly<LocalSnapping>;geometry?:VectorSnapIndex;disabled?:boolean}):{point:{x:number;y:number};lines:GuideLine[]}{

@@ -444,6 +444,18 @@
     "⇧⌘C"
   ],
   [
+    "copy-properties",
+    "Copy properties",
+    "Edit",
+    "⌥⌘C"
+  ],
+  [
+    "paste-properties",
+    "Paste properties",
+    "Edit",
+    "⌥⌘V"
+  ],
+  [
     "paste",
     "Paste",
     "Edit",
@@ -657,49 +669,49 @@
     "left",
     "Align left",
     "Arrange",
-    ""
+    "⌥A"
   ],
   [
     "center",
     "Align horizontal centers",
     "Arrange",
-    ""
+    "⌥H"
   ],
   [
     "right",
     "Align right",
     "Arrange",
-    ""
+    "⌥D"
   ],
   [
     "top",
     "Align top",
     "Arrange",
-    ""
+    "⌥W"
   ],
   [
     "middle",
     "Align vertical centers",
     "Arrange",
-    ""
+    "⌥V"
   ],
   [
     "bottom",
     "Align bottom",
     "Arrange",
-    ""
+    "⌥S"
   ],
   [
     "distribute-x",
     "Distribute horizontally",
     "Arrange",
-    ""
+    "⌃⌥H"
   ],
   [
     "distribute-y",
     "Distribute vertically",
     "Arrange",
-    ""
+    "⌃⌥V"
   ],
   [
     "parent-left",
@@ -1161,7 +1173,7 @@
     "tidy",
     "Tidy selection into grid",
     "Arrange",
-    ""
+    "⌃⌥T"
   ],
   [
     "forward",
