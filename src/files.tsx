@@ -1,4 +1,5 @@
 import {announceError} from './error-announcements';
+import {parseProjectInWorker,parseSvgInWorker} from './import-parse';
 import {t} from './i18n';
 import {validatePassThroughExportSource} from './pass-through';
 import {shaderExportWarnings} from './shader-export';
@@ -8,7 +9,7 @@ import {validateDocumentNetworks} from './vector-network';
 import {validateBackgroundBlurExportSource} from './background-blur';
 import {currentTextOutline} from './text-outline';
 import {svgOutlinedTextPlan} from './svg-text-outlines';
-import {isFigmaRestJson,FIGMA_REST_LIMITS} from './figma-rest-import';
+import {FIGMA_REST_LIMITS} from './figma-rest-import';
 import {convertFigmaRestInWorker} from './figma-rest-convert';
 import {getFigmaRestReview,requestFigmaRestReview,checkFigmaRestReview,finishFigmaRestReview,cancelFigmaRestReview} from './figma-rest-review';
 import type {FigmaRestReview} from './figma-rest-review';
@@ -68,7 +69,7 @@ export async function openSelectedProject(file:File){
   await task.checkpoint('validating');session.check();
   const result=isFig?await importFigBytes(new Uint8Array(raw as ArrayBuffer),file.name,task.signal,(stage,layers)=>task.update({stage,layers})):undefined;
   let source=result?.document;
-  if(!isFig){projectText=raw;const json=JSON.parse(raw as string);if(isFigmaRestJson(json)){task.update({format:'rest'});if(file.size>FIGMA_REST_LIMITS.bytes)throw new ImportInputError('Choose Figma REST JSON smaller than 20 MB.');await task.checkpoint('converting');const converted=await convertFigmaRestInWorker(raw as string,file.name.replace(/\.json$/i,''),task.signal);session.check();session.dispose();task.finish();const review=await requestFigmaRestReview(converted);return review?openReviewedFigmaRest(review):undefined;}source=parseDocument(raw as string);}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
+  if(!isFig){projectText=raw;const parsed=await parseProjectInWorker(raw as string,task.signal);session.check();if(parsed.rest){task.update({format:'rest'});if(file.size>FIGMA_REST_LIMITS.bytes)throw new ImportInputError('Choose Figma REST JSON smaller than 20 MB.');await task.checkpoint('converting');const converted=await convertFigmaRestInWorker(raw as string,file.name.replace(/\.json$/i,''),task.signal);session.check();session.dispose();task.finish();const review=await requestFigmaRestReview(converted);return review?openReviewedFigmaRest(review):undefined;}source=parsed.document;}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
   await task.checkpoint('retaining');session.check();
   const mustRetain=desktopDocuments.state(before.doc).dirty||before.past.length>0&&before.savedAt!==before.doc.updatedAt;
   try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw new ImportInputError('The current edited project cannot be retained. Save a .oui backup before opening another file.');}catch(error){task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();
@@ -83,7 +84,7 @@ export async function openSelectedProject(file:File){
 async function openReviewedFigmaRest(review:FigmaRestReview){
  checkFigmaRestReview(review);const session=beginImportSession('rest',1,0),{task}=session,before=useEditor.getState();
  try{
-  await task.checkpoint('validating');session.check();checkFigmaRestReview(review);const source=parseDocument(JSON.stringify(review.result.document));
+  await task.checkpoint('validating');session.check();checkFigmaRestReview(review);const source=review.result.document;
   await task.checkpoint('retaining');session.check();const mustRetain=desktopDocuments.state(before.doc).dirty||before.past.length>0&&before.savedAt!==before.doc.updatedAt;
   try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw Error();}catch{task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();checkFigmaRestReview(review);
   await task.checkpoint('opening');session.check();const opened=await openDocumentForEditing(source,task.signal);session.check();checkFigmaRestReview(review);
@@ -147,7 +148,7 @@ export async function importSvg(raw:string,name='Imported SVG'){
  try{
   if(new TextEncoder().encode(raw).length>20_000_000)throw new ImportInputError('Choose an SVG smaller than 20 MB.');
   const source=session.check();if(source.doc.workspace==='slides')throw new ImportInputError('SVG review is available in Design and Whiteboard. Use the Slides Image button for raster images on the active slide.');if(source.home||source.uiHidden||source.motionOpen||source.modal||source.mode!=='design')throw new ImportInputError('Use the visible Design canvas with Motion and dialogs closed to import SVG.');
-  await task.checkpoint('validating');const {parseEditableSvg}=await import('./svg-import');session.check();try{result=parseEditableSvg(raw,name);}catch(e){error=svgImportFailureReason(e);}
+  await task.checkpoint('validating');try{result=await parseSvgInWorker(raw,name,task.signal);}catch(e){if(task.signal.aborted||e instanceof DOMException&&e.name==='AbortError')throw e;error=svgImportFailureReason(e);}
   session.check();session.dispose();task.finish();svgImportLoading=false;
   await new Promise<void>(resolve=>{const before=useEditor.getState();let off=()=>{};const request:SvgImportRequest={raw,name,documentId:before.doc.id,pageId:before.pageId,result,error,resolve,valid:true,applying:false,origin:captureColorContext({...before,modal:'svg-import'}),dispose:()=>{request.valid=false;off();}};svgImportRequest=request;off=useEditor.subscribe(live=>{if(!request.applying&&!sameColorContext(request.origin,live))cancelSvgImport(request);});before.set({modal:'svg-import'});});
  }catch(e){const reason=task.fail(e);if(!task.signal.aborted)throw new Error(reason??'SVG import could not finish.');}finally{session.dispose();svgImportLoading=false;}
