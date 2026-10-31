@@ -10,7 +10,7 @@ The bundle includes **123 genuine italic font files across 17 families**: Cormor
 
 Each bundled family includes its full original OFL license in `public/fonts/*-OFL.txt`. These licenses ship with the Mac app. Further on-demand fonts retain their original open-source licensing; [Google Fonts' source repository](https://github.com/google/fonts) supplies per-family source/license files. The font library links the bundled family license. Downloading fonts does not install them into macOS or Figma.
 
-The native installed-font tab obtains family names through NSFontManager, and the Font style select asks for the selected family's named faces. It does not copy or redistribute installed font binaries or expose their paths. Commercial fonts can be used when separately installed/licensed; they are not bundled with this app. Installed-family detection is native Mac functionality; the browser library offers font-file import instead.
+The native installed-font tab obtains family names through NSFontManager, and the Font style select asks for the selected family's named faces. The OpenType inspector can ask for one face's layout and naming tables, which stay in memory and never include outlines. It does not copy or redistribute installed font binaries or expose their paths. Commercial fonts can be used when separately installed/licensed; they are not bundled with this app. Installed-family detection is native Mac functionality; the browser library offers font-file import instead.
 
 ## Local font files and missing fonts
 

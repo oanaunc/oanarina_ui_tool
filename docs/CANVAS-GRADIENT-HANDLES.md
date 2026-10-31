@@ -1,6 +1,6 @@
 # Canvas gradient handles
 
-This source pass extends UI-17-029, which remains **partial**. Select one supported layer in Design mode, expand its linear/radial fill, and choose **Edit gradient on canvas**. The existing inspector still owns stop creation, color/alpha, ordering/reversal and fill-stack edits.
+Select one layer in Design mode, expand a gradient fill or stroke, and choose **Edit gradient on canvas**. The existing inspector still owns stop creation, color/alpha, ordering/reversal and fill-stack edits.
 
 ## Working behavior
 
@@ -19,11 +19,13 @@ Canvas, SVG/raster exports and inspector swatches use the same SVG definition. C
 
 ## Supported ownership and limits
 
-Supported paint boxes are positive full-box rectangles, images, frames, groups, main components, sections and complete ellipses. Own/nested rotations, signed reflections and nonuniform affine scale are supported through the existing world matrix. Locks/hidden ancestry, instance roots/generated children, live boolean ancestors, partial arcs, paths, text and other paint boxes are refused before mutation. Media layers and non-design workspaces are excluded. A subsequent component/layout controller must leave the source geometry and requested paint stack intact or the whole edit is refused.
+Handles work on fills and strokes of every drawn layer, including paths, partial arcs and text. A paint maps to the drawn element's bounds, so handles read that element's own box from the canvas rather than the layer box. On a path that fills part of its layer, or text narrower than its box, handles sit on the shape. Strokes drawn in layer space, which means independent edges and arrowheads, use the layer box. Own and nested rotations, signed reflections and nonuniform affine scale work through the existing world matrix.
 
-Layer dimensions are bounded at one million, normalized linear coordinates at ±10 and resulting world handles at one billion. Collapsed displayed axes are refused. Radial centers stay within −100…200% and radius within 1…200%, matching existing numeric controls. The radius control is the existing normalized radial model, not independently rotated/skewed radial ellipse handles. Tiny/degenerate layer transforms cannot be edited. Endpoint separation at the lower bound holds the last valid draft rather than writing a singular gradient.
+Locks, hidden ancestry, instance roots and generated children, and live boolean ancestors are refused before mutation, because those layers do not own what is painted. Video layers and non-design workspaces are excluded. A shape with no area has no paint box and is refused with that reason.
 
-Angular/diamond gradients, stroke handles, arbitrary path/text paint boxes and independent skewed radial geometry remain outside this pass. There is no claim of full Figma gradient-editor parity, native VoiceOver acceptance or native desktop interchange fidelity.
+Layer dimensions are bounded at one million, normalized linear coordinates at ±10 and resulting world handles at one billion. Collapsed displayed axes are refused. Radial centers stay within −100…200% and radius within 1…200%, matching existing numeric controls. The radius control is the existing normalized radial model, not independently rotated/skewed radial ellipse handles. Endpoint separation at the lower bound holds the last valid draft. Tiny or degenerate layer transforms cannot be edited.
+
+There is no claim of native VoiceOver acceptance or native desktop interchange fidelity.
 
 ## Transfer and verification
 

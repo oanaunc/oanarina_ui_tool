@@ -4,7 +4,7 @@ import type {ColorEditContext} from './color-edit-context';
 import {vectorCutMatrix} from './vector-cut-space';
 import {point} from './transforms';
 import {bendSegment,bendSegmentKeys} from './vector-bend-geometry';
-import {cutVectorSegment,validateVectorCutSource} from './vector-cut-geometry';
+import {cutVectorSegment,validateVectorCutSource,cutVectorAnchor} from './vector-cut-geometry';
 import {useEditor} from './store';
 import {useVectorBend} from './vector-bend';
 import {useCanvasGradient} from './canvas-gradient';
@@ -19,7 +19,7 @@ export const useVectorCut=create<CutView>((set,get)=>({context:null,activate:id=
 useEditor.subscribe(()=>{const v=useVectorCut.getState();if(v.context&&!sameVectorCutContext(v.context))v.reset();});
 subscribePreferences(()=>{const v=useVectorCut.getState();if(v.context&&!sameVectorCutContext(v.context))v.reset();});
 useVectorBend.subscribe(v=>{if(v.context&&useVectorCut.getState().context)useVectorCut.getState().reset();});
-export function commitVectorCut(c:VectorCutContext,key:string,t:number){if(useVectorCut.getState().context!==c||!sameVectorCutContext(c))throw Error('The cut target changed. Enable Cut path again.');const source=validateVectorCutTarget(c.id),result=cutVectorSegment(source,key,t),expected=JSON.stringify({...source,contours:result.contours});useEditor.getState().edit(doc=>{doc.pages.find(p=>p.id===c.editor.pageId)!.nodes.find(n=>n.id===c.id)!.contours=result.contours;},doc=>{const n=doc.pages.find(p=>p.id===c.editor.pageId)?.nodes.find(n=>n.id===c.id);if(!n||JSON.stringify(n)!==expected)throw Error('A component or layout controller changed this cut. Edit the source or detach it first.');});useEditor.getState().set({vectorSelection:result.endpoints});return result;}
+export function commitVectorCut(c:VectorCutContext,key:string,t:number,anchor?:'start'|'end'){if(useVectorCut.getState().context!==c||!sameVectorCutContext(c))throw Error('The cut target changed. Enable Cut path again.');const source=validateVectorCutTarget(c.id),result=anchor?cutVectorAnchor(source,key,anchor):cutVectorSegment(source,key,t),expected=JSON.stringify({...source,contours:result.contours});useEditor.getState().edit(doc=>{doc.pages.find(p=>p.id===c.editor.pageId)!.nodes.find(n=>n.id===c.id)!.contours=result.contours;},doc=>{const n=doc.pages.find(p=>p.id===c.editor.pageId)?.nodes.find(n=>n.id===c.id);if(!n||JSON.stringify(n)!==expected)throw Error('A component or layout controller changed this cut. Edit the source or detach it first.');});useEditor.getState().set({vectorSelection:result.endpoints});return result;}
 
 useMaskView.subscribe(v=>{if((v.preview||v.outlines)&&useVectorCut.getState().context)useVectorCut.getState().reset();});
 

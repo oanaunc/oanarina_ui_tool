@@ -1,7 +1,5 @@
 # Editable stroke outlines
 
-UI-14-034 is **partial**: this source pass adds a real, bounded solid-stroke conversion. It is not complete Figma stroke-outline parity or a packaged/native release.
-
 ## Workflow
 
 Select one leaf vector and choose **Vector → Outline vector stroke…**, use action search, or choose the same control while editing its points. The dialog shows original artwork and proposed filled contours as separate local SVG image documents, using the same renderer and shared viewport. Gradient/filter/mask IDs inside those images cannot overwrite live Canvas definitions. Existing ancestor clips and sibling masks are retained in the preview; a selected mask source includes its affected siblings.
@@ -12,12 +10,15 @@ Preview never changes the document, history or saved/exported artwork. Context c
 
 ## Supported geometry
 
-- Exactly one saved solid stroke, visible with positive width and paint opacity.
+- Every visible stroke with positive width, in solid, gradient or image paint. Hidden strokes are not outlined.
 - Butt, round and square endpoint caps; miter, round and bevel joins; the saved miter limit, including bevel fallback.
 - Positive dash arrays, including odd-length repetition and positive/negative dash offset. Dash phase restarts per subpath. Dashes crossing a closed contour seam are joined across that seam instead of receiving two endpoint caps.
 - Center alignment; inside/outside alignment for closed contours. Lines/arrow-shaped centerlines with heads disabled retain the renderer's forced-center alignment. Outside geometry also respects the renderer's finite white-mask rectangle.
 - Simple open/closed contours, nested winding holes, rectangles, ellipses, polygons, stars and supported compound paths. Paper Boolean union removes overlapping pieces; unresolved crossings/touches are refused.
-- An existing visible fill only when it is the same fully opaque solid color as the stroke. Its region is unioned with the outline, preserving the current opaque appearance. Otherwise the workflow asks the user to hide the fill first, rather than deleting it silently.
+- One stroke with no fill, or with a fully opaque fill of the same solid color, stays one layer. Anything else becomes a group under the same layer identity, holding the fill as it was and each stroke as its own filled path, in paint order. A mask source stays one layer, so that case is refused.
+- Arrowheads join the outline: closed heads as filled shapes, open heads and bars stroked with the same cap and join.
+
+Gradient and image paints stay where they were on the canvas. Linear gradient endpoints, radial and conic centers, image centers and picture size, and tile origins are rewritten for the new box, including under a layer rotation. A radial or image frame on a flipped or unevenly scaled layer cannot be expressed in those fields, so it stays close rather than exact.
 
 Stroke expansion happens in **node-local coordinates before the layer's own affine transform**, matching the SVG renderer. This preserves nonuniform scaling of cap/width geometry. The own rotation/reflection/scale is then baked into parent-space contours; ancestor transforms remain intact. Zero-height horizontal and zero-width vertical line centerlines can become ordinary positive-area outlines.
 
@@ -25,7 +26,7 @@ Curves use the existing bounded adaptive flattening with a **0.25-unit local con
 
 ## Explicit refusals and work limits
 
-Gradient and image strokes outline with their paint moved to the fill, and with no visible fill alongside them. The paint then maps to the outlined shape's own box, which is larger than the path by the stroke width, so a gradient can shift slightly. Multiple saved strokes, different/translucent existing fills, arrowheads, visible effects, zero dash entries, zero-length/degenerate/reversing contours, crossing/touching input geometry and inside/outside open-path clipping remain unsupported. Hidden or inherited-locked targets, managed instance descendants, containers, live booleans, Motion, non-Design mode and Slides cannot start conversion. Component or workspace/layout control that changes the final geometry prevents commit.
+Visible effects, zero dash entries, zero-length/degenerate/reversing contours, crossing/touching input geometry and inside/outside open-path clipping remain unsupported. Hidden or inherited-locked targets, managed instance descendants, containers, live booleans, Motion, non-Design mode and Slides cannot start conversion. Component or workspace/layout control that changes the final geometry prevents commit.
 
 The proposal belongs to one document/page/selection, tool, vector target, camera, modal and Home/UI/Motion/mode context. Changed context, window blur or hidden-document visibility expires it. Escape/Cancel closes it without mutation. There is no native filesystem/IPC expansion, external project upload or broad desktop codec/assistive-technology claim.
 
