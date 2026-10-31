@@ -56,7 +56,7 @@ CSS animation and transitions run in the frame and are unaffected.
 
 - Heavy CSS, or a very large DOM that takes long to lay out, runs on the frame's thread like any page content. The node limit and time-sliced application bound it, but they do not make layout preemptible.
 - A worker allocating memory until the process is exhausted is not bounded by Forma. This remains a browser boundary, not an OS sandbox.
-- The app itself has not been launched for this. Evidence for the real engine comes from a small `WKWebView` harness that loaded the actual frame and runtime files from a loopback server; Playwright's Chromium and WebKit cover the editor paths.
+- The app itself has not been launched for this. Evidence for the real engine comes from a small `WKWebView` harness that loaded the actual frame, runtime and guardian files from a loopback server. There, DOM mutation, inline handlers, canvas and animation frames worked, `fetch`, `eval`, `importScripts` and nested workers were denied, the guardian worker completed a host request, and a code layer capture returned a PNG with correct pixels. Playwright's Chromium and WebKit cover the editor paths.
 
 ## Validation
 

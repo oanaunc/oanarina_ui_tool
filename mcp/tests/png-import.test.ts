@@ -22,8 +22,9 @@ test('malformed structure, CRC, filters, dimensions and bounded decompression re
  for(const asset of cases)assert.throws(()=>inspectImportPng(asset));
  const types=['acTL','iCCP','zTXt','iTXt','ABCD','\u00c9HDR'];for(const type of types)assert.throws(()=>inspectImportPng(make([header,pngChunk(type),data,end])));
  assert.throws(()=>inspectImportPng(make([header,...Array.from({length:4096},()=>pngChunk('tEXt',Buffer.from('A\0B'))),data,end])),/too many/);
- const h=pngHeader();h[12]=1;assert.throws(()=>inspectImportPng(make([pngChunk('IHDR',h),data,end])),/noninterlaced/);
- for(const type of [0,3,4])assert.throws(()=>inspectImportPng(make([pngChunk('IHDR',pngHeader(2,2,type)),data,end])),/RGB or RGBA/);
+ const h=pngHeader();h[12]=2;assert.throws(()=>inspectImportPng(make([pngChunk('IHDR',h),data,end])),/nonstandard/);
+ for(const type of [1,5,7])assert.throws(()=>inspectImportPng(make([pngChunk('IHDR',pngHeader(2,2,type)),data,end])),/nonstandard/);
+ assert.throws(()=>inspectImportPng(make([pngChunk('IHDR',pngHeader(2,2,3)),pngChunk('IDAT',deflateSync(Buffer.alloc(6))),end])),/palette/);
  for(const asset of ['https://example.com/image.png','/tmp/image.png','data:image/svg+xml;base64,AAAA','data:image/png;base64,AB=='])assert.throws(()=>inspectImportPng(asset));
 });
 test('palette color ordering and Latin-1 text keyword rules reject malformed ancillary data',()=>{
