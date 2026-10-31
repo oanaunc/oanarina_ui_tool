@@ -13914,10 +13914,10 @@
     "category": "Actions and keyboard",
     "name": "Search widgets",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "The Actions Widgets tab searches installed local widgets by name, description and ID, and inserts by keyboard or pointer. It searches the local catalog only, as no remote catalog exists."
+    "notes": "Actions Widgets tab searches installed widgets by name, description and ID and inserts by keyboard or pointer."
   },
   {
     "id": "UI-42-008",
@@ -14154,20 +14154,20 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin discovery",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Adds favorites, recents and Actions search to the local manager. Still installed local packages only, with no remote marketplace or Figma Plugin API compatibility."
+    "notes": "Local manager with search, favorites, recents and Actions search over installed packages."
   },
   {
     "id": "UI-43-002",
     "category": "Plugins widgets and extensions",
     "name": "Plugin installation",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Reviewed install now also shows declared interface, network origins and code generation languages. Still bounded local JSON packages only."
+    "notes": "Reviewed install shows permissions, interface, network origins and code generation languages. Bounded local JSON packages."
   },
   {
     "id": "UI-43-003",
@@ -14187,7 +14187,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Real WKWebView acceptance: package from a real file, opaque worker with network refused, reviewed Apply and a mediated opaque interface frame. The 10-minute limit is covered only by browser tests."
+    "notes": "Explicit per-run launch; an interface run stays alive until close, Cancel, source change or the 10-minute limit. Frame and worker verified in a WKWebView harness; the app itself was not launched."
   },
   {
     "id": "UI-43-005",
@@ -14227,7 +14227,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "ui HTML up to 100 KB, granted by ui:show, runs in an opaque sandbox=\"allow-scripts\" frame with CSP inside the manager dialog; it has no forma object and relays only {pluginMessage}. It shares the editor thread, so an infinite loop blocks the app and cannot be cancelled (measured in Chromium and WebKit). Dialog-bound, not a floating panel."
+    "notes": "ui HTML up to 100 KB in an opaque frame; scripts run in a terminable worker and cannot freeze the editor. Mirrored DOM limits: geometry lags a frame, preventDefault applies from the next event, no MutationObserver. Dialog-bound."
   },
   {
     "id": "UI-43-009",
@@ -14237,17 +14237,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Unchanged behavior: strict typed inputs through trusted host controls with a copied snapshot. Guest interfaces are now separate (UI-43-008); dynamic parameter schemas and Figma API compatibility remain unsupported."
+    "notes": "Strict typed inputs through trusted host controls with a copied snapshot. No dynamic parameter schemas."
   },
   {
     "id": "UI-43-010",
     "category": "Plugins widgets and extensions",
     "name": "Plugin message bridge",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Bridge now also carries async host requests and bounded interface messages between worker and UI, with source-window checks and budgets enforced in both host and guardian. Malformed, flooded or oversized traffic ends the run. No Figma API compatibility."
+    "notes": "Carries async requests, reviewed commits and bounded interface messages, with source-window checks and budgets. Malformed or flooded traffic ends the run."
   },
   {
     "id": "UI-43-011",
@@ -14257,7 +14257,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Adds granted image:read of one layer's embedded bytes and export:read. Comments, annotations, profile data and code layer source stay excluded."
+    "notes": "Reads add fills, radius, typography, child IDs and a parentId filter, plus image and export reads. Comments, annotations and code source stay excluded; no styles, variables or components."
   },
   {
     "id": "UI-43-012",
@@ -14267,7 +14267,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Reviewed proposals now also accept image layer creation and run-loaded fontFamily/fontWeight. Still one proposal per run, simple independent leaf updates only."
+    "notes": "Up to 20 reviewed forma.commit proposals per run, each one Undo step, plus a final propose. Appearance updates work on parents. No delete, reparent or effects."
   },
   {
     "id": "UI-43-013",
@@ -14277,37 +14277,37 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Adds reviewed image layer creation from host-decoded handles. Hierarchies and other node types remain unsupported."
+    "notes": "Creates rectangle, ellipse, text, image, frame, group, line, polygon and star, nested with parent-relative coordinates. No components, vectors, masks or sections."
   },
   {
     "id": "UI-43-014",
     "category": "Plugins widgets and extensions",
     "name": "Plugin selection API",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Granted selection read and reviewed selection delivery support existing current-page IDs and this proposal’s created keys. Selection-only changes preserve document identity/history; stale post-edit delivery refuses permanently. See docs/LOCAL-COMMAND-PLUGINS.md."
+    "notes": "Selection read with child IDs and fills, plus reviewed delivery, mid-run through commit. The dialog is modal, so there is no selection-change event."
   },
   {
     "id": "UI-43-015",
     "category": "Plugins widgets and extensions",
     "name": "Plugin font loading",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "fonts:read lists and loads bundled, document-embedded and already-registered families, and only loaded families can enter a proposal. Plugins cannot trigger catalog or Google downloads."
+    "notes": "fonts:read lists and loads bundled, embedded and registered families, and only loaded families can enter a proposal. Loading never downloads."
   },
   {
     "id": "UI-43-016",
     "category": "Plugins widgets and extensions",
     "name": "Plugin image API",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "image:write stages PNG/JPEG up to 2 MB after signature check and decode, shown in review with one Undo on Apply. image:read returns one layer's bytes up to 4 MB and refuses video. No SVG/WebP/GIF input and no fill replacement."
+    "notes": "image:write takes PNG, JPEG, GIF and WebP up to 2 MB after decode, as layers or image fills shown in review. image:read returns one layer up to 4 MB. No SVG input or video."
   },
   {
     "id": "UI-43-017",
@@ -14317,7 +14317,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "export:read renders one current-page layer to SVG or PNG through the ordinary export path, up to 4 MB, scale 0.1–4. No PDF/JPG or batch."
+    "notes": "export:read renders one layer to SVG, PNG or JPG, up to 4 MB, scale 0.1–4. No PDF or batch."
   },
   {
     "id": "UI-43-018",
@@ -14344,30 +14344,30 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin error isolation",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Worker, bridge and interface failures dispose owned frames without applying proposals. Interface DOM code shares the editor thread, so its hangs are not isolated. No OS/RSS isolation."
+    "notes": "Worker, bridge and interface failures, including hangs, remove owned frames with no proposal applied. Not an OS or memory boundary."
   },
   {
     "id": "UI-43-021",
     "category": "Plugins widgets and extensions",
     "name": "Plugin cancellation",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Cancel, invalidation and deadline now also remove interface and network frames. A hung interface script cannot be cancelled."
+    "notes": "Cancel, invalidation, deadline and watchdog remove interface and network frames. Stopping a spinning script verified in real WKWebView."
   },
   {
     "id": "UI-43-022",
     "category": "Plugins widgets and extensions",
     "name": "Plugin development manifest",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Closed manifest now covers optional ui, network, codegen and 11 permissions, with each section and its permission required together in both directions. Independent Forma format, not a Figma manifest."
+    "notes": "Closed manifest with optional ui, network, codegen and 11 permissions, each section paired with its permission."
   },
   {
     "id": "UI-43-023",
@@ -14384,30 +14384,30 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin console",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Console now also lists each network request. General debugger features remain unsupported."
+    "notes": "Bounded console for plugin logs, interface console output and errors, and each network request."
   },
   {
     "id": "UI-43-025",
     "category": "Plugins widgets and extensions",
     "name": "Widget insertion",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Import, review and install of a Forma-specific JSON package, then insert from the manager, whiteboard toolbar or Actions. Install never runs code. This is not Figma Widget API compatibility and has no remote catalog."
+    "notes": "Import, review, install and insert from the manager, whiteboard toolbar or Actions. Install never runs code."
   },
   {
     "id": "UI-43-026",
     "category": "Plugins widgets and extensions",
     "name": "Widget state synchronization",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "State is validated JSON (32 KB) saved on the frame and kept in step with its generated layers through Undo, duplicate and .oui save/reopen; stale run results are refused. Nothing syncs between people or windows."
+    "notes": "Validated JSON (32 KB) on the frame, in step with its layers through Undo, duplicate and save. Stale results are refused."
   },
   {
     "id": "UI-43-027",
@@ -14427,27 +14427,27 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Host-owned hit targets over generated buttons send only an action name to a fresh sandboxed worker per event, using the same guardian as plugins with no guest DOM. Each event is one Undo step. Input fields, hover and timers are absent, and hit targets use the bounding box of a rotated widget."
+    "notes": "Host hit targets send an action name to a fresh worker, one Undo step per event. Adds host-owned text input. No hover or timers; rotated widgets use the bounding box."
   },
   {
     "id": "UI-43-029",
     "category": "Plugins widgets and extensions",
     "name": "Widget property menu",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Selecting a widget shows a host-rendered panel with validated action, toggle and choice items (at most 12), plus refresh, console and convert-to-layers. Guests cannot render custom controls."
+    "notes": "Host panel with action, toggle, choice, color and separator items (at most 12), plus refresh, console and convert to layers."
   },
   {
     "id": "UI-43-030",
     "category": "Plugins widgets and extensions",
     "name": "Widget permissions",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Packages declare selection:read and/or page:read; grants are per package, session-only, revocable, cleared on replace and never saved, and refused reads surface an error. Write and network permissions do not exist."
+    "notes": "selection:read and page:read, granted per package, session-only and revocable. Widgets change only their own layers."
   },
   {
     "id": "UI-43-031",
@@ -16104,10 +16104,10 @@
     "category": "FigJam whiteboarding",
     "name": "Shape palette",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The palette has 22 shapes (rectangle, ellipse and diamond plus 19 closed vector shapes) with editable text and Undo. It has not been compared item by item with FigJam, and resizing a catalog shape does not resize its text box."
+    "notes": "59 shapes in four groups with editable text that resizes with the shape; line-based symbols start with a stroke. Not compared item by item with FigJam."
   },
   {
     "id": "UI-48-011",
@@ -16234,20 +16234,20 @@
     "category": "FigJam whiteboarding",
     "name": "Timer",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Persisted local timer controls with Undo in the whiteboard. It runs on this device only; there is no shared session, so nobody else sees it."
+    "notes": "Persisted timer controls with Undo, reload-safe through an absolute deadline."
   },
   {
     "id": "UI-48-024",
     "category": "FigJam whiteboarding",
     "name": "Voting session",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Persisted local voting with Undo in the whiteboard. One person on one device; there is no shared session or other participants."
+    "notes": "Persisted voting with per-participant budgets and Undo."
   },
   {
     "id": "UI-48-025",
@@ -16264,10 +16264,10 @@
     "category": "FigJam whiteboarding",
     "name": "Emoji reactions",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "React floats a chosen emoji locally for 1.8 seconds, with no document or Undo change. Nobody else can see it, as there is no shared session."
+    "notes": "React floats a chosen emoji for 1.8 seconds, with no document or Undo change."
   },
   {
     "id": "UI-48-027",
@@ -16284,10 +16284,10 @@
     "category": "FigJam whiteboarding",
     "name": "Laser pointer",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Ephemeral local laser pointer with no document or Undo change. Nobody else can see it, as there is no shared session."
+    "notes": "Ephemeral laser pointer with no document or Undo change."
   },
   {
     "id": "UI-48-029",
@@ -16297,7 +16297,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Music plays a user-chosen PCM WAV (60 seconds, 8 MB) through PrototypePcmPlayer, with play, pause, stop, loop and volume. It runs on this device only, the clip is memory-only and never saved, and there is no shared session."
+    "notes": "Plays a user-chosen PCM WAV (60 seconds, 8 MB) with play, pause, stop, loop and volume. The clip is memory-only and never saved, and only PCM WAV is accepted."
   },
   {
     "id": "UI-48-030",
@@ -16314,20 +16314,20 @@
     "category": "FigJam whiteboarding",
     "name": "Whiteboard widgets",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whiteboard toolbar Widgets inserts sandboxed local widgets as generated ordinary layers with saved state. Local packages only; no catalog or other participants."
+    "notes": "Toolbar Widgets inserts sandboxed local widgets as generated ordinary layers with saved state."
   },
   {
     "id": "UI-48-032",
     "category": "FigJam whiteboarding",
     "name": "Code blocks",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Whiteboard toolbar supports real literal code cards, language labels, styling/size/source edits, code copy/fallback, ordinary-layer conversion, controlled layout, Undo and oui persistence. Logical clipboard/page lifecycle, locks, validation and Design/Slides demotion are covered. Syntax highlighting, execution, formatting and source-file tooling remain absent. See docs/WHITEBOARD-CODE-BLOCKS.md."
+    "notes": "Adds language coloring through ordinary text ranges for 16 languages, recolored on every edit, with a palette that follows the card. Coloring is lexical; while on, ranges come from the source."
   },
   {
     "id": "UI-48-033",
@@ -16344,10 +16344,10 @@
     "category": "FigJam whiteboarding",
     "name": "Link previews",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "No-fetch link cards use only the URL, title, description and optional local image the user supplies, and Forma never requests the address (a test asserts zero requests). There are no automatic previews, and only http/https addresses without credentials are accepted."
+    "notes": "Link cards use only the URL, title, description and optional image the user supplies, and Forma never requests the address. Only http/https without credentials."
   },
   {
     "id": "UI-48-035",
@@ -16577,17 +16577,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slides Prototype… embeds a validated snapshot of a Design .oui (16 MB each, 16 per deck, 32 MB total) that plays on the slide while presenting. It starts at the first flow and runs click and press reactions only, without transition animation; hover, drag, delay, key and scroll triggers do not run, and the snapshot has no live link to its source."
+    "notes": "Runs click, drag, hover, press, mouse enter/leave/down/up, delay, key and scroll reactions with transitions, in a snapshot with no live link. Gamepad, form inputs and Motion timelines need the full player; smart animate plays as a dissolve."
   },
   {
     "id": "UI-49-022",
     "category": "Figma Slides presentations",
     "name": "Video embeds",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Video… embeds a local MP4/WebM up to 20 MB, with playback controls while presenting, loop/mute/autoplay inspector, Undo and .oui persistence. Hosted video URLs are unsupported; PDF, PNG and PowerPoint exports use the poster."
+    "notes": "Local MP4 or WebM up to 20 MB, with controls while presenting, loop, mute and autoplay, Undo and .oui persistence. PowerPoint carries the clip and import restores it, not opened in PowerPoint. PDF and PNG use the poster."
   },
   {
     "id": "UI-49-023",
@@ -16597,7 +16597,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Polls work for one local presenter session only: the presenter tallies with buttons or number keys, generated bars show in Presenter and audience views, counts persist, and each count is an Undo step. There is no audience link, join flow or network."
+    "notes": "The presenter tallies with buttons or number keys, bars show in Presenter and audience views, counts persist, and each count is an Undo step. Counting is manual."
   },
   {
     "id": "UI-49-024",
@@ -16657,7 +16657,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Real .pptx writer and reader using fflate, with Export and Import in Slides and Undo on import. Round trips text runs, links, simple shapes, custom geometry, PNG/JPEG/GIF images, notes, hidden state, transitions and solid fills; effects and gradients flatten to PNG on export. Charts and SmartArt are omitted with notices. Validated by unzip and part checks, handwritten foreign packages and Quick Look, not yet opened in PowerPoint or Keynote. See docs/POWERPOINT-INTERCHANGE.md."
+    "notes": "Now native: linear and radial gradients, one outer and one inner shadow, dashes, caps, joins and embedded video, both ways. Angular gradients, spread shadows and text effects flatten; charts and SmartArt are omitted with notices. Not opened in PowerPoint or Keynote."
   },
   {
     "id": "UI-49-030",
@@ -16704,10 +16704,10 @@
     "category": "Figma Sites publishing",
     "name": "Responsive breakpoint editor",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Width editor for three fixed breakpoints, validated to descend within 240–3,840 px. No custom or additional breakpoints. The canvas shows Desktop only."
+    "notes": "Settings adds up to 4 custom breakpoints, and each breakpoint is a real editable frame beside Desktop. Dragging a frame's side changes its width, and invalid widths are restored."
   },
   {
     "id": "UI-50-005",
@@ -16724,30 +16724,30 @@
     "category": "Figma Sites publishing",
     "name": "Tablet breakpoint",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Tablet is a max-width query with its own override set and preview width. It is edited as panel values and seen in Preview, not on the canvas."
+    "notes": "Tablet shows as a real canvas frame with auto layout and constraints. Edits become Tablet overrides, one Undo step each; Desktop is untouched."
   },
   {
     "id": "UI-50-007",
     "category": "Figma Sites publishing",
     "name": "Mobile breakpoint",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Mobile works as Tablet and inherits Tablet values. It is edited as panel values and seen in Preview, not on the canvas."
+    "notes": "Mobile works as Tablet and inherits every wider breakpoint. Deleting a layer on the frame hides it there, and new layers join the Desktop tree."
   },
   {
     "id": "UI-50-008",
     "category": "Figma Sites publishing",
     "name": "Breakpoint property overrides",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "23 typed, range-checked properties per breakpoint with reset; anything else is refused. Text content, effects and strokes cannot vary per breakpoint."
+    "notes": "Text, strokes, effects and gradient fills now vary per breakpoint, with the existing typed properties. Differing text ships each version and CSS shows one. Reordering and renames on a frame are not kept."
   },
   {
     "id": "UI-50-009",
@@ -16777,7 +16777,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Click toggles another layer on the same page, with keyboard and aria-expanded, plus links. No other click actions."
+    "notes": "Click toggles, shows or hides another layer, with keyboard and aria-expanded, plus links. No conditional logic or custom actions."
   },
   {
     "id": "UI-50-012",
@@ -16794,20 +16794,20 @@
     "category": "Figma Sites publishing",
     "name": "Scroll effects",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Fade, slide-up or zoom reveal, once or repeating, plus parallax speed. No scroll-linked timelines. Reduced motion is respected."
+    "notes": "Fade, slide-up and zoom reveals, parallax, and keyframed scroll timelines with start and end. Reduced motion respected. Motion does not vary per breakpoint."
   },
   {
     "id": "UI-50-014",
     "category": "Figma Sites publishing",
     "name": "Site animations",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Five presets with duration, delay and loop. No custom keyframes."
+    "notes": "Five presets or custom keyframes (up to 16, opacity, position, scale, rotation) with duration, delay, loop and easing, exported as CSS @keyframes."
   },
   {
     "id": "UI-50-015",
@@ -16837,17 +16837,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Repeated layers with limit and sort, text and image bindings, and one generated page per item. No filters, references or rich text fields."
+    "notes": "Lists with limit, sort and up to 16 filters; text, image and rich text bindings; one page per item. Rich text is stored as plain source and escaped on render. No references between collections."
   },
   {
     "id": "UI-50-018",
     "category": "Figma Sites publishing",
     "name": "Published preview",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Local in-app preview of the export output at each breakpoint in an opaque, CSP-pinned sandbox, with page navigation. Not a hosted address. Embeds show a note and forms never send."
+    "notes": "In-app preview of the export output at each breakpoint in an opaque, CSP-pinned sandbox, with page navigation. Embeds show a note and forms never send."
   },
   {
     "id": "UI-50-019",
@@ -16947,7 +16947,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Real labelled controls with client validation, editable from the panel. There is no backend. Without an https endpoint, visitors are told nothing was sent and the page CSP blocks posting. An endpoint posts directly from the browser and was not exercised end to end."
+    "notes": "Labelled controls with client validation, editable from the panel. Without an https endpoint, visitors are told nothing was sent. The endpoint path was not exercised end to end."
   },
   {
     "id": "UI-50-029",
@@ -16957,7 +16957,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "https address or HTML in a sandboxed iframe with no referrer. HTML is rebuilt from an allow-list and has its own CSP. Scripts are opt-in. Preview shows a note instead of loading embeds. No provider presets."
+    "notes": "https address or HTML in a sandboxed iframe. YouTube, Vimeo, Spotify and Loom share links become player addresses; Forma never contacts them. Preview shows a note instead of loading embeds."
   },
   {
     "id": "UI-50-030",
@@ -16984,10 +16984,10 @@
     "category": "Figma Buzz assets",
     "name": "Brand template gallery",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Search and category filter over this project's templates, plus one built-in original starter. No team or community gallery; other projects get templates through a package file or a personal starter kit."
+    "notes": "Search and category filter over project templates, plus a starter with six published templates in five categories. Other projects get templates through a package file."
   },
   {
     "id": "UI-51-003",
@@ -17094,20 +17094,20 @@
     "category": "Figma Buzz assets",
     "name": "Asset approval workflow",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Local status flow Draft, In review, Changes needed, Approved with timestamps; the store enforces the slot freeze. Single-user only: no reviewers, notifications or assignment."
+    "notes": "Status flow Draft, In review, Changes needed, Approved, with timestamps. The store enforces the slot freeze."
   },
   {
     "id": "UI-51-014",
     "category": "Figma Buzz assets",
     "name": "Asset version history",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Compares one asset against the file's named local versions and restores its slot content with Undo. Named versions only (20 per file); no per-asset automatic history."
+    "notes": "Compares against named versions and also keeps the last 12 automatic snapshots per asset, restorable with Undo. Images over 256 KB are not kept in snapshots."
   },
   {
     "id": "UI-51-015",
@@ -17124,20 +17124,20 @@
     "category": "Figma Buzz assets",
     "name": "Campaign asset folders",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Campaign folders are the local file browser's folders, set from the Kit tab or Files screen, with a Brand projects filter. They group whole projects, not individual assets, and stay on this device."
+    "notes": "Projects sit in local folders, and each asset has an optional campaign that filters and searches the list."
   },
   {
     "id": "UI-51-017",
     "category": "Figma Buzz assets",
     "name": "Shared brand library",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "A .formabrand.json package carries the kit and published templates, with strict validation, review and an additive merge. Sharing means passing the file by hand with no sync; local component libraries and starter kits also work."
+    "notes": ".formabrand.json carries the kit and published templates, with strict validation, review and additive merge. Starter kits and local libraries also work."
   },
   {
     "id": "UI-51-018",
@@ -17154,10 +17154,10 @@
     "category": "Figma Buzz assets",
     "name": "Template publishing",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Publish gate, revisions and frozen published frames within a project; published templates also export in the package. No team publishing or update notifications."
+    "notes": "Publish gate, revisions and frozen published frames, with published templates included in the package."
   },
   {
     "id": "UI-51-020",
@@ -19187,7 +19187,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Additive type:'code' node with validated HTML/CSS/JS runs in a no-network opaque frame, only from the dialog and only on explicit Run; source from a file never auto-executes. Canvas, Present and prototypes show the raster preview, not a live layer. It shares the editor thread, so a runaway loop freezes the app. See docs/CODE-LAYERS.md."
+    "notes": "Validated HTML, CSS and JS run on explicit Run only, in a no-network frame whose scripts sit in a terminable worker. The 5-second watchdog stops runaway code. Canvas shows the raster preview; mirrored DOM limits apply."
   },
   {
     "id": "UI-57-018",
@@ -19207,7 +19207,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Captured PNG (up to 2× and 2,048 px) stored as an ordinary image paint, with none/current/stale state and pixel-checked in Chromium and Playwright WebKit. Exports and the Figma Bridge use this raster (documented in docs/CODE-LAYERS.md). It is a DOM snapshot, frame fonts only; no real WKWebView smoke."
+    "notes": "Captured PNG up to 2× and 2,048 px, with none, current or stale state. Pixel-checked in Chromium, Playwright WebKit and a real WKWebView harness. It is a DOM snapshot, frame fonts only."
   },
   {
     "id": "UI-57-020",
@@ -19917,7 +19917,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://modelcontextprotocol.io/docs/develop/build-server",
-    "notes": "Unreleased source: Source-only import_image_asset accepts embedded static noninterlaced8-bit RGB/RGBA PNG, validates canonical base64/chunks/CRC/order and bounded decompression, then creates an editable page-root image in one revision-checked atomic transaction with Undo. Real stdio/redaction and editor pixels/save/reopen tested. PNG subset only; no asset paths/URLs, other formats; the frozen download lacks this tool. docs/MCP-PNG-IMPORT.md."
+    "notes": "Now imports static PNG of every color type, depth and interlace, and baseline or progressive JPEG, up to 20 MB and 16 million pixels. Revision-checked with Undo. No GIF, WebP, paths or URLs; the frozen download lacks it until rebuilt."
   },
   {
     "id": "UI-59-036",

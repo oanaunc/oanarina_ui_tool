@@ -2,7 +2,6 @@ import {readFileSync} from 'node:fs';
 import {describe,expect,it} from 'vitest';
 import {isSvgMarkup} from '../src/clipboard-svg';
 import {CODE_LAYER_PAINTER} from '../src/code-layer-paint';
-import {codeLayerDocument,defaultCodeLayer} from '../src/code-layer';
 import {dropConvertsImage,droppedDocument} from '../src/file-drop';
 import {dragAssetName,rememberDragAsset} from '../src/drag-asset';
 import {desktopDocumentState} from '../src/desktop-lifecycle';
