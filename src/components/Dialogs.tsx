@@ -8,6 +8,8 @@ import FigmaRestImportButton from './FigmaRestImportButton';
 import LocalNavigationLinks from './LocalNavigationLinks';
 import VersionHistory from './VersionHistory';
 import BranchesDialog from './BranchesDialog';
+import {DocumentRecoveryDialog,SafeModePluginsNotice,StorageRecoveryDialog} from './StorageRecovery';
+import {isSafeMode} from '../startup-health';
 import SaveVersion from './SaveVersion';
 import DocumentCoverDialog from './DocumentCoverDialog';
 import ShortcutHelp from './ShortcutHelp';
@@ -53,7 +55,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
  if(modal==='learning')return <LearningDialog/>;
- if(modal==='local-plugins')return <LocalPlugins key={s.doc.id}/>;
+ if(modal==='local-plugins')return isSafeMode()?<SafeModePluginsNotice/>:<LocalPlugins key={s.doc.id}/>;
  if(modal==='component-playground')return <ComponentPlayground/>;
  if(modal==='sketch-import'||modal==='sketch-import-review')return <SketchImport key={s.doc.id+modal}/>;
  if(modal==='pdf-import-review')return <PdfImportReview key={s.doc.id}/>;
@@ -66,6 +68,8 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  if(modal==='text-search')return <TextSearch key={s.doc.id}/>;
  if(modal==='move-to-page')return <MoveLayersDialog/>;
  if(modal==='branches')return <BranchesDialog key={s.doc.id}/>;
+ if(modal==='storage')return <StorageRecoveryDialog/>;
+ if(modal==='document-recovery')return <DocumentRecoveryDialog/>;
  if(modal==='history')return <VersionHistory key={s.doc.id}/>;
  if(modal==='present')return <PrototypePresentation/>;
  if(modal==='file-cover')return <DocumentCoverDialog/>;
