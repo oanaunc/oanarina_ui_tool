@@ -1,4 +1,5 @@
 import {parseDocument} from './model';
+import {brandSearchText} from './brand-assets';
 import type {DesignDocument} from './model';
 export interface LocalFolder {id:string;name:string;createdAt:string;}
 export interface LocalFileMetadata {id:string;folderId:string|null;starred:boolean;pinned:boolean;archived:boolean;trashedAt?:string;deleted?:boolean;lastOpenedAt?:string;revision:number;}
@@ -6,7 +7,8 @@ export interface FileBrowserState {version:1;folders:LocalFolder[];files:LocalFi
 export interface LocalFileEntry {doc:DesignDocument;metadata:LocalFileMetadata;}
 export type FileView='recent'|'all'|'drafts'|'starred'|'pinned'|'archive'|'trash';
 export type FileSort='modified-desc'|'modified-asc'|'name-asc'|'name-desc'|'opened-desc';
-export interface FileBrowserPreferences {layout:'grid'|'list';sort:FileSort;type:'all'|'design'|'whiteboard'|'slides';}
+export interface FileBrowserPreferences {layout:'grid'|'list';sort:FileSort;type:'all'|'design'|'whiteboard'|'slides'|'brand';}
+export const localFileType=(doc:Pick<DesignDocument,'brand'|'workspace'>)=>doc.brand?'brand':doc.workspace??'design';
 export const FILE_BROWSER_PREFERENCES_KEY='oui-file-browser';
 export const defaultFileBrowserPreferences:FileBrowserPreferences={layout:'grid',sort:'modified-desc',type:'all'};
 const validId=(id:unknown):id is string=>typeof id==='string'&&id.length>0&&id.length<=500&&!/[\u0000-\u001f]/.test(id);
@@ -32,7 +34,7 @@ export function cloneLocalDocument(doc:DesignDocument,name=doc.name+' copy'):Des
 }
 export function queryLocalFiles(entries:readonly LocalFileEntry[],options:{view:FileView;folderId?:string|null;query?:string;type?:FileBrowserPreferences['type'];sort?:FileSort}):LocalFileEntry[]{
  const query=(options.query??'').trim().toLocaleLowerCase();
- return entries.filter(({doc,metadata:m})=>!m.deleted&&(options.view==='trash'?!!m.trashedAt:!m.trashedAt)&&(options.view==='archive'?m.archived:options.view==='trash'||!m.archived)&&(options.view!=='drafts'||!m.folderId)&&(options.view!=='starred'||m.starred)&&(options.view!=='pinned'||m.pinned)&&(options.folderId===undefined||m.folderId===options.folderId)&&(!options.type||options.type==='all'||(doc.workspace??'design')===options.type)&&doc.name.toLocaleLowerCase().includes(query)).sort((a,b)=>{
+ return entries.filter(({doc,metadata:m})=>!m.deleted&&(options.view==='trash'?!!m.trashedAt:!m.trashedAt)&&(options.view==='archive'?m.archived:options.view==='trash'||!m.archived)&&(options.view!=='drafts'||!m.folderId)&&(options.view!=='starred'||m.starred)&&(options.view!=='pinned'||m.pinned)&&(options.folderId===undefined||m.folderId===options.folderId)&&(!options.type||options.type==='all'||localFileType(doc)===options.type)&&(doc.name.toLocaleLowerCase().includes(query)||!!doc.brand&&!!query&&brandSearchText(doc).includes(query))).sort((a,b)=>{
   if(options.view!=='trash'&&a.metadata.pinned!==b.metadata.pinned)return a.metadata.pinned?-1:1;
   let order=0;switch(options.sort??'modified-desc'){
    case'name-asc':order=a.doc.name.localeCompare(b.doc.name,undefined,{numeric:true,sensitivity:'base'});break;
@@ -43,5 +45,5 @@ export function queryLocalFiles(entries:readonly LocalFileEntry[],options:{view:
   }return order||a.doc.id.localeCompare(b.doc.id);
  });
 }
-export function readFileBrowserPreferences():FileBrowserPreferences{try{const raw=localStorage.getItem(FILE_BROWSER_PREFERENCES_KEY);if(!raw||raw.length>1000)return{...defaultFileBrowserPreferences};const data=JSON.parse(raw);if(data?.version!==1)return{...defaultFileBrowserPreferences};const v=data.values;return{layout:v?.layout==='list'?'list':'grid',sort:['modified-desc','modified-asc','name-asc','name-desc','opened-desc'].includes(v?.sort)?v.sort:'modified-desc',type:['all','design','whiteboard','slides'].includes(v?.type)?v.type:'all'};}catch{return{...defaultFileBrowserPreferences};}}
+export function readFileBrowserPreferences():FileBrowserPreferences{try{const raw=localStorage.getItem(FILE_BROWSER_PREFERENCES_KEY);if(!raw||raw.length>1000)return{...defaultFileBrowserPreferences};const data=JSON.parse(raw);if(data?.version!==1)return{...defaultFileBrowserPreferences};const v=data.values;return{layout:v?.layout==='list'?'list':'grid',sort:['modified-desc','modified-asc','name-asc','name-desc','opened-desc'].includes(v?.sort)?v.sort:'modified-desc',type:['all','design','whiteboard','slides','brand'].includes(v?.type)?v.type:'all'};}catch{return{...defaultFileBrowserPreferences};}}
 export function saveFileBrowserPreferences(value:FileBrowserPreferences){try{localStorage.setItem(FILE_BROWSER_PREFERENCES_KEY,JSON.stringify({version:1,values:value}));}catch{/* Browser preferences do not block project actions. */}}

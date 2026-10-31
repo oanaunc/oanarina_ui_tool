@@ -19,7 +19,7 @@ export interface BrandAsset {id:string;frameId:string;templateId:string;template
 export interface BrandBatch {id:string;name:string;createdAt:string;rows:number;assets:number;}
 export interface BrandKit {name:string;colors:{name:string;value:string}[];fonts:string[];enforcement:'refuse'|'flag';}
 export interface BrandWorkspace {version:1;assetPageId:string;templatePageId:string;kit:BrandKit;templates:BrandTemplate[];assets:BrandAsset[];batches:BrandBatch[];}
-export const BRAND_LIMITS={templates:200,assets:2000,slots:64,colors:64,fonts:32,batches:200,statusLog:50,text:5000,name:120,pageNodes:20000} as const;
+export const BRAND_LIMITS={templates:200,assets:2000,slots:64,colors:64,fonts:32,batches:200,statusLog:50,text:5000,name:120,pageNodes:20000,projectBytes:50_000_000} as const;
 export const BRAND_STATUS_LABEL:Record<BrandAssetStatus,string>={draft:'Draft',review:'In review',changes:'Changes needed',approved:'Approved'};
 export const brandStatusFlow:Record<BrandAssetStatus,readonly BrandAssetStatus[]>={draft:['review'],review:['approved','changes','draft'],changes:['review','draft'],approved:['draft']};
 export const brandSlotsEditable=(status:BrandAssetStatus)=>status==='draft'||status==='changes';
@@ -107,17 +107,17 @@ export function validateBrandMutations(before:Pick<DesignDocument,'pages'|'brand
  const oldAssets=indexOf(oldAssetPage.nodes),newAssets=indexOf(assetPage.nodes),oldTemplates=indexOf(oldTemplatePage.nodes),newTemplates=indexOf(templatePage.nodes),none=new Set<string>(),name=new Set(['name']);
  const priorTemplates=new Map(b.templates.map(t=>[t.id,t]));
  for(const t of next.templates){const prev=priorTemplates.get(t.id);if(prev&&(prev.frameId!==t.frameId||!equal(prev.source,t.source)))throw Error('Brand template identity cannot change.');if(t.status==='published'&&prev?.status==='published'){if(!equal(prev.slots,t.slots))throw Error(`Unpublish “${t.name}” before changing its slots.`);if(prev.revision!==t.revision||prev.publishedAt!==t.publishedAt)throw Error('A published revision cannot change.');assertFrozenTree(t.name,subtree(oldTemplates,t.frameId),subtree(newTemplates,t.frameId),(_,i)=>i?none:name);}if(t.status==='published'&&prev?.status!=='published'){if(prev&&t.revision<=prev.revision)throw Error('Publishing must advance the template revision.');assertPublishable(after,t);}}
- const prior=new Map(b.assets.map(x=>[x.id,x]));
+ const prior=new Map(b.assets.map(x=>[x.id,x]));let grew=false;
  for(const asset of next.assets){const prev=prior.get(asset.id),nodes=subtree(newAssets,asset.frameId);
-  if(!prev){if(asset.status!=='draft'||asset.statusLog.length!==1)throw Error('New brand assets start as drafts.');const template=brandTemplate(after,asset.templateId);if(brandLockDigest(nodes,asset.slots)!==asset.lockDigest)throw Error('A new asset must match its recorded lock.');if(template.status==='published'&&template.revision===asset.templateRevision)assertDerivedAsset(template,subtree(newTemplates,template.frameId),asset,nodes);else if(!b.assets.some(x=>x.templateId===asset.templateId&&x.templateRevision===asset.templateRevision&&x.lockDigest===asset.lockDigest))throw Error('Publish the template again before adding assets from this revision.');continue;}
+  if(!prev){grew=true;if(asset.status!=='draft'||asset.statusLog.length!==1)throw Error('New brand assets start as drafts.');const template=brandTemplate(after,asset.templateId);if(brandLockDigest(nodes,asset.slots)!==asset.lockDigest)throw Error('A new asset must match its recorded lock.');if(template.status==='published'&&template.revision===asset.templateRevision)assertDerivedAsset(template,subtree(newTemplates,template.frameId),asset,nodes);else if(!b.assets.some(x=>x.templateId===asset.templateId&&x.templateRevision===asset.templateRevision&&x.lockDigest===asset.lockDigest))throw Error('Publish the template again before adding assets from this revision.');continue;}
   const {status:_s,statusLog:_l,...restA}=prev,{status:_t,statusLog:_m,...restB}=asset;if(!equal(restA,restB))throw Error('Brand asset lock data cannot be edited.');
   const changed=prev.status!==asset.status;if(changed&&!brandStatusFlow[prev.status].includes(asset.status))throw Error(`An asset cannot move from ${BRAND_STATUS_LABEL[prev.status]} to ${BRAND_STATUS_LABEL[asset.status]}.`);if(changed?!equal(asset.statusLog.slice(0,-1),prev.statusLog.slice(-(BRAND_LIMITS.statusLog-1))):!equal(asset.statusLog,prev.statusLog))throw Error('Asset approval history cannot be rewritten.');
   const editable=brandSlotsEditable(prev.status)&&brandSlotsEditable(asset.status),slots=new Map(asset.slots.map(s=>[s.nodeId,s])),status=new Set(['locked']),before=subtree(oldAssets,asset.frameId);
   assertFrozenTree(nodes[0]?.name??'Asset',before,nodes,(n,i)=>{if(i===0)return name;const slot=slots.get(n.id);return slot&&editable?brandSlotFields(slot):slot&&changed?status:none;});
-  if(editable)nodes.forEach((n,i)=>{const slot=slots.get(n.id);if(slot)assertSlotEdit(slot,before[i],n);});
+  if(editable)nodes.forEach((n,i)=>{const slot=slots.get(n.id);if(slot){assertSlotEdit(slot,before[i],n);if(slot.kind==='image'&&brandSlotImage(before[i])!==brandSlotImage(n))grew=true;}});
  }
  for(const id of prior.keys())if(!next.assets.some(x=>x.id===id)&&newAssets.byId.has(prior.get(id)!.frameId))throw Error('A brand asset cannot be detached from its lock.');
- validateBrandWorkspace(after);assertBrandValues(oldAssetPage,assetPage,next.kit);
+ validateBrandWorkspace(after);assertBrandValues(oldAssetPage,assetPage,next.kit);if(grew&&JSON.stringify(after.pages).length>BRAND_LIMITS.projectBytes)throw Error('This would exceed the 50 MB project limit. Use smaller images or fewer assets.');
 }
 export interface BrandValueIssue {kind:'color'|'font';value:string;nodeId:string;nodeName:string;pageId:string;owner:'asset'|'template'|'page';ownerId?:string;}
 export interface BrandLockIssue {assetId:string;name:string;message:string;}
