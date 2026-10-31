@@ -56,7 +56,7 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | `replace_document` | Validated complete document replacement for advanced model features |
 | `undo_transaction` | Restore the previous successful MCP transaction; last 20 in memory |
 | `import_image_asset` | Source-only: validate embedded static 8-bit RGB/RGBA PNG, create an editable page-root image in one transaction |
-| `validate_project` | Run the editor's shared document validators |
+| `validate_project` | Run the editor's shared document validators. Brand projects also report out-of-brand values and assets whose locked styling no longer matches their recorded lock |
 | `export_svg` | Return SVG for vector/text pages; reject images and browser-raster fills |
 
 The resource `oanarina://project/summary` provides current metadata. Tool schemas are discoverable through MCP. Every write requires a `revision` returned by a read. Stale revisions fail without changing the file.
