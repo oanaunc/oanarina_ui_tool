@@ -265,12 +265,12 @@ extension Studio {
 extension Studio {
     func runFigImportSmoke(_ initial:DocumentWindow){
         guard smokeStage==0 else{return};smokeStage=1
-        guard let raw=ProcessInfo.processInfo.environment["FORMA_SMOKE_FIG_BASE64"],raw.count<100_000,let data=Data(base64Encoded:raw) else{smokeFail("Missing bounded synthetic Figma fixture")}
+        guard let raw=ProcessInfo.processInfo.environment["FORMA_SMOKE_FIG_BASE64"],raw.count<100_000,let data=Data(base64Encoded:raw) else{smokeFail("Missing bounded synthetic .fig fixture")}
         let directory=FileManager.default.temporaryDirectory.appendingPathComponent("forma-native-fig-"+UUID().uuidString,isDirectory:true),source=directory.appendingPathComponent("Synthetic.fig"),destination=directory.appendingPathComponent("Converted.oui")
         do{try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:true);try data.write(to:source,options:.atomic)}catch{smokeFail(error.localizedDescription)}
         smokeDirectory=directory
         let fingerprint=ProjectFileSafety.fingerprint(data)
-        DispatchQueue.main.asyncAfter(deadline:.now()+35){if !self.smokeFinishing{self.smokeFail("Native Figma import timed out")}}
+        DispatchQueue.main.asyncAfter(deadline:.now()+35){if !self.smokeFinishing{self.smokeFail("Native .fig import timed out")}}
         smokeReadyOverride={imported in
             self.check(imported !== initial && self.documents.count==2,"selected fig opens an independent document window")
             self.check(imported.session.file==nil && imported.session.dirty,"fig import starts unsaved without source save binding")
