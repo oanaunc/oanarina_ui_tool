@@ -9,10 +9,10 @@ import {validateDocumentNetworks} from './vector-network';
 import {validateBackgroundBlurExportSource} from './background-blur';
 import {currentTextOutline} from './text-outline';
 import {svgOutlinedTextPlan} from './svg-text-outlines';
-import {FIGMA_REST_LIMITS} from './figma-rest-import';
-import {convertFigmaRestInWorker} from './figma-rest-convert';
-import {getFigmaRestReview,requestFigmaRestReview,checkFigmaRestReview,finishFigmaRestReview,cancelFigmaRestReview} from './figma-rest-review';
-import type {FigmaRestReview} from './figma-rest-review';
+import {DESIGN_JSON_LIMITS} from './design-json-import';
+import {convertDesignJsonInWorker} from './design-json-convert';
+import {getDesignJsonReview,requestDesignJsonReview,checkDesignJsonReview,finishDesignJsonReview,cancelDesignJsonReview} from './design-json-review';
+import type {DesignJsonReview} from './design-json-review';
 import {textPathExportWarnings} from './text-path-bounds';
 import {validateDocumentTextPaths} from './text-path';
 import {importRasterHeader} from './import-raster-header';
@@ -61,7 +61,7 @@ export function notifyError(e:unknown){const message=e instanceof Error?e.messag
 export async function openSelectedProject(file:File){
  const pendingSketch=getSketchReview();if(pendingSketch)cancelSketchReview(pendingSketch);if(/\.sketch$/i.test(file.name))return openSketchProjectFile(file);
  const pendingPdf=getPdfImportReview();if(pendingPdf)cancelPdfImportReview(pendingPdf);if(/\.pdf$/i.test(file.name))return openPdfProjectFile(file);
- const pendingRest=getFigmaRestReview();if(pendingRest)cancelFigmaRestReview(pendingRest);
+ const pendingRest=getDesignJsonReview();if(pendingRest)cancelDesignJsonReview(pendingRest);
  const isFig=/\.fig$/i.test(file.name),session=beginImportSession(isFig?'fig':'project',1,file.size),{task}=session,before=useEditor.getState();let projectText:unknown;useRepairableImport.setState({offer:null});
  try{
   if(file.size>=50_000_000)throw new ImportInputError('Choose a project smaller than 50 MB.');
@@ -69,33 +69,33 @@ export async function openSelectedProject(file:File){
   await task.checkpoint('validating');session.check();
   const result=isFig?await importFigBytes(new Uint8Array(raw as ArrayBuffer),file.name,task.signal,(stage,layers)=>task.update({stage,layers})):undefined;
   let source=result?.document;
-  if(!isFig){projectText=raw;const parsed=await parseProjectInWorker(raw as string,task.signal);session.check();if(parsed.rest){task.update({format:'rest'});if(file.size>FIGMA_REST_LIMITS.bytes)throw new ImportInputError('Choose Figma REST JSON smaller than 20 MB.');await task.checkpoint('converting');const converted=await convertFigmaRestInWorker(raw as string,file.name.replace(/\.json$/i,''),task.signal);session.check();session.dispose();task.finish();const review=await requestFigmaRestReview(converted);return review?openReviewedFigmaRest(review):undefined;}source=parsed.document;}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
+  if(!isFig){projectText=raw;const parsed=await parseProjectInWorker(raw as string,task.signal);session.check();if(parsed.rest){task.update({format:'rest'});if(file.size>DESIGN_JSON_LIMITS.bytes)throw new ImportInputError('Choose design JSON smaller than 20 MB.');await task.checkpoint('converting');const converted=await convertDesignJsonInWorker(raw as string,file.name.replace(/\.json$/i,''),task.signal);session.check();session.dispose();task.finish();const review=await requestDesignJsonReview(converted);return review?openReviewedDesignJson(review):undefined;}source=parsed.document;}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
   await task.checkpoint('retaining');session.check();
   const mustRetain=desktopDocuments.state(before.doc).dirty||before.past.length>0&&before.savedAt!==before.doc.updatedAt;
   try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw new ImportInputError('The current edited project cannot be retained. Save a .oui backup before opening another file.');}catch(error){task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();
   await task.checkpoint('opening');session.check();const opened=await openDocumentForEditing(source,task.signal);session.check();
   session.dispose();task.finish();desktopDocuments.mark(opened.document,isFig);useEditor.getState().load(opened.document);
-  if(result){setFigImportReport({...result,document:opened.document});useEditor.getState().set({modal:'fig-import-report',toast:'Figma file imported as a new .oui project.'});}
+  if(result){setFigImportReport({...result,document:opened.document});useEditor.getState().set({modal:'fig-import-report',toast:'Design file imported as a new .oui project.'});}
   if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});
   const loaded=useEditor.getState();setTimeout(()=>{if(useEditor.getState().doc===loaded.doc&&useEditor.getState().pageId===loaded.pageId)useEditor.getState().fit();},0);
  }catch(error){const reason=task.fail(error);if(!task.signal.aborted&&projectText!==undefined)offerImportRepair(projectText,file.name);if(!task.signal.aborted)throw new Error(reason??'The import could not finish.');}finally{session.dispose();}
 }
 /** Review confirmation uses a fresh abortable delivery session; no source mutation before every validation succeeds. */
-async function openReviewedFigmaRest(review:FigmaRestReview){
- checkFigmaRestReview(review);const session=beginImportSession('rest',1,0),{task}=session,before=useEditor.getState();
+async function openReviewedDesignJson(review:DesignJsonReview){
+ checkDesignJsonReview(review);const session=beginImportSession('rest',1,0),{task}=session,before=useEditor.getState();
  try{
-  await task.checkpoint('validating');session.check();checkFigmaRestReview(review);const source=review.result.document;
+  await task.checkpoint('validating');session.check();checkDesignJsonReview(review);const source=review.result.document;
   await task.checkpoint('retaining');session.check();const mustRetain=desktopDocuments.state(before.doc).dirty||before.past.length>0&&before.savedAt!==before.doc.updatedAt;
-  try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw Error();}catch{task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();checkFigmaRestReview(review);
-  await task.checkpoint('opening');session.check();const opened=await openDocumentForEditing(source,task.signal);session.check();checkFigmaRestReview(review);
-  session.dispose();task.finish();finishFigmaRestReview(review);desktopDocuments.mark(opened.document,true);useEditor.getState().load(opened.document);setFigImportReport({...review.result,document:opened.document,source:'rest'});useEditor.getState().set({modal:'fig-import-report',toast:opened.warning??'Figma REST JSON imported as a new .oui project.'});
+  try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw Error();}catch{task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();checkDesignJsonReview(review);
+  await task.checkpoint('opening');session.check();const opened=await openDocumentForEditing(source,task.signal);session.check();checkDesignJsonReview(review);
+  session.dispose();task.finish();finishDesignJsonReview(review);desktopDocuments.mark(opened.document,true);useEditor.getState().load(opened.document);setFigImportReport({...review.result,document:opened.document,source:'rest'});useEditor.getState().set({modal:'fig-import-report',toast:opened.warning??'Design JSON imported as a new .oui project.'});
   const loaded=useEditor.getState();setTimeout(()=>{if(useEditor.getState().doc===loaded.doc&&useEditor.getState().pageId===loaded.pageId)useEditor.getState().fit();},0);
- }catch(error){const reason=task.fail(error);cancelFigmaRestReview(review);if(!task.signal.aborted)throw new Error(reason??'The REST JSON import could not finish.');}finally{session.dispose();}
+ }catch(error){const reason=task.fail(error);cancelDesignJsonReview(review);if(!task.signal.aborted)throw new Error(reason??'The design JSON import could not finish.');}finally{session.dispose();}
 }
 /** Capture before opening the chooser; source transitions invalidate permanently even if it returns later. */
-export function chooseFigmaRestJson(expected=captureColorContext(useEditor.getState())){
- if(!sameColorContext(expected,useEditor.getState())||expected.modal!==null&&expected.modal!=='figma')return;
- if(expected.modal==='figma')useEditor.getState().set({modal:null});
+export function chooseDesignJson(expected=captureColorContext(useEditor.getState())){
+ if(!sameColorContext(expected,useEditor.getState())||expected.modal!==null&&expected.modal!=='interchange')return;
+ if(expected.modal==='interchange')useEditor.getState().set({modal:null});
  const origin=captureColorContext(useEditor.getState()),input=document.createElement('input');let valid=true,done=false;
  input.type='file';input.accept='.json';input.hidden=true;document.body.appendChild(input);
  const off=useEditor.subscribe(live=>{if(!sameColorContext(origin,live)){valid=false;off();}});

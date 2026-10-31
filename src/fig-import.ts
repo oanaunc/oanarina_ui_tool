@@ -19,18 +19,18 @@ export function convertFigInWorker(bytes:Uint8Array,name:string,signal?:AbortSig
 }
 /** Selected bytes only. No network access, source paths, or document mutation. */
 export async function importFigBytes(bytes:Uint8Array,name:string,signal?:AbortSignal,onStage?:Stage,clipboard=false):Promise<FigImportResult>{
- if(bytes.byteLength>=50_000_000)throw Error('Choose a Figma file smaller than 50 MB.');
- onStage?.('decoding');const result=await convertFigInWorker(bytes,name.replace(/\.fig$/i,'').slice(0,120)||'Imported Figma file',signal,onStage,clipboard);
- if(signal?.aborted)throw new DOMException('Figma import cancelled.','AbortError');
+ if(bytes.byteLength>=50_000_000)throw Error('Choose a .fig file smaller than 50 MB.');
+ onStage?.('decoding');const result=await convertFigInWorker(bytes,name.replace(/\.fig$/i,'').slice(0,120)||'Imported design file',signal,onStage,clipboard);
+ if(signal?.aborted)throw new DOMException('Design file import cancelled.','AbortError');
  onStage?.('decoding');await validateFigSceneRasters(result.document,signal);
- if(signal?.aborted)throw new DOMException('Figma import cancelled.','AbortError');
+ if(signal?.aborted)throw new DOMException('Design file import cancelled.','AbortError');
  onStage?.('validating');
  return result;
 }
 export function selectedFigBytes(base64:string):Uint8Array{
- if(!base64||base64.length>66_666_668||!/^[A-Za-z0-9+/]*={0,2}$/.test(base64))throw Error('Invalid selected Figma file data.');
- let binary:string;try{binary=atob(base64);}catch{throw Error('Invalid selected Figma file data.');}
- if(binary.length>=50_000_000)throw Error('Choose a Figma file smaller than 50 MB.');
+ if(!base64||base64.length>66_666_668||!/^[A-Za-z0-9+/]*={0,2}$/.test(base64))throw Error('Invalid selected design file data.');
+ let binary:string;try{binary=atob(base64);}catch{throw Error('Invalid selected design file data.');}
+ if(binary.length>=50_000_000)throw Error('Choose a .fig file smaller than 50 MB.');
  return Uint8Array.from(binary,c=>c.charCodeAt(0));
 }
 let report:FigImportResult|undefined;

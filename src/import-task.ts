@@ -21,8 +21,8 @@ export function importFailureReason(error:unknown,stage:ImportStage){
  const fixed=trustedImportDiagnostic(message);if(fixed)return fixed;
  // Only fixed schema diagnostics are admitted. Never display parser excerpts, user names, URLs or raw bytes.
  if(/^Invalid (?:page\.|or duplicate layer\.|document identity or timestamp\.|canvas background\.|layer flag\.|layer settings\.|text property\.|layer property: (?:x|y|width|height|rotation|opacity|fontSize|strokeWidth|radius|gap|padding|columns|lineHeight|letterSpacing|blur))$/.test(message))return message+' The source project was left unchanged.';
- if(/Figma.*(?:geometry|numeric|dimensions|size)|(?:geometry|numeric|dimensions).*Figma/i.test(message))return 'Invalid Figma geometry or numeric values. Export a new Design file from the original app.';
- if(/ZIP|\.fig.*(?:container|archive|compression)|(?:container|archive).*\.fig/i.test(message))return 'The .fig container is invalid, truncated, or uses unsupported compression. Export a new Design file from Figma.';
+ if(/design file.*(?:geometry|numeric|dimensions|size)|(?:geometry|numeric|dimensions).*design file/i.test(message))return 'Invalid geometry or numeric values in the design file. Export a new Design file from the original app.';
+ if(/ZIP|\.fig.*(?:container|archive|compression)|(?:container|archive).*\.fig/i.test(message))return 'The .fig container is invalid, truncated, or uses unsupported compression. Export a new Design file from the original app.';
  if(message.startsWith('Choose an Oanarina .oui file'))return 'Choose a Forma project with supported .oui version 1 or 2. Use File → Open for a supported binary .fig Design file.';
  if(message==='Layer values out of range.')return 'A layer contains geometry or opacity outside the supported range.';
  if(stage==='reading')return 'The selected file could not be read completely. Select the file again from local storage.';

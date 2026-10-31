@@ -162,7 +162,7 @@ export function decodeKiwiMessage(schema: KiwiSchema, bytes: Uint8Array, rootNam
     const readField = (f: KiwiField) => {
       if (!f.array) { object[f.name] = readType(f.type, depth + 1); return; }
       const n = r.uint();
-      if (f.name === 'nodeChanges' && n > KIWI_LIMITS.nodeChanges) throw new Error('Figma node count exceeds limit');
+      if (f.name === 'nodeChanges' && n > KIWI_LIMITS.nodeChanges) throw new Error('Design file node count exceeds limit');
       if (f.type === -2) {
         byteVectors += n;
         if (byteVectors > KIWI_LIMITS.byteVectors || n > bytes.length - r.at) throw new Error('Invalid or oversized Kiwi byte vector');

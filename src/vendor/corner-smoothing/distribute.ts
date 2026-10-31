@@ -1,5 +1,5 @@
 /*!
-figma-squircle 1.1.0 — https://github.com/phamfoo/figma-squircle
+Corner smoothing 1.1.0, by Tien Pham
 MIT License
 
 Copyright (c) 2021 Tien Pham

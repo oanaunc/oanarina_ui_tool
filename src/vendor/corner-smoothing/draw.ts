@@ -1,5 +1,5 @@
 /*!
-figma-squircle 1.1.0 — https://github.com/phamfoo/figma-squircle
+Corner smoothing 1.1.0, by Tien Pham
 MIT License
 
 Copyright (c) 2021 Tien Pham
@@ -38,11 +38,7 @@ interface CornerParams {
   roundingAndSmoothingBudget: number
 }
 
-// The article from figma's blog
-// https://www.figma.com/blog/desperately-seeking-squircles/
-//
-// The original code by MartinRGB
-// https://github.com/MartinRGB/Figma_Squircles_Approximation/blob/bf29714aab58c54329f3ca130ffa16d39a2ff08c/js/rounded-corners.js#L64
+// The original approximation is by MartinRGB.
 export function getPathParamsForCorner({
   cornerRadius,
   cornerSmoothing,
@@ -56,7 +52,7 @@ export function getPathParamsForCorner({
 
   // When there's not enough space left (p > roundingAndSmoothingBudget), there are 2 options:
   //
-  // 1. What figma's currently doing: limit the smoothing value to make sure p <= roundingAndSmoothingBudget
+  // 1. The usual approach: limit the smoothing value to make sure p <= roundingAndSmoothingBudget
   // But what this means is that at some point when cornerRadius is large enough,
   // increasing the smoothing value wouldn't do anything
   //
