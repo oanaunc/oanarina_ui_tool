@@ -1,3 +1,4 @@
+import {t} from '../i18n';
 import {useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {useEditor} from '../store';
@@ -12,7 +13,7 @@ import {changeLearningStep,finishLearningTour,openLearning,scheduleLearningFocus
 import './editor-learning.css';
 function useLearningOwner(){const s=useEditor(),p=usePreferences(),[epoch,setEpoch]=useState({}),proof=useMemo(()=>({context:learningContext(),valid:true}),[s,p.uiScale,epoch]);useLayoutEffect(()=>{proof.valid=sameLearningContext(proof.context);const check=()=>{if(proof.valid&&!sameLearningContext(proof.context)){proof.valid=false;setEpoch({});}},a=useEditor.subscribe(check),b=subscribePreferences(check);return()=>{proof.valid=false;a();b();};},[proof]);return()=>proof.valid&&sameLearningContext(proof.context);}
 const activation=(e:React.KeyboardEvent)=>{if(e.key===' '||e.key==='Enter')e.stopPropagation();};
-export function LearningMenuItem({close}:{close:()=>void}){const current=useLearningOwner();return <button role="menuitem" onKeyDown={activation} onKeyUp={activation} onClick={()=>{if(!current())return;close();if(current())openLearning('overview');}}>Learning & canvas tour</button>;}
+export function LearningMenuItem({close}:{close:()=>void}){const current=useLearningOwner();return <button role="menuitem" onKeyDown={activation} onKeyUp={activation} onClick={()=>{if(!current())return;close();if(current())openLearning('overview');}}>{t('Learning & canvas tour')}</button>;}
 export function ContextualHelpButton(){const s=useEditor(),current=useLearningOwner();return <button className="canvas-learning-button" aria-label={'Help for '+learningTopic(s.tool).title} onKeyDown={activation} onKeyUp={activation} onClick={()=>{if(current())openLearning('tool');}}>Tool help <span aria-hidden="true">?</span></button>;}
 export default function LearningDialog(){const s=useEditor(),current=useLearningOwner(),[choice,setChoice]=useState({tab:useLearningTour.getState().entry as string,tool:s.tool}),live=useRef(choice),root=useRef<HTMLDivElement>(null),keyboard=useKeyboardPreferences(commands),[error,setError]=useState('');const owned=()=>current()&&useEditor.getState().modal==='learning'&&live.current===choice,change=(patch:Partial<typeof choice>)=>{if(!owned())return;const next={...choice,...patch};live.current=next;setChoice(next);setError('');return next;},topic=learningTopic(choice.tool),command=commands.find(c=>c[0]===topic.command),key=command?shortcutLabel(command,keyboard):'';
  useLayoutEffect(()=>{root.current?.querySelector<HTMLButtonElement>('[data-learning-initial]')?.focus({preventScroll:true});},[]);

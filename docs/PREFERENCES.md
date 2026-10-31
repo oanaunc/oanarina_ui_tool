@@ -44,3 +44,5 @@ These defaults affect caller-integrated creation paths, including canvas drawing
 This implements a defined local preference set. It is not a claim of complete Figma settings parity. Accent controls, cursor choices, UI scaling/language, pressure/touchpad calibration, configurable native shortcuts and broader system integration remain separate requirements.
 
 Canvas gesture, export naming, export destination and Trash retention choices are stored separately. See docs/EDITOR-SHELL.md.
+
+## Language, accent and contrast

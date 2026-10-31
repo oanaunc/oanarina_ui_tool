@@ -1,0 +1,39 @@
+/* Right-to-left chrome. Flex and grid rows mirror on their own through dir; these rules cover the physical offsets
+   left in older stylesheets, so left-to-right layout stays exactly as it was. The canvas never mirrors. */
+[dir=rtl] .canvas-wrap{direction:ltr;unicode-bidi:isolate}
+[dir=rtl] .ruler-top,[dir=rtl] .ruler-left{direction:ltr}
+/* Untranslated English and user-named layers keep their own reading direction inside mirrored panels. */
+[dir=rtl] :is(.topbar,.menubar,.panel,.dialog,.home,.toolbar,.toast,.menu,.sidebar-layout-controls) :is(p,small,span,strong,label,legend,h1,h2,h3,dt,dd,li,summary,button,option,code){unicode-bidi:plaintext}
+[dir=rtl] kbd,[dir=rtl] .action-results kbd{margin-left:0;margin-right:auto}
+[dir=rtl] .document-tab>button{margin-left:0;margin-right:20px}
+[dir=rtl] .offline-label{margin-right:0;margin-left:2px}
+[dir=rtl] .register-link{margin-right:0;margin-left:18px}
+[dir=rtl] .left-panel{border-right:0;border-left:1px solid var(--line)}
+[dir=rtl] .right-panel{border-left:0;border-right:1px solid var(--line)}
+[dir=rtl] .home>aside{border-right:0;border-left:1px solid var(--line)}
+[dir=rtl] :is(.file-title,.library-button>span,.menu>button>span,.asset-card,.action-group,.starter-grid>button,.file-card,.systems-sidebar button){text-align:right}
+[dir=rtl] .panel-tabs>button.tab-search,[dir=rtl] .page-info>.muted,[dir=rtl] .preset-row small,[dir=rtl] .paint-item summary>small,[dir=rtl] .track-label button:last-child,[dir=rtl] .action-palette-filter>button{margin-left:0;margin-right:auto}
+[dir=rtl] .layer-row{padding-right:0;padding-left:12px}
+[dir=rtl] .right-tabs{padding-left:0;padding-right:16px}
+[dir=rtl] .number-field>input{text-align:left}
+[dir=rtl] .field-grid>.number-field>input{text-align:right}
+[dir=rtl] .steps{padding-left:0;padding-right:18px}
+[dir=rtl] .main-menu{left:auto;right:0}
+[dir=rtl] .tool-menu{left:auto;right:-7px}
+[dir=rtl] .help-fab{right:auto;left:17px}
+[dir=rtl] .canvas-learning-button{right:auto;left:16px}
+[dir=rtl] .canvas-learning-button span{margin-left:0;margin-right:5px}
+[dir=rtl] .restore-ui{left:auto;right:12px}
+[dir=rtl] .canvas-bottom{left:20px;right:auto}
+[dir=rtl] .show-properties .right-panel,[dir=rtl] .sidebar-compact .sidebar-overlay{right:auto;left:0}
+[dir=rtl] .starter-grid>button>svg,[dir=rtl] .local-home .starter-grid>button>svg{right:auto;left:12px;transform:scaleX(-1)}
+[dir=rtl] .home-file-description>strong{padding-right:0;padding-left:25px}
+[dir=rtl] .home-file-actions{right:auto;left:8px}
+[dir=rtl] .home-file-badges{left:auto;right:10px}
+[dir=rtl] .home-file-menu{right:auto;left:8px}
+[dir=rtl] .home-files-list .home-file-description{padding-right:10px;padding-left:70px}
+[dir=rtl] .home-files-list .home-file-actions{right:auto;left:14px}
+[dir=rtl] .home-files-list .home-file-badges{right:auto;left:54px}
+[dir=rtl] .sidebar-layout-controls svg{transform:scaleX(-1)}
+[dir=rtl] .app :is(.page-row.active,.home>aside>button.active,.systems-sidebar .active,[role=option][aria-selected=true],[role=tab][aria-selected=true]){box-shadow:inset -3px 0 0 var(--focus-ring)}
+[dir=rtl] .layer-row.selected{box-shadow:inset -2px 0 #bc9bde}
