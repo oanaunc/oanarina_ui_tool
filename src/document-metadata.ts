@@ -1,5 +1,6 @@
 import {validateDocumentNetworks} from './vector-network';
 import {validateDocumentPrototypeInputs} from './prototype-input';
+import {validateDocumentBackgroundBlur} from './background-blur';
 import {validateDocumentComponentSlots} from './component-slots';
 import {validateDocumentTextPaths} from './text-path';
 import {validateDocumentCalligraphicStrokes} from './calligraphic-stroke';
@@ -47,6 +48,7 @@ export function validateDocumentMetadata(document:{workspace?:unknown;fileCover?
  validateDocumentTextPaths(document);
  validateDocumentCalligraphicStrokes(document);
  validateDocumentRotationOrigins(document);
+ validateDocumentBackgroundBlur(document);
  validateDocumentProgressiveBlur(document);
  validateDocumentSurfaces(document);
  validateDocumentLayoutSettings(document);

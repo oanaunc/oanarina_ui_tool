@@ -1,3 +1,4 @@
+import {hasBackgroundBlur} from './background-blur';
 import type {DesignNode} from './model';
 import {identity,multiply,nodeMatrix,point} from './transforms';
 import type {Matrix} from './transforms';
@@ -17,6 +18,7 @@ interface Resolved {matrix:Matrix;root:string;depth:number;}
 /** One immutable-page index. Uncertain geometry is retained, never replaced by guessed clipping. */
 export function indexViewportRoots(nodes:readonly DesignNode[]):ViewportCullIndex {
  const result:ViewportCullIndex={source:nodes,roots:[],rootFor:new Map(),nodes:nodes.length,work:0,fallback:''},fail=(message:string)=>({...result,fallback:message});
+ if(hasBackgroundBlur(nodes))return fail('Background blur retains the complete authored backdrop scene.');
  if(nodes.length>VIEWPORT_CULL_LIMITS.nodes)return fail('Page exceeds the 20,000-layer culling budget.');
  const byId=new Map<string,DesignNode>(),resolved=new Map<string,Resolved>(),roots=new Map<string,CullRoot>();
  for(const n of nodes){result.work++;if(!n||typeof n.id!=='string'||!n.id||byId.has(n.id))return fail('Layer identities are not supported by this culling index.');byId.set(n.id,n);}

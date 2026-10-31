@@ -1,0 +1,4 @@
+import {backgroundBlurClipImage} from '../background-blur';
+import type {BackgroundBlurPlan} from '../background-blur';
+/** Selectively replace the real preceding SourceGraphic; never source-over a duplicate backdrop. */
+export function BackgroundBlurFilter({plan,id}:{plan:BackgroundBlurPlan;id:string}){return <filter id={id} filterUnits="userSpaceOnUse" {...plan.region} colorInterpolationFilters="sRGB"><feImage href={backgroundBlurClipImage(plan)} {...plan.region} preserveAspectRatio="none" result="shape"/><feGaussianBlur in="SourceGraphic" stdDeviation={plan.effect.radius/2} edgeMode="duplicate" result="blurred"/><feComposite in="SourceGraphic" in2="shape" operator="out" result="unfiltered"/><feComposite in="blurred" in2="shape" operator="in" result="filtered"/><feComposite in="unfiltered" in2="filtered" operator="arithmetic" k2={1} k3={1}/></filter>;}
