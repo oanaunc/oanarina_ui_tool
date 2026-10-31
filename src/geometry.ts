@@ -1,3 +1,4 @@
+import {networkPath} from './vector-network-geometry';
 import {smoothedBoxPath} from './corner-smoothing';
 import {refuseVariableWidthConversion} from './variable-width';
 import {roundedPolygonPath} from './basic-shapes';
@@ -25,6 +26,7 @@ export function contourPath(points:VectorPoint[],closed=false){
  return d+(closed?'Z':'');
 }
 export function localPath(n:DesignNode):string {
+ if(n.type==='path'&&n.vectorNetwork)return networkPath(n.vectorNetwork);
  if(n.type==='path')return n.contours!==undefined?n.contours.map(c=>contourPath(c.points,c.closed)).join(' '):n.points.length?contourPath(n.points,n.closed):n.path;
  if(n.type==='ellipse')return ellipsePath(n);
  if(n.type==='polygon'||n.type==='star')return n.radius>0?roundedPolygonPath(shapePoints(n),n.radius):contourPath(shapePoints(n),true);
@@ -51,7 +53,7 @@ export function updateBooleans(nodes:DesignNode[]){
  }
 }
 export function geometricArea(n:DesignNode){const p=geometry(n);if(p.fillRule==='evenodd')p.reorient(false);const a=Math.abs((p as paper.Path|paper.CompoundPath).area);p.remove();return a;}
-export function pathContours(n:DesignNode):VectorContour[]{scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();const paths=p instanceof scope.CompoundPath?p.children as paper.Path[]:[p as paper.Path];return paths.map(path=>({closed:path.closed,points:path.segments.map(s=>({x:s.point.x,y:s.point.y,in:{x:s.handleIn.x,y:s.handleIn.y},out:{x:s.handleOut.x,y:s.handleOut.y},mode:'mirrored'}))}));}
+export function pathContours(n:DesignNode):VectorContour[]{if(n.vectorNetwork)refuseVariableWidthConversion(n);scope.activate();const p=scope.PathItem.create(localPath(n)||'M0 0');p.remove();const paths=p instanceof scope.CompoundPath?p.children as paper.Path[]:[p as paper.Path];return paths.map(path=>({closed:path.closed,points:path.segments.map(s=>({x:s.point.x,y:s.point.y,in:{x:s.handleIn.x,y:s.handleIn.y},out:{x:s.handleOut.x,y:s.handleOut.y},mode:'mirrored'}))}));}
 export function vectorOperation(n:DesignNode,operation:'smooth'|'simplify'|'reverse'|'close'|'open'|'flatten'){
  refuseVariableWidthConversion(n);const p=geometry(n);if(operation==='smooth')p.smooth({type:'catmull-rom',factor:.5});if(operation==='simplify')p.simplify(1.5);if(operation==='reverse')p.reverse();if(operation==='flatten')p.flatten(.4);
  if(operation==='close'||operation==='open'){if(p instanceof scope.CompoundPath)for(const child of p.children as paper.Path[])child.closed=operation==='close';else (p as paper.Path).closed=operation==='close';}

@@ -1,0 +1,32 @@
+import {useVectorLasso} from './vector-lasso';
+import {useVectorBend} from './vector-bend';
+import {create} from 'zustand';
+import type {DesignNode} from './model';
+import {useEditor} from './store';
+import {captureColorContext,sameColorContext} from './color-edit-context';
+import type {ColorEditContext} from './color-edit-context';
+import {getPreferences,subscribePreferences} from './preferences';
+import {contoursToNetwork,networkNodePatch,flattenNetworkPatch,validateDocumentNetworks} from './vector-network';
+import type {VectorNetwork} from './vector-network-geometry';
+import {useCanvasGradient} from './canvas-gradient';
+import {useCanvasImageCrop} from './canvas-image-crop';
+import {useMaskView} from './mask-view';
+import {useVectorCut} from './vector-cut';
+import {useVectorEraser} from './vector-eraser';
+import {useMultiVector} from './multi-vector';
+import {useWidthView} from './variable-width-actions';
+export interface NetworkContext {editor:ColorEditContext;id:string;tool:string;zoom:number;pan:{x:number;y:number};uiScale:number;valid:boolean;vectorEditId:string|null;outlines:boolean;edge?:string;vertex?:string;branch:boolean;}
+export function networkProof(id:string):NetworkContext{const s=useEditor.getState();return {editor:captureColorContext(s),id,tool:s.tool,zoom:s.zoom,pan:{...s.pan},uiScale:getPreferences().uiScale,valid:true,branch:false,vectorEditId:s.vectorEditId,outlines:s.outlines};}
+export function sameNetworkContext(c:NetworkContext){const s=useEditor.getState();return c.valid&&sameColorContext(c.editor,s)&&c.tool===s.tool&&c.vectorEditId===s.vectorEditId&&c.outlines===s.outlines&&c.zoom===s.zoom&&c.pan.x===s.pan.x&&c.pan.y===s.pan.y&&c.uiScale===getPreferences().uiScale&&!useMaskView.getState().preview&&!useMaskView.getState().outlines&&!useCanvasGradient.getState().context&&!useCanvasImageCrop.getState().context;}
+export function networkTarget(c:NetworkContext,graph=true){const s=useEditor.getState();if(!sameNetworkContext(c)||s.home||s.modal||s.uiHidden||s.outlines||s.motionOpen||s.mode!=='design'||s.doc.workspace&&s.doc.workspace!=='design'||s.selection.length!==1||s.selection[0]!==c.id||!['move','scale'].includes(s.tool))throw Error('Select the network again in Design with Motion closed.');const nodes=s.doc.pages.find(p=>p.id===s.pageId)!.nodes,map=new Map(nodes.map(n=>[n.id,n])),n=map.get(c.id);if(s.vectorEditId&&s.vectorEditId!==c.id)throw Error('Finish the other vector edit first.');if(!n||graph&&!n.vectorNetwork||!graph&&n.vectorNetwork)throw Error('Select one eligible open contour path.');let owner:DesignNode|undefined=n;const seen=new Set<string>();while(owner){if(seen.has(owner.id)||seen.size>=64||owner.locked||!owner.visible||owner.instanceRootId)throw Error('Unlock and make this independent vector hierarchy visible.');seen.add(owner.id);if(owner.parentId&&!map.has(owner.parentId))throw Error('A vector network ancestor is missing.');owner=owner.parentId?map.get(owner.parentId):undefined;}return n;}
+interface NetworkView {context:NetworkContext|null;activate:(id:string)=>void;reset:()=>void;choose:(kind:'vertex'|'edge',id:string)=>void;arm:(value:boolean)=>void;}
+function renew(c:NetworkContext,patch:Partial<NetworkContext>){c.valid=false;return {...c,...patch,valid:true};}
+export const useNetworkView=create<NetworkView>((set,get)=>({context:null,activate:id=>{useMaskView.getState().reset();useCanvasGradient.getState().reset();useCanvasImageCrop.getState().reset();useVectorBend.getState().reset();useVectorLasso.getState().reset();useVectorCut.getState().reset();useVectorEraser.getState().reset();useMultiVector.getState().reset();useWidthView.getState().reset();useEditor.getState().set({vectorEditId:null,vectorSelection:[]});const c=networkProof(id);networkTarget(c);const old=get().context;if(old)old.valid=false;set({context:c});},reset:()=>{const c=get().context;if(c)c.valid=false;set({context:null});},choose:(kind,id)=>{const c=get().context;if(!c||!sameNetworkContext(c))return;const n=networkTarget(c),g=n.vectorNetwork!;if(kind==='edge'?!g.edges.some(e=>e.id===id):!g.vertices.some(v=>v.id===id))return;set({context:renew(c,{edge:kind==='edge'?id:undefined,vertex:kind==='vertex'?id:undefined})});},arm:value=>{const c=get().context;if(c&&sameNetworkContext(c))set({context:renew(c,{branch:value})});}}));
+function check(){const v=useNetworkView.getState();if(v.context&&!sameNetworkContext(v.context))v.reset();}
+useEditor.subscribe(check);subscribePreferences(check);useMaskView.subscribe(check);useCanvasGradient.subscribe(check);useCanvasImageCrop.subscribe(check);
+for(const store of [useVectorCut,useVectorEraser,useMultiVector,useWidthView,useVectorBend,useVectorLasso])store.subscribe(v=>{if(v.context)useNetworkView.getState().reset();});
+/** Compare before detaching bindings: unchanged requests must preserve both metadata and history. */
+function commit(c:NetworkContext,n:DesignNode,patch:Partial<DesignNode>){if(!sameNetworkContext(c))throw Error('The vector network source changed.');const expected={...n,...patch};if(JSON.stringify(expected)===JSON.stringify(n))return false;useEditor.getState().edit(d=>{const target=d.pages.find(p=>p.id===c.editor.pageId)?.nodes.find(n=>n.id===c.id);if(!target)throw Error('The network is missing.');Object.assign(target,patch);validateDocumentNetworks(d);},d=>{const result=d.pages.find(p=>p.id===c.editor.pageId)?.nodes.find(n=>n.id===c.id);if(JSON.stringify(result)!==JSON.stringify(expected))throw Error('A controller changed the network. Detach or flatten the source first.');});return true;}
+export function convertNetwork(c:NetworkContext){const n=networkTarget(c,false),graph=contoursToNetwork(n);commit(c,n,networkNodePatch(n,graph));useNetworkView.getState().activate(n.id);}
+export function commitNetwork(c:NetworkContext,g:VectorNetwork){if(useNetworkView.getState().context!==c)throw Error('The network editing session changed.');const n=networkTarget(c),changed=commit(c,n,networkNodePatch(n,g));if(changed)useNetworkView.getState().activate(n.id);return changed;}
+export function flattenNetwork(c:NetworkContext){const n=networkTarget(c);const changed=commit(c,n,flattenNetworkPatch(n));useNetworkView.getState().reset();return changed;}

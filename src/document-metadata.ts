@@ -1,3 +1,4 @@
+import {validateDocumentNetworks} from './vector-network';
 import {validateDocumentComponentSlots} from './component-slots';
 import {validateDocumentTextPaths} from './text-path';
 import {validateDocumentCalligraphicStrokes} from './calligraphic-stroke';
@@ -26,7 +27,8 @@ import {validateDocumentExportSettings} from './frame-export-settings';
 /** Optional .oui document metadata. Bounds apply equally to files and local UI. */
 export const DOCUMENT_DESCRIPTION_LIMIT=10_000;
 const forbiddenControls=/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/;
-export function validateDocumentMetadata(document:{fileCover?:unknown;description?:unknown;pages?:unknown;componentSets?:unknown;styles?:unknown;libraryPublication?:unknown;componentLibraries?:unknown}){
+export function validateDocumentMetadata(document:{workspace?:unknown;fileCover?:unknown;description?:unknown;pages?:unknown;componentSets?:unknown;styles?:unknown;libraryPublication?:unknown;componentLibraries?:unknown}){
+ validateDocumentNetworks(document);
  validateDocumentComponentSlots(document);
  validateDocumentCommentThreads(document);
  validateLibraryMetadata(document);
