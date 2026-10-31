@@ -1,3 +1,4 @@
+import {insertFramePresetFrames} from './frame-preset-actions';
 import {recordShortcutUse,shortcutSelectionChanged} from './shortcut-usage';
 import {prepareFigmaDelivery} from './figma-delivery';
 import {activateBrushTool} from './brush-drawing';
@@ -145,7 +146,7 @@ export function handleKey(e:KeyboardEvent){if(e.defaultPrevented)return;const s=
  if(!cmd){if(getPreferences().numberKeyOpacity&&/^[0-9]$/.test(k)&&s.selection.length){e.preventDefault();const ids=s.selection.filter(id=>currentPage().nodes.some(n=>n.id===id&&!isLocked(n,currentPage().nodes)));if(ids.length){s.patch(ids,{opacity:k==='0'?1:Number(k)/10});if(shortcutSelectionChanged(s.doc,useEditor.getState().doc,ids,['opacity']))recordShortcutUse('context-opacity',e.key);}return;}
  const tool=({v:'move',f:'frame',r:'rectangle',o:'ellipse',l:e.shiftKey?'arrow':'line',t:'text',p:e.shiftKey?'pencil':'pen',h:'hand',k:'scale',c:'comment',s:e.shiftKey?'section':'slice'} as const)[k as 'v'];if(tool){e.preventDefault();s.set({tool});}}
 }
-export function insertPreset(name:string,w:number,h:number){const s=useEditor.getState(),ns=currentPage().nodes,x=ns.length?Math.max(...ns.map(n=>n.x+n.width))+80:80;s.add('frame',{name,x,y:100,width:w,height:h});s.fit(true);}
+export function insertPreset(name:string,w:number,h:number){return insertFramePresetFrames([{name,width:w,height:h}]);}
 export function exportBridge(){const source=useEditor.getState().doc,raw=JSON.stringify(prepareFigmaDelivery(JSON.parse(serializedProject())),null,2);if(source.componentLibraries?.length||source.libraryPublication||source.pages.some(p=>p.comments.length||p.nodes.some(n=>n.annotations)))useEditor.getState().set({toast:'Local comments, annotations and library ownership are omitted from the Figma export.'});return download(source.name+'.oui',raw,'application/json',true);}
 export function insertBasicCard(){const s=useEditor.getState(),f=node('frame',{x:120,y:120,width:320,height:200,radius:20,fill:'#f3edf8',name:'Card'});s.edit(d=>d.pages.find(p=>p.id===s.pageId)!.nodes.push(f,node('text',{parentId:f.id,x:144,y:150,width:270,height:35,text:'A fresh idea',fontSize:26,fontWeight:600}),node('text',{parentId:f.id,x:144,y:204,width:260,height:50,text:'Start with something small.\nMake it your own.',fontSize:16,fill:'#777080'})));s.set({selection:[f.id]});}
 export {exportArtwork};
