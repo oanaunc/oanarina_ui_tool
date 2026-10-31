@@ -25,6 +25,8 @@ function lengthAt(table:number[],t:number){const steps=table.length-1,at=Math.mi
 export function cubicLength(c:Cubic){return lengthTable(c).at(-1)!;}
 /** Parameter at a fraction of real length. */
 export function cubicParameterAt(c:Cubic,fraction:number){const table=lengthTable(c),target=fraction*table.at(-1)!;let i=1;while(i<table.length-1&&table[i]<target)i++;const span=table[i]-table[i-1],steps=table.length-1;return (i-1+(span?(target-table[i-1])/span:0))/steps;}
+/** Parameter at a fraction of a contour segment's real length. A straight segment's split parameter is that fraction itself. */
+export const segmentParameter=(segment:{cubic:Cubic;curved:boolean},fraction:number)=>segment.curved?cubicParameterAt(segment.cubic,fraction):fraction;
 function parameters(c:Cubic,maxTurn:number,minLength:number,depth=6){const out=[0],visit=(a:number,b:number,level:number)=>{const ta=cubicTangent(c,a),tb=cubicTangent(c,b),m=(a+b)/2,tm=cubicTangent(c,m),turn=Math.max(Math.abs(Math.atan2(ta.x*tm.y-ta.y*tm.x,ta.x*tm.x+ta.y*tm.y)),Math.abs(Math.atan2(tm.x*tb.y-tm.y*tb.x,tm.x*tb.x+tm.y*tb.y))),p=cubicAt(c,a),q=cubicAt(c,b);if(level<depth&&(level<1||turn>maxTurn/2&&Math.hypot(q.x-p.x,q.y-p.y)>minLength)){visit(a,m,level+1);visit(m,b,level+1);}else out.push(b);};visit(0,1,0);return out;}
 /** Cross sections along each segment. Straight segments keep their two exact end frames. */
 export function contourSegments(n:Pick<DesignNode,'width'|'height'|'pathWidth'|'pathHeight'>,c:VectorContour,base:number,maxTurn=Math.PI/15):WidthSegment[]{

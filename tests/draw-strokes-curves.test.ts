@@ -1,0 +1,27 @@
+import paper from 'paper/dist/paper-core.js';
+import {describe,expect,it} from 'vitest';
+import {blankDocument,node,parseDocument} from '../src/model';
+import {createEffect} from '../src/effects';
+import {createStroke} from '../src/paints';
+import type {StrokeStyle} from '../src/paints';
+import {dynamicStrokeGeometry,dynamicStrokePath} from '../src/dynamic-stroke';
+import {calligraphicStrokeGeometry} from '../src/calligraphic-stroke';
+const scope=new paper.PaperScope();scope.setup(new scope.Size(1,1));
+function ink(d:string,x:number,y:number){scope.activate();const item=scope.PathItem.create(d);item.remove();item.fillRule='nonzero';return item.contains(new scope.Point(x,y));}
+const k=.5522847,ring=(c:number,r:number)=>({closed:true,points:[{x:c,y:c-r,in:{x:-r*k,y:0},out:{x:r*k,y:0}},{x:c+r,y:c,in:{x:0,y:-r*k},out:{x:0,y:r*k}},{x:c,y:c+r,in:{x:r*k,y:0},out:{x:-r*k,y:0}},{x:c-r,y:c,in:{x:0,y:r*k},out:{x:0,y:-r*k}}]});
+const wave:Partial<StrokeStyle>={width:10,join:'round',cap:'round',dynamic:{wiggle:.8,frequency:4}},nib:Partial<StrokeStyle>={width:20,join:'round',cap:'round',calligraphic:{angle:45,roundness:.2}};
+const path=(contours:DesignNode['contours'],s:Partial<StrokeStyle>,extra={})=>node('path',{id:'p',x:0,y:0,width:200,height:200,pathWidth:200,pathHeight:200,fill:'none',strokes:[{...createStroke('#000000'),...s}],contours,...extra});
+import type {DesignNode} from '../src/model';
+describe('dynamic strokes on curves and closed contours',()=>{
+ it('generated anchors stay on the source curve, with handles kept',()=>{const n=path([{closed:false,points:[{x:0,y:100,out:{x:30,y:-140}},{x:200,y:100,in:{x:-30,y:-140}}]}],wave),g=dynamicStrokeGeometry(n),points=g.node.contours![0].points;expect(points.length).toBe(4*16+1);expect(points.some(p=>p.out)).toBe(true);expect(n.contours![0].points).toHaveLength(2);const scales=points.map(p=>p.widthScale!);expect(Math.max(...scales)).toBeCloseTo(1.8,1);expect(Math.min(...scales)).toBeCloseTo(.2,1);expect(scales[0]).toBeCloseTo(1,6);expect(Math.abs(scales.at(-1)!-1)).toBeLessThan(.01);});
+ it('a closed ring wave is periodic: no step at the seam, and no caps',()=>{const n=path([ring(100,80)],wave),g=dynamicStrokeGeometry(n),c=g.node.contours![0];expect(c.closed).toBe(true);expect(c.points[0].widthScale).toBeCloseTo(1,6);const d=dynamicStrokePath(n,n.strokes![0]);expect(d).not.toContain('NaN');expect(ink(d,100,100)).toBe(false);expect(ink(d,100,20)).toBe(true);});
+ it('the width at a quarter cycle reaches the requested maximum on the rendered band',()=>{const n=path([{closed:false,points:[{x:0,y:100},{x:200,y:100}]}],{...wave,dynamic:{wiggle:.5,frequency:1}}),d=dynamicStrokePath(n,n.strokes![0]);expect(ink(d,51,107)).toBe(true);expect(ink(d,51,108)).toBe(false);expect(ink(d,151,102)).toBe(true);expect(ink(d,151,104)).toBe(false);});
+ it('stays deterministic, refuses a contour too short for its frequency, and honors the anchor budget',()=>{const n=path([ring(100,80)],wave);expect(dynamicStrokePath(n,n.strokes![0])).toBe(dynamicStrokePath(n,n.strokes![0]));const tiny=path([{closed:false,points:[{x:0,y:0},{x:1e-5,y:0}]}],{...wave,dynamic:{wiggle:.1,frequency:16}});expect(()=>dynamicStrokeGeometry(tiny)).toThrow();const many=path(Array.from({length:8},(_,i)=>({closed:false,points:[{x:0,y:i*10},{x:100,y:i*10}]})),{...wave,dynamic:{wiggle:.1,frequency:16}});expect(()=>dynamicStrokeGeometry(many)).toThrow(/512/);});
+ it('effects, masks and instances are valid hierarchies; a Boolean ancestor refuses',()=>{const n=path([ring(100,80)],wave,{effects:[createEffect('drop-shadow')],mask:{mode:'alpha' as const}}),d=blankDocument();d.pages[0].nodes=[n];expect(()=>parseDocument(JSON.stringify(d))).not.toThrow();const e=blankDocument();e.pages[0].nodes=[node('group',{id:'b',booleanOp:'union'}),{...path([ring(100,80)],wave),parentId:'b'}];expect(()=>parseDocument(JSON.stringify(e))).toThrow(/Boolean/);});
+});
+describe('calligraphic strokes on curves and closed contours',()=>{
+ it('thins where the curve runs along the nib and thickens across it',()=>{const n=path([ring(100,70)],nib),{path:d}=calligraphicStrokeGeometry(n);const a=45*Math.PI/180,along={x:Math.cos(a),y:Math.sin(a)},across={x:-along.y,y:along.x},inner=(v:{x:number;y:number},r:number)=>ink(d,100+v.x*r,100+v.y*r);expect(inner(along,70)).toBe(true);expect(inner(across,70)).toBe(true);expect(inner(along,62)).toBe(true);expect(inner(across,62)).toBe(false);});
+ it('a closed contour joins its seam, and the saved centerline keeps its handles',()=>{const n=path([ring(100,70)],nib),{path:d}=calligraphicStrokeGeometry(n);expect(ink(d,100,30)).toBe(true);expect(n.contours![0].closed).toBe(true);expect(n.contours![0].points[0].out).toBeTruthy();const doc=blankDocument();doc.pages[0].nodes=[n];expect(parseDocument(JSON.stringify(doc)).pages[0].nodes[0].contours).toEqual(n.contours);});
+ it('straight open paths produce the same piece counts as before',()=>{const n=path([{closed:false,points:[{x:0,y:0},{x:100,y:0},{x:100,y:100}]}],nib),{path:d}=calligraphicStrokeGeometry(n);expect(d.match(/M/g)).toHaveLength(5);});
+ it('a Boolean ancestor refuses, and effects and masks do not',()=>{const d=blankDocument();d.pages[0].nodes=[path([ring(100,70)],nib,{effects:[createEffect('drop-shadow')],mask:{mode:'alpha' as const}})];expect(()=>parseDocument(JSON.stringify(d))).not.toThrow();const e=blankDocument();e.pages[0].nodes=[node('group',{id:'b',booleanOp:'union'}),{...path([ring(100,70)],nib),parentId:'b'}];expect(()=>parseDocument(JSON.stringify(e))).toThrow(/Boolean/);});
+});
