@@ -1,0 +1,22 @@
+/* Comment mode reserves room beside the frame so Fit recomputes around the panel instead of hiding artwork under it. */
+.prototype-stage.prototype-commenting{margin-right:min(340px,46vw);cursor:crosshair}
+.prototype-commenting .prototype-art,.prototype-commenting .prototype-art *{pointer-events:none!important}
+.prototype-comment-layer{position:absolute;inset:0;z-index:60;pointer-events:none;overflow:hidden}
+.prototype-viewer .prototype-comment-pin{position:absolute;width:28px;height:28px;padding:0;border:2px solid #fff;border-radius:50% 50% 50% 4px;background:#e7b5d1;color:#222;font:600 11px/1 system-ui,sans-serif;display:flex;align-items:center;justify-content:center;pointer-events:auto;box-shadow:0 2px 8px #0006;cursor:pointer;transform-origin:center}
+.prototype-viewer .prototype-comment-pin.is-focused{outline:2px solid #fff;outline-offset:2px}
+.prototype-viewer .prototype-comment-pin.is-pending{background:#fff;pointer-events:none}
+.prototype-comments{position:absolute;right:0;top:0;bottom:0;width:min(340px,46vw);z-index:70;background:#222127;border-left:1px solid #413e48;display:flex;flex-direction:column;gap:8px;padding:12px;overflow:auto;font-size:12px;box-sizing:border-box}
+.prototype-comments>header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0;background:none}
+.prototype-comments p{margin:0;line-height:1.45}
+.prototype-comments form,.prototype-comments label{display:flex;flex-direction:column;gap:5px}
+.prototype-comments input,.prototype-comments textarea{width:100%;box-sizing:border-box;background:#17161b;color:#eee;border:1px solid #55515f;border-radius:6px;padding:7px 8px;font:inherit}
+.prototype-comments textarea{min-height:64px;resize:vertical}
+.prototype-comment-history{display:flex;flex-wrap:wrap;gap:6px}
+.prototype-comment-list{display:flex;flex-direction:column;gap:8px}
+.prototype-comment-thread{border:1px solid #413e48;border-radius:8px;padding:9px;display:flex;flex-direction:column;gap:6px}
+.prototype-comment-thread.is-focused{border-color:#e7b5d1}
+.prototype-comment-thread.is-resolved{opacity:.72}
+.prototype-comment-thread h3{margin:0;font-size:12px}
+.prototype-comment-thread ol{margin:0;padding:0 0 0 12px;list-style:none;border-left:2px solid #413e48;display:flex;flex-direction:column;gap:6px}
+.prototype-comments .comment-body{white-space:pre-wrap;overflow-wrap:anywhere}
+.prototype-comments .comment-meta{color:#bdb8c6}

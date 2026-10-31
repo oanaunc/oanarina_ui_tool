@@ -4,8 +4,10 @@ import {useEditor} from '../store';
 import {captureColorContext, sameColorContext} from '../color-edit-context';
 import {inspectPlatform, platformInspectionReport} from '../platform-inspection';
 import type {InspectPlatform} from '../platform-inspection';
+import {platformSnippets} from '../platform-snippets';
+import {t} from '../i18n';
 
-export default function PlatformInspection({node, source, isCurrent}: {node: DesignNode; source: string; isCurrent: () => boolean}) {
+export default function PlatformInspection({node, nodes, source, isCurrent}: {node: DesignNode; nodes?: DesignNode[]; source: string; isCurrent: () => boolean}) {
   const s = useEditor(), [platform, setPlatform] = useState<InspectPlatform>('ios'), [ratio, setRatio] = useState('1'), [query, setQuery] = useState(''), [message, setMessage] = useState(''), generation = useRef(0);
   const context = useMemo(() => ({origin: captureColorContext(s), valid: true}), [s, node, source]);
   useLayoutEffect(() => {
@@ -14,22 +16,22 @@ export default function PlatformInspection({node, source, isCurrent}: {node: Des
     return () => {context.valid = false; off();};
   }, [context]);
   const result = useMemo(() => {
-    try {if (!ratio.trim()) throw Error('Enter the canvas-unit ratio.'); return {value: inspectPlatform(node, platform, Number(ratio))};}
+    try {if (!ratio.trim()) throw Error('Enter the canvas-unit ratio.'); return {value: inspectPlatform(node, platform, Number(ratio), {parent: nodes?.find(n => n.id === node.parentId), profile: s.doc.colorProfile}), snippets: platformSnippets(node, platform, Number(ratio), s.doc.colorProfile)};}
     catch (e) {return {error: (e as Error).message};}
-  }, [node, platform, ratio]);
+  }, [node, nodes, platform, ratio, s.doc.colorProfile]);
   const rows = result.value?.rows.filter(r => (r.name + ' ' + r.value + ' ' + (r.detail ?? '')).toLowerCase().includes(query.trim().toLowerCase())) ?? [], receipt = generation.current;
   const change = (fn: () => void) => {generation.current++; setMessage(''); fn();};
-  const copy = async () => {
+  const copy = async (snippet?: string) => {
     let started = false;
     const current = () => context.valid && sameColorContext(context.origin, useEditor.getState()) && isCurrent() && receipt === generation.current;
     try {
       const live = useEditor.getState();
       if (!isCurrent() || receipt !== generation.current || !context.valid || !sameColorContext(context.origin, live) || live.mode !== 'inspect' || live.modal || live.home || live.uiHidden || !live.selection.includes(node.id) || !result.value)
         throw Error('The inspection source or options changed. Review the current layer and retry.');
-      const text = platformInspectionReport(node.name, platform, Number(ratio), source, {...result.value, rows});
+      const text = snippet ?? platformInspectionReport(node.name, platform, Number(ratio), source, {...result.value, rows});
       started = true;
       await navigator.clipboard.writeText(text);
-      if (current()) setMessage('Copied platform property reference.');
+      if (current()) setMessage(snippet === undefined ? 'Copied platform property reference.' : t('Copied code snippet.'));
     } catch (e) {if (!started || current()) setMessage(e instanceof Error && e.message.startsWith('The inspection source') ? e.message : 'Clipboard unavailable. Select and copy the property text shown here.');}
   };
   return <section className="inspector-section" aria-label="Native platform properties" onKeyDown={e => {if (['Enter', ' '].includes(e.key) && (e.target as Element).closest('button')) e.stopPropagation();}}>
@@ -42,6 +44,7 @@ export default function PlatformInspection({node, source, isCurrent}: {node: Des
       <button className="outline-button" onClick={() => void copy()}>Copy platform properties</button>
       <div aria-label="Platform property values">{rows.map(r => <div className="platform-property-row" key={r.name}><strong>{r.name}</strong><div><code>{r.value}</code></div>{r.detail && <p>{r.detail}</p>}</div>)}</div>
       {!rows.length && <p>No platform properties match this search.</p>}
+      <details className="platform-snippets"><summary>{t('Code for this layer')}</summary><p className="inspector-note">{t('A starting point for this one layer: children and exported artwork are yours to add. Check it against your project before shipping.')}</p>{result.snippets!.map(snippet => <div key={snippet.label}><strong>{snippet.label}</strong><pre aria-label={t('{name} code',{name: snippet.label})} tabIndex={0}><code>{snippet.code}</code></pre><button className="text-button" onClick={() => void copy(snippet.code)}>{t('Copy {name}',{name: snippet.label})}</button></div>)}</details>
       <ul className="inspect-warnings">{result.value!.warnings.map(w => <li key={w}>{w}</li>)}</ul>
     </>}
     {message && <p role="status">{message}</p>}

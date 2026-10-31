@@ -10,6 +10,7 @@ import {validateDocumentDynamicStrokes} from './dynamic-stroke';
 import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
 import {validateDocumentAnnotations} from './layer-annotations';
+import {validateDocumentAutoFit} from './group-auto-bounds';
 import {validateDocumentStrokeScaling} from './stroke-scaling';
 import {validateDocumentDevelopmentStatuses} from './development-status';
 import {validateLibraryMetadata} from './local-library-metadata';
@@ -40,6 +41,7 @@ export function validateDocumentMetadata(document:{workspace?:unknown;fileCover?
  validateDocumentCommentThreads(document);
  validateLibraryMetadata(document);
  validateDocumentAnnotations(document);
+ validateDocumentAutoFit(document);
  validateDocumentStrokeScaling(document);
  validateDocumentDevelopmentStatuses(document);
  validateDocumentCover(document);

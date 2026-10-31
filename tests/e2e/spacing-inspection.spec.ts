@@ -64,3 +64,5 @@ test('retained indexed target selection cannot resolve an old list after search 
  await page.getByLabel('Spacing comparison layer').evaluate(el=>{const key=Object.keys(el).find(k=>k.startsWith('__reactProps$'))!;(el as any)[key].onChange({target:{value:(el as HTMLSelectElement).value}});});
  await page.getByRole('button',{name:'Copy spacing reference',exact:true}).click();expect(await page.evaluate(()=>(window as any).spacingWrites.length)).toBe(1);
 });
+
+test('the measure selector reaches painted bounds and rotated-parent padding and reports refusals',async({page})=>{await open(page);await inspect(page);const section=page.getByRole('region',{name:'Spacing inspection',exact:true}),measure=section.getByRole('combobox',{name:'Spacing measure',exact:true});await measure.selectOption('painted');await expect(section).not.toContainText('unavailable');await measure.selectOption('parent');await expect(section.getByRole('alert').or(section.getByText('inset',{exact:false}).first())).toBeVisible();await measure.selectOption('box');await expect(section.getByText('Horizontal',{exact:false}).first()).toBeVisible();});

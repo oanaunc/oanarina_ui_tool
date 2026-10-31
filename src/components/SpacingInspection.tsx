@@ -3,15 +3,17 @@ import type {DesignNode} from '../model';
 import {useEditor} from '../store';
 import {captureColorContext, sameColorContext} from '../color-edit-context';
 import {inspectSpacing, spacingDiagram, spacingNumber, spacingReport} from '../spacing-inspection';
+import type {SpacingBasis} from '../spacing-inspection';
+import {t} from '../i18n';
 
 export default function SpacingInspection({nodes, nodeId, source, isCurrent}: {nodes: DesignNode[]; nodeId: string; source: string; isCurrent: () => boolean}) {
   const s = useEditor(), selected = nodes.find(n => n.id === nodeId)!, initial = s.selection.find(id => id !== nodeId) ?? selected.parentId;
-  const [targetId, setTargetId] = useState<string | null>(initial), [query, setQuery] = useState(''), [page, setPage] = useState(0), [message, setMessage] = useState(''), [, refreshChoice] = useState(0), generation = useRef(0);
+  const [targetId, setTargetId] = useState<string | null>(initial), [query, setQuery] = useState(''), [page, setPage] = useState(0), [message, setMessage] = useState(''), [basis, setBasis] = useState<SpacingBasis>('box'), [, refreshChoice] = useState(0), generation = useRef(0);
   const context = useMemo(() => ({origin: captureColorContext(s), valid: true}), [s, nodes, source, nodeId]);
   useLayoutEffect(() => {context.valid = sameColorContext(context.origin, useEditor.getState()); const off = useEditor.subscribe(live => {if (!sameColorContext(context.origin, live)) context.valid = false;}); return () => {context.valid = false; off();};}, [context]);
   const target = targetId === null ? undefined : nodes.find(n => n.id === targetId), matches = useMemo(() => nodes.filter(n => n.id !== nodeId && n.name.toLowerCase().includes(query.trim().toLowerCase())), [nodes, nodeId, query]);
   const offset = Math.min(page * 100, Math.max(0, Math.ceil(matches.length / 100) - 1) * 100), choices = matches.slice(offset, offset + 100), receipt = generation.current;
-  const result = useMemo(() => {try {if (!target || target.id === nodeId) return {}; const value = inspectSpacing(nodes, nodeId, target.id); return {value, diagram: spacingDiagram(value)};} catch (e) {return {error: (e as Error).message};}}, [nodes, nodeId, target]);
+  const result = useMemo(() => {try {if (!target || target.id === nodeId) return {}; const value = inspectSpacing(nodes, nodeId, target.id, basis); return {value, diagram: spacingDiagram(value)};} catch (e) {return {error: (e as Error).message};}}, [nodes, nodeId, target, basis]);
   const change = (fn: () => void) => {const live=useEditor.getState();if(receipt!==generation.current||!context.valid||!sameColorContext(context.origin,live)||!isCurrent()||live.mode!=='inspect'||live.modal||live.home||live.uiHidden){setMessage('The spacing source or options changed. Review the current layers and retry.');return;}generation.current++;refreshChoice(v=>v+1);setMessage('');fn();};
   const copy = async () => {
     let started = false;
@@ -27,6 +29,7 @@ export default function SpacingInspection({nodes, nodeId, source, isCurrent}: {n
   const optionNodes = target && !choices.some(n => n.id === target.id) ? [target, ...choices] : choices;
   return <section className="inspector-section spacing-inspection" aria-label="Spacing inspection" onKeyDown={e => {if (['Enter', ' '].includes(e.key) && (e.target as Element).closest('button')) e.stopPropagation();}}>
     <h3>Spacing inspection</h3><p className="inspector-note">{source} Compare two authored layout boxes in page axes. Rotated boxes use their page-axis enclosing rectangles.</p>
+    <label>{t('Measure')}<select aria-label={t('Spacing measure')} value={basis} onChange={e => change(() => setBasis(e.target.value as SpacingBasis))}><option value="box">{t('Layout boxes')}</option><option value="painted">{t('Painted bounds')}</option><option value="parent">{t('Inside a rotated parent')}</option></select></label>
     <label>Find comparison layer<input type="search" aria-label="Search spacing layers" maxLength={200} value={query} onChange={e => change(() => {setQuery(e.target.value); setPage(0);})}/></label>
     <label>Compare with<select aria-label="Spacing comparison layer" value={target ? String(optionNodes.indexOf(target) + 1) : '0'} onChange={e => change(() => {const index = Number(e.target.value); setTargetId(index === 0 ? null : optionNodes[index - 1].id);})}><option value="0">Choose a layer</option>{optionNodes.map((n, i) => <option key={n.id} value={i + 1}>{n.name.slice(0, 500) || 'Unnamed layer'}</option>)}</select></label>
     <p className="inspector-note">{matches.length} matching layers. Showing {matches.length ? offset + 1 : 0}–{Math.min(matches.length, offset + 100)}; the current comparison stays available.</p>

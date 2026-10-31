@@ -5,3 +5,4 @@
 .recent-limit-note{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:6px;line-height:1.5}
 .font-specimen[hidden]{display:none}
 .app>.modal-backdrop>.dialog{max-height:calc(90vh / var(--ui-scale,1));max-width:calc((100vw - 32px) / var(--ui-scale,1))}
+.app>.menubar .main-menu{max-height:calc(100vh / var(--ui-scale,1) - 96px)}

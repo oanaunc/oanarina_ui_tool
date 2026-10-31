@@ -1200,6 +1200,24 @@
     ""
   ],
   [
+    "annotation-details",
+    "Show annotations on canvas",
+    "View",
+    ""
+  ],
+  [
+    "annotation-note",
+    "Annotate on canvas",
+    "View",
+    ""
+  ],
+  [
+    "annotation-measure",
+    "Measure on canvas",
+    "View",
+    ""
+  ],
+  [
     "layout-guides",
     "Show layout guides",
     "View",

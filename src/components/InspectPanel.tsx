@@ -20,7 +20,7 @@ export default function InspectPanel(){const s=useEditor(),page=s.doc.pages.find
  {['frame','group','component','instance','section'].includes(base.type)&&<AutomaticIconMatch key={'icon-match-'+base.id+':'+targetRevision} nodeId={base.id} isCurrent={()=>targetTicket===targetGeneration.current}/>}
  <InspectAssetDownload key={'asset-'+base.id} nodeId={base.id} isCurrent={()=>targetTicket===targetGeneration.current}/>
  <SpacingInspection key={'spacing-'+base.id} nodes={nodes} nodeId={n.id} isCurrent={()=>targetTicket===targetGeneration.current} source={sampled?`Sampled Motion at ${s.motionTime.toFixed(3)} s.`:'Base document values.'}/>
- <PlatformInspection key={'platform-'+base.id} node={n} isCurrent={()=>targetTicket===targetGeneration.current} source={sampled?`Sampled Motion at ${s.motionTime.toFixed(3)} s.`:'Base document values.'}/>
+ <PlatformInspection key={'platform-'+base.id} node={n} nodes={nodes} isCurrent={()=>targetTicket===targetGeneration.current} source={sampled?`Sampled Motion at ${s.motionTime.toFixed(3)} s.`:'Base document values.'}/>
  <DeveloperResources key={base.id} nodeId={base.id}/>
  <CodeConnectPanel key={'code-connect-'+base.id} nodeId={base.id}/>
  <CodegenPanel key={'codegen-'+base.id} node={n}/>

@@ -28,7 +28,7 @@ export const defaultPreferences:Readonly<EditorPreferences>=Object.freeze({
  defaultFontFamily:'Inter',defaultFontSize:24,defaultFontWeight:400,
  defaultFontStyle:'normal',defaultLineHeight:1.3,
 });
-const ranges:Partial<Record<keyof EditorPreferences,readonly[number,number]>>={uiScale:[.85,1.25],autosaveIntervalMs:[100,60000],recentFileLimit:[0,1000],smallNudge:[.01,1000],largeNudge:[.01,10000],rotationSnapIncrement:[.1,180],zoomSensitivity:[.05,5],defaultStrokeWidth:[0,1000],defaultFontSize:[1,1000],defaultFontWeight:[1,1000],defaultLineHeight:[.5,10]};
+const ranges:Partial<Record<keyof EditorPreferences,readonly[number,number]>>={uiScale:[.85,1.5],autosaveIntervalMs:[100,60000],recentFileLimit:[0,1000],smallNudge:[.01,1000],largeNudge:[.01,10000],rotationSnapIncrement:[.1,180],zoomSensitivity:[.05,5],defaultStrokeWidth:[0,1000],defaultFontSize:[1,1000],defaultFontWeight:[1,1000],defaultLineHeight:[.5,10]};
 const colors=new Set(['defaultFrameFill','defaultShapeFill','defaultStrokeColor','defaultTextFill']);
 export function validatePreferences(value:unknown):EditorPreferences {
  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Preferences must be an object.');
