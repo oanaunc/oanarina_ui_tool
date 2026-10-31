@@ -2,8 +2,9 @@ import {test,expect} from '@playwright/test';
 import type {Page} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {blankDocument,node} from '../../src/model';
+import {openSection} from './inspector-helpers';
 function fixture(vertical=false){const d=blankDocument();d.fonts=[];const frame=node('frame',{id:'frame',name:'Content',x:100,y:100,width:400,height:300,fill:'#fafafa',clip:false}),a=node('rectangle',{id:'a',name:'A',parentId:frame.id,x:120,y:120,width:60,height:40}),b=node('rectangle',{id:'b',name:'B',parentId:frame.id,x:200,y:120,width:80,height:40}),c=node('rectangle',{id:'c',name:'C',parentId:frame.id,x:300,y:120,width:50,height:40});if(vertical){a.x=b.x=c.x=120;a.y=120;b.y=180;c.y=250;}d.pages[0].nodes=[frame,a,b,c];return {d,frame,a,b,c};}
-async function load(page:Page,d=fixture().d){page.on('filechooser',()=>{});await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.getByRole('menubar')).toBeVisible();await row(page,'frame').click();}
+async function load(page:Page,d=fixture().d){page.on('filechooser',()=>{});await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.getByRole('menubar')).toBeVisible();await row(page,'frame').click();await openSection(page,'Suggest auto layout');}
 const row=(page:Page,id:string)=>page.locator(`[data-layer-id="${id}"]`);
 const panel=(page:Page)=>page.getByRole('region',{name:'Suggest auto layout',exact:true});
 async function save(page:Page){const wait=page.waitForEvent('download');await page.keyboard.press('Meta+s');return JSON.parse(await fs.readFile((await(await wait).path())!,'utf8'));}

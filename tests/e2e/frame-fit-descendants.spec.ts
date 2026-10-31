@@ -2,8 +2,9 @@ import {test,expect} from '@playwright/test';
 import type {Page} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {blankDocument,node,parseDocument} from '../../src/model';
+import {openSection} from './inspector-helpers';
 function fixture(){const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('frame',{id:'frame',name:'Fit target',x:100,y:100,width:500,height:400,fill:'#eeeeee'}),node('group',{id:'group',name:'Nested group',parentId:'frame',x:120,y:120,width:50,height:50}),node('rectangle',{id:'nested',name:'Nested artwork',parentId:'group',x:300,y:140,width:60,height:80,fill:'#ff0000'}),node('rectangle',{id:'hidden',name:'Hidden nested artwork',parentId:'group',x:120,y:40,width:20,height:20,visible:false})];return d;}
-async function load(page:Page,d=fixture()){page.on('filechooser',()=>{});await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.getByRole('menubar')).toBeVisible();await page.locator('[data-layer-id="frame"]').click();return d;}
+async function load(page:Page,d=fixture()){page.on('filechooser',()=>{});await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.getByRole('menubar')).toBeVisible();await page.locator('[data-layer-id="frame"]').click();await openSection(page,'Frame');return d;}
 const panel=(page:Page)=>page.getByRole('region',{name:'Frame actions',exact:true});
 async function save(page:Page){const download=page.waitForEvent('download');await page.keyboard.press('Meta+s');return parseDocument(await fs.readFile((await(await download).path())!,'utf8'));}
 async function snapshot(page:Page){return page.evaluate(async()=>{const path='/src/store.ts',{useEditor}=await import(path),s=useEditor.getState();return {doc:JSON.stringify(s.doc),past:s.past.length,future:s.future.length,selection:s.selection};});}

@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import {createFigmaMock} from '../helpers/figma-mock';
 import {parseDocument} from '../../src/model';
+import {openTextOptions} from './inspector-helpers';
 
 test('the downloadable bridge archive contains the current component transfer implementation',async({page})=>{
  await page.goto('/');await page.getByRole('button',{name:'Transfer from Figma',exact:true}).click();
@@ -26,7 +27,7 @@ test('a mock-API exported instance opens through the bridge UI, survives source 
  const chooser=page.waitForEvent('filechooser');await page.getByRole('button',{name:'Import from Figma',exact:true}).click();
  await (await chooser).setFiles({name:'Component API-contract fixture.oui',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(document))});
  await expect(page.locator(`[data-layer-id="${label.id}"]`)).toBeVisible();await page.locator(`[data-layer-id="${label.id}"]`).click();
- const content=page.getByRole('textbox',{name:'Text content',exact:true});await content.fill('Edited main');await content.press('Tab');
+ await openTextOptions(page);const content=page.getByRole('textbox',{name:'Text content',exact:true});await content.fill('Edited main');await content.press('Tab');
  const inheritedCopy=document.pages[0].nodes.find(n=>n.sourceId===label.id&&n.instanceRootId===inherited.id)!;
  await page.locator(`[data-layer-id="${inheritedCopy.id}"]`).click();await expect(content).toHaveValue('Edited main');
  await page.locator(`[data-layer-id="${copy.id}"]`).click();await expect(content).toHaveValue('Personal');
