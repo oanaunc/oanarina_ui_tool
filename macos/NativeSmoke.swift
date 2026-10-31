@@ -29,9 +29,30 @@ extension Studio {
         if CommandLine.arguments.contains("--integration-smoke-test"){runIntegrationSmoke(document);return}
         if CommandLine.arguments.contains("--clipboard-smoke-test"){runClipboardSmoke(document);return}
         if CommandLine.arguments.contains("--lifecycle-smoke-test"){runLifecycleSmoke(document);return}
+        if CommandLine.arguments.contains("--renderer-restart-smoke-test"){runRendererRestartSmoke(document);return}
         guard smokeStage==0 else{return};smokeStage=1
         verifyNavigationMenu(document){
             self.smokeJS(document,"const features=await fetch('./features.json').then(r=>r.json());const fonts=await fetch('./font-catalog.json').then(r=>r.json());const installed=await window.desktop.fonts();if(features.length<1000||fonts.families.length<1900||installed.length===0||document.querySelectorAll('button').length<50)throw Error('Native smoke check failed');return JSON.stringify({videoMp4:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/mp4'),videoWebM:typeof MediaRecorder!=='undefined'&&MediaRecorder.isTypeSupported('video/webm'),canvasCapture:typeof HTMLCanvasElement.prototype.captureStream==='function',title:document.title,buttons:document.querySelectorAll('button').length,bridge:!!window.desktop,features:features.length,googleFonts:fonts.families.length,installedFonts:installed.length});"){value in guard let text=value as? String,let data=text.data(using:.utf8),var report=(try? JSONSerialization.jsonObject(with:data)) as? [String:Any] else{self.smokeFail("standard renderer smoke report")};report["nativeNavigation"]=Array(self.smokeChecks.prefix(7));report["nativeTextSearch"]=Array(self.smokeChecks.dropFirst(7));print(self.json(report));fflush(stdout);self.smokeTerminate()}
+        }
+    }
+    // Kills the real WebContent process and requires the same window to return on the same document.
+    func runRendererRestartSmoke(_ document:DocumentWindow){
+        guard smokeStage==0 else{return};smokeStage=1
+        guard let id=document.state?.id else{smokeFail("renderer restart baseline")}
+        guard let pid=document.web.value(forKey:"_webProcessIdentifier") as? Int32,pid>0 else{smokeFail("renderer process identity")}
+        smokeJS(document,"window.__beforeRendererExit=true;return true;"){_ in
+            let timer=Timer(timeInterval:1.5,repeats:false){_ in
+                self.smokeReadyOverride={restored in
+                    self.check(restored===document,"same window after renderer exit")
+                    self.check(restored.state?.id==id,"same document after renderer exit")
+                    self.smokeJS(restored,"for(let i=0;i<100&&!document.querySelector('[data-canvas]');i++)await new Promise(r=>setTimeout(r,50));return window.__beforeRendererExit===undefined&&!!document.querySelector('[data-canvas]');"){value in
+                        self.check(value as? Bool==true,"fresh renderer drew the editor")
+                        print(self.json(["rendererRestart":true,"checks":self.smokeChecks]));fflush(stdout);self.smokeTerminate()
+                    }
+                }
+                guard Darwin.kill(pid,SIGKILL)==0 else{self.smokeFail("renderer process signal")}
+            }
+            RunLoop.main.add(timer,forMode:.default)
         }
     }
     // Exercise real AppKit menu key equivalents against the isolated renderer camera.

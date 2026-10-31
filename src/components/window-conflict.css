@@ -1,0 +1,2 @@
+.window-conflict{position:fixed;z-index:60;top:calc(52px * var(--ui-scale,1));left:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:min(720px,calc(100vw - 24px));padding:10px 12px;border-radius:10px;font-size:12px;background:var(--panel,#26262c);color:var(--text,#f1f0f5);border:1px solid #d9805f;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.window-conflict-note{border-color:var(--line,#3a3a42)}.window-conflict .button-row{margin:0}

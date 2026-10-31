@@ -1,0 +1,1 @@
+.page-loading{position:fixed;z-index:40;left:50%;bottom:64px;transform:translateX(-50%);padding:6px 10px;border-radius:999px;font-size:11px;background:var(--panel,#26262c);color:var(--text,#f1f0f5);border:1px solid var(--line,#3a3a42);pointer-events:none}

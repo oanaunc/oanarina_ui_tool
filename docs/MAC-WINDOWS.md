@@ -17,7 +17,7 @@ Safeguards and limits:
 - Pre-ready native document commands and saves are rejected. A save must match its window's document identity.
 - A file already associated with another live window cannot be overwritten through a second window's Save As.
 - No arbitrary filesystem path is exposed to the renderer. Only bundled editor resources are served at `127.0.0.1:51981`; each IPC request must originate from that window's main-frame app origin.
-- Local recovery normally follows editor changes after a short debounce. An abrupt process or machine failure can lose the latest changes; a local recovery copy does not replace a saved `.oui` backup.
+- Local recovery normally follows editor changes after a short debounce, with a small write-ahead journal and persisted Undo between saves. A dead renderer reloads in the same window into its recovery copy. An abrupt machine failure can still lose the latest changes; a local recovery copy does not replace a saved `.oui` backup. See [recovery and reliability](RECOVERY-RELIABILITY.md).
 - A valid saved file still opens for editing if its local-library write fails. The editor warns that it is open in memory and needs a `.oui` backup. Native file association, dirty state and acknowledged saving remain intact; local recovery and library revival are unavailable until storage succeeds. Invalid file input never uses this fallback.
 - Reopen and session restoration depend on available local recovery or saved files. Removed files, cleared storage and deleted library records cannot be recreated by the window manager.
 - Opening multiple independent copies with the same document ID focuses the already open document; it does not merge divergent copies.

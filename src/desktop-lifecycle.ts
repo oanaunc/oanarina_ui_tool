@@ -13,7 +13,10 @@ export class DesktopDocumentTracker {
  state(doc:DesignDocument):DesktopDocumentState{const content=this.content(doc),key=doc.id+'\0'+content;if(key!==this.last){this.last=key;this.revision++;}const baseline=this.baseline.get(doc.id);return {id:doc.id,name:doc.name,revision:this.revision,dirty:!baseline||baseline.dirty||baseline.content!==content};}
 }
 export const desktopDocuments=new DesktopDocumentTracker();
-export function desktopDocumentState(){return desktopDocuments.state(useEditor.getState().doc);}
+/** Window titles may name a local branch; the document's own name and file remain unchanged. */
+let documentLabel:((doc:DesignDocument)=>string)|undefined;
+export const setDocumentLabel=(label:typeof documentLabel)=>{documentLabel=label;};
+export function desktopDocumentState(){const doc=useEditor.getState().doc,state=desktopDocuments.state(doc);return documentLabel?{...state,name:documentLabel(doc)}:state;}
 let menuProvider:(()=>DesktopMenuState)|undefined;
 export function setDesktopMenuProvider(provider:(()=>DesktopMenuState)|undefined){menuProvider=provider;}
 export async function reportDesktopDocument(){if(typeof window!=='undefined'&&window.desktop?.reportDocument)await window.desktop.reportDocument({...desktopDocumentState(),...(menuProvider?{menu:menuProvider()}:{})});}
