@@ -794,10 +794,10 @@
     "category": "Home and file browser",
     "name": "Copy file link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: opaque file identity references with explicit review/open. Matches the open file or unchanged untrashed same-origin browser repository file; dirty current recovery must succeed before replacement. Native cross-file opening explicitly refuses; open matching .oui first. No hosted sharing, OS URL handler or access permissions. See docs/LOCAL-NAVIGATION-LINKS.md. Source core/type/browser checks; native/reference acceptance pending."
   },
   {
     "id": "UI-03-020",
@@ -1354,10 +1354,10 @@
     "category": "Pages and document structure",
     "name": "Copy page link",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": ""
+    "notes": "Partial: opaque page links for exact existing page identity, guarded review/open and bounded affine page fit. Same-file/browser repository matching with durable dirty recovery and transactional reload-pointer ownership; native cross-file refuses. No public URL or remote file fetch. See docs/LOCAL-NAVIGATION-LINKS.md. Source core/type/browser checks; native/reference acceptance pending."
   },
   {
     "id": "UI-05-016",
@@ -10344,10 +10344,10 @@
     "category": "Prototype connections",
     "name": "Flow link copying",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "Partial: opaque named-flow links preserve exact flow identity, including shared start frames, in presenter launch/dropdown/restart. Explicit guarded local target review/open and browser repository lookup only; native cross-file refuses. No hosted prototype URLs, access control or OS URL dispatch. See docs/LOCAL-NAVIGATION-LINKS.md. Source core/type/browser checks; native/reference acceptance pending."
   },
   {
     "id": "UI-31-017",
@@ -13054,10 +13054,10 @@
     "category": "Import and Figma interchange",
     "name": "Figma REST JSON import",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Partial: local offline GET-file REST JSON or bare DOCUMENT import through guarded Open/Figma transfer picker. Bounded editable supported geometry/plain text, detached component frames, explicit paint/image/transform/metadata reduction review and validation before new-project open. No API retrieval, missing-asset fetch or full fidelity. See docs/FIGMA-REST-JSON-IMPORT.md. Source core/type/browser checks; native and exact reference acceptance pending."
   },
   {
     "id": "UI-39-038",
