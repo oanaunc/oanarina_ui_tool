@@ -1,6 +1,6 @@
 import {expect,it} from 'vitest';
 import {parseEditableSvg} from '../src/svg-import';
-import {parseSvgStylesheet} from '../src/svg-css';
+import {parseSvgStylesheet,svgDeclarations,SVG_CSS_LIMITS} from '../src/svg-css';
 import {createElement} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {Artwork} from '../src/components/Artwork';
@@ -42,3 +42,4 @@ it('imports per-character positions, curved text and falls back to plain text on
  expect(r.nodes.filter(n=>n.type==='text').map(n=>n.text)).toEqual(['A','b','c','Round']);expect(r.nodes.find(n=>n.text==='b')!.x).toBe(11);expect(r.issues.some(i=>i.code==='text-position-list')).toBe(false);expect(r.issues.some(i=>i.code==='text-path-unsupported')).toBe(true);
 });
 it('carries mix-blend-mode onto layers',()=>{const r=parse('<rect id="a" width="1" height="1" style="mix-blend-mode:multiply"/><rect id="b" width="1" height="1" style="mix-blend-mode:plus-darker"/>');expect(named(r,'a').blendMode).toBe('multiply');expect(named(r,'b').blendMode).toBeUndefined();expect(r.issues.some(i=>i.code==='presentation-unsupported')).toBe(true);});
+it('stays fast on hostile stylesheet text and stops matching at its work budget',()=>{const started=performance.now(),issues:string[]=[];parseSvgStylesheet('/*'.repeat(500000),c=>issues.push(c));parseSvgStylesheet(' '.repeat(1500000)+'>a{fill:red}',c=>issues.push(c));parseSvgStylesheet('a{fill:'+' '.repeat(1500000)+'x}',c=>issues.push(c));parseSvgStylesheet('@media{'.repeat(200000),c=>issues.push(c));expect(performance.now()-started).toBeLessThan(2000);const sheet=parseSvgStylesheet('rect{fill:red}',()=>{});sheet.work=SVG_CSS_LIMITS.work;const reported:string[]=[];expect(svgDeclarations(sheet,{} as never,c=>reported.push(c)).normal).toEqual({});expect(reported).toEqual(['css-unsupported']);});
