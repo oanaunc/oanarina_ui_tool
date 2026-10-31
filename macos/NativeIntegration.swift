@@ -16,8 +16,6 @@ extension Studio:NSMenuItemValidation {
         case "native-share-png":active?.shareDocument(kind:"share-png")
         case "native-share-pdf":active?.shareDocument(kind:"share-pdf")
         case "native-share-project":active?.shareDocument(kind:"share-project")
-        case "native-export-ask":UserDefaults.standard.removeObject(forKey:Self.exportFolderKey)
-        case "native-export-folder":chooseExportFolder()
         case "native-browse-versions":active?.browseVersions()
         case "native-revert":active?.revertToSaved()
         case "native-live-context":active?.toggleLiveContext()
@@ -30,8 +28,6 @@ extension Studio:NSMenuItemValidation {
         guard let id=item.representedObject as? String else{return true}
         let document=active
         if id=="native-print"||id.hasPrefix("native-share"){return document?.ready==true&&document?.delivering==false}
-        if id=="native-export-ask"{item.state=exportFolder==nil ? .on:.off;return true}
-        if id=="native-export-folder"{item.state=exportFolder==nil ? .off:.on;item.title=exportFolder.map{"Choose Folder… ("+$0.lastPathComponent+")"} ?? "Choose Folder…";return true}
         if id=="native-browse-versions"{return document?.ready==true&&document?.session.file != nil}
         if id=="native-sample-color"{return document?.ready==true&&document?.colorSampler==nil}
         if id=="native-revert"{return document?.ready==true&&document?.session.file != nil&&document?.state?.dirty==true}

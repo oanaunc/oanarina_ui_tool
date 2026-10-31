@@ -58,8 +58,6 @@ Limits: this is not `NSDocument`, so it is Forma's own sheet rather than the sys
 
 ## Export destination
 
-**File → Export Destination** is Ask Every Time or Choose Folder…. With a folder chosen, exports from every window go there with no panel. A repeat takes the next free name and never overwrites. If the folder is gone or refuses the write, the save panel returns. The folder lives in the shell's own defaults and the renderer is told only that an export finished. Saving a `.oui` is unaffected.
-
 ## Version links
 
 Forma registers the `forma-version:` scheme, so a link copied from Version history opens from Finder, Notes or `open`. The shell reads the document id and refuses anything else. If that project is open its window comes forward. If not, up to ten recent files are checked for that id. Otherwise an alert asks you to open the project. The renderer then checks the whole reference against its own document and shows the read-only preview, with the same restore rules as a pasted link. Saved versions stay in this Mac's local storage, so a link does nothing on another Mac.

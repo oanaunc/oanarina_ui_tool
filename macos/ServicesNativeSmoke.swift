@@ -5,7 +5,7 @@ import PDFKit
 /** Real-shell checks for the system accent, share formats, the export folder, version links and the version browser. */
 extension Studio {
     func acceptServices(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
-        runSteps([{self.acceptAccent(document,$0)},{self.acceptShareKinds(document,$0)},{self.acceptExportFolder(document,directory,$0)},{self.acceptVersionLink(document,directory,$0)},{self.acceptBrowser(document,directory,$0)},{self.acceptLargeScale(document,$0)},{self.acceptHelperPermission(document,directory,$0)}],done)
+        runSteps([{self.acceptAccent(document,$0)},{self.acceptShareKinds(document,$0)},{self.acceptVersionLink(document,directory,$0)},{self.acceptBrowser(document,directory,$0)},{self.acceptLargeScale(document,$0)},{self.acceptHelperPermission(document,directory,$0)}],done)
     }
     func acceptAccent(_ document:DocumentWindow,_ done:@escaping()->Void){
         loadDocument(document,acceptanceDocument("accept-accent","Accent")){
@@ -29,31 +29,6 @@ extension Studio {
                     self.check(url.pathExtension=="png" && image.width>0,"Share As PNG works with nothing selected (\(image.width)x\(image.height))")
                     document.shareDocument(kind:"share-pdf",present:false){url in
                         self.check((try? Data(contentsOf:url))?.starts(with:Array("%PDF-".utf8))==true,"Share As PDF prepares a real PDF");done()
-                    }
-                }
-            }
-        }
-    }
-    func acceptExportFolder(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
-        let folder=directory.appendingPathComponent("exports",isDirectory:true)
-        do{try FileManager.default.createDirectory(at:folder,withIntermediateDirectories:true)}catch{smokeFail(error.localizedDescription)}
-        smokeExportFolder=folder;smokeSaveDirectory=nil;smokeCancelSavePanels=true
-        loadDocument(document,acceptanceDocument("accept-folder","Folder")){
-            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await new Promise(r=>setTimeout(r,120));return true;"){_ in
-                self.clickExport(document,"png"){
-                    self.until("first folder export",{FileManager.default.fileExists(atPath:folder.appendingPathComponent("Card.png").path)}){
-                        self.closeDialog(document){
-                            self.clickExport(document,"png"){
-                                self.until("second folder export",{FileManager.default.fileExists(atPath:folder.appendingPathComponent("Card 2.png").path)}){
-                                    self.check(self.decoded((try? Data(contentsOf:folder.appendingPathComponent("Card 2.png"))) ?? Data()) != nil,"exports reach the chosen folder with no panel, and a repeat never overwrites")
-                                    self.smokeExportFolder=nil;self.smokeCancelSavePanels=false
-                                    self.page(document,"return status();"){value in
-                                        self.check((value as? String)?.contains("/")==false,"the renderer is told nothing about the folder")
-                                        self.closeDialog(document,done)
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }

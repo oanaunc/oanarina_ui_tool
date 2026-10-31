@@ -4,26 +4,9 @@ import WebKit
 
 /** Shell services that take nothing new from the renderer: each pushes bounded values down the existing page-world path. */
 extension Studio {
-    static let exportFolderKey="FormaExportFolder"
     static let versionScheme="forma-version"
     static var systemAccent:String? {NSColor.controlAccentColor.usingColorSpace(.sRGB).map{c in "#"+[c.redComponent,c.greenComponent,c.blueComponent].map{String(format:"%02x",Int((min(1,max(0,$0))*255).rounded()))}.joined()}}
     func observeSystemAccent(){NotificationCenter.default.addObserver(forName:NSColor.systemColorsDidChangeNotification,object:nil,queue:.main){[weak self] _ in self?.documents.filter{$0.ready}.forEach{$0.pushSystemAccent()}}}
-    /** Exports skip the panel only after a person picks a folder from this menu. The renderer never learns the folder. */
-    var exportFolder:URL? {
-        if smoke{return smokeExportFolder}
-        guard let path=UserDefaults.standard.string(forKey:Self.exportFolderKey) else{return nil}
-        var isFolder:ObjCBool=false
-        return FileManager.default.fileExists(atPath:path,isDirectory:&isFolder)&&isFolder.boolValue ? URL(fileURLWithPath:path,isDirectory:true):nil
-    }
-    func chooseExportFolder(){
-        let panel=NSOpenPanel();panel.canChooseFiles=false;panel.canChooseDirectories=true;panel.canCreateDirectories=true;panel.allowsMultipleSelection=false;panel.prompt="Use Folder";panel.message="Exports from every Forma window go to this folder without asking."
-        let finish:(NSApplication.ModalResponse)->Void={response in if response == .OK,let url=panel.url{UserDefaults.standard.set(url.path,forKey:Self.exportFolderKey)}}
-        if let window=active?.window{panel.beginSheetModal(for:window,completionHandler:finish)}else{panel.begin(completionHandler:finish)}
-    }
-    func addExportDestinationMenu(_ menu:NSMenu){
-        let submenu=NSMenu(title:"Export Destination"),item=NSMenuItem(title:"Export Destination",action:nil,keyEquivalent:"")
-        add(submenu,"Ask Every Time","native-export-ask");add(submenu,"Choose Folder…","native-export-folder");item.submenu=submenu;menu.addItem(item)
-    }
     func addShareMenu(_ menu:NSMenu){
         let submenu=NSMenu(title:"Share As"),item=NSMenuItem(title:"Share As",action:nil,keyEquivalent:"")
         add(submenu,"PNG Image…","native-share-png");add(submenu,"PDF Document…","native-share-pdf");add(submenu,"Forma Project…","native-share-project");item.submenu=submenu;menu.addItem(item)
@@ -55,17 +38,6 @@ extension Studio {
 
 extension DocumentWindow {
     func pushSystemAccent(){guard ready,let accent=Studio.systemAccent else{return};web.callAsyncJavaScript("return await window.__studioNative('system-accent',value);",arguments:["value":accent],in:nil,in:.page,completionHandler:nil)}
-    /** Never overwrites: a repeated export gets the next free name, as Finder does for a copy. */
-    func exportDirectly(_ bytes:Data,name:String,to folder:URL)throws->URL {
-        let base=(name as NSString).deletingPathExtension,ext=(name as NSString).pathExtension
-        for index in 1...500{
-            let candidate=folder.appendingPathComponent(index==1 ? name:"\(base) \(index).\(ext)")
-            if FileManager.default.fileExists(atPath:candidate.path){continue}
-            try bytes.write(to:candidate,options:[.withoutOverwriting]);return candidate
-        }
-        throw NSError(domain:"The export folder already holds 500 files with this name.",code:7)
-    }
-    func noticeExported(){web.callAsyncJavaScript("return await window.__studioNative('external-notice',value);",arguments:["value":"Exported to your chosen folder."],in:nil,in:.page,completionHandler:nil)}
     func browseVersions(){
         guard session.file != nil else{return}
         let browser=VersionBrowser(self,systemVersions());versionBrowser=browser
