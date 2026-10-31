@@ -1,7 +1,7 @@
 import type {DesignNode} from './model';
 import {effectsFor} from './effects';
 import {strokesFor} from './paints';
-import {outlineVectorStroke} from './vector-stroke-outline';
+import {planStrokeOutline} from './vector-stroke-outline';
 
 export const SVG_STROKE_OUTLINE_LIMITS={layers:20_000,conversions:64,outputPoints:16_384} as const;
 const candidates=(nodes:DesignNode[])=>nodes.filter(n=>!n.exportGhost&&n.visible&&n.opacity>0&&strokesFor(n).some(s=>s.visible&&s.paint.visible&&s.paint.opacity>0&&(s.width>0||s.edgeWidths?.some(v=>v>0))));
@@ -26,7 +26,7 @@ export function svgStrokeOutlineNodes(nodes:DesignNode[],enabled=false){
  if(!targets.length)return nodes;
  if(targets.length>SVG_STROKE_OUTLINE_LIMITS.conversions)throw Error('SVG stroke outlining supports at most 64 stroked layers per export.');
  if(nodes.some(n=>n.mask))throw Error('SVG stroke outlining does not support mask runs. Keep SVG strokes or export the unmasked vector separately.');
- const plans=new Map<string,DesignNode>();let points=0;
- for(const n of targets){if(parents.has(n.id)||unsafe.get(n.id)?.blocked)throw Error('SVG stroke outlining requires leaf vectors outside clipping, live Boolean and visible-effect hierarchies.');if(n.layoutGuides?.length)throw Error('Remove this vector’s layout guides before SVG stroke outlining.');try{/* Export must keep appearance: an outlined gradient or image maps to a larger box, so only the interactive tool accepts those. */if(strokesFor(n).some(v=>v.paint.type!=='solid'))throw Error('SVG stroke outlining supports solid stroke paints. Gradient and image strokes remain separate.');const result={...n,...outlineVectorStroke(n)};points+=(result.contours??[]).reduce((sum,c)=>sum+c.points.length,0);if(points>SVG_STROKE_OUTLINE_LIMITS.outputPoints)throw Error('SVG stroke outlines exceed 16,384 total output anchors. Export fewer vectors.');plans.set(n.id,result);}catch(error){throw Error('SVG stroke outline: '+(error instanceof Error?error.message:String(error)));}}
- return nodes.map(n=>plans.get(n.id)??n);
+ const plans=new Map<string,DesignNode[]>();let points=0,serial=0;
+ for(const n of targets){if(parents.has(n.id)||unsafe.get(n.id)?.blocked)throw Error('SVG stroke outlining requires leaf vectors outside clipping, live Boolean and visible-effect hierarchies.');if(n.layoutGuides?.length)throw Error('Remove this vector’s layout guides before SVG stroke outlining.');try{const {patch,added}=planStrokeOutline(n,()=>`${n.id}:outline:${++serial}`),result=[{...n,...patch},...added];points+=result.reduce((sum,l)=>sum+(l.contours??[]).reduce((inner,c)=>inner+c.points.length,0),0);if(points>SVG_STROKE_OUTLINE_LIMITS.outputPoints)throw Error('SVG stroke outlines exceed 16,384 total output anchors. Export fewer vectors.');plans.set(n.id,result);}catch(error){throw Error('SVG stroke outline: '+(error instanceof Error?error.message:String(error)));}}
+ return nodes.flatMap(n=>plans.get(n.id)??[n]);
 }
