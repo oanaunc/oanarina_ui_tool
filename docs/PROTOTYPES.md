@@ -15,8 +15,8 @@ Root frames support horizontal, vertical and two-axis scroll, fixed/sticky desce
 ## Limits
 
 - This is local playback. Hosted prototype URLs, sharing, embeds, passwords, remote access permissions, remote comments and mobile companion apps are absent.
-- Device presets and orientation size the viewing area; they do not render an exact physical device shell or rotate artwork.
-- Independent nested scrolling is incomplete. Sticky geometry inside rotated ancestors uses conservative bounds. Scroll-to uses browser smooth scrolling; exact custom scroll duration is not guaranteed.
+- The frame sets the viewport. Device choices draw generic shells (phone, foldable, tablet, laptop, desktop, watch) and name no real device; orientation changes the viewport proportions and does not rotate artwork.
+- Sticky bounds use the layer box, so a sticky layer that is itself rotated uses conservative bounds.
 - Smart animate is an independent implementation. Divergent hierarchies, arbitrary mixed text runs, all paint/effect combinations and nested interactive variants need further acceptance checks. New transitions can interrupt playback, but exact Figma interruption semantics are not claimed.
 - Gamepad triggers are tested with simulated browser input; physical controllers and all native input combinations require further testing.
 - The expression/action engine enables checkbox, radio, dropdown, progress and cart simulations through authored variables and variants; a dedicated form-control library and text input simulation remain absent.
@@ -27,3 +27,11 @@ Root frames support horizontal, vertical and two-axis scroll, fixed/sticky desce
 The bridge transfers supported mouse/delay navigation, back, URL, close, overlay and scroll actions, standard/cubic transitions, layout guides and page ruler guides. Other triggers, variables/conditions/variant behavior, flow metadata, overlay appearance and fixed/sticky behavior have explicit omission reports.
 
 A synthetic real connected-API check on October 29, 2026 preserved a five-node composition with three stretch columns, margin and gutter, a vertical-scrolling frame, click navigation with a 300 ms dissolve, centered text and a diagonal editable vector. A separate read confirmed persistence. The runtime rejected optional layout-grid fields accepted by the published generic typing; the bridge now emits only the fields allowed by each alignment. The sanitized return is in tests/fixtures/bridge-prototype-roundtrip.json. This harness reused an existing synthetic page because page removal was unavailable through the connection; it did not exercise the installed desktop plugin UI. A screenshot request then hit the connected service's Starter-plan call limit. No user reference file contents or identifiers are included in that fixture.
+
+## Nested scroll regions
+
+A frame, component or instance inside the presented frame scrolls independently when its Scroll overflow is set, in ordinary presentation and in overlays. Content moves inside the region, which always clips while presented. The wheel and trackpad reach the innermost region under the pointer that has room, then pass outward; dragging scrolls unless a layer on the path has a drag interaction; Arrow Up/Down, Page Up/Down, Home and End scroll the region last under the pointer. Left and Right still change frames.
+
+Fixed layers stay in the region and sticky layers hold until their parent ends, including inside rotated parents. Scroll-to reaches a layer through every enclosing region over the authored duration and easing. A region fires its own While scrolling interactions. Navigation resets the destination frame's regions unless the action preserves scroll, and Restart resets all of them.
+
+Regions have no visible scrollbars, because they scroll artwork rather than a native element. Motion preview keeps its own frame-level scroller and does not support nested regions. Exported prototypes are not covered here. Validation: `tests/prototype-nested-scroll.test.ts`, `tests/e2e/prototype-nested-scroll.spec.ts`, `tests/e2e/prototype-device-shell.spec.ts`.
