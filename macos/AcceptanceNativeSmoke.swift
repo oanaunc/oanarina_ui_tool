@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -432,6 +432,66 @@ extension Studio {
             self.killRenderer(first)
         }
         killRenderer(document)
+    }
+    /** A person's click on the screen cannot be scripted, so this drives the menu item and everything after the sampler's answer. */
+    func acceptSampler(_ document:DocumentWindow,_ done:@escaping()->Void){
+        let edit=integrationMenu("Edit"),item=menuItem(edit,"native-sample-color")
+        check(item.keyEquivalent=="c" && item.keyEquivalentModifierMask==[.control,.command],"Edit has Sample Screen Color on Control-Command-C")
+        let fill="getComputedStyle(document.querySelector('#forma-design-canvas [data-node-id=\"accept-rect\"] rect, #forma-design-canvas [data-node-id=\"accept-rect\"] path')).fill"
+        smokeScreenColor=NSColor(colorSpace:.sRGB,components:[0.2,0.4,0.6,1],count:4)
+        loadDocument(document,acceptanceDocument("accept-sampler","Sampler")){
+            self.page(document,"await window.__studioCommand('deselect');return true;"){_ in
+                self.invoke(edit,"native-sample-color")
+                self.page(document,"return await wait(()=>[...document.querySelectorAll('[role=status]')].map(e=>e.textContent).find(t=>t.startsWith('Sampled ')),'sampled toast');"){value in
+                    self.check((value as? String)?.contains("#336699")==true,"with no color picker open the sampled color goes to recent colors")
+                    self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await wait(()=>find('Sample canvas color'),'color picker');return \(fill);"){before in
+                        self.invoke(edit,"native-sample-color")
+                        self.page(document,"await wait(()=>\(fill)==='rgb(51, 102, 153)','sampled fill',4000);click('Sample screen color');await wait(()=>document.body.textContent.includes('Sample Screen Color'),'in-page guidance');await window.__studioCommand('undo');await wait(()=>\(fill)===\(self.json(before as? String ?? "")),'one undo',4000);return true;"){_ in
+                            self.check(true,"the sampled color fills the open color picker's target with one Undo")
+                            self.acceptSamplerP3(document,edit,done)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    func acceptSamplerP3(_ document:DocumentWindow,_ edit:NSMenu,_ done:@escaping()->Void){
+        let fill="getComputedStyle(document.querySelector('#forma-design-canvas [data-node-id=\"accept-rect\"] rect, #forma-design-canvas [data-node-id=\"accept-rect\"] path')).fill"
+        smokeScreenColor=NSColor(colorSpace:.displayP3,components:[0,1,0,1],count:4)
+        loadDocument(document,acceptanceDocument("accept-sampler-p3","Sampler P3",extra:["colorProfile":"display-p3"])){
+            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await wait(()=>find('Sample canvas color'),'color picker');return true;"){_ in
+                self.invoke(edit,"native-sample-color")
+                self.page(document,"return await wait(()=>\(fill).startsWith('color(display-p3 0 1 0'),'wide sampled fill',4000);"){_ in
+                    self.check(true,"a Display P3 file keeps the wide sampled coordinates instead of a clipped sRGB copy")
+                    self.smokeScreenColor=nil
+                    done()
+                }
+            }
+        }
+    }
+    /** Core Text measures the same named face independently, so a width match means CSS weight really reached that face. */
+    func acceptInstalledFaces(_ document:DocumentWindow,_ done:@escaping()->Void){
+        guard let family=["Helvetica Neue","Avenir Next","Avenir"].first(where:{(Studio.installedFaces($0).count)>=4}) else{smokeFail("no multi-face system family")}
+        let faces=Studio.installedFaces(family),sample="Hamburgefonstiv 0123"
+        func advance(_ postscript:String)->Double {let font=NSFont(name:postscript,size:64)!;return Double((sample as NSString).size(withAttributes:[.font:font]).width)}
+        loadDocument(document,acceptanceDocument("accept-faces","Faces"){nodes in nodes[2]["fontFamily"]=family}){
+            self.page(document,"const raw=await window.desktop.fontFaces(\(self.json(family))),paths=JSON.stringify(raw).includes('/'),refused=await window.desktop.fontFaces('No such family'),long=await window.desktop.fontFaces('x'.repeat(300)).then(()=>'accepted',()=>'refused');const canvas=document.createElement('canvas').getContext('2d'),widths=raw.map(f=>{canvas.font=(f.italic?'italic ':'')+f.weight+' 64px '+JSON.stringify(\(self.json(family)));return [f.postscript,canvas.measureText(\(self.json(sample))).width];});return {count:raw.length,paths,refused:refused.length,long,widths};"){value in
+                guard let body=value as? [String:Any],let widths=body["widths"] as? [[Any]] else{self.smokeFail("installed faces report")}
+                self.check(body["paths"] as? Bool==false && (body["count"] as? Int ?? 0)==faces.count,"the font message returns \(faces.count) named faces of \(family) with no path")
+                self.check(body["refused"] as? Int==0 && body["long"] as? String=="refused","an unknown family has no faces and an oversized name is refused")
+                let matched=widths.filter{abs(($0[1] as? Double ?? 0)-advance($0[0] as? String ?? ""))<1.5}.count
+                self.check(matched==widths.count,"CSS weight reaches each named face, by Core Text advance width (\(matched)/\(widths.count))")
+                self.page(document,"document.querySelector('[data-layer-id=\"accept-text\"]').click();const s=await wait(()=>document.querySelector('select[aria-label=\"Font style\"]')?.options.length>=\(faces.count)&&document.querySelector('select[aria-label=\"Font style\"]'),'face list in the inspector');return [...s.options].map(o=>o.textContent);"){value in
+                    let labels=value as? [String] ?? []
+                    self.check(labels.count>=faces.count && faces.allSatisfy{labels.contains($0["label"] as? String ?? "")},"the Font style select lists the installed faces by name (\(labels.joined(separator:", ")))")
+                    let light=faces.first{$0["weight"] as? Int != 400 && $0["italic"] as? Bool==false}!
+                    self.page(document,"pick('Font style',\(self.json("\(light["weight"]!)")));await wait(()=>document.querySelector('#forma-design-canvas [data-node-id=\"accept-text\"] text')?.getAttribute('font-weight')===\(self.json("\(light["weight"]!)")),'canvas text weight');await window.__studioCommand('undo');return true;"){_ in
+                        self.check(true,"choosing a face sets its weight on the canvas with one Undo")
+                        done()
+                    }
+                }
+            }
+        }
     }
     func mouse(_ document:DocumentWindow,_ type:NSEvent.EventType,_ x:CGFloat,_ y:CGFloat){
         let point=document.web.convert(NSPoint(x:x,y:y),to:nil)

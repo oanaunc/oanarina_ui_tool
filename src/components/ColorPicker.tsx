@@ -8,6 +8,7 @@ import {getPreferences} from '../preferences';
 import {useEditor} from '../store';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import {displayColor,outsideSrgb,p3ToSrgbHex,srgbToP3Hex} from '../color-profile';
+import {subscribeScreenColor} from '../screen-color';
 
 export default function ColorPicker({color,opacity,onChange,prefix}:{color:string;opacity:number;onChange:(color:string,alpha?:number)=>void;prefix:string}){
  const profile=useEditor(s=>s.doc.colorProfile);
@@ -21,6 +22,7 @@ export default function ColorPicker({color,opacity,onChange,prefix}:{color:strin
  useEffect(()=>{active.current=false;base.current={color,opacity};const next=color===value.current.color?hsvRef.current:colorHsv(color);baseHsv.current=next;update({color,opacity},next);},[color,opacity]);
  const cancel=()=>{active.current=false;update(base.current,baseHsv.current);};
  const start=()=>{base.current={color,opacity};baseHsv.current={...hsvRef.current};active.current=true;};
+ const latest=useRef({onChange,opacity});latest.current={onChange,opacity};useEffect(()=>subscribeScreenColor(sampled=>{try{latest.current.onChange(sampled,latest.current.opacity);setError('');}catch(e){setError(e instanceof Error?e.message:'Color could not be changed.');}}),[]);
  const closeSampler=()=>{setSampling(false);queueMicrotask(()=>sampleButton.current?.focus());};
  useEffect(()=>{window.addEventListener('blur',cancel);return()=>window.removeEventListener('blur',cancel);},[]);
  const accept=(next= value.current)=>{active.current=false;try{if(next.color.toLowerCase()!==color.toLowerCase()||next.opacity!==opacity){onChange(next.color,next.opacity);rememberColor(next.color);}update(next);base.current=next;baseHsv.current={...hsvRef.current};setError('');}catch(e){cancel();setError(e instanceof Error?e.message:'Color could not be changed.');}};
@@ -28,7 +30,7 @@ export default function ColorPicker({color,opacity,onChange,prefix}:{color:strin
  const pointer=(e:React.PointerEvent)=>{const r=square.current!.getBoundingClientRect();setHsv({s:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),v:1-Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))});};
  const screen=async()=>{
   const EyeDropper=(window as unknown as {EyeDropper?:new()=>{open:(options:{signal:AbortSignal})=>Promise<{sRGBHex:string}>}}).EyeDropper;
-  if(!EyeDropper){setError('Screen sampling is unavailable in this browser. Use Sample canvas color.');return;}
+  if(!EyeDropper){setError(window.desktop?'Use Edit > Sample Screen Color (Control-Command-C) to sample from the screen.':'Screen sampling is unavailable in this browser. Use Sample canvas color.');return;}
   screenAbort.current?.abort();const controller=new AbortController(),origin=captureColorContext(useEditor.getState());screenAbort.current=controller;
   const unsubscribe=useEditor.subscribe(s=>{if(!sameColorContext(origin,s))controller.abort();});
   setScreenBusy(true);
