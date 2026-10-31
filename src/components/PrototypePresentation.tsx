@@ -6,6 +6,8 @@ import type {Easing} from '../motion';
 import {inputDocumentIndex,prototypeInputVisibility,validateInputValue} from '../prototype-input';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import PrototypeAudioPlayer from './PrototypeAudioPlayer';
+import {PrototypePcmPlayer} from '../prototype-audio-player';
+import type {AudioPlaybackState} from '../prototype-audio-player';
 import {useLocalFlowPresentation} from '../local-flow-presentation';
 import {interactiveActionResolver} from '../interactive-variants';
 import PrototypeRenderBoundary from './PrototypeRenderBoundary';
@@ -72,6 +74,9 @@ function PrototypeSession(){
  useEffect(()=>{const previous=document.activeElement as HTMLElement|null;stage.current?.focus({preventScroll:true});return()=>previous?.focus({preventScroll:true});},[]);
  /** What a running Smart animate last drew, so an interruption starts from there rather than from its destination. */
  const visualNodes=useRef<DesignNode[]|null>(null),oldPageRef=useRef<typeof sourcePage|undefined>(undefined),sampledRef=useRef<DesignNode[]>([]);
+ /** Sounds from actions keep playing across frames until they end or a Stop sound runs. Arrival sounds belong to their frame. All of them stop when the presentation closes or the window hides. */
+ const sound=useRef<PrototypePcmPlayer|null>(null),arrival=useRef<PrototypePcmPlayer|null>(null),arrivalPhase=useRef<AudioPlaybackState['phase']>('stopped');
+ useEffect(()=>{let live=true;const present=()=>live&&!document.hidden,reaction=new PrototypePcmPlayer(present,()=>{}),own=new PrototypePcmPlayer(present,v=>{arrivalPhase.current=v.phase;}),hidden=()=>{if(document.hidden){reaction.stop();own.stop();arrivalPhase.current='stopped';}};sound.current=reaction;arrival.current=own;document.addEventListener('visibilitychange',hidden);return()=>{live=false;document.removeEventListener('visibilitychange',hidden);reaction.dispose();own.dispose();sound.current=null;arrival.current=null;};},[]);
  const nestedRef=useRef<{reset:(ids?:readonly string[])=>void;reveal:(nodes:DesignNode[],id:string,rootId:string,transition?:{duration:number;easing:Easing})=>string}|null>(null);
  const reduced=settings.reducedMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
  useEffect(()=>{const el=stage.current;if(!el)return;const observer=new ResizeObserver(([entry])=>setSize({width:entry.contentRect.width-48,height:entry.contentRect.height-48}));observer.observe(el);return()=>observer.disconnect();},[]);
@@ -106,12 +111,15 @@ function PrototypeSession(){
    install(result.state,result.transition);setError('');
    if(before.frameId!==result.state.frameId){started.current=performance.now();if(!result.preserveScroll)nestedRef.current?.reset(nestedScrollRegions(page.nodes,result.state.frameId).map(r=>r.id));requestAnimationFrame(()=>{const remembered=result.preserveScroll?savedScroll.current.get(result.state.frameId):undefined;scrollToPosition(result.state.frameId,remembered??{x:0,y:0});setScrollPositions(v=>({...v,[result.state.frameId]:remembered??{x:0,y:0}}));});}
    for(const effect of result.effects){
+    if(effect.type==='play-audio'){const clip=page.nodes.find(n=>n.id===effect.targetId)?.prototypeAudio;if(clip){sound.current?.stop();void sound.current?.play(clip);}}if(effect.type==='stop-audio'){sound.current?.stop();arrival.current?.stop();}
     if(effect.type==='open-link'&&effect.url)window.open(effect.url,'_blank','noopener,noreferrer');
     if(effect.type==='scroll-to')requestAnimationFrame(()=>{try{const current=prototypeDocument(s.doc,result.state).pages.find(p=>p.id===s.pageId)!,n=current.nodes.find(n=>n.id===effect.targetId);const host=[...result.state.overlays.map(o=>o.frameId).reverse(),result.state.frameId].find(id=>descendants(current.nodes,[id]).includes(effect.targetId??'')),f=current.nodes.find(n=>n.id===host);if(n&&f){const scene=motionPreview?scrollScenes.current.get(f.id):undefined,timing=effect.duration&&!reduced?{duration:effect.duration,easing:effect.easing??'ease-out'}:undefined,anchor=motionPreview?n:current.nodes.find(a=>a.id===nestedRef.current?.reveal(current.nodes,n.id,f.id,timing))??n;scrollToPosition(f.id,scene?motionScrollTarget(scene,n.id):{x:Math.max(0,anchor.x-f.x),y:Math.max(0,anchor.y-f.y)},timing);}}catch(e){setError(e instanceof Error?e.message:String(e));}});
    }
   }catch(e){setError(e instanceof Error?e.message:String(e));}
  },[s.doc,s.pageId,install,reduced,motionPreview]);
  const activeRoot=state.overlays.at(-1)?.frameId??state.frameId,active=useMemo(()=>{if(motionPreview)return motionActiveNodes(page.nodes,activeRoot);const activeIds=new Set(descendants(page.nodes,[activeRoot]));return page.nodes.filter(n=>activeIds.has(n.id)&&effectiveVisible(n,page.nodes));},[page.nodes,activeRoot,motionPreview]);
+ const arrivalClip=motionPreview?undefined:page.nodes.find(n=>n.id===activeRoot)?.prototypeAudio,arrivalMedia=arrivalClip?.autoplay?arrivalClip:undefined;
+ useEffect(()=>{if(!arrivalMedia)return;const voice=arrival.current,begin=()=>{if(arrivalPhase.current!=='playing')void voice?.play(arrivalMedia);};begin();/* A browser may hold audio until the first press in the page. */window.addEventListener('pointerdown',begin,{capture:true});return()=>{window.removeEventListener('pointerdown',begin,{capture:true});voice?.stop();arrivalPhase.current='stopped';};},[arrivalMedia?.data,arrivalMedia?.volume,arrivalMedia?.loop,activeRoot]);
  const trigger=useCallback((id:string,type:PrototypeTrigger)=>{if(comments.hold.current)return;try{
   const current=prototypeDocument(s.doc,stateRef.current).pages.find(p=>p.id===s.pageId)!,n=current.nodes.find(n=>n.id===id);if(!n)return;
   const reactions=reactionsFor(n).filter(r=>r.enabled&&r.trigger===type);if(!reactions.length)return;const bind=interactiveActionResolver({...s.doc,pages:s.doc.pages.map(p=>p.id===s.pageId?current:p)},s.pageId),actions=reactions.flatMap(r=>bind(n.id,r.actions,r.id)),transient=type==='hover'||type==='press';
