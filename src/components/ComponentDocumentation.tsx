@@ -3,7 +3,7 @@ import './component-documentation.css';
 import {useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {useEditor} from '../store';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
-import {documentationChoices,prepareComponentDocumentation,applyComponentDocumentation,validateComponentDocumentation} from '../component-documentation';
+import {applyDocumentationUpdate,documentationChoices,linkedDocumentationPages,prepareComponentDocumentation,prepareDocumentationUpdate,applyComponentDocumentation,validateComponentDocumentation,validateDocumentationUpdate} from '../component-documentation';
 import type {DocumentationPlan} from '../component-documentation';
 import type {DesignDocument} from '../model';
 const message=(e:unknown)=>e instanceof Error?e.message:String(e);
@@ -22,12 +22,15 @@ export function ComponentDocumentation({mainId,owner,isCurrent}:{mainId:string;o
  const activation=(e:React.KeyboardEvent)=>{if(e.key===' '||e.key==='Enter')e.stopPropagation();};
  const review=()=>run(()=>{const live=guard();if(!choices.value)throw Error(choices.error??'This component is unavailable.');const plan=prepareComponentDocumentation(live.doc,mainId,{title:draft.title,allVariants:draft.allVariants});guard();publish({...draft,plan,source:live.doc,reviewProof:proof});});
  const generate=()=>run(()=>{const live=guard(),plan=draft.plan;if(!plan||draft.source!==live.doc||!draft.reviewProof?.valid)throw Error('Review the current documentation page before generating it.');editWithOwnedDelivery(d=>applyComponentDocumentation(d,plan),d=>validateComponentDocumentation(d,plan),()=>({pageId:plan.pageId,selection:[],vectorEditId:null,vectorSelection:[],pan:{x:24,y:24},zoom:.75,leftTab:'layers'}));publish({...draft,open:false,plan:undefined,source:undefined,reviewProof:undefined});});
+ const linked=useMemo(()=>{try{return linkedDocumentationPages(s.doc,mainId);}catch{return [];}},[s.doc,mainId]);
+ const update=(pageId:string)=>run(()=>{const live=guard(),plan=prepareDocumentationUpdate(live.doc,pageId);editWithOwnedDelivery(d=>applyDocumentationUpdate(d,plan),d=>validateDocumentationUpdate(d,plan),()=>({pageId,selection:[],vectorEditId:null,vectorSelection:[],leftTab:'layers'}));useEditor.getState().set({toast:'Updated '+plan.pageName+'. Added layers stayed; generated text and examples were replaced.'});});
  return <section className="component-documentation" aria-label="Component documentation" onKeyDown={activation} onKeyUp={activation}>
+  {linked.map(page=><p key={page.pageId} className="component-documentation-link" role="status">{page.name}: {page.state==='current'?'up to date':page.state==='stale'?'out of date':page.reason} {page.state==='stale'&&<button type="button" className="text-button" disabled={blocked} aria-label={'Update documentation page '+page.name} onClick={()=>update(page.pageId)}>Update page</button>}</p>)}
   <button type="button" className="outline-button" disabled={blocked} onClick={()=>change({open:!draft.open})}>{draft.open?'Close documentation review':'Create documentation page'}</button>
   {draft.open&&<div className="component-documentation-review"><p>Generate an editable sibling page. Documentation text is a snapshot; fresh instance examples stay linked to the selected mains and their defaults in the new page’s variable modes. Selected instance overrides are excluded.</p>
    {choices.error?<p role="status">{choices.error}</p>:<><label>Documentation page name<input aria-label="Documentation page name" value={draft.title} maxLength={200} onChange={e=>change({title:e.target.value})}/></label>
    {choices.value?.set&&<label><input type="checkbox" aria-label="Document all variants" checked={draft.allVariants} disabled={choices.value.variantCount>32} onChange={e=>change({allVariants:e.target.checked})}/> Include all {choices.value.variantCount} variants (maximum 32)</label>}
-   <p>No remote publishing or automatic regeneration. Slot-bearing, circular, oversized and unsupported automatic ancestor contexts refuse before adding a page.</p>
+   <p>No remote publishing. The page shows here as out of date when its source text changes, and updating it replaces generated text and examples. Slot-bearing, circular, oversized and unsupported automatic ancestor contexts refuse before adding a page.</p>
    <button type="button" onClick={review} disabled={blocked}>Review documentation page</button>
    {draft.plan&&draft.source===s.doc&&draft.reviewProof?.valid&&<><p role="status">{draft.plan.exampleCount} linked example{draft.plan.exampleCount===1?'':'s'} · {draft.plan.layerCount} editable layers · {draft.plan.pageName}</p><button type="button" className="primary" onClick={generate} disabled={blocked}>Generate documentation page</button></>}</>}
   </div>}{error&&<p role="alert">{error}</p>}

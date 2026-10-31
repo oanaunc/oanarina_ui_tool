@@ -42,12 +42,13 @@ For a plugin, a stop ends the run with no proposal. For a code layer, the dialog
 
 ## What a guest script cannot do
 
-The mirrored DOM covers elements, text, attributes, `style`, `classList`, `dataset`, forms, selectors, `innerHTML`, event dispatch, `requestAnimationFrame`, `ResizeObserver` and 2D canvas. Across threads, some things cannot be synchronous:
+The mirrored DOM covers elements, text, attributes, `style`, `classList`, `dataset`, forms, selectors, `innerHTML`, event dispatch, `requestAnimationFrame`, `ResizeObserver`, `MutationObserver`, `IntersectionObserver` with the viewport as its root, and 2D canvas. Across threads, some things cannot be synchronous:
 
 - **Geometry** comes from the last measurement. The first read in a page is accurate. After a change, read it in the next animation frame. `getComputedStyle` returns inline values and measured `width` and `height` only.
 - **`preventDefault`** arrives too late for the event that caused it. The frame remembers it and cancels the same event type on that element from the next event on. Submitting a form and following a link are always cancelled.
 - **Canvas** `toDataURL` is unavailable, because it is synchronous. Use `toBlob`. Drawing an `<img>` into a canvas is unavailable.
-- **Not provided:** `MutationObserver`, `IntersectionObserver`, `DOMParser`, Range and Selection, Shadow DOM, custom elements, `document.write`, ES module scripts. Using one fails visibly instead of pretending to work.
+- **Observers** see only what the guest's own script does. `MutationObserver` reports records in one microtask, and an edit the person makes in a field shows through its `input` event instead. `IntersectionObserver` updates with geometry, a frame late, and refuses a custom root.
+- **Not provided:** `DOMParser`, Range and Selection, Shadow DOM, custom elements, `document.write`, ES module scripts. Using one fails visibly instead of pretending to work.
 - **Inline handlers** run in the worker, so `this` and `event` work but the `with`-style scope of element properties does not.
 
 CSS animation and transitions run in the frame and are unaffected.

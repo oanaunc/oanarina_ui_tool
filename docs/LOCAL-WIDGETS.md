@@ -18,7 +18,7 @@ Each event runs the code once in a new worker, through the same opaque sandbox a
 
 ```js
 const input = await forma.readParameters();
-// {event:'render'|'action', action?, value?, state, size:{width,height}}
+// {event:'render'|'action'|'resize', action?, value?, state, size:{width,height}}
 let count = Number(input.state.count || 0);
 if (input.action === 'add') count++;
 await forma.propose({
@@ -35,10 +35,10 @@ A view uses only `stack`, `text`, `button`, `box` and `input`, with at most 200 
 
 ## On the canvas
 
-- **Interaction:** Forma places its own transparent buttons over generated widget buttons. A press sends only the action name to a fresh worker. Each update is one Undo step. If the saved state changed while a run was in progress, its result is refused.
+- **Interaction:** Forma places its own transparent buttons over generated widget buttons, following the widget's rotation. A press sends only the action name to a fresh worker. A button's optional `hoverFill` tints it under the pointer in the host, with no guest code running. Each update is one Undo step. If the saved state changed while a run was in progress, its result is refused.
 - **Input:** `{type:'input',action,value,placeholder}` draws a field as ordinary layers. Selecting it opens a host-owned text box in place, and Enter or leaving the box sends the text as `value` with that action. Escape discards it. Guest code never touches the box.
 - **Properties:** selecting a widget opens a host-rendered panel with its menu, permissions, console, **Refresh widget** and **Convert to layers**.
-- **Resizing:** the frame's canvas handles and size fields work when the package allows it, clamped to its limits. Layers are regenerated from the saved view. Code receives the new size with its next event but does not run on each resize.
+- **Resizing:** the frame's canvas handles and size fields work when the package allows it, clamped to its limits. Layers are regenerated from the saved view. Code runs once with `event:'resize'` after a resize settles, and a changed view from that run is its own Undo step. It does not run on each drag step, or after Undo.
 - **State:** state and view are saved on the frame, so they follow Undo, duplicate, copy, paste, page moves and `.oui` save and reopen. A duplicate has independent state. Synchronization means the state, its layers and the saved file stay together on this device. Nothing is shared live between people or windows.
 - **Permissions:** grants are per package, shown in the panel, revocable, and end when the app reloads. Replacing a package clears them, and they are never saved in a file. A read without a grant is refused. In a whiteboard, reads return the same redacted layer fields as command plugins.
 
@@ -46,7 +46,7 @@ Package code is never saved in documents. A file opened without its package show
 
 ## Limits
 
-There is no remote catalog, automatic update, publishing, Figma widget import, custom drawing, images, input fields, hover, timers or background work. Widgets do not run in Slides: a copy pasted into a deck stays as ordinary artwork. They cannot live inside components, and a document holds at most 512. Text layout is estimated from character counts, so wrapped text can differ slightly from the rendered result. Hit targets follow the bounding box of a rotated widget. The sandbox is a browser boundary, not an OS sandbox, as described for command plugins. Native WKWebView behavior has not been smoke-tested.
+There is no remote catalog, automatic update, publishing, widget import from other tools, custom drawing, images, hover events in code, timers or background work. Timers stay out because every update is an Undo step, so a ticking widget would flood the history. Widgets do not run in Slides: a copy pasted into a deck stays as ordinary artwork. They cannot live inside components, and a document holds at most 512. Text layout is estimated from character counts, so wrapped text can differ slightly from the rendered result. The sandbox is a browser boundary, not an OS sandbox, as described for command plugins. Native WKWebView behavior has not been smoke-tested.
 
 ## Validation
 

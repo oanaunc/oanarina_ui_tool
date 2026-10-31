@@ -13,6 +13,8 @@ Assets → Local plugins supports optional typed input declarations in a Forma v
 ]
 ```
 
+Two additions make a form follow the file. `{"type":"source","source":"layers","default":""}` lists this file's `pages`, current-page `layers`, `components`, `styles` or `variables` in a trusted menu, up to 500 rows. Names stay in the form, and the run receives only the chosen ID, or an empty string for None. `"showWhen":{"key":"color","equals":"Red"}` on any field shows it only while an earlier field has that value. A hidden field keeps its value and still reaches the run. Package code never builds the form.
+
 Text fields are single-line, with limits of 1–1,000 UTF-16 units; defaults and submitted values containing CR/LF refuse. Numbers have explicit finite ordered bounds within ±1,000,000. Choice fields offer 1–20 unique nonempty values of up to 80 characters and a default that actually appears in the list. Choices require trimmed single-space text without tabs or CR/LF so native option display cannot conceal distinct choices; explicit option values preserve their exact identities. Checkboxes carry real booleans. Empty numeric fields refuse Run; out-of-range values are rejected again before sandbox allocation. Unknown or missing submitted keys refuse rather than silently falling back. When no submitted values are supplied by a source caller, declared defaults are used.
 
 Within an explicit run:

@@ -22,7 +22,7 @@ function check(signal?:AbortSignal){if(signal?.aborted)throw Error('PDF export c
 /** Entire source/font/image snapshot is prepared before the first await. */
 export function prepareDesignPdf(options:DesignPdfOptions):DesignPdfSnapshot{
  const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The PDF page is missing.');if(s.doc.workspace==='slides')throw Error('Use Slides PDF export for a slide deck.');
- const sampled=s.motionOpen?{...page,nodes:sampleMotion(page.nodes,page.motion,s.motionTime)}:page;return pdfSnapshot(s.doc,designPdfPlan(sampled,s.selection,options),options);
+ const sampled=s.motionOpen?{...page,nodes:sampleMotion(page.nodes,page.motion,s.motionTime)}:page;return pdfSnapshot(s.doc,designPdfPlan(sampled,options.ids??s.selection,options),options);
 }
 /** One pipeline for design pages and slides, from a plan of pages to a snapshot ready to render. */
 export function pdfSnapshot(doc:DesignDocument,plans:DesignPdfPagePlan[],options:Pick<DesignPdfOptions,'vector'|'embedAssets'|'includeGuides'>,limits?:DesignPdfSnapshot['limits']):DesignPdfSnapshot{

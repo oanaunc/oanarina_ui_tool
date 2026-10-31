@@ -7,7 +7,7 @@ Resources → UI kits, illustrations and tutorials… opens original Forma conte
 | UI kits | Core controls and Mobile parts, built from real main components, with one variant set | Open as new file, or insert on this page in one Undo |
 | Illustrations | Eight small vector scenes | Insert on this page as editable vectors in one Undo |
 | Tutorials | Your first prototype, Variables and conditions, Components and variants | Open as new file |
-| Guides | Six short articles on hierarchy, spacing, color, prototyping, components and accessibility | Read, and open a related tutorial where one exists |
+| Guides | Fourteen short articles on hierarchy, spacing, color, prototyping, components, accessibility, typography, auto layout, variables, responsive frames, handoff, motion, interface writing and design systems | Read, and open a related tutorial where one exists |
 
 Search filters by name and description. Browsing and previewing do not edit the current file.
 

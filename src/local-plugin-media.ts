@@ -3,7 +3,7 @@ import {pluginKeys,pluginObject} from './local-plugin-manifest';
 import {fillsFor} from './paints';
 import type {DesignNode,Page} from './model';
 export interface PluginImageAsset {data:string;width:number;height:number;mimeType:string;bytes:number;}
-export const PLUGIN_IMAGE_LIMITS={bytes:2000000,assets:16,pixels:80000000,side:16384,exportBytes:4000000} as const;
+export const PLUGIN_IMAGE_LIMITS={bytes:2000000,assets:16,pixels:80000000,side:16384,exportBytes:4000000,batchLayers:24,batchBytes:2800000} as const;
 const SIGNATURES:Record<string,number[]>={'image/png':[0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a],'image/jpeg':[0xff,0xd8,0xff],'image/gif':[0x47,0x49,0x46,0x38],'image/webp':[0x52,0x49,0x46,0x46]};
 /** Pure structural proof; the host still decodes the bytes before minting a proposal handle. */
 export function pluginImageData(value:unknown){const p=pluginObject(value);pluginKeys(p,['mimeType','base64']);const signature=typeof p.mimeType==='string'?SIGNATURES[p.mimeType]:undefined;if(!signature||!Object.hasOwn(SIGNATURES,p.mimeType as string)||typeof p.base64!=='string'||!p.base64||p.base64.length%4||!/^[A-Za-z0-9+/]+={0,2}$/.test(p.base64))throw Error('Plugin images need a PNG, JPEG, GIF or WebP mime type and canonical base64 bytes.');if(p.base64.length>Math.ceil(PLUGIN_IMAGE_LIMITS.bytes/3)*4)throw Error('Plugin images are limited to 2 MB.');const head=atob(p.base64.slice(0,16));if(signature.some((byte,i)=>head.charCodeAt(i)!==byte))throw Error('The plugin image bytes do not match their declared type.');return 'data:'+p.mimeType+';base64,'+p.base64;}
