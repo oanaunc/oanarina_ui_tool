@@ -1,5 +1,5 @@
 import type {DesignDocument,DesignNode} from './model';
-import {applyDesignSystems,bindingTypes,styleFields} from './design-systems';
+import {applyDesignSystems,bindingTypeOf,styleFields} from './design-systems';
 import type {BindingField,DesignStyle,DesignVariable,StyleKind} from './design-systems';
 import {fillsFor,strokesFor} from './paints';
 import {colorDistance,documentIndexes,hexColor,pageIndex} from './audit-index';
@@ -52,7 +52,7 @@ export function auditTokens(doc:DesignDocument):TokenAudit{
   if(layer.managed||n.type==='instance'||generated.has(n.id)||n.media)continue;
   const modes=effectiveModes(n,index,memo),key=JSON.stringify(Object.entries(modes).sort());let table=tables.get(key);if(!table){table=tokenTable(doc,modes,byId,collections);tables.set(key,table);}
   for(const field of FIELDS){
-   const value=literalField(n,field);if(value===undefined)continue;checkedFields++;const types=bindingTypes[field as BindingField];
+   const value=literalField(n,field);if(value===undefined)continue;checkedFields++;const types=bindingTypeOf(field);
    if(n.variableBindings?.[field as BindingField]||linkedStyle(n,field)){boundFields++;continue;}if(!hasTokens)continue;
    const exact=(table.get(String(value))??[]).filter(t=>t.variable.type===types&&allowed(t.variable,field));
    if(exact.length){const v=exact[0].variable;push({kind:'unbound-match',field,layer,value:String(value),suggestion:{type:'variable',id:v.id,name:v.name,value:String(value)},alternatives:exact.length-1,changesAppearance:false,blocked});continue;}
