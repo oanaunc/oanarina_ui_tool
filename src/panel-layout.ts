@@ -8,6 +8,9 @@ export type PanelLayoutAction='toggle-left-sidebar'|'toggle-right-sidebar'|'rese
 export const PANEL_LAYOUT_EVENT='forma-panel-layout';
 /** A cancelable, fixed-action request. A mounted editor acknowledges it; Home/Slides do not. */
 export function dispatchPanelLayout(action:PanelLayoutAction):boolean{return !window.dispatchEvent(new CustomEvent(PANEL_LAYOUT_EVENT,{detail:action,cancelable:true}));}
+export const PANEL_LAYOUT_APPLY_EVENT='forma-panel-layout-apply';
+/** Persists a saved arrangement and asks a mounted editor to adopt it. Returns false when no sidebar is mounted to acknowledge it. */
+export function applyPanelLayout(layout:PanelLayout):boolean{const warning=writePanelLayout(layout);if(warning)throw Error(warning);return !window.dispatchEvent(new CustomEvent(PANEL_LAYOUT_APPLY_EVENT,{detail:layout,cancelable:true}));}
 export function defaultPanelLayout():PanelLayout{return{version:1,left:{width:null,collapsed:false},right:{width:null,collapsed:false}};}
 export function parsePanelLayout(raw:string|null):PanelLayout{
  if(raw===null)return defaultPanelLayout();

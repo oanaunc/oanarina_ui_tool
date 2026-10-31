@@ -3,8 +3,26 @@ import type {ReactNode} from 'react';
 import {X} from 'lucide-react';
 import {useEditor} from '../store';
 import DesignHealth from './DesignHealth';
+import PrivacyDashboard from './PrivacyDashboard';
+import BugReport from './BugReport';
+import PaletteExchange from './PaletteExchange';
+import BatchTransforms from './BatchTransforms';
+import CodeExport from './CodeExport';
+import ExportQueue from './ExportQueue';
+import CommandUsage from './CommandUsage';
+import WorkspaceLayouts from './WorkspaceLayouts';
+import DevicePreview from './DevicePreview';
 const tools:Record<string,{title:string;render:()=>ReactNode}>={
  'design-health':{title:'Design health report',render:()=><DesignHealth/>},
+ 'privacy-dashboard':{title:'Privacy dashboard',render:()=><PrivacyDashboard/>},
+ 'bug-report':{title:'Bug report bundle',render:()=><BugReport/>},
+ 'palette-exchange':{title:'Color palette exchange',render:()=><PaletteExchange/>},
+ 'batch-transforms':{title:'Batch transforms',render:()=><BatchTransforms/>},
+ 'code-export':{title:'Design-to-code export',render:()=><CodeExport/>},
+ 'export-queue':{title:'Export queue',render:()=><ExportQueue/>},
+ 'command-usage':{title:'Command usage',render:()=><CommandUsage/>},
+ 'workspace-layouts':{title:'Workspace layouts',render:()=><WorkspaceLayouts/>},
+ 'device-preview':{title:'Side-by-side device preview',render:()=><DevicePreview/>},
 };
 export const isLocalToolModal=(modal:string)=>Object.hasOwn(tools,modal);
 /** Shared shell for local audit and automation tools, so each stays out of the main dialog switch. */

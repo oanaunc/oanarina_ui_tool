@@ -1,0 +1,27 @@
+import {useMemo,useState} from 'react';
+import {useEditor} from '../store';
+import {download,notifyError,pickFile} from '../files';
+import {exportFilename} from '../frame-export-settings';
+import {batchExamples,parseBatchScript,previewBatchScript,readBatchScripts,runBatchScript,writeBatchScripts} from '../batch-transform';
+import type {BatchPlan,BatchScript} from '../batch-transform';
+import './local-tools.css';
+const pretty=(v:unknown)=>JSON.stringify(v,null,2);
+export default function BatchTransforms(){
+ const s=useEditor(),[raw,setRaw]=useState(pretty(batchExamples[0].script)),[saved,setSaved]=useState<BatchScript[]>(readBatchScripts),[plan,setPlan]=useState<{script:BatchScript;result:BatchPlan;doc:typeof s.doc}|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),library=useMemo(()=>[...batchExamples.map(e=>({label:e.label,script:e.script})),...saved.map(script=>({label:'Saved: '+script.name,script}))],[saved]),stale=!!plan&&plan.doc!==s.doc,blocked=s.doc.workspace==='slides'?'Open a Design or Whiteboard file to run batch transforms.':s.motionOpen?'Close Motion to run batch transforms.':'';
+ const edit=(value:string)=>{setRaw(value);setPlan(null);setError('');setMessage('');};
+ const preview=()=>{try{const script=parseBatchScript(raw),live=useEditor.getState();setPlan({script,result:previewBatchScript(live.doc,live.pageId,live.selection,script),doc:live.doc});setError('');setMessage('');}catch(e){setPlan(null);setError(e instanceof Error?e.message:'This script could not be read.');}};
+ const apply=()=>{try{if(!plan||stale)throw Error('The document changed. Preview again.');if(blocked)throw Error(blocked);const live=useEditor.getState();let count=0;live.edit(d=>{count=runBatchScript(d,live.pageId,live.selection,plan.script).changes.length;});setPlan(null);setMessage(count+' layers changed in one step. Undo reverses the whole script.');}catch(e){setError(e instanceof Error?e.message:'This script could not be applied.');}};
+ const remember=()=>{try{const script=parseBatchScript(raw),next=[...saved.filter(x=>x.name!==script.name),script];writeBatchScripts(next);setSaved(next);setMessage('Saved on this device as “'+script.name+'”.');}catch(e){setError(e instanceof Error?e.message:'This script could not be saved.');}};
+ const removeSaved=(name:string)=>{try{const next=saved.filter(x=>x.name!==name);writeBatchScripts(next);setSaved(next);}catch(e){setError(e instanceof Error?e.message:'This script could not be removed.');}};
+ const load=()=>pickFile('.json',async files=>{try{const text=await files[0].text();parseBatchScript(text);edit(text);}catch(e){setError(e instanceof Error?e.message:'This script could not be read.');}});
+ return <div className="local-tool batch-transforms">
+  <p className="dialog-description">Describe a repeatable change as JSON, preview every affected layer, then apply it as one Undo step. Scripts are data, not code: nothing is evaluated, and locked or component-managed layers are skipped.</p>
+  <div className="tool-row"><label className="tool-field">Start from<select aria-label="Batch script library" value="" onChange={e=>{const item=library[Number(e.target.value)];if(item)edit(pretty(item.script));}}><option value="">Choose a script…</option>{library.map((item,i)=><option key={item.label} value={i}>{item.label}</option>)}</select></label><button className="outline-button" onClick={load}>Open JSON file…</button></div>
+  <label className="tool-field">Script<textarea aria-label="Batch script" className="tool-code" spellCheck={false} rows={12} value={raw} onChange={e=>edit(e.target.value)}/></label>
+  <p className="small-note">Scopes: selection, page, document. Operations: set, offset, scale, round, rename, replace-color, replace-text. Filter with where: type, name and text (with * wildcards), visible, fill. Rename tokens: {'{name} {type} {width} {height} {n} {nn} {nnn}'}.</p>
+  {error&&<p role="alert" className="tool-warning">{error}</p>}{message&&<p role="status">{message}</p>}{blocked&&<p role="status">{blocked}</p>}
+  <div className="button-row"><button className="primary-button" onClick={preview}>Preview</button><button disabled={!plan||stale||!plan.result.changes.length||!!blocked} onClick={apply}>Apply to {plan?.result.changes.length??0} layers</button><button onClick={remember}>Save script</button><button onClick={()=>{void download(exportFilename('forma','-batch-script','json'),raw,'application/json').catch(notifyError);}}>Export script</button></div>
+  {plan&&<section aria-label="Batch preview"><h3>Preview</h3><p role="status">{stale?'The document changed. Preview again.':plan.result.changes.length+' layers change, of '+plan.result.matched+' matched.'}{plan.result.skippedLocked?' '+plan.result.skippedLocked+' locked skipped.':''}{plan.result.skippedManaged?' '+plan.result.skippedManaged+' component-managed skipped.':''}</p><ul className="tool-list batch-preview">{plan.result.changes.slice(0,100).map(c=><li key={c.layer.nodeId}><strong>{c.layer.nodeName}</strong> <small>{c.layer.pageName}</small>{c.fields.map(f=><span key={f.field}><code>{f.field}</code> {f.before} → {f.after}</span>)}</li>)}</ul>{plan.result.changes.length>100&&<p className="small-note">And {plan.result.changes.length-100} more layers.</p>}</section>}
+  {saved.length>0&&<details><summary>Saved scripts ({saved.length})</summary><ul className="tool-list">{saved.map(x=><li key={x.name}>{x.name} <button aria-label={'Remove script '+x.name} onClick={()=>removeSaved(x.name)}>Remove</button></li>)}</ul></details>}
+ </div>;
+}
