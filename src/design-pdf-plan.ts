@@ -5,7 +5,7 @@ import {exportVisibility,validateExportHierarchy} from './svg-export-options';
 import {exportDimensions,layerExportGeometry,EXPORT_ASSET_LIMIT} from './export-plan';
 export const PDF_PIXEL_LIMIT=80_000_000;
 export type DesignPdfMode='artwork'|'selected-frames'|'page-frames';
-export interface DesignPdfOptions {mode:DesignPdfMode;scale:number;includeHidden:boolean;includeGuides:boolean;includeOverlaps:boolean;vector?:boolean;embedAssets?:boolean;}
+export interface DesignPdfOptions {ids?:readonly string[];mode:DesignPdfMode;scale:number;includeHidden:boolean;includeGuides:boolean;includeOverlaps:boolean;vector?:boolean;embedAssets?:boolean;}
 export interface DesignPdfPagePlan {id:string;name:string;nodes:DesignNode[];viewport:{x:number;y:number;width:number;height:number};transform?:import('./transforms').Matrix;width:number;height:number;scale:number;}
 /** Pure, ordered geometry plan; PDF pages ignore layer export profiles. */
 export function designPdfPlan(page:Page,ids:readonly string[],options:DesignPdfOptions):DesignPdfPagePlan[]{
