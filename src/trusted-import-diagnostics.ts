@@ -1,5 +1,5 @@
 /** Exact public, fixed validator diagnostics audited from these local source modules:
- * model, document-metadata, paints, layout-settings, grid, section-metadata, component-property-visibility, component-workflow-metadata, development-status, developer-resources, layer-annotations, comment-threads, local-library-metadata, frame-export-settings, svg-export-settings, png-color-profile, progressive-blur, dynamic-stroke, whiteboard-code-blocks, design-systems, components-model, image-paint, surface-paint.
+ * model, document-metadata, paints, layout-settings, grid, section-metadata, component-property-visibility, component-workflow-metadata, development-status, developer-resources, layer-annotations, comment-threads, local-library-metadata, frame-export-settings, svg-export-settings, png-color-profile, progressive-blur, dynamic-stroke, whiteboard-code-blocks, design-systems, components-model, image-paint, surface-paint, color-profile, shaders.
  * Interpolated/concatenated messages and parser excerpts are deliberately excluded.
  * This static allowlist never reads source code or user data at runtime.
  */
@@ -235,7 +235,26 @@ const trustedImportDiagnostics=new Set<string>([
  "Noise requires 16–128 pixels, a 32-bit seed, two colors and 0–100% coverage.",
  "Only embedded images are supported.",
  "Open a Whiteboard to add a code block.",
- "PNG color profile must be sRGB or untagged.",
+ "The document color profile must be sRGB or Display P3.",
+ "PNG color profile must be sRGB, Display P3 or untagged.",
+ "Invalid shader assignment.",
+ "Invalid shader parameters.",
+ "Shader settings require a shader paint.",
+ "Shader settings require a shader effect.",
+ "Shader effects need a mode, blend, clip setting and zero offsets.",
+ "Invalid file shader.",
+ "Invalid file shader parameters.",
+ "Invalid file shader parameter.",
+ "File shaders keep 1 to 16 versions.",
+ "File shader versions must ascend.",
+ "A file keeps up to 64 shaders.",
+ "File shader identifiers must be unique.",
+ "Shader source is empty.",
+ "Shader source exceeds 20,000 characters.",
+ "Shader source must be plain ASCII.",
+ "Shader source cannot use #extension, #version, #pragma, #include or #line.",
+ "Shader source cannot use textures, discard or write gl_FragColor directly. Return a color from shade().",
+ "Shader source must define vec4 shade(vec2 uv).",
  "PNG output exceeds 100 MB.",
  "Patterns need a 1–1024 px tile and up to 64 editable primitives.",
  "Procedural surface snapshot is stale or missing. Regenerate it from the validated source before saving.",
