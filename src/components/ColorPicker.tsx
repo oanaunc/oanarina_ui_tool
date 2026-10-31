@@ -9,6 +9,7 @@ import {useEditor} from '../store';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import {displayColor,outsideSrgb,p3ToSrgbHex,srgbToP3Hex} from '../color-profile';
 import {subscribeScreenColor} from '../screen-color';
+import {t} from '../i18n';
 
 export default function ColorPicker({color,opacity,onChange,prefix}:{color:string;opacity:number;onChange:(color:string,alpha?:number)=>void;prefix:string}){
  const profile=useEditor(s=>s.doc.colorProfile);
@@ -30,7 +31,7 @@ export default function ColorPicker({color,opacity,onChange,prefix}:{color:strin
  const pointer=(e:React.PointerEvent)=>{const r=square.current!.getBoundingClientRect();setHsv({s:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),v:1-Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))});};
  const screen=async()=>{
   const EyeDropper=(window as unknown as {EyeDropper?:new()=>{open:(options:{signal:AbortSignal})=>Promise<{sRGBHex:string}>}}).EyeDropper;
-  if(!EyeDropper){setError(window.desktop?'Use Edit > Sample Screen Color (Control-Command-C) to sample from the screen.':'Screen sampling is unavailable in this browser. Use Sample canvas color.');return;}
+  if(!EyeDropper){setError(window.desktop?t('Use Edit > Sample Screen Color (Control-Command-C) to sample from the screen.'):'Screen sampling is unavailable in this browser. Use Sample canvas color.');return;}
   screenAbort.current?.abort();const controller=new AbortController(),origin=captureColorContext(useEditor.getState());screenAbort.current=controller;
   const unsubscribe=useEditor.subscribe(s=>{if(!sameColorContext(origin,s))controller.abort();});
   setScreenBusy(true);

@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -100,7 +100,22 @@ extension Studio {
                         self.page(document,"await window.__studioCommand('select-all');await window.__studioCommand('export');await wait(()=>find('Export PDF'),'pdf control');click('Export PDF');return true;"){_ in
                             self.saved(directory,"Exports.pdf"){_,data in
                                 self.check(data.starts(with:Array("%PDF-".utf8)),"Export dialog PDF arrives through native save")
-                                self.closeDialog(document,done)
+                                self.closeDialog(document){
+                                    self.page(document,"await window.__studioCommand('select-all');await window.__studioCommand('export');await wait(()=>find('Export SVG')||find('Export PNG'),'combined export dialog');pick('Export file format','jpg');await wait(()=>find('Export JPG'),'JPG control');click('Export JPG');return true;"){_ in
+                                        self.saved(directory,"Exports.jpg"){_,data in
+                                            guard let image=self.decoded(data) else{self.smokeFail("exported JPG decode")}
+                                            self.check(data.starts(with:[0xff,0xd8]) && self.close(self.sample(image,50,50),[255,0,0],12),"Export dialog JPG arrives through native save with real pixels")
+                                            self.closeDialog(document){
+                                                self.page(document,"await window.__studioCommand('select-all');await window.__studioCommand('export');await wait(()=>find('Export SVG')||find('Export PNG'),'combined export dialog');pick('Export file format','svg');await wait(()=>find('Export SVG'),'SVG control');click('Export SVG');return true;"){_ in
+                                                    self.saved(directory,"Exports.svg"){_,data in
+                                                        self.check(String(data:data,encoding:.utf8)?.contains("<svg")==true && XMLParser(data:data).parse(),"Export dialog SVG arrives through native save as well-formed XML")
+                                                        self.closeDialog(document){self.acceptSaveFormats(document,directory,done)}
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -244,6 +259,16 @@ extension Studio {
             }
         }
     }
+    /** Every format the editor really exports must pass the shell's list, and anything a Mac would execute must not. */
+    func acceptSaveFormats(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        let accepted=["accept.md","accept.ase","accept.aco","accept.gpl","accept.sketchpalette","accept.swatches","accept.hex","accept.css","accept.html","accept.xml","accept.tsx","accept.swift","accept.kt","accept.jpeg","accept.webp"],refused=["accept.command","accept.sh","accept.app","accept.pkg","accept.terminal","accept"]
+        js(document,"const results={};for(const name of \(json(accepted+refused))){results[name]=await window.desktop.save(name,'data').then(v=>String(v),e=>'refused');}return results;"){value in
+            guard let results=value as? [String:String] else{self.smokeFail("save format report")}
+            self.check(accepted.allSatisfy{results[$0]=="true" && FileManager.default.fileExists(atPath:directory.appendingPathComponent($0).path)},"native save accepts each format the editor exports (\(accepted.count) extensions)")
+            self.check(refused.allSatisfy{results[$0]=="refused" && !FileManager.default.fileExists(atPath:directory.appendingPathComponent($0).path)},"native save refuses executable and unnamed formats before any panel")
+            done()
+        }
+    }
     func acceptProjectZips(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
         smokeSaveDirectory=directory
         runSteps([{self.acceptPrototypeZip(document,directory,$0)},{self.acceptSiteZip(document,directory,$0)},{self.acceptPowerPoint(document,directory,$0)},{self.acceptBrand(document,directory,$0)}],done)
@@ -286,6 +311,11 @@ extension Studio {
             self.page(site,"await wait(()=>find('Export site'),'site bar');click('Preview');await wait(()=>document.querySelector('iframe[title=\"Site preview\"]'),'site preview frame');await new Promise(r=>setTimeout(r,600));const r=document.querySelector('iframe[title=\"Site preview\"]').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+80,sandbox:document.querySelector('iframe[title=\"Site preview\"]').getAttribute('sandbox'),error:document.querySelector('.site-preview-error')?.textContent??''};"){value in
                 guard let body=value as? [String:Any] else{self.smokeFail("site preview report")}
                 self.check(body["error"] as? String=="" && body["sandbox"] as? String=="allow-scripts allow-forms","Sites preview frame opens in WKWebView")
+                let shot=WKSnapshotConfiguration();shot.rect=CGRect(x:(body["x"] as? Double ?? 0)-150,y:(body["y"] as? Double ?? 0)-60,width:300,height:200);shot.afterScreenUpdates=true
+                site.web.takeSnapshot(with:shot){image,_ in
+                    guard let cg=image?.cgImage(forProposedRect:nil,context:nil,hints:nil) else{self.smokeFail("site snapshot")}
+                    let rep=NSBitmapImageRep(cgImage:cg);var seen=Set<Int>();for y in stride(from:0,to:rep.pixelsHigh,by:4){for x in stride(from:0,to:rep.pixelsWide,by:4){if let c=rep.colorAt(x:x,y:y){seen.insert(Int(c.redComponent*31)<<10|Int(c.greenComponent*31)<<5|Int(c.blueComponent*31))}}}
+                    self.check(seen.count>1,"Sites preview frame paints page content in WKWebView (\(seen.count) distinct colors)")
                 self.page(site,"click('Export site');await wait(()=>find('Export site ZIP')&&!find('Export site ZIP').disabled,'site export ready');click('Export site ZIP');return document.title;"){_ in
                     self.until("site archive",{(try? FileManager.default.contentsOfDirectory(atPath:directory.path))?.contains{$0.hasSuffix("-site.zip")}==true}){
                         let name=(try! FileManager.default.contentsOfDirectory(atPath:directory.path)).first{$0.hasSuffix("-site.zip")}!,url=directory.appendingPathComponent(name)
@@ -302,6 +332,7 @@ extension Studio {
                             }
                         }
                     }
+                }
                 }
             }
         }
@@ -426,12 +457,39 @@ extension Studio {
         let pages="[...document.querySelectorAll('.pages-list button')].length"
         page(document,"\(json("")) ;const first=\(pages);await window.__studioCommand('undo');await wait(()=>\(pages)<first,'undo removes the replayed journal edit');const second=\(pages);await window.__studioCommand('undo');await wait(()=>\(pages)<second,'undo reaches history saved before the kill');return first;"){value in
             self.check(true,"replayed edit and the Undo history stored before the kill both undo in the new renderer")
-            self.page(document,"await new Promise(r=>setTimeout(r,3300));return true;"){_ in self.acceptSafeMode(document,done)}
+            document.session.file=directory.appendingPathComponent("Crash.oui")
+            self.js(document,"const saved=await window.__studioSave();await new Promise(r=>setTimeout(r,3300));return saved;"){value in self.check(value as? Bool==true,"the recovered project saves to a file before the start failures");self.acceptSafeMode(document,done)}
         }
+    }
+    /** Undo stored with the recovery copy, read back by a new renderer after an ordinary close and Reopen Closed Window. */
+    func acceptUndoReopen(_ document:DocumentWindow,_ done:@escaping()->Void){
+        smokeReadyOverride={second in
+            self.loadDocument(second,self.acceptanceDocument("accept-reopen","Reopened")){
+                let key="forma-crash-journal-v1:accept-reopen",pages="document.querySelectorAll('.pages-list button').length"
+                self.page(second,"const before=\(pages);await window.__studioCommand('page');await wait(()=>\(pages)>before,'second page');await wait(()=>localStorage.getItem(\(self.json(key))),'journal written').catch(()=>{});await wait(()=>!localStorage.getItem(\(self.json(key))),'journal cleared by autosave');await new Promise(r=>setTimeout(r,300));return before;"){value in
+                    guard let before=value as? Int else{self.smokeFail("page count")}
+                    self.smokeReadyOverride={third in
+                        self.page(third,"await wait(()=>document.querySelector('[data-canvas]'),'reopened canvas');await wait(()=>\(pages)>\(before),'reopened pages');return true;"){_ in
+                            self.until("reopened Undo reaches the menu",{third.state?.menu?.undo==true},{
+                                self.page(third,"await window.__studioCommand('undo');await wait(()=>\(pages)===\(before),'undo after reopen');return true;"){_ in
+                                    self.check(third !== second && third.session.documentId=="accept-reopen","Reopen Closed Window restores the project in a new renderer")
+                                    self.check(true,"Undo history saved with the project still undoes after close and reopen")
+                                    third.closeApproved();document.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
+                                    self.until("reopened window closed",{self.documents.count==1},done)
+                                }
+                            })
+                        }
+                    }
+                    second.closeApproved();self.command("reopen-closed")
+                }
+            }
+        }
+        createWindow(bootstrap:["kind":"new","command":"new"])
     }
     /** Starts that die before they prove healthy leave boot markers, the real trigger for safe mode. The first kill only ends a healthy session. */
     func acceptSafeMode(_ document:DocumentWindow,_ done:@escaping()->Void){
         document.rendererExits=[]
+        let bound=document.session.file
         smokeReadyOverride={first in
             self.smokeReadyOverride={second in
                 self.smokeReadyOverride={third in
@@ -439,7 +497,7 @@ extension Studio {
                         self.check((value as? String)?.contains("did not finish starting twice")==true,"two starts ended by a real renderer kill enter safe mode")
                         self.smokeReadyOverride={normal in
                             self.page(normal,"await wait(()=>document.querySelector('[data-canvas]'),'normal start');return !!document.querySelector('.safe-mode-banner');"){value in
-                                self.check(value as? Bool==false && normal.state?.name=="Crash","Restart normally returns to the same file after safe mode")
+                                self.check(value as? Bool==false && normal.state?.name=="Crash" && normal.session.file==bound,"Restart normally returns to the same document and file binding after safe mode")
                                 done()
                             }
                         }
@@ -542,6 +600,8 @@ extension Studio {
     }
     /** Real key events through AppKit. This Mac has the system keyboard navigation setting at its default. */
     func acceptKeyboard(_ document:DocumentWindow,_ done:@escaping()->Void){
+        let emoji=menuItem(integrationMenu("Edit"),"Emoji & Symbols")
+        check(emoji.action==#selector(NSApplication.orderFrontCharacterPalette(_:)) && NSApp.responds(to:emoji.action!),"Edit offers the system Emoji & Symbols panel")
         loadDocument(document,acceptanceDocument("accept-keys","Keys")){
             self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();document.querySelector('[aria-label=\"Zoom in\"]').focus();window.__tabs=[];document.addEventListener('focusin',e=>window.__tabs.push(e.target.tagName),true);return true;"){_ in
                 document.window.makeFirstResponder(document.web)
@@ -581,7 +641,12 @@ extension Studio {
                             self.page(document,"await window.__studioCommand('preferences');await wait(()=>document.querySelector('[aria-label=\"Interface scale\"]'),'preferences');pick('Interface scale','1');await new Promise(r=>setTimeout(r,120));click('Close dialog',document.querySelector('[role=dialog]'));await wait(()=>!document.querySelector('[role=dialog]'),'preferences closed');return [typeof document.documentElement.requestFullscreen,document.fullscreenEnabled];"){value in
                                 let fullscreen=value as? [Any]
                                 self.check(fullscreen?[0] as? String=="function" && fullscreen?[1] as? Bool==true,"element full screen is available to presentations in WKWebView")
-                                done()
+                                self.js(document,"const e=document.createElement('div');e.id='accept-full';e.style.background='#123';document.body.appendChild(e);window.__full=[];document.addEventListener('fullscreenchange',()=>window.__full.push(document.fullscreenElement?.id??'none'));document.addEventListener('fullscreenerror',()=>window.__full.push('error'));e.requestFullscreen().catch(x=>window.__full.push('rejected:'+x.name));return true;"){_ in
+                                    self.page(document,"await wait(()=>window.__full.length,'full screen response',6000);const first=window.__full[0];if(first==='accept-full'){await new Promise(r=>setTimeout(r,900));await document.exitFullscreen();await wait(()=>window.__full.includes('none'),'exit full screen',6000);}document.getElementById('accept-full').remove();return first;"){value in
+                                        self.check(value as? String=="accept-full","requestFullscreen enters and leaves real full screen from WKWebView")
+                                        self.later(1.2,done)
+                                    }
+                                }
                             }
                         }
                     })
@@ -659,6 +724,9 @@ extension Studio {
                             self.dropOnWindow(document,[svg],x:x,y:y)
                             self.page(document,"await wait(()=>document.querySelector('[role=dialog]')&&document.body.textContent.includes('Import editable layers'),'SVG review after drop');click('Cancel SVG import');return true;"){_ in
                                 self.check(true,"an SVG dropped from Finder reaches the validated import review")
+                                self.dropOnWindow(document,[png,tiff],x:x,y:y)
+                                self.page(document,"await wait(()=>\(rows).filter(t=>t.includes('Dropped.png')||t.includes('Scan.png')).length>=4,'batch of two images',10000);return true;"){_ in
+                                self.check(true,"two images dropped together import as one batch")
                                 self.dropOnWindow(document,[png,project],x:x,y:y)
                                 self.later(0.8){
                                     self.page(document,"return await wait(()=>status().includes('one project')||document.body.textContent.includes('one project'),'mixed drop refusal');"){_ in
@@ -674,6 +742,7 @@ extension Studio {
                                         }
                                         self.dropOnWindow(document,[project],x:x,y:y)
                                     }
+                                }
                                 }
                             }
                         }

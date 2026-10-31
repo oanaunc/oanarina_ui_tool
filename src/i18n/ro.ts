@@ -80,5 +80,7 @@ export const ro:Readonly<Record<Message,string|PluralForms>>={
  'Variable axes':'Axe variabile','Named instance':'Instanță denumită','Custom position':'Poziție personalizată','Reset axes':'Resetează axele','Mixed axis values. Changing one sets all axes for the selected text.':'Valori de axă amestecate. Schimbarea uneia setează toate axele pentru textul selectat.','Slider edits apply on release.':'Modificările cu glisorul se aplică la eliberare.',
  // Emoji picker
  'Skin tone':'Nuanță a pielii','Default skin tone':'Nuanță implicită a pielii','Light skin tone':'Nuanță deschisă a pielii','Medium-light skin tone':'Nuanță medie-deschisă a pielii','Medium skin tone':'Nuanță medie a pielii','Medium-dark skin tone':'Nuanță medie-închisă a pielii','Dark skin tone':'Nuanță închisă a pielii','{count} local emoji. Search by name to find more. Appearance depends on the fonts on this Mac, so newer emoji can show as boxes on older systems.':'{count} emoji locale. Caută după nume pentru a găsi mai multe. Aspectul depinde de fonturile de pe acest Mac, așa că emoji mai noi pot apărea ca pătrate pe sisteme mai vechi.',
+ // Native Mac acceptance batch
+ 'Drag to Finder to save this file':'Trage în Finder pentru a salva acest fișier','Use Edit > Sample Screen Color (Control-Command-C) to sample from the screen.':'Folosește Edit > Sample Screen Color (Control-Command-C) pentru a prelua o culoare de pe ecran.',
  'Knife':'Cuțit',
 };
