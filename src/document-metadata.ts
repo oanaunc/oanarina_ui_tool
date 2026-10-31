@@ -7,6 +7,7 @@ import {validateDocumentComponentSlots} from './component-slots';
 import {validateDocumentTextPaths} from './text-path';
 import {validateDocumentCalligraphicStrokes} from './calligraphic-stroke';
 import {validateDocumentDynamicStrokes} from './dynamic-stroke';
+import {validateDocumentLiveRepeats} from './live-repeat';
 import {validateDocumentCommentThreads} from './comment-threads';
 import {validateDocumentDeveloperResources} from './developer-resources';
 import {validateDocumentAnnotations} from './layer-annotations';
@@ -51,6 +52,7 @@ export function validateDocumentMetadata(document:{workspace?:unknown;fileCover?
  validateDocumentCornerSmoothing(document);
  validateDocumentVariableWidths(document);
  validateDocumentDynamicStrokes(document);
+ validateDocumentLiveRepeats(document);
  validateDocumentTextPaths(document);
  validateDocumentCalligraphicStrokes(document);
  validateDocumentRotationOrigins(document);

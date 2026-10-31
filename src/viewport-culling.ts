@@ -39,7 +39,7 @@ export function indexViewportRoots(nodes:readonly DesignNode[]):ViewportCullInde
   const contours=n.type==='path'?n.contours:n.type==='line'&&n.points.length?[{points:n.points,closed:false}]:undefined;
   if(contours)for(const c of contours){pointCount+=c.points.length;if(pointCount>VIEWPORT_CULL_LIMITS.points)return fail('The culling point-work budget was exceeded.');}
   if(root.uncertain)continue;
-  if(n.type==='text'||n.media||n.mask||n.booleanOp||hasEffects||n.type==='path'&&!n.contours||strokes.some(s=>s.variableWidth||s.dynamic||s.calligraphic)||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none') {root.uncertain=true;continue;}
+  if(n.liveRepeat||n.type==='text'||n.media||n.mask||n.booleanOp||hasEffects||n.type==='path'&&!n.contours||strokes.some(s=>s.variableWidth||s.dynamic||s.calligraphic)||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none') {root.uncertain=true;continue;}
   if(![n.x,n.y,n.width,n.height,n.rotation,...r.matrix].every(Number.isFinite)||n.width<0||n.height<0){root.uncertain=true;continue;}
   let local:CullRect={x:0,y:0,width:n.width,height:n.height};
   if(contours)try{const hull=pathControlBounds(n.type==='path'?n:{...n,type:'path',contours});if(hull)local=union(local,hull);}catch{root.uncertain=true;continue;}

@@ -17,3 +17,7 @@ Layer/paragraph edits use the existing Undo, save, component override/inheritanc
 ## Checks
 
 Core cases cover measured quote advances, boundary and unsupported fallbacks, rich sizes, trailing whitespace, wrapping/auto-width, ellipsis, transformed conservative bounds and clips, logical rich clipboard/rebasing, optional validation and versions, Undo, actual generated component copies, text styles and Bridge atomic refusal/omission reports. Browser cases inspect real character coordinates and exported quote pixels outside aligned margins, saved reopening/Undo, UTF-16 HTML clipboard, auto-width/wrapping, clipping/transforms, and stale/locked/Motion handlers. Source MCP checks exercise save/Undo and atomic refusal of malformed/non-text metadata.
+
+## Direction and alignment
+
+Hanging quotes now work in RTL paragraphs, where the opening quote hangs right and the closing quote left, in paragraphs mixing scripts, and in centered text, where the body stays centered and quotes hang on both sides. Tabs and explicit bidi controls keep ordinary placement, because they can move an edge character off its line edge. Justified text, lists and ellipsis tails also keep it.

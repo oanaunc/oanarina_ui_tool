@@ -53,3 +53,7 @@ Domain headless tests cover the exact arrangement, all 511 nonempty subsets of a
 Actual browser checks cover draft-only native picking, sparse Option-drag subtraction, extraction/save/reopen/Undo, true exported SVG holes, exact integer full-union pixels, signed-affine full-union and split-boundary raster evidence, SVG reimport and ordinary clipboard behavior, retained source/local/reset handlers, pointer cancellation, already-captured ordinary moves, blur/resize/UI-scale interruption and recovery, and contained keyboard/native Space controls at 125%.
 
 No app build, native package, installer, archive, release or website change is part of this pass.
+
+## Networks
+
+A vector network can be a source when it has no visible stroke, every edge lies on a filled face, and all regions share one paint. It enters as the closed loops of its faces. Inside a single network, **Merge with region N** in the network inspector does the same job without leaving the graph.

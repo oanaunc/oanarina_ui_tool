@@ -1,4 +1,7 @@
 import type {NetworkEdge,NetworkVertex,NetworkRegionBoundary,VectorNetwork} from './vector-network-geometry';
+import type {Paint} from './paints';
+import {deriveNetworkFaces,matchNetworkRegions,networkCycleRank} from './vector-network-faces';
+import type {PriorRegion} from './vector-network-faces';
 
 type Graph={vertices:NetworkVertex[];edges:NetworkEdge[]};
 function fail(message:string):never{throw Error('Vector network region: '+message);}
@@ -18,7 +21,13 @@ export function deriveNetworkRegionBoundary(g:Graph):NetworkRegionBoundary[] {
  return boundary;
 }
 export function withNetworkRegion(g:Graph,id:string):VectorNetwork {return {version:2,vertices:g.vertices,edges:g.edges,regions:[{id,boundary:deriveNetworkRegionBoundary(g)}]};}
-export function refreshNetworkRegion(g:VectorNetwork):VectorNetwork{return g.version===1?g:withNetworkRegion(g,g.regions[0].id);}
+function priorRegions(g:VectorNetwork):PriorRegion<Paint[]>[]{return g.version===3?g.regions.map(r=>({id:r.id,loops:r.loops,value:r.paints})):g.version===2?[{id:g.regions[0].id,loops:[g.regions[0].boundary]}]:[];}
+/** Every bounded face, carrying identity and paint from the previous graph. Faces are derived, never trusted from callers. */
+export function withNetworkFaces(prev:VectorNetwork,g:Graph):Extract<VectorNetwork,{version:3}>{const faces=deriveNetworkFaces(g),matched=matchNetworkRegions(priorRegions(prev),faces,prev.version===2);return {version:3,vertices:g.vertices,edges:g.edges,regions:faces.map((f,i)=>({id:matched[i].id,loops:f.loops,...(matched[i].value?{paints:matched[i].value}:{})}))};}
+/** The smallest graph version that represents this topology: a forest, one simple cycle, or general faces. Version 3 keeps paint on its regions, so it never regresses to version 2. */
+export function refreshNetworkRegion(prev:VectorNetwork,g:Graph,region='region-1'):VectorNetwork{const rank=networkCycleRank(g);if(!rank)return {version:1,vertices:g.vertices,edges:g.edges};if(prev.version!==3&&rank===1)try{return withNetworkRegion(g,prev.version===2?prev.regions[0].id:region);}catch{/* a two-edge lens has one cycle but needs face geometry */}return withNetworkFaces(prev,g);}
+/** Version 2 keeps its fill on the node. When that graph grows faces the paint moves to every face descended from the old region. */
+export function inheritRegionPaints(prev:Extract<VectorNetwork,{version:2}>,paints:Paint[],g:Extract<VectorNetwork,{version:3}>):Extract<VectorNetwork,{version:3}>{const matched=matchNetworkRegions([{id:prev.regions[0].id,loops:[prev.regions[0].boundary],value:paints}],g.regions.map(r=>({key:r.id,loops:r.loops,area:0})),true);return {...g,regions:g.regions.map((r,i)=>matched[i].value?{...r,paints:matched[i].value}:r)};}
 function writer(g:Graph){const vertices=new Map(g.vertices.map(v=>[v.id,v])),edges=new Map(g.edges.map(e=>[e.id,e]));return {vertices,edges,segment:(e:NetworkEdge,reverse=false)=>{const from=vertices.get(reverse?e.to:e.from)!,to=vertices.get(reverse?e.from:e.to)!,h1=reverse?e.toHandle:e.fromHandle,h2=reverse?e.fromHandle:e.toHandle;return e.fromHandle||e.toHandle?`C${at({x:from.x+(h1?.x??0),y:from.y+(h1?.y??0)})} ${at({x:to.x+(h2?.x??0),y:to.y+(h2?.y??0)})} ${at(to)}`:`L${at(to)}`;}};}
 /** Authoritative fill consists only of this closed, oriented cycle. Bridge edges never enter its path. */
 export function networkRegionPath(g:VectorNetwork){if(g.version!==2)return '';const {vertices,edges,segment}=writer(g),boundary=g.regions[0].boundary,first=boundary[0],edge=edges.get(first.edgeId)!,start=vertices.get(first.reverse?edge.to:edge.from)!;return 'M'+at(start)+boundary.map(b=>segment(edges.get(b.edgeId)!,b.reverse)).join('')+'Z';}

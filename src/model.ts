@@ -48,9 +48,9 @@ import {validatePaint} from './paints';
 import type {Paint,StrokeStyle} from './paints';
 export type NodeKind = 'frame'|'section'|'slice'|'rectangle'|'ellipse'|'line'|'arrow'|'polygon'|'star'|'text'|'path'|'image'|'group'|'component'|'instance'|'code';
 export type Tool = NodeKind|'move'|'hand'|'scale'|'pen'|'pencil'|'brush'|'comment';
-export interface VectorPoint {x:number;y:number;in?:{x:number;y:number};out?:{x:number;y:number};mode?:'mirrored'|'aligned'|'independent';widthScale?:number;}
+export interface VectorPoint {x:number;y:number;in?:{x:number;y:number};out?:{x:number;y:number};mode?:'mirrored'|'aligned'|'independent';widthScale?:number;widthBias?:number;}
 export interface VectorContour {points:VectorPoint[];closed:boolean;}
-export interface DesignNode {autoFit?:{padding:number};code?:import('./code-layer').CodeLayer;widget?:import('./local-widget-document').WidgetRecord;widgetAction?:string;derivedLayers?:import('./derived-layers').DerivedLayers;linkCard?:import('./whiteboard-link-cards').LinkCard;slidePoll?:import('./slide-polls').SlidePoll;slidePrototypeEmbed?:string;prototypeInput?:import('./prototype-input').PrototypeInput;vectorNetwork?:import('./vector-network-geometry').VectorNetwork;strokeScaleMode?:import('./stroke-scaling').StrokeScaleMode;rotationOrigin?:{x:number;y:number};cornerSmoothing?:number;
+export interface DesignNode {autoFit?:{padding:number};liveRepeat?:import('./live-repeat').LiveRepeat;code?:import('./code-layer').CodeLayer;widget?:import('./local-widget-document').WidgetRecord;widgetAction?:string;derivedLayers?:import('./derived-layers').DerivedLayers;linkCard?:import('./whiteboard-link-cards').LinkCard;slidePoll?:import('./slide-polls').SlidePoll;slidePrototypeEmbed?:string;prototypeInput?:import('./prototype-input').PrototypeInput;vectorNetwork?:import('./vector-network-geometry').VectorNetwork;strokeScaleMode?:import('./stroke-scaling').StrokeScaleMode;rotationOrigin?:{x:number;y:number};cornerSmoothing?:number;
   id:string; type:NodeKind; name:string; parentId:string|null;
   x:number; y:number; width:number; height:number; rotation:number;
   fill:string; paints?:Paint[]; strokes?:StrokeStyle[]; blendMode?:string; effects?:Effect[]; isolate?:boolean; stroke:string; strokeWidth:number; opacity:number; radius:number;

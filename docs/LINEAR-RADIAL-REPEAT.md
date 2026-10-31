@@ -2,7 +2,9 @@
 
 Forma provides **Object → Linear repeat…** and **Object → Radial repeat…**, also searchable in Actions. Select one source layer or container subtree. The original remains in place. The real Design canvas shows staged copies while the focus-managed dialog is open. Apply inserts the reviewed copies in one Undo step; Cancel or Escape discards the preview. Export and Save always use the document, never the staged canvas.
 
-These workflows create ordinary editable layers. They are not persistent linked/live repeat objects. Changing the original later does not update ordinary copies; copied component instances retain their normal links to their main definition. Both register requirements remain partial until live repeat editing exists and reference verification is complete.
+**Apply repeat** creates ordinary editable layers. Changing the original later does not update them; copied component instances retain their normal links to their main definition.
+
+**Keep live** stores one layer with optional `liveRepeat` settings instead. Copies render from the source subtree in the same stacking position, so every edit, effect and Motion track on the source reaches them. The canvas, SVG, PNG and export bounds all include them, and clicking a copy selects the source. The Layer section edits count, steps, or pivot offset, angle and rotation, and the radial pivot moves with the layer. **Expand to layers** writes ordinary copies in one Undo step, and **Remove repeat** keeps only the source. Copies cannot be edited individually without expanding. A live repeat cannot be a mask, Boolean or instance child, sit directly in auto layout or inside a Boolean, or nest; a page allows 4,096 copies. Editable Figma Bridge transfer refuses it. An older build ignores the field and shows only the source.
 
 ## Controls and coordinates
 
