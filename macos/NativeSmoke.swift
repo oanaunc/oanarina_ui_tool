@@ -25,6 +25,7 @@ extension Studio {
     func smokeJS(_ document:DocumentWindow,_ source:String,_ completion:@escaping(Any)->Void){document.web.callAsyncJavaScript(source,arguments:[:],in:nil,in:.page){result in switch result{case .success(let value):completion(value);case .failure(let error):self.smokeFail(error.localizedDescription)}}}
     func runSmoke(_ document:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(document);return}
+        if CommandLine.arguments.contains("--acceptance-smoke-test"){runAcceptanceSmoke(document);return}
         if CommandLine.arguments.contains("--fig-import-smoke-test"){runFigImportSmoke(document);return}
         if CommandLine.arguments.contains("--integration-smoke-test"){runIntegrationSmoke(document);return}
         if CommandLine.arguments.contains("--clipboard-smoke-test"){runClipboardSmoke(document);return}

@@ -1,7 +1,7 @@
 import AppKit
 import ImageIO
 
-/** Standalone acceptance: compile with NodePasteboard.swift; never reads/writes .general. */
+/** Standalone acceptance: compile with NodePasteboard.swift and ProjectFileSafety.swift; never reads/writes .general. */
 @main struct RasterPasteboardTests {
     static var checks:[String]=[]
     static func check(_ value:Bool,_ name:String){guard value else{fputs("FAIL: \(name)\n",stderr);exit(1)};checks.append(name)}
@@ -33,7 +33,15 @@ import ImageIO
         put(.png,Data("bad PNG".utf8),text:"No fallback")
         do{_ = try NodePasteboard.read(from:board);check(false,"malformed raster fails closed")}catch{check(true,"malformed raster does not fall back to text")}
         let preferred=NSPasteboardItem();preferred.setData(png,forType:.png);preferred.setString("<svg/>",forType:NodePasteboard.svg);board.clearContents();board.writeObjects([preferred]);check(try NodePasteboard.read(from:board)["kind"]=="svg","editable SVG precedes raster")
-        let unsupported=NSPasteboardItem();unsupported.setString("file:///private/unsupported",forType:.fileURL);board.clearContents();board.writeObjects([unsupported]);check(try NodePasteboard.read(from:board)["kind"]=="empty","file URLs are never read as images")
+        let unsupported=NSPasteboardItem();unsupported.setString("file:///private/unsupported",forType:.fileURL);board.clearContents();board.writeObjects([unsupported]);check(try NodePasteboard.read(from:board)["kind"]=="empty","a copied file that cannot be read yields nothing")
+        let folder=FileManager.default.temporaryDirectory.appendingPathComponent("forma-raster-"+UUID().uuidString,isDirectory:true);try FileManager.default.createDirectory(at:folder,withIntermediateDirectories:true);defer{try? FileManager.default.removeItem(at:folder)}
+        func copied(_ name:String,_ data:Data)throws->[String:String]{let url=folder.appendingPathComponent(name);try data.write(to:url);let item=NSPasteboardItem();item.setString(url.absoluteString,forType:.fileURL);item.setData(tiff,forType:.tiff);item.setString(name,forType:.string);board.clearContents();board.writeObjects([item]);return try NodePasteboard.read(from:board)}
+        let photo=try copied("Photo.jpg",encoded(5,4,"public.jpeg")),bytes=Data(base64Encoded:photo["data"]!.replacingOccurrences(of:"data:image/png;base64,",with:""))!,pixels=CGImageSourceCreateImageAtIndex(CGImageSourceCreateWithData(bytes as CFData,nil)!,0,nil)!
+        check(photo["kind"]=="image" && pixels.width==5 && pixels.height==4,"a copied image file wins over Finder's icon and name")
+        check(try copied("Notes.txt",Data("words".utf8))["kind"]=="empty","a copied non-image file offers neither icon nor name")
+        check(try copied("Drawing.svg",Data("<svg/>".utf8))==["kind":"svg","data":"<svg/>"],"a copied SVG file reads as SVG markup")
+        let link=folder.appendingPathComponent("Link.png");try FileManager.default.createSymbolicLink(at:link,withDestinationURL:folder.appendingPathComponent("Photo.jpg"));let linked=NSPasteboardItem();linked.setString(link.absoluteString,forType:.fileURL);board.clearContents();board.writeObjects([linked]);check(try NodePasteboard.read(from:board)["kind"]=="empty","a copied symbolic link is not followed")
+        let rich=NSPasteboardItem();rich.setData(try NSAttributedString(string:"Styled").data(from:NSRange(location:0,length:6),documentAttributes:[.documentType:NSAttributedString.DocumentType.rtf]),forType:.rtf);board.clearContents();board.writeObjects([rich]);check(try NodePasteboard.read(from:board)==["kind":"text","data":"Styled"],"rich text without plain text reads as its words")
         print(String(data:try JSONSerialization.data(withJSONObject:["nativeRasterPasteboard":true,"checks":checks,"count":checks.count],options:[.sortedKeys]),encoding:.utf8)!)
     }
 }
