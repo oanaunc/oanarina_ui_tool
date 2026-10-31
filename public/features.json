@@ -4894,20 +4894,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Text on path",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Partial: same-layer self-owned open cubic/straight text baseline with plain LTR shaping, supported paints/strokes, guarded canvas text editing, Undo/save/clipboard and shared SVG/raster appearance. Fixed bounded geometry; rich RTL, multiple/closed baselines, components/masks/effects/animated ancestry and binary/Bridge text-path interchange remain unsupported. See docs/TEXT-ON-PATH.md."
   },
   {
     "id": "UI-16-020",
     "category": "Freehand and Figma Draw",
     "name": "Text path offset",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Partial: real percentage start-offset control along the owned baseline, with numeric editing/Undo/save and rendered glyph-position checks. No start-handle drag, path flipping or full Figma offset/control equivalence. See docs/TEXT-ON-PATH.md."
   },
   {
     "id": "UI-16-021",
@@ -5437,7 +5437,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Selection colors reports differing RGB values across selected trees and supports replacement. Full mixed paint-stack summaries/editing remain unfinished Evidence and limits: docs/COLOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Partial: dedicated mixed fill-stack summary and targeted per-position visibility/opacity/solid conversion/add/remove/reorder on explicitly selected layers, atomic Undo/save and retained local/source guards. Complete-stack copying is explicit and preserves no-op bindings. Selection colors remains a separate descendant-tree tool. Shared gradient/image/pattern parameter editing and mixed stroke stacks remain unsupported. See docs/MIXED-FILL-STACKS.md."
   },
   {
     "id": "UI-17-035",
@@ -7314,10 +7314,10 @@
     "category": "Advanced typography",
     "name": "Text on curve baseline",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: browser SVG shapes plain single-line LTR glyphs on the actual cubic baseline, with shared appearance export, scoped resources and validated prototype variables. Browser glyph-cell/font-metric bounds are conservative; headless bounds explicitly estimated. Rich typography and arbitrary-font ink equivalence remain outside this scope. See docs/TEXT-ON-PATH.md."
   },
   {
     "id": "UI-22-040",
@@ -9384,10 +9384,10 @@
     "category": "Variants and properties",
     "name": "Interactive variant transitions",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: reusable receiving-instance variant actions, nested materialized ownership, separate reaction binding, hover/press restoration, transient deterministic/collision-safe IDs, Undo/save/library closure and bounded presentation. Full trigger precedence/merging, arbitrary ancestor targets, nested self-scroll and native Bridge transfer remain unsupported. Slots remain separate planned requirements. See docs/INTERACTIVE-VARIANT-TRANSITIONS.md."
   },
   {
     "id": "UI-28-030",
@@ -13664,10 +13664,10 @@
     "category": "Dev Mode and inspection",
     "name": "Download selected asset",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Partial: read-only Inspect downloads of the chosen layer/subtree using real SVG/PNG/JPG or existing saved export profiles; locked artwork, multi-selection source, guarded preparation/cancellation and native handoff. Base artwork requires Motion closed; cloud/plugin assets and complete Dev Mode/native reference acceptance remain outside this path. See docs/INSPECT-ASSET-DOWNLOAD.md."
   },
   {
     "id": "UI-41-019",
