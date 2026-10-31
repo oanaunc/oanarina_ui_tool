@@ -3,16 +3,20 @@ import './component-documentation.css';
 import {useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {useEditor} from '../store';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
+import type {ColorEditContext} from '../color-edit-context';
 import {applyDocumentationUpdate,documentationChoices,linkedDocumentationPages,prepareComponentDocumentation,prepareDocumentationUpdate,applyComponentDocumentation,validateComponentDocumentation,validateDocumentationUpdate} from '../component-documentation';
 import type {DocumentationPlan} from '../component-documentation';
 import type {DesignDocument} from '../model';
 const message=(e:unknown)=>e instanceof Error?e.message:String(e);
 interface Draft {title:string;allVariants:boolean;open:boolean;plan?:DocumentationPlan;source?:DesignDocument;reviewProof?:{valid:boolean};}
+interface Proof {origin:ColorEditContext;fontRevision:number;leftTab:string;mainId:string;owner?:'assets';valid:boolean;}
 /** Inline review uses no app modal or hidden page controller. All saved output is ordinary artwork. */
 export function ComponentDocumentation({mainId,owner,isCurrent}:{mainId:string;owner?:'assets';isCurrent?:()=>boolean}){
  const s=useEditor(),choices=useMemo(()=>{try{return {value:documentationChoices(s.doc,mainId)};}catch(error){return {error:message(error)};}},[s.doc,mainId]);
  const [draft,setDraft]=useState<Draft>({title:choices.value?.title??'Component documentation',allVariants:false,open:false}),currentDraft=useRef(draft),[error,setError]=useState('');
- const proof=useMemo(()=>({origin:captureColorContext(s),fontRevision:s.fontRevision,leftTab:s.leftTab,valid:true}),[s,mainId,owner]);
+ /** Every store update renders here, so a proof lasts until its own context changes. A pan or a status message must not end a review. */
+ const heldProof=useRef<Proof>(null);
+ const proof=useMemo(()=>{const held=heldProof.current;if(held?.valid&&held.mainId===mainId&&held.owner===owner&&sameColorContext(held.origin,s)&&held.fontRevision===s.fontRevision&&held.leftTab===s.leftTab)return held;return heldProof.current={origin:captureColorContext(s),fontRevision:s.fontRevision,leftTab:s.leftTab,mainId,owner,valid:true};},[s,mainId,owner]);
  useLayoutEffect(()=>{proof.valid=sameColorContext(proof.origin,useEditor.getState());const off=useEditor.subscribe(live=>{if(!sameColorContext(proof.origin,live)||live.fontRevision!==proof.fontRevision||owner==='assets'&&live.leftTab!==proof.leftTab)proof.valid=false;});return()=>{proof.valid=false;off();};},[proof,owner]);
  const blocked=s.mode!=='design'||s.motionOpen||!!s.modal||s.home||s.uiHidden||!!s.doc.workspace&&s.doc.workspace!=='design';
  const guard=()=>{const live=useEditor.getState();if(blocked||!proof.valid||!sameColorContext(proof.origin,live)||live.fontRevision!==proof.fontRevision||live.modal||live.mode!=='design'||live.motionOpen||owner==='assets'&&live.leftTab!=='assets'||isCurrent&&!isCurrent()||currentDraft.current!==draft)throw Error('The documentation source or review choices changed. Retry with the current controls.');return live;};
