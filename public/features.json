@@ -2147,7 +2147,7 @@
     "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates."
+    "notes": "v0.2.0-dev.5: reachable controls with core/browser validation, undo/persistence where applicable, universal Mac build and native smoke. See docs/VALIDATION-v0.2-controls-workflows.md. Exact Figma reference acceptance remains separate. Current-page drag placement preserves supported world transforms, rejects managed/locked/cyclic moves, and commits atomically. Type filtering retains ancestors; batch rename previews literal replacement and {name}/{n} templates. Also available on the canvas: a dragged layer joins the deepest open frame under the pointer, with a highlight, and leaves it when dropped on the page. Frames nest only when they fit entirely; group children stay in their group; Command keeps a plain move."
   },
   {
     "id": "UI-08-005",
@@ -8107,7 +8107,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Dragging children in horizontal, vertical and wrapped auto layout shows an insertion line and reorders once on release, with Undo and save; Escape or release outside changes nothing. Free move stays for absolute children, grid, reverse wrap, rotated siblings, locks, instances and Motion. No sliding sibling preview or reparenting. docs/AUTO-LAYOUT-COMPLETION.md."
+    "notes": "Dragging children in horizontal, vertical and wrapped auto layout shows an insertion line and reorders once on release, with Undo and save; Escape changes nothing. Free move stays for absolute children, grid, reverse wrap, rotated siblings, locks, instances and Motion. No sliding sibling preview or reparenting. docs/AUTO-LAYOUT-COMPLETION.md. Releasing outside the container now moves the layer out with one Undo instead of snapping back. Dropping back in the same slot still snaps back with no history entry."
   },
   {
     "id": "UI-24-034",
