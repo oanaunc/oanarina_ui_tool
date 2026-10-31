@@ -1,3 +1,4 @@
+import BrandDialogs from './BrandDialogs';
 import LearningDialog from './EditorLearning';
 import SketchImport from './SketchImport';
 import LocalPlugins from './LocalPlugins';
@@ -73,6 +74,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  if(modal==='vector-offset')return <VectorOffsetDialog/>;
  if(modal==='stroke-outline')return <StrokeOutlineDialog/>;
  if(modal==='vector-separation')return <VectorSeparationDialog/>;
+ if(modal.startsWith('brand-'))return <BrandDialogs modal={modal}/>;
  if(modal==='repeat-layers')return <RepeatLayersDialog/>;
  if(modal==='keyboard-insert')return <KeyboardInsertDialog/>;
 

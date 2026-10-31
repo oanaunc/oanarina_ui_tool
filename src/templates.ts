@@ -4,10 +4,11 @@ import {cloneLocalDocument,localName} from './file-browser';
 import {makeDesignClipboard,pasteDesignClipboard} from './clipboard-transfer';
 import {addConnector,addSticky,createWhiteboardDocument} from './whiteboard';
 import {addSlide,createSlideDocument} from './slides';
+import {brandStarterDocument} from './brand-starters';
 
 export const TEMPLATE_BYTES=5_000_000,TEMPLATE_NODES=5000,TEMPLATE_COUNT=50,TEMPLATE_TOTAL_BYTES=100_000_000;
 export interface StarterKit {format:'forma-starter-kit';version:1;id:string;name:string;createdAt:string;document:DesignDocument;}
-export interface TemplateDefinition {id:string;name:string;category:'Web'|'Mobile'|'Dashboard'|'Whiteboard'|'Presentation';description:string;create:()=>DesignDocument;}
+export interface TemplateDefinition {id:string;name:string;category:'Web'|'Mobile'|'Dashboard'|'Whiteboard'|'Presentation'|'Brand';description:string;create:()=>DesignDocument;}
 /** Bounded local copies. These are original Forma examples, not Figma/community assets. */
 export function templateDocument(value:unknown):DesignDocument{
  const raw=JSON.stringify(value);if(!raw||new TextEncoder().encode(raw).length>TEMPLATE_BYTES)throw Error('Starter kits support projects up to 5 MB.');
@@ -46,5 +47,6 @@ export const templates:TemplateDefinition[]=[
  {id:'tempo',name:'Tempo · project dashboard',category:'Dashboard',description:'A desktop workspace with navigation, metric cards and project rows.',create:dashboard},
  {id:'retrospective',name:'Team retrospective',category:'Whiteboard',description:'Three columns with editable native sticky notes for your next review.',create:retro},
  {id:'journey',name:'Customer journey',category:'Whiteboard',description:'Connected sticky notes that retain Whiteboard editing behavior.',create:journey},
+ {id:'brand-campaign',name:'Campaign starter',category:'Brand',description:'A local brand project with a sample kit, three published templates and editable text and image slots.',create:brandStarterDocument},
  {id:'story',name:'An idea worth sharing',category:'Presentation',description:'A three-slide starter deck with native slide templates and presenter tools.',create:story},
 ];

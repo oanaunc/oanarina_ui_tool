@@ -62,7 +62,7 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | `read_live_screenshot` | Source-only: latest window screenshot from an opted-in open Forma window |
 | `export_live_artwork_png` | Source-only: selection or page PNG rendered by an opted-in open Forma window |
 | `import_image_asset` | Source-only: validate embedded static 8-bit RGB/RGBA PNG, create an editable page-root image in one transaction |
-| `validate_project` | Run the editor's shared document validators |
+| `validate_project` | Run the editor's shared document validators. Brand projects also report out-of-brand values and assets whose locked styling no longer matches their recorded lock |
 | `export_svg` | Return SVG for vector/text pages; reject images and browser-raster fills |
 
 Durable Undo, font listing and the command-line `mcp/automation.ts` are described in [MCP undo, fonts and automation](../docs/MCP-LOCAL-AUTOMATION.md). Live tools are described in [the open editor](../docs/MCP-LIVE-CONTEXT.md). The server has no renderer of its own: raster output needs an open editor window that opted in. The frozen standalone download does not include these source tools yet.
