@@ -1,0 +1,12 @@
+import type {DesignNode} from './model';
+export const INSPECT_ASSET_LIMITS={nodes:20000,bytes:50_000_000,values:4_000_000,depth:64} as const;
+/** Bound the source walk before the existing exporter clones or serializes artwork.
+ * Undefined values may be conservatively charged; this never caches private document contents. */
+export function validateInspectAssetBudget(nodes:readonly DesignNode[]){
+ if(nodes.length>INSPECT_ASSET_LIMITS.nodes)throw Error('Inspection downloads support up to 20,000 page layers. Use the regular export workflow for larger pages.');
+ let bytes=0,visits=0;const stack:{value:unknown;depth:number;leave?:boolean}[]=[{value:nodes,depth:0}],ancestors=new Set<object>();
+ const charge=(n:number)=>{bytes+=n;if(bytes>INSPECT_ASSET_LIMITS.bytes)throw Error('Inspection downloads support up to 50 MB of page source data. Use the regular export workflow for larger pages.');};
+ const string=(s:string)=>{charge(2);for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);if(c===34||c===92)charge(2);else if(c<32)charge(6);else if(c<128)charge(1);else if(c<2048)charge(2);else if(c>=0xd800&&c<=0xdbff&&i+1<s.length&&s.charCodeAt(i+1)>=0xdc00&&s.charCodeAt(i+1)<=0xdfff){charge(4);i++;}else if(c>=0xd800&&c<=0xdfff)charge(6);else charge(3);}};
+ while(stack.length){const item=stack.pop()!,v=item.value;if(item.leave){ancestors.delete(v as object);continue;}if(++visits>INSPECT_ASSET_LIMITS.values||item.depth>INSPECT_ASSET_LIMITS.depth)throw Error('Inspection download source complexity exceeds its supported budget.');if(['function','symbol','bigint'].includes(typeof v))throw Error('Inspection download source must contain JSON data.');if(typeof v==='string')string(v);else if(v===null||typeof v!=='object')charge(typeof v==='number'?24:5);else{if(!Array.isArray(v)&&Object.getPrototypeOf(v)!==Object.prototype&&Object.getPrototypeOf(v)!==null)throw Error('Inspection download source must contain plain JSON objects.');if(ancestors.has(v))throw Error('Inspection download source contains cyclic data.');ancestors.add(v);stack.push({value:v,depth:item.depth,leave:true});const values=Array.isArray(v)?v:Object.entries(v);charge(2+values.length);if(visits+stack.length+values.length>INSPECT_ASSET_LIMITS.values)throw Error('Inspection download source complexity exceeds its supported budget.');if(Array.isArray(v))for(let i=v.length-1;i>=0;i--)stack.push({value:v[i],depth:item.depth+1});else for(const [key,value] of values as [string,unknown][]){string(key);charge(1);stack.push({value,depth:item.depth+1});}}}
+ return bytes;
+}

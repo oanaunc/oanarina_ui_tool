@@ -1,0 +1,6 @@
+import {it,expect} from 'vitest';
+import {node} from '../src/model';
+import {validateInspectAssetBudget} from '../src/inspect-asset-budget';
+it('bounds mixed UTF-8 and escaped source before export without changing shared paint data',()=>{const a=node('rectangle',{name:'A\\\"\n💡é'}),b=node('rectangle',{name:'Romanian șț'}),shared={data:'abc'};Object.assign(a,{test:shared});Object.assign(b,{test:shared});const source=[a,b],before=JSON.stringify(source),size=validateInspectAssetBudget(source);expect(size).toBeGreaterThanOrEqual(new TextEncoder().encode(before).length);expect(JSON.stringify(source)).toBe(before);});
+it('refuses cyclic/deep input and oversized source before producing an export job',()=>{const n=node('rectangle') as any;n.extra=n;expect(()=>validateInspectAssetBudget([n])).toThrow(/cyclic/);delete n.extra;let deep:any={};n.extra=deep;for(let i=0;i<65;i++){deep.next={};deep=deep.next;}expect(()=>validateInspectAssetBudget([n])).toThrow(/complexity/);n.extra='x'.repeat(50_000_001);expect(()=>validateInspectAssetBudget([n])).toThrow(/50 MB/);});
+it('refuses oversized page counts and admits a real 20,000-layer bounded page',()=>{const n=node('rectangle');expect(()=>validateInspectAssetBudget(Array(20001).fill(n))).toThrow(/20,000/);expect(validateInspectAssetBudget(Array(20000).fill(n))).toBeGreaterThan(1000000);});
