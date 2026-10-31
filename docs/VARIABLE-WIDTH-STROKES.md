@@ -22,7 +22,7 @@ Bevel joins add exact triangles, round joins add the exterior circular sector, a
 
 **Taper** sets every anchor from a preset: uniform, start, end or both ends, measured along each contour's real length. **Taper amount %** blends toward uniform, **Smooth taper** eases the ramp, and **Keep existing widths** multiplies current ratios instead of replacing them. A both-ends taper on a contour with nothing near its middle adds one anchor at an exact split, so it has somewhere to peak.
 
-**Add width point** splits the segment at a percentage of its real length, or at the clicked location on the stroke. The split is exact de Casteljau subdivision, so the centerline does not move, and the new anchor interpolates width and bias. Width points are anchors: there is no separate width track along the path.
+**Add width point** splits the segment at a percentage of its real length, or at the clicked location on the stroke. The split is exact de Casteljau subdivision, so the centerline does not move, and the new anchor interpolates width and bias. Width points are anchors: there is no separate width track along the path. Stamped brushes have their own taper, described in [VECTOR-BRUSH-DRAWING.md](VECTOR-BRUSH-DRAWING.md).
 
 ## Persistence, layout and interchange
 

@@ -1,0 +1,9 @@
+import {expect,it} from 'vitest';
+import {brushStamps,materializeBrush} from '../src/brush-geometry';
+import {builtInBrushes,parseBrushLibrary,serializeBrushLibrary,validateBrushPreset} from '../src/brush-presets';
+const preset=()=>({...builtInBrushes[0],shape:'ellipse' as const,size:20,spacing:.5,pressureSize:false,pressureOpacity:false,scatter:undefined,stretch:undefined,vectorStamp:undefined});
+const line=[{x:0,y:0,pressure:1},{x:200,y:0,pressure:1}];
+it('stamps grow from the start and shrink to the end along real stroke length',()=>{const p={...preset(),taperStart:.25,taperEnd:.25},sizes=brushStamps(line,p).map(s=>s.size);expect(sizes[0]).toBeCloseTo(1);expect(sizes[Math.floor(sizes.length/2)]).toBeCloseTo(20);expect(sizes.at(-1)!).toBeLessThan(2);expect(sizes[2]).toBeCloseTo(8);expect(Math.max(...sizes)).toBe(20);});
+it('a brush without taper stamps exactly as before, and taper composes with pressure',()=>{const plain=brushStamps(line,preset());expect(plain.every(s=>s.size===20)).toBe(true);const p={...preset(),pressureSize:true,minimumPressure:.5,taperStart:.5},half=[{x:0,y:0,pressure:0},{x:200,y:0,pressure:0}],sizes=brushStamps(half,p).map(s=>s.size);expect(sizes.at(-1)).toBeCloseTo(10);});
+it('tapered strokes materialize as editable stamps at their sizes',()=>{const nodes=materializeBrush(line,{...preset(),taperEnd:.5},'g');expect(nodes[1].width).toBe(20);expect(nodes.at(-1)!.width).toBeLessThan(5);});
+it('validates its range, refuses stretch brushes, and survives the library',()=>{for(const bad of [{taperStart:-.1},{taperEnd:1.1},{taperStart:NaN},{taperStart:'a'}])expect(()=>validateBrushPreset({...preset(),...bad})).toThrow();const p={...preset(),id:'custom',name:'Tapered',taperStart:.2,taperEnd:.4};expect(parseBrushLibrary(serializeBrushLibrary([p])).presets[0]).toMatchObject({taperStart:.2,taperEnd:.4});expect(()=>validateBrushPreset({...preset(),stretch:{version:1},taperStart:.2})).toThrow(/stretch/);});
