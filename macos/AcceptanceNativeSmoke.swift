@@ -608,8 +608,9 @@ extension Studio {
         func wheel(_ lines:Int32,_ x:CGFloat,_ y:CGFloat){
             let inWindow=document.web.convert(NSPoint(x:x,y:y),to:nil),screen=document.window.convertPoint(toScreen:inWindow),top=(NSScreen.screens.first?.frame.height ?? 0)-screen.y
             guard let cg=CGEvent(scrollWheelEvent2Source:nil,units:.line,wheelCount:1,wheel1:lines,wheel2:0,wheel3:0) else{smokeFail("wheel event")}
-            cg.flags = .maskCommand;cg.location=CGPoint(x:screen.x,y:top)
-            cg.postToPid(ProcessInfo.processInfo.processIdentifier)
+            cg.flags = .maskCommand;cg.location=CGPoint(x:screen.x,y:top);let number=Int64(document.window.windowNumber);cg.setIntegerValueField(.mouseEventWindowUnderMousePointer,value:number);cg.setIntegerValueField(.mouseEventWindowUnderMousePointerThatCanHandleThisEvent,value:number)
+            guard let event=NSEvent(cgEvent:cg) else{smokeFail("wheel event")}
+            document.window.sendEvent(event)
         }
         let edit:(inout [[String:Any]])->Void={nodes in
             let template=nodes.first{$0["id"] as? String=="accept-rect"} ?? [:],frameTemplate=nodes.first{$0["id"] as? String=="accept-frame"} ?? [:]
@@ -628,9 +629,9 @@ extension Studio {
                     self.later(0.4){
                         self.page(document,"window.__gapsOn=false;const g=[...window.__gaps].sort((a,b)=>a-b);return {frames:g.length,median:g[g.length>>1],p95:g[Math.floor(g.length*.95)],max:g[g.length-1],events:window.__wheel.length,first:window.__wheel[0],last:window.__wheel.at(-1),css:document.querySelector('#forma-design-canvas').style.transform};"){value in
                             let body=value as? [String:Any]
-                            fputs("zoom measure: \(self.json(body ?? [:]))\n",stderr)
-                            self.check((body?["events"] as? Int ?? 0)>=30,"real Command-scroll events reach the canvas")
+                                                        self.check((body?["events"] as? Int ?? 0)>=30,"real Command-scroll events reach the canvas")
                             self.check((body?["css"] as? String ?? "x")=="","the canvas drops its gesture transform once zoom settles")
+                            self.check((body?["p95"] as? Double ?? 999)<50,"a real wheel gesture over about 330 layers keeps frames under 50 ms (p95 \(body?["p95"] ?? "none"))")
                             done()
                         }
                     }
