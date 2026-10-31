@@ -1,3 +1,4 @@
+import SketchImport from './SketchImport';
 import ComponentPlayground from './ComponentPlayground';
 import PdfImportReview from './PdfImportReview';
 import FigmaRestReview from './FigmaRestReview';
@@ -49,6 +50,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
  if(modal==='component-playground')return <ComponentPlayground/>;
+ if(modal==='sketch-import'||modal==='sketch-import-review')return <SketchImport key={s.doc.id+modal}/>;
  if(modal==='pdf-import-review')return <PdfImportReview key={s.doc.id}/>;
  if(modal==='figma-rest-review')return <FigmaRestReview key={s.doc.id}/>;
  if(modal==='local-links')return <LocalNavigationLinks key={s.doc.id}/>;
