@@ -36,7 +36,7 @@ The preview image in the Export dialog can be dragged to Finder. WebKit makes th
 
 The Font style select lists an installed family's own faces by name. Width variants such as Condensed are left out, because CSS weight alone cannot reach them. Names and weights come from Core Text; no file or path is exposed.
 
-The shell listens for Core Text registered-font changes and `NSFont` font-set changes, then the editor refreshes its installed list, text metrics, the Missing Fonts control and an open Font Library, without reopening the project. The acceptance run registers and unregisters a uniquely named font in process scope; installing through Font Book was not exercised.
+The shell listens for Core Text registered-font changes and `NSFont` font-set changes, then the editor refreshes its installed list, text metrics, the Missing Fonts control and an open Font Library, without reopening the project. The integration run registers and unregisters a uniquely named font in process scope, then places the same font file in `~/Library/Fonts` and removes it, which is what Font Book's install does, so that change arrives from the system font service rather than from this process. Font Book's own interface was not driven.
 
 ## Trackpad pinch
 

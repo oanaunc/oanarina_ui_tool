@@ -48,3 +48,5 @@ Reset preferences clears both, along with the language.
 ## Error announcements
 
 `notifyError` and any toast worded as a failure speak through one assertive live region, once. `isFailureMessage` in `src/error-announcements.ts` decides from the wording, because toasts carry no type. `tests/platform-preferences.test.ts` holds it to the failure toasts in the app today.
+
+`tests/e2e/interface-contrast.spec.ts` also measures rendered text in 21 more dialogs and while hovering menu items and toolbar buttons, in both themes.
