@@ -25,7 +25,7 @@ import {currentTextOutline} from '../text-outline';
 import {createContext,Fragment,useContext,useId,useMemo} from 'react';
 import {displayColor} from '../color-profile';
 import type {DocumentColorProfile} from '../color-profile';
-import {ShaderPaintDefinition} from './ShaderPaintDefinition';
+import {ShaderFillImage,ShaderPaintDefinition} from './ShaderPaintDefinition';
 import {ArtworkOutputContext,useDocumentOutput} from './artwork-output';
 import type {CSSProperties} from 'react';
 import {effectsFor} from '../effects';
@@ -38,10 +38,11 @@ import type {Paint,StrokeStyle} from '../paints';
 import type {DesignNode} from '../model';
 import {maskRegion,maskRuns,vectorPaintVisible} from '../masks';
 import type {MaskMode} from '../masks';
+const directShaderFill=(p:Paint,n:DesignNode,profile:DocumentColorProfile|undefined)=>p.type==='shader'&&profile==='display-p3'&&!n.vectorNetwork;
 function paintValue(p:Paint,id:string,profile:DocumentColorProfile|undefined){return p.type==='solid'?displayColor(p.color,profile):`url(#${id})`;}
-function PaintDefinition({paint:p,id,n,strokeSpace=false,diagnosticKey,outset=0}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean;diagnosticKey?:string;outset?:number}){
+function PaintDefinition({paint:p,id,n,strokeSpace=false,diagnosticKey,outset=0,direct=false}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean;diagnosticKey?:string;outset?:number;direct?:boolean}){
  const {profile}=useContext(ArtworkOutputContext);
- if(p.type==='shader')return <ShaderPaintDefinition paint={p} id={id} n={n} strokeSpace={strokeSpace} outset={outset}/>;
+ if(p.type==='shader')return <ShaderPaintDefinition paint={p} id={id} n={n} strokeSpace={strokeSpace} outset={outset} direct={direct}/>;
  if(p.type==='linear'||p.type==='radial')return <GradientPaintDefinition paint={p} id={id} width={n.width} height={n.height} userSpace={strokeSpace}/>;
  if(p.type==='angular'||p.type==='diamond')return <pattern id={id} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} patternUnits={strokeSpace?'userSpaceOnUse':undefined} patternContentUnits={strokeSpace?'userSpaceOnUse':'objectBoundingBox'}><image href={rasterGradient(p,profile)} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} preserveAspectRatio="none"/></pattern>;
  if(p.type==='image')return <ImagePaintDefinition diagnosticKey={diagnosticKey} paint={p} id={id} width={strokeSpace?Math.max(1,n.width):n.width} height={strokeSpace?Math.max(1,n.height):n.height} userSpace={strokeSpace}/>;
@@ -82,7 +83,7 @@ function ArtworkContent({nodes,outlines=false,hyperlinks=false,onNode,onInteract
   if(!n.visible||n.type==='slice')return null;
   const mediaVisibility=n.media?mediaClipVisibility(n,nodes):undefined,vector=sourceMode==='vector',interactive=!sourceMode,content=outlines?<g data-mask-outline-kind={outlineKinds?.get(n.id)}><Shape n={n} fill="none" stroke={outlineKinds?(outlineKinds.get(n.id)==='source'||outlineKinds.get(n.id)==='source-content'?'#36e8c0':outlineKinds.get(n.id)==='target'?'#c39aff':'#81798c'):'#a8a3b4'} strokeWidth={maskOutlines?1.25/maskOutlines.zoom:1}/>{maskOutlines&&(()=>{const tips=arrowTips(n);return tips&&(['start','end'] as const).map(end=>arrowStyle(n,end)==='none'?null:<path key={end} data-mask-outline-arrow={end} d={orientedArrowheadPath(arrowStyle(n,end),n.arrowSize??12,tips[end])} fill="none" stroke={outlineKinds?.get(n.id)==='source'||outlineKinds?.get(n.id)==='source-content'?'#36e8c0':outlineKinds?.get(n.id)==='target'?'#c39aff':'#81798c'} strokeWidth={1.25/maskOutlines.zoom}/>);})()}</g>:<>
    {interactive&&(onNode||onInteraction)&&backgroundPlans.has(n.id)&&backgroundPlans.get(n.id)!.effect.visible&&backgroundPlans.get(n.id)!.effect.opacity>0&&backgroundPlans.get(n.id)!.effect.radius>0&&<Shape n={n} fill="transparent" stroke="none" pointerEvents="all"/>}
-   {fillsFor(n).filter(p=>vector?vectorPaintVisible(p):p.visible&&p.opacity>0).reverse().map(p=><Shape key={p.id} n={n} networkRole="fill" maskVector={vector} hyperlinks={interactive&&hyperlinks} fill={vector?'#ffffff':paintValue(p,`fill-${n.id}-${p.id}`,profile)} stroke="none" opacity={vector?1:p.opacity}/>)}
+   {fillsFor(n).filter(p=>vector?vectorPaintVisible(p):p.visible&&p.opacity>0).reverse().map(p=>{const shape=<Shape key={p.id} n={n} networkRole="fill" maskVector={vector} hyperlinks={interactive&&hyperlinks} fill={vector?'#ffffff':paintValue(p,`fill-${n.id}-${p.id}`,profile)} stroke="none" opacity={vector?1:p.opacity}/>;return !vector&&directShaderFill(p,n,profile)?<ShaderFillImage key={p.id} paint={p} n={n} fallback={shape}/>:shape;})}
    {interactive&&mediaMode&&n.media&&<g clipPath={`url(#local-clip-${n.id})`}><VideoSurface n={n} mode={mediaMode} allowed={mediaVisibility!.visible} autoplaySafe={mediaVisibility!.autoplaySafe&&!masked}/></g>}
    {interactive&&interactiveContent&&<g clipPath={`url(#local-clip-${n.id})`}>{interactiveContent(n)}</g>}
    {strokesFor(n).filter(s=>s.visible&&effectiveStrokeWidth(s,n)>0&&(vector?vectorPaintVisible(s.paint):s.paint.visible)).reverse().map(s=><Stroke key={s.id} n={n} s={s} maskVector={vector} id={`stroke-${n.id}-${s.id}`}/>)}</>;
@@ -96,7 +97,7 @@ function ArtworkContent({nodes,outlines=false,hyperlinks=false,onNode,onInteract
   {n.type==='text'&&n.textPath&&<path id={textPathResourceId(n.id,textPathNamespace)} d={textBaselinePath(n)}/>}
   <clipPath id={'local-clip-'+n.id}><Shape n={n}/></clipPath>
   <mask id={'outside-mask-'+n.id} x="-100%" y="-100%" width="300%" height="300%"><rect x={-n.width} y={-n.height} width={n.width*3} height={n.height*3} fill="white"/><Shape n={n} fill="black" stroke="none"/></mask>
-  {fillsFor(n).map(p=><PaintDefinition key={p.id} paint={p} id={`fill-${n.id}-${p.id}`} n={n} diagnosticKey={imageAssetKey(n.id,'fill',p.id)}/>)}
+  {fillsFor(n).map(p=><PaintDefinition key={p.id} paint={p} id={`fill-${n.id}-${p.id}`} n={n} direct={directShaderFill(p,n,profile)} diagnosticKey={imageAssetKey(n.id,'fill',p.id)}/>)}
   {strokesFor(n).map(s=><PaintDefinition key={s.id} paint={s.paint} id={`stroke-${n.id}-${s.id}`} n={n} diagnosticKey={imageAssetKey(n.id,'stroke',s.id)} outset={Math.ceil(effectiveStrokeWidth(s,n)+(n.arrowSize??0))} strokeSpace={!!s.edgeWidths||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none'}/>)}
   <EffectFilter n={n} nodes={nodes} progressiveRegion={progressiveRegions.get(n.id)}/>
  </defs>)}{renderSiblings(children.get(null)??[])}</TextPathNamespace.Provider>;

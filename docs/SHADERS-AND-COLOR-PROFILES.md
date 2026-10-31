@@ -29,7 +29,7 @@ The band sync bounds time between checks; it cannot interrupt a single band alre
 
 ## One render path
 
-`bindingFrame` is the only route to pixels. Paints become an SVG `<pattern>` containing an `<image>`, and overlay effects become an `feImage` in the existing effect filter. Because the canvas, thumbnails, prototypes and `exportSvg` all render `Artwork`, the same code serves every output.
+`bindingFrame` is the only route to pixels. Paints become an SVG `<pattern>` containing an `<image>`, or a clipped `<image>` for Display P3 fills (see Limits). Overlay effects become an `feImage` in the existing effect filter. Because the canvas, thumbnails, prototypes and `exportSvg` all render `Artwork`, the same code serves every output.
 
 | Output | Shader result | Resolution |
 | --- | --- | --- |
@@ -64,7 +64,7 @@ Effect shaders generate a texture. They do not sample the layer in GLSL, because
 
 Changing the profile **assigns**: saved hex values stay the same and their meaning changes. There is no convert action that rewrites values to keep their appearance.
 
-In a Display P3 file, `displayColor` writes `color(display-p3 r g b)` for solid fills, gradient stops, shadows, text runs, text backgrounds and the canvas background. Angular and diamond gradient rasters, pattern and noise tiles and shader frames are generated in document coordinates and tagged P3. Imported images keep their own embedded profile and are color-managed by the browser, so an sRGB image looks the same in either profile.
+In a Display P3 file, `displayColor` writes `color(display-p3 r g b)` for solid fills, gradient stops, shadows, text runs, text backgrounds and the canvas background. Angular and diamond gradient rasters, pattern and noise tiles and shader frames are generated in document coordinates and tagged P3. Limits below cover where an engine then clips them. Imported images keep their own embedded profile and are color-managed by the browser, so an sRGB image looks the same in either profile.
 
 | Output | Display P3 file |
 | --- | --- |
@@ -77,13 +77,17 @@ In a Display P3 file, `displayColor` writes `color(display-p3 r g b)` for solid 
 | GIF, WebM, MP4 | Converted to sRGB and clipped |
 | Clipboard PNG, slide PNG and slide PDF | Converted to sRGB and clipped |
 
+PDF conversion is covered by a pixel test. GIF, video, clipboard and slide output rely on the same sRGB canvas default and have no dedicated color test.
+
 An sRGB file can still choose Tag Display P3 for a PNG. Its colors convert accurately into P3 coordinates, so the image looks the same and no gamut is gained.
 
 The ICC profile comes from `src/display-p3-icc.ts`, a small ICC v4.3 matrix/shaper profile built from the published primaries, so no third-party profile bytes ship.
 
 ### Limits
 
-- Layers with any SVG filter effect may clamp to sRGB on some engines, because filter math runs in the engine's own working space.
+- WebKit, the engine behind the Mac app, flattens SVG `<pattern>` tiles and `feImage` into an sRGB buffer. Measured by drawing SVG into a `display-p3` canvas, these keep correct hues but clip to sRGB in WebKit and stay wide in Chromium: angular and diamond gradients, pattern, noise and texture fills, image fills, shader strokes, and shader effects. Solid fills, linear and radial gradients, shadows, text, and solids under filters stay wide in both.
+- That measurement used Playwright's WebKit build in the raster export path. The live canvas inside the Mac app's WKWebView has not been measured.
+- Shader fills in a Display P3 file avoid this by drawing the frame through the layer's clip instead of a pattern, so they stay wide in both engines. Vector-network fills still use the pattern.
 - Swatches, chips and the native color input in panels are sRGB previews. The picker's main square does render in P3.
 - The picker's note states whether the current value is outside sRGB and gives its clipped equivalent.
 - Screen sampling converts sRGB results to P3 coordinates, so a screen color already outside sRGB is clipped by the browser before Forma sees it.

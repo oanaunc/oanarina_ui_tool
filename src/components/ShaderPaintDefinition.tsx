@@ -15,11 +15,14 @@ function useShaderFrame(binding:ShaderBinding,nodeId:string,width:number,height:
  return bindingFrame(binding,{doc:{shaders:output.shaders},width,height,scale:exporting?output.rasterScale!:Math.min(2,typeof window==='undefined'?1:window.devicePixelRatio||1),maxEdge:exporting?SHADER_RASTER.exportEdge:useEditor.getState().motionPlaying?SHADER_RASTER.playingEdge:SHADER_RASTER.liveEdge,budgetMs:exporting?SHADER_RASTER.exportBudgetMs:SHADER_RASTER.liveBudgetMs,profile:untagged?undefined:output.profile,pointer});
 }
 /** Same pattern shape on every path. outset extends the texture beneath strokes, which straddle the layer box. */
-export function ShaderPaintDefinition({paint:p,id,n,strokeSpace=false,outset=0}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean;outset?:number}){
+export function ShaderPaintDefinition({paint:p,id,n,strokeSpace=false,outset=0,direct=false}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean;outset?:number;direct?:boolean}){
  const width=Math.max(1,n.width)+outset*2,height=Math.max(1,n.height)+outset*2,frame=useShaderFrame(p.shader!,n.id,width,height);
  if(!frame.image)return <GradientPaintDefinition paint={{...p,type:'linear',angle:90}} id={id} width={width} height={height} userSpace={strokeSpace}/>;
+ if(direct)return null;
  return <pattern id={id} data-shader-paint={p.shader!.shaderId} x={-outset} y={-outset} width={width} height={height} patternUnits="userSpaceOnUse"><image href={frame.image} width={width} height={height} preserveAspectRatio="none"/></pattern>;
 }
+/** WebKit flattens pattern tiles into an sRGB buffer, so Display P3 fills draw the frame directly through the layer clip. fallback paints the gradient definition. */
+export function ShaderFillImage({paint:p,n,fallback}:{paint:Paint;n:DesignNode;fallback:React.ReactNode}){const width=Math.max(1,n.width),height=Math.max(1,n.height),frame=useShaderFrame(p.shader!,n.id,width,height);if(!frame.image)return <>{fallback}</>;return <g data-shader-paint={p.shader!.shaderId} clipPath={`url(#local-clip-${n.id})`} opacity={p.opacity}><image href={frame.image} width={width} height={height} preserveAspectRatio="none"/></g>;}
 /** Blends a generated texture through the filter chain. WebGL never reads layer pixels; Displace bends them with feDisplacementMap instead. */
 export function ShaderEffectPrimitives({n,e,input,result}:{n:DesignNode;e:Effect;input:string;result:string}){
  const outset=e.shaderClip?0:e.spread,width=Math.max(1,n.width)+outset*2,height=Math.max(1,n.height)+outset*2,displace=e.shaderMode==='displace',frame=useShaderFrame(e.shader!,n.id,width,height,displace);
