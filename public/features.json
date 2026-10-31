@@ -4884,10 +4884,10 @@
     "category": "Freehand and Figma Draw",
     "name": "Calligraphic stroke",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Partial: fixed-angle elliptical-nib sweeps on bounded open straight contour paths, angle/roundness controls, shared SVG/export, Undo/save. Solid centered round strokes only; no pressure, tilt, cubic brush, effects, masks, components or animation. See docs/CALLIGRAPHIC-STROKES.md."
   },
   {
     "id": "UI-16-019",
@@ -12494,10 +12494,10 @@
     "category": "History and recovery",
     "name": "Version author",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: immutable optional local name/avatar labels captured for new named versions, validated list/preview, legacy author-not-recorded support. Stored outside .oui; no verified collaboration or per-edit attribution. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md."
   },
   {
     "id": "UI-38-018",
@@ -13994,30 +13994,30 @@
     "category": "Actions and keyboard",
     "name": "Keyboard layout preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "Partial: local Physical US key positions or Logical typed-key matching, persisted separately from artwork. Option/dead modified-letter fallback uses physical code; no national-layout tables or native OS remapping. See docs/KEYBOARD-PREFERENCES.md."
   },
   {
     "id": "UI-42-016",
     "category": "Actions and keyboard",
     "name": "Custom shortcut mapping",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "Partial: additional primary-modifier letter shortcuts for named commands, local persistence and removal/reset, live menu/help labels. Defaults/native shortcuts remain active; dispatch limited to eligible Design contexts. No arbitrary default replacement or text/vector/Motion context remapping. See docs/KEYBOARD-PREFERENCES.md."
   },
   {
     "id": "UI-42-017",
     "category": "Actions and keyboard",
     "name": "Shortcut conflict warning",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": ""
+    "notes": "Partial: rejects duplicate, default/native/browser/system/context reservations and unsupported chords before local publication; inline diagnostics. No OS-wide shortcut discovery. See docs/KEYBOARD-PREFERENCES.md."
   },
   {
     "id": "UI-42-018",
@@ -15074,20 +15074,20 @@
     "category": "Preferences and document settings",
     "name": "Profile display name",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: explicit local display name, bounded normalization, file-browser/editor initials, cross-window persistence/reset outside artwork. User-entered label only, no authenticated account or remote sync. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md."
   },
   {
     "id": "UI-45-026",
     "category": "Preferences and document settings",
     "name": "Profile avatar",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: local PNG/JPEG/WebP import, bounded header/codec checks, center-cropped 128px PNG avatar, cancel/timeout and retained-session guards. Embedded PNG-only storage, no remote or organization avatars. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md."
   },
   {
     "id": "UI-45-027",
