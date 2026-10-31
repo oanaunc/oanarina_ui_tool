@@ -32,4 +32,10 @@ This worktree's source validation passes 952 core cases in 88 files, editor/MCP 
 
 ## Vector PDF validation
 
+**Embed fonts and images** appears with Keep shapes as vectors and is on by default. Text becomes a Type 0 CID TrueType font subset with Identity-H and a ToUnicode map, placed at the browser's own glyph origins, so it stays sharp, selectable and searchable. PNG and JPEG fills go in as image objects at their original pixels, one object per distinct image. The native save path still flattens.
+
+Text stays a raster area when it uses rich runs, decorations, paragraph styles, lists, text on a path, gradient or stroked paints, effects, non-Latin characters, or a face that is not one exact static TrueType file. Fonts that forbid embedding also stay raster. Tiled, adjusted, WebP, GIF and SVG images stay raster too. A font's tables only say a substitution or positioning rule might run, so any line they flag is drawn twice in the browser, as shaped text and as nominal glyph outlines, and compared cell by cell. A line that differs, such as Inter's raised colon in `10:30`, stays a raster area. The extra Helvetica text layer is only written for text that stayed raster. An image that the writer cannot embed flattens its page. Gradients, effects, blends and masks stay raster in place.
+
+`tests/pdf-font-subset.test.ts` covers subsetting and placement. `tests/e2e/design-pdf-embed.spec.ts` exports through the dialog and checks the result with Poppler's `pdffonts`, `pdftotext`, `pdfimages` and `pdftoppm`.
+
 `tests/design-pdf-vector.test.ts` covers page plans, paint order, raster fallbacks and merging, operators in the written stream, annotations, refused link schemes and the text layer. `tests/e2e/design-pdf-vector.spec.ts` exports through the dialog, then reads the result with PDF.js to check rendered pixels, link URLs and extracted text. No external PDF viewer or native build was checked.

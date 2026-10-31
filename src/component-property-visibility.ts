@@ -27,6 +27,8 @@ export function componentPropertyRelevance(doc:DesignDocument,instanceId:string,
   return {property,hidden:main.componentMetadata?.hideIrrelevantProperties===true&&state===true,reason:state===true?'Its target or an outer layer is hidden.':state===undefined?'Visibility could not be resolved; its control remains visible.':''};
  });
 }
+/** Nested controls follow the outer main's setting: a hidden nested instance has nothing to edit until its own Boolean returns. Inspection limits keep the control visible. */
+export function nestedInstanceHidden(doc:DesignDocument,rootId:string,n:DesignNode){const nodes=doc.pages.flatMap(p=>p.nodes);if(nodes.length>100000)return false;const map=new Map(nodes.map(a=>[a.id,a])),main=map.get(map.get(rootId)?.componentId??'');if(main?.componentMetadata?.hideIrrelevantProperties!==true)return false;let at:DesignNode|undefined=n;for(let depth=0;at&&depth<256;depth++){if(at.id===rootId)return false;if(!at.visible)return true;at=map.get(at.parentId??'');}return false;}
 export function setHideIrrelevantProperties(doc:DesignDocument,id:string,value:boolean,setId?:string){
  if(typeof value!=='boolean')throw Error('Choose a Boolean component property relevance setting.');
  assertComponentManagerEditable(doc,id,setId);const n=doc.pages.flatMap(p=>p.nodes).find(n=>n.id===id)!;
