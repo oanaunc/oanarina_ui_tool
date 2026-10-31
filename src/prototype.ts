@@ -20,7 +20,7 @@ import {animateShape,smartFamily} from './shape-morph';
 import {easingValue} from './motion';
 import type {Easing} from './motion';
 import {fillsFor} from './paints';
-import {worldMatrix} from './transforms';
+import {inverseMatrix,multiply,point,worldMatrix} from './transforms';
 
 export const prototypeTriggers=['click','drag','hover','press','mouseenter','mouseleave','mousedown','mouseup','delay','key','gamepad','scroll'] as const;
 export type PrototypeTrigger=typeof prototypeTriggers[number];
@@ -154,13 +154,15 @@ const opposite={left:'right',right:'left',top:'bottom',bottom:'top'} as const,mi
 /** Plays a transition backward: what arrived leaves the way it came. */
 export function reversedTransition(t:PrototypeTransition):PrototypeTransition{return {...t,type:mirrored[t.type]??t.type,direction:opposite[t.direction]};}
 
+/** The box a sticky layer holds by: its full rotated and scaled outline, in the scroller's own axes. */
+export function stickyBox(n:DesignNode,scroller:DesignNode,nodes:DesignNode[]){let m;try{m=multiply(inverseMatrix(worldMatrix(scroller,nodes)),worldMatrix(n,nodes));}catch{return {x:n.x,y:n.y,width:n.width,height:n.height};}const corners=[[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(m,x,y)),left=Math.min(...corners.map(p=>p.x)),top=Math.min(...corners.map(p=>p.y));return {x:scroller.x+left,y:scroller.y+top,width:Math.max(...corners.map(p=>p.x))-left,height:Math.max(...corners.map(p=>p.y))-top};}
 /** Materialize fixed and sticky layers without changing the saved document. */
 export function prototypeScrollNodes(nodes:DesignNode[],frameId:string,offset:{x:number;y:number}){refuseBackgroundBlurPlayback(nodes);refusePassThroughPlayback(nodes);
  const frame=nodes.find(n=>n.id===frameId);if(!frame||!offset.x&&!offset.y)return nodes;const copy=structuredClone(nodes),inside=new Set(descendants(nodes,[frameId])),positioned=nodes.filter(n=>n.id!==frameId&&inside.has(n.id)&&n.prototypePosition&&n.prototypePosition!=='normal');
  const contentRight=Math.max(frame.x+frame.width,...nodes.filter(n=>inside.has(n.id)).map(n=>n.x+n.width)),contentBottom=Math.max(frame.y+frame.height,...nodes.filter(n=>inside.has(n.id)).map(n=>n.y+n.height));
  for(const n of positioned){let ancestor=nodes.find(p=>p.id===n.parentId),nested=false;const seen=new Set<string>();while(ancestor&&ancestor.id!==frameId&&!seen.has(ancestor.id)){seen.add(ancestor.id);if(ancestor.prototypePosition&&ancestor.prototypePosition!=='normal'){nested=true;break;}ancestor=nodes.find(p=>p.id===ancestor!.parentId);}if(nested)continue;
- const parent=nodes.find(p=>p.id===n.parentId),right=parent&&parent.id!==frameId?parent.x+parent.width:contentRight,bottom=parent&&parent.id!==frameId?parent.y+parent.height:contentBottom;
- let dx=n.prototypePosition==='fixed'?offset.x:Math.max(0,Math.min(offset.x-(n.x-frame.x),right-n.x-n.width)),dy=n.prototypePosition==='fixed'?offset.y:Math.max(0,Math.min(offset.y-(n.y-frame.y),bottom-n.y-n.height));
+ const parent=nodes.find(p=>p.id===n.parentId),limit=parent&&parent.id!==frameId?stickyBox(parent,frame,nodes):undefined,right=limit?limit.x+limit.width:contentRight,bottom=limit?limit.y+limit.height:contentBottom;
+ const box=stickyBox(n,frame,nodes);let dx=n.prototypePosition==='fixed'?offset.x:Math.max(0,Math.min(offset.x-(box.x-frame.x),right-box.x-box.width)),dy=n.prototypePosition==='fixed'?offset.y:Math.max(0,Math.min(offset.y-(box.y-frame.y),bottom-box.y-box.height));
  if(parent){const matrix=worldMatrix(parent,nodes),det=matrix[0]*matrix[3]-matrix[1]*matrix[2];if(Math.abs(det)>1e-10){const x=(matrix[3]*dx-matrix[2]*dy)/det,y=(-matrix[1]*dx+matrix[0]*dy)/det;dx=x;dy=y;}}const moved=new Set(descendants(copy,[n.id]));for(const child of copy)if(moved.has(child.id)){child.x+=dx;child.y+=dy;}
  }return copy;
 }
