@@ -1,0 +1,7 @@
+import {descendants} from './model';
+import type {DesignNode,Page} from './model';
+export interface DerivedLayers {key:string;count:number;}
+function digest(value:string){let a=0xdeadbeef,b=0x41c6ce57;for(let i=0;i<value.length;i++){const c=value.charCodeAt(i);a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677);}a=Math.imul(a^(a>>>16),2246822507)^Math.imul(b^(b>>>13),3266489909);b=Math.imul(b^(b>>>16),2246822507)^Math.imul(a^(a>>>13),3266489909);return (b>>>0).toString(36)+(a>>>0).toString(36);}
+/** Replace a frame's generated children only when its model or geometry changed, so unchanged edits stay no-ops and Undo sees one document. */
+export function syncDerivedLayers(page:Page,frame:DesignNode,model:string,build:()=>DesignNode[]){const key=digest(`${frame.x},${frame.y},${frame.width},${frame.height}|${model}`),old=new Set(descendants(page.nodes,[frame.id]).filter(id=>id!==frame.id));if(frame.derivedLayers?.key===key&&frame.derivedLayers.count===old.size)return false;const parts=build();page.nodes=page.nodes.filter(n=>!old.has(n.id));page.nodes.splice(page.nodes.findIndex(n=>n.id===frame.id)+1,0,...parts);frame.derivedLayers={key,count:parts.length};return true;}
+export function validateDerivedLayers(value:unknown){const v=value as DerivedLayers;if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).some(k=>!['key','count'].includes(k))||typeof v.key!=='string'||!v.key||v.key.length>32||!Number.isSafeInteger(v.count)||v.count<0)throw Error('Invalid derived layer record.');}

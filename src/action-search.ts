@@ -13,7 +13,7 @@ const keywords:Record<string,string>={
  inspect:'developer dev code properties',motion:'animation keyframes timeline',
  'text-bold':'font weight strong', 'text-italic':'font oblique emphasis', 'text-strike':'strike through crossed',
  'text-link':'hyperlink url website', 'text-bullets':'unordered list', 'text-numbered':'ordered list',
- 'flip-x':'mirror horizontal', 'flip-y':'mirror vertical', grid:'pixel grid',rulers:'measurement guides',
+ 'local-widgets':'widget extension interactive plugin install','flip-x':'mirror horizontal', 'flip-y':'mirror vertical', grid:'pixel grid',rulers:'measurement guides',
 };
 function normalized(value:string){return value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[-_/…·]/g,' ').replace(/\s+/g,' ').trim();}
 /** Every query word must occur in the label, ID, category, shortcut or curated aliases. */

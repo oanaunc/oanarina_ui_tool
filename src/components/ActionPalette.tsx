@@ -1,4 +1,5 @@
 import ActionComponentSearch from './ActionComponentSearch';
+import {ActionWidgetSearch} from './LocalWidgets';
 import {useEditor} from '../store';
 import {shortcutLabel,useKeyboardPreferences} from '../keyboard-preferences';
 import {useEffect,useId,useMemo,useRef,useState,useSyncExternalStore} from 'react';
@@ -41,4 +42,4 @@ function CommandActions({onClose,valid}:{onClose:()=>void;valid:()=>boolean}){
  </div>;
 }
 
-export default function ActionPalette({onClose}:{onClose:()=>void}){const [mode,setMode]=useState('commands'),session=useRef({mode:'commands'}),rendered=session.current,valid=()=>session.current===rendered&&useEditor.getState().modal==='actions',change=(next:string)=>{if(session.current.mode===next)return;session.current={mode:next};setMode(next);};return <><div className="action-palette-modes" role="group" aria-label="Actions search type"><button aria-pressed={mode==='commands'} onClick={()=>change('commands')}>Commands</button><button aria-pressed={mode==='components'} onClick={()=>change('components')}>Components</button></div><div role="region" aria-label={mode==='commands'?'Command search':'Component search'}>{mode==='commands'?<CommandActions onClose={onClose} valid={valid}/>:<ActionComponentSearch onClose={onClose} validMode={valid}/>}</div></>;}
+export default function ActionPalette({onClose}:{onClose:()=>void}){const [mode,setMode]=useState('commands'),session=useRef({mode:'commands'}),rendered=session.current,valid=()=>session.current===rendered&&useEditor.getState().modal==='actions',change=(next:string)=>{if(session.current.mode===next)return;session.current={mode:next};setMode(next);};return <><div className="action-palette-modes" role="group" aria-label="Actions search type"><button aria-pressed={mode==='commands'} onClick={()=>change('commands')}>Commands</button><button aria-pressed={mode==='components'} onClick={()=>change('components')}>Components</button><button aria-pressed={mode==='widgets'} onClick={()=>change('widgets')}>Widgets</button></div><div role="region" aria-label={mode==='commands'?'Command search':mode==='widgets'?'Widget search':'Component search'}>{mode==='commands'?<CommandActions onClose={onClose} valid={valid}/>:mode==='widgets'?<ActionWidgetSearch onClose={onClose}/>:<ActionComponentSearch onClose={onClose} validMode={valid}/>}</div></>;}
