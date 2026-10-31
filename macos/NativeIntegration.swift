@@ -72,6 +72,26 @@ extension Studio:NSMenuItemValidation {
         }
         return faces
     }
+    /** Layout and naming tables of one installed face, so the inspector can say what a font declares. Never outlines, a whole file or a path, and the renderer keeps them in memory only.
+     * Size-limited per table; AAT and kern tables are named, not sent, because they mean the absence of GSUB or GPOS proves nothing. */
+    static func installedLayoutTables(_ family:String,italic:Bool)->[String:Any] {
+        let designs:[String:NSFontDescriptor.SystemDesign]=["system-ui":.default,"-apple-system":.default,"ui-sans-serif":.default,"ui-serif":.serif,"ui-monospace":.monospaced,"ui-rounded":.rounded]
+        let font:CTFont
+        if let design=designs[family],let descriptor=NSFont.systemFont(ofSize:12).fontDescriptor.withDesign(design),let system=NSFont(descriptor:descriptor,size:12){font=system as CTFont}
+        else{
+            let faces=installedFaces(family)
+            let same=faces.filter{$0["italic"] as? Bool==italic}
+            guard let face=(same.first{$0["weight"] as? Int==400} ?? same.first ?? faces.first),let postscript=face["postscript"] as? String else{return [:]}
+            font=CTFontCreateWithName(postscript as CFString,12,nil)
+        }
+        var out:[String:Any]=[:]
+        for (name,tag) in [("GSUB",kCTFontTableGSUB),("GPOS",kCTFontTableGPOS),("name",kCTFontTableName),("cmap",kCTFontTableCmap),("fvar",kCTFontTableFvar)] {
+            if let table=CTFontCopyTable(font,CTFontTableTag(tag),[]) as Data?,!table.isEmpty,table.count<=4_000_000{out[name]=table.base64EncodedString()}
+        }
+        let legacy=[("morx",kCTFontTableMorx),("kern",kCTFontTableKern)].filter{CTFontCopyTable(font,CTFontTableTag($0.1),[]) != nil}.map{$0.0}
+        if !legacy.isEmpty{out["legacy"]=legacy}
+        return out
+    }
     func systemFontsChanged(){fontRefresh?.cancel();let work=DispatchWorkItem{[weak self] in guard let self else{return};for document in self.documents where document.ready{document.web.callAsyncJavaScript("return await window.__studioNative('fonts-changed');",arguments:[:],in:nil,in:.page,completionHandler:nil)}};fontRefresh=work;DispatchQueue.main.asyncAfter(deadline:.now()+0.3,execute:work)}
 }
 

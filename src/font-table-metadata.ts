@@ -2,6 +2,7 @@ import {MAX_FONT_BYTES} from './font-data';
 import type {FontAsset} from './font-data';
 
 import {probeFeatureEffect,probeFontAxes} from './font-probe';
+import {fontTableBytes} from './font-woff2';
 export const FONT_TABLE_LIMITS={tables:4096,axes:64,instances:1024,names:16384,features:4096,lookups:8192,subtables:32768,coverageWork:2_000_000,text:512,ligatures:65536} as const;
 export interface FontAxisInfo {tag:string;name:string;min:number;default:number;max:number;hidden:boolean;}
 export interface FontInstanceInfo {name:string;coordinates:Record<string,number>;}
@@ -52,8 +53,7 @@ export function readFontTables(bytes:ArrayBuffer):FontTables{const tables=direct
  const reach=(tag:string,text:string):FeatureReach|undefined=>{if(!cmap||!info.has(tag))return undefined;const glyphs:number[]=[];for(const c of text.slice(0,FONT_TABLE_LIMITS.text)){const g=cmap(c.codePointAt(0)!);if(g)glyphs.push(g);}let found:FeatureReach='none';const b:Budget={work:0};for(const layout of layouts)for(const index of layout.features.get(tag)??[])for(const {type,t} of subtables(layout,index,b)){const r=subtableReach(layout.name,type,t,glyphs,b);if(r==='applies')return r;if(r==='contextual')found=r;}return found;};
  return {axes,instances,features:[...info.values()].sort((a,b)=>a.tag.localeCompare(b.tag)),reach};}
 const cache=new Map<string,{data:string;tables?:FontTables;reason:string}>();
-/** Compressed WOFF2 tables need a Brotli decoder, so those assets stay explicitly unknown. */
-export function inspectFontTables(asset:FontAsset){const key=JSON.stringify([asset.family,asset.weight,asset.style,asset.unicodeRange]),cached=cache.get(key);if(cached?.data===asset.data)return cached;let row:{data:string;tables?:FontTables;reason:string};try{if(!/^data:font\/(ttf|otf);base64,/.test(asset.data))throw Error('This font file is compressed, so its tables cannot be read.');const raw=asset.data.slice(asset.data.indexOf(',')+1);if(raw.length>14_000_000)throw Error('This font is too large to inspect.');const binary=atob(raw);row={data:asset.data,tables:readFontTables(Uint8Array.from(binary,c=>c.charCodeAt(0)).buffer),reason:''};}catch(e){row={data:asset.data,reason:e instanceof Error?e.message:'Font tables are unknown.'};}if(cache.size>=16)cache.clear();cache.set(key,row);return row;}
+export function inspectFontTables(asset:FontAsset){const key=JSON.stringify([asset.family,asset.weight,asset.style,asset.unicodeRange]),cached=cache.get(key);if(cached?.data===asset.data)return cached;let row:{data:string;tables?:FontTables;reason:string};try{row={data:asset.data,tables:readFontTables(fontTableBytes(asset.data)),reason:''};}catch(e){row={data:asset.data,reason:e instanceof Error?e.message:'Font tables are unknown.'};}if(cache.size>=16)cache.clear();cache.set(key,row);return row;}
 const axisNames:Record<string,string>={wght:'Weight',wdth:'Width',opsz:'Optical size',slnt:'Slant',ital:'Italic'};
 export const fontAxisLabel=(axis:Pick<FontAxisInfo,'tag'|'name'>)=>axisNames[axis.tag]??axis.name;
 /** Step fits the axis: fine for narrow ranges such as ital 0–1, whole units for wght 100–900. */

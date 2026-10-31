@@ -1,0 +1,14 @@
+import {test,expect} from '@playwright/test';
+import type {Page} from '@playwright/test';
+import {blankDocument,node} from '../../src/model';
+import {VARIABLE_FONT_FAMILY,variableFontBytes} from '../support/variable-font';
+import {encodeWoff2} from '../support/woff2';
+
+const asset=()=>({family:VARIABLE_FONT_FAMILY,weight:'100 900',source:'google' as const,embeddable:true,data:'data:font/woff2;base64,'+Buffer.from(encodeWoff2(variableFontBytes())).toString('base64')});
+function doc(){const d=blankDocument(),n=node('text',{id:'copy',text:'AAA',fontFamily:VARIABLE_FONT_FAMILY,fontSize:100,fill:'#ffffff',x:60,y:60,width:600,height:130});d.fonts=[asset()];d.pages[0].nodes=[n];return d;}
+async function load(page:Page){const d=doc();await page.addInitScript(d=>{if(!localStorage.getItem('oui-active'))localStorage.setItem('oui-active',JSON.stringify(d));},d);await page.goto('/');await page.locator('[data-layer-id="copy"]').click();await page.evaluate(async()=>{const p='/src/store.ts',{useEditor}=await import(p);useEditor.getState().set({grid:false,zoom:1,pan:{x:40,y:40},past:[],future:[]});});await page.getByRole('tab',{name:'OpenType',exact:true}).click();}
+const history=(page:Page)=>page.evaluate(async()=>{const p='/src/store.ts',{useEditor}=await import(p),s=useEditor.getState();return {past:s.past.length,axes:s.doc.pages[0].nodes[0].fontAxes??s.doc.pages[0].nodes[0].textRuns?.[0]?.fontAxes};});
+const painted=(page:Page)=>page.locator('svg.canvas [data-node-id="copy"] text').first().evaluate(el=>(el as SVGElement).style.fontVariationSettings);
+
+test('a compressed web font gets its real axes and named instances from its own tables',async({page})=>{await load(page);const group=page.getByRole('group',{name:'Variable axes',exact:true});await expect(group).toHaveAttribute('data-font-axes','tables');await expect(page.getByRole('combobox',{name:'Named instance',exact:true})).toContainText('Bold Wide');await expect(page.getByRole('spinbutton',{name:'Width axis value',exact:true})).toHaveValue('100');});
+test('the slider paints on the canvas while it moves and saves one Undo on release',async({page})=>{await load(page);const slider=page.getByRole('slider',{name:'Weight axis slider',exact:true}),box=(await slider.boundingBox())!;await page.mouse.move(box.x+box.width*.3,box.y+box.height/2);await page.mouse.down();await page.mouse.move(box.x+box.width*.8,box.y+box.height/2,{steps:6});expect(await painted(page)).toContain('wght');expect(await history(page)).toMatchObject({past:0});await page.mouse.up();await expect.poll(async()=>(await history(page)).past).toBe(1);expect((await history(page)).axes?.wght).toBeGreaterThan(600);await slider.blur();await page.keyboard.press('Meta+z');await expect.poll(async()=>(await history(page)).past).toBe(0);expect((await history(page)).axes).toBeUndefined();expect(await painted(page)).toBe('');});
