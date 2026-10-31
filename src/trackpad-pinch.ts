@@ -1,4 +1,4 @@
-import {useEditor} from './store';
+import {liveCamera,moveCamera} from './canvas-camera';
 
 export const PINCH_ZOOM_LIMITS={min:.05,max:8} as const;
 export interface PinchEvent {scale:number;clientX:number;clientY:number;}
@@ -11,8 +11,8 @@ export function pinchCamera(startZoom:number,camera:{zoom:number;pan:{x:number;y
 /** WKWebView has no ctrl-wheel pinch; it delivers Safari gesture events instead. Chromium and Electron use the wheel path. */
 export function bindTrackpadPinch(target:Element){
  let start:number|undefined;
- const begin=(event:Event)=>{event.preventDefault();start=useEditor.getState().zoom;};
- const change=(event:Event)=>{event.preventDefault();if(start===undefined)return;const {scale,clientX,clientY}=event as unknown as PinchEvent,state=useEditor.getState(),box=target.getBoundingClientRect(),next=pinchCamera(start,state,scale,clientX-box.left,clientY-box.top);if(next)state.set(next);};
+ const begin=(event:Event)=>{event.preventDefault();start=liveCamera().zoom;};
+ const change=(event:Event)=>{event.preventDefault();if(start===undefined)return;const {scale,clientX,clientY}=event as unknown as PinchEvent,box=target.getBoundingClientRect(),next=pinchCamera(start,liveCamera(),scale,clientX-box.left,clientY-box.top);if(next)moveCamera(target as SVGElement,next);};
  const end=(event:Event)=>{event.preventDefault();start=undefined;};
  target.addEventListener('gesturestart',begin);target.addEventListener('gesturechange',change);target.addEventListener('gestureend',end);
  return ()=>{target.removeEventListener('gesturestart',begin);target.removeEventListener('gesturechange',change);target.removeEventListener('gestureend',end);};

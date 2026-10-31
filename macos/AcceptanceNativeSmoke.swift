@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("workflow",{self.acceptWorkflow(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("workflow",{self.acceptWorkflow(document,directory,$0)}),("zoom",{self.acceptWheelZoom(document,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -600,6 +600,42 @@ extension Studio {
                         }
                     }}
                 }}
+            }
+        }
+    }
+    /** Real Command-scroll events into the shipped editor on a page of about 330 layers, at the pace of a turning mouse wheel. */
+    func acceptWheelZoom(_ document:DocumentWindow,_ done:@escaping()->Void){
+        func wheel(_ lines:Int32,_ x:CGFloat,_ y:CGFloat){
+            let inWindow=document.web.convert(NSPoint(x:x,y:y),to:nil),screen=document.window.convertPoint(toScreen:inWindow),top=(NSScreen.screens.first?.frame.height ?? 0)-screen.y
+            guard let cg=CGEvent(scrollWheelEvent2Source:nil,units:.line,wheelCount:1,wheel1:lines,wheel2:0,wheel3:0) else{smokeFail("wheel event")}
+            cg.flags = .maskCommand;cg.location=CGPoint(x:screen.x,y:top)
+            cg.postToPid(ProcessInfo.processInfo.processIdentifier)
+        }
+        let edit:(inout [[String:Any]])->Void={nodes in
+            let template=nodes.first{$0["id"] as? String=="accept-rect"} ?? [:],frameTemplate=nodes.first{$0["id"] as? String=="accept-frame"} ?? [:]
+            nodes.removeAll()
+            for f in 0..<6{
+                var frame=frameTemplate;frame["id"]="zf\(f)";frame["name"]="Frame \(f)";frame["x"]=f*460;frame["y"]=0;frame["width"]=402;frame["height"]=874;frame["fill"]="#ffffff";nodes.append(frame)
+                for i in 0..<53{var row=template;row["id"]="zf\(f)r\(i)";row["parentId"]="zf\(f)";row["x"]=f*460+16;row["y"]=i*16;row["width"]=370;row["height"]=12;row["fill"]=i%2==0 ? "#ddddee":"#eeeedd";nodes.append(row)}
+            }
+        }
+        loadDocument(document,acceptanceDocument("accept-zoom","Zoom",edit:edit)){
+            self.page(document,"const el=document.querySelector('#forma-design-canvas'),b=el.getBoundingClientRect();window.__wheel=[];el.addEventListener('wheel',e=>window.__wheel.push([e.deltaY,e.wheelDeltaY,e.metaKey,e.deltaMode]));window.__gaps=[];let last=performance.now();const tick=t=>{window.__gaps.push(t-last);last=t;if(window.__gapsOn)requestAnimationFrame(tick);};window.__gapsOn=true;requestAnimationFrame(tick);return [b.left+b.width/2,b.top+b.height/2,window.__zoomNow=null];"){value in
+                guard let at=value as? [Any],let x=at[0] as? Double,let y=at[1] as? Double else{self.smokeFail("zoom point")}
+                document.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
+                func turn(_ left:Int){
+                    if left>0{wheel(left>30 ? 1:-1,CGFloat(x),CGFloat(y));self.later(0.016){turn(left-1)};return}
+                    self.later(0.4){
+                        self.page(document,"window.__gapsOn=false;const g=[...window.__gaps].sort((a,b)=>a-b);return {frames:g.length,median:g[g.length>>1],p95:g[Math.floor(g.length*.95)],max:g[g.length-1],events:window.__wheel.length,first:window.__wheel[0],last:window.__wheel.at(-1),css:document.querySelector('#forma-design-canvas').style.transform};"){value in
+                            let body=value as? [String:Any]
+                            fputs("zoom measure: \(self.json(body ?? [:]))\n",stderr)
+                            self.check((body?["events"] as? Int ?? 0)>=30,"real Command-scroll events reach the canvas")
+                            self.check((body?["css"] as? String ?? "x")=="","the canvas drops its gesture transform once zoom settles")
+                            done()
+                        }
+                    }
+                }
+                turn(60)
             }
         }
     }
