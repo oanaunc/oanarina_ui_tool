@@ -1,0 +1,21 @@
+import {locate} from './components-model';
+import type {ComponentProperty,ComponentSet} from './components-model';
+import {setInstanceProperty,swapInstanceSafely} from './component-workflows';
+import type {DesignDocument,DesignNode} from './model';
+export const MULTI_INSTANCE_LIMIT=200;
+type Value=string|boolean;
+export interface SharedProperty {key:string;name:string;type:ComponentProperty['type'];value:Value;mixed:boolean;preferred?:string[];}
+export interface SharedVariantProperty {name:string;options:string[];value:string;mixed:boolean;}
+export interface SharedInstances {ids:string[];component:string;componentMixed:boolean;properties:SharedProperty[];variants:SharedVariantProperty[];}
+const keyOf=(p:Pick<ComponentProperty,'name'|'type'>)=>p.type+':'+p.name;
+const definitions=(doc:DesignDocument,n:DesignNode)=>locate(doc,n.componentId??'')?.node.componentMetadata?.properties??[];
+const setFor=(doc:DesignDocument,n:DesignNode):ComponentSet|undefined=>doc.componentSets?.find(s=>s.variants.some(v=>v.componentId===n.componentId));
+const instances=(doc:DesignDocument,ids:readonly string[])=>ids.map(id=>locate(doc,id)?.node).filter((n):n is DesignNode=>n?.type==='instance'&&!n.instanceRootId);
+const uniform=<T,>(values:T[])=>values.every(v=>JSON.stringify(v)===JSON.stringify(values[0]));
+/** Editable state shared by every selected instance root. Properties match by name and type, because each main owns its property IDs. */
+export function sharedInstances(doc:DesignDocument,ids:readonly string[]):SharedInstances|undefined{if(ids.length<2||ids.length>MULTI_INSTANCE_LIMIT)return undefined;const list=instances(doc,ids);if(list.length!==ids.length)return undefined;const first=definitions(doc,list[0]),properties=first.flatMap(p=>{const entries=list.map(n=>{const own=definitions(doc,n).find(q=>keyOf(q)===keyOf(p));return own&&{own,value:n.propertyValues?.[own.id]??own.defaultValue};});if(entries.some(e=>!e))return [];const present=entries as {own:ComponentProperty;value:Value}[];return [{key:keyOf(p),name:p.name,type:p.type,value:present[0].value,mixed:!uniform(present.map(e=>e.value)),preferred:p.preferredValues} satisfies SharedProperty];}),sets=list.map(n=>setFor(doc,n)),variants=sets.every(Boolean)?(sets[0]!.propertyNames.filter(name=>sets.every(s=>s!.propertyNames.includes(name)))).map(name=>{const values=list.map((n,i)=>sets[i]!.variants.find(v=>v.componentId===n.componentId)?.values[name]??''),options=[...new Set(sets.flatMap(s=>s!.variants.map(v=>v.values[name])))].filter(option=>sets.every(s=>s!.variants.some(v=>v.values[name]===option)));return {name,options,value:values[0],mixed:!uniform(values)};}):[];return {ids:list.map(n=>n.id),component:list[0].componentId??'',componentMixed:!uniform(list.map(n=>n.componentId)),properties,variants};}
+function targets(doc:DesignDocument,ids:readonly string[]){const list=instances(doc,ids);if(list.length!==ids.length||ids.length<2||ids.length>MULTI_INSTANCE_LIMIT)throw Error('Select two or more instances.');return list;}
+/** All-or-nothing inside one edit: a refused instance throws before the store publishes. */
+export function setSharedProperty(doc:DesignDocument,ids:readonly string[],key:string,value:Value){for(const n of targets(doc,ids)){const own=definitions(doc,n).find(p=>keyOf(p)===key);if(!own)throw Error('A selected instance no longer has this property.');setInstanceProperty(doc,n.id,own.id,value);}}
+export function setSharedVariant(doc:DesignDocument,ids:readonly string[],name:string,value:string){for(const n of targets(doc,ids)){const set=setFor(doc,n),current=set?.variants.find(v=>v.componentId===n.componentId);if(!set||!current)throw Error('A selected instance no longer belongs to a variant set.');const values={...current.values,[name]:value},match=set.variants.find(v=>set.propertyNames.every(k=>v.values[k]===values[k]))??set.variants.find(v=>v.values[name]===value);if(!match)throw Error('A selected variant set has no matching variant.');if(match.componentId!==n.componentId)swapInstanceSafely(doc,n.id,match.componentId);}}
+export function swapSharedInstances(doc:DesignDocument,ids:readonly string[],componentId:string){for(const n of targets(doc,ids))if(n.componentId!==componentId)swapInstanceSafely(doc,n.id,componentId);}
