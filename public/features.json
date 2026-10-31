@@ -14724,10 +14724,10 @@
     "category": "Accessibility and localization",
     "name": "High-contrast selection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: persistent local black/white layer/hover/box selection outlines, resize/rotation handles and vector anchor activity on Design/Whiteboard canvas; screen-space SVG pixel, keyboard, persistence and no-artwork-mutation checks. Specialized editing overlays, Slides/presentation and a system-wide contrast theme remain outside this option. See docs/SELECTION-CONTRAST.md."
   },
   {
     "id": "UI-44-021",

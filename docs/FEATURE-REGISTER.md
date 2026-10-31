@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1314,"partial":248,"planned":460}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1314,"partial":249,"planned":459}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -1699,7 +1699,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-44-017 | Larger UI scaling | planned | reference-verification-pending |
 | UI-44-018 | Reduced motion mode | planned | reference-verification-pending |
 | UI-44-019 | Color-independent selection indicators | planned | reference-verification-pending |
-| UI-44-020 | High-contrast selection | planned | reference-verification-pending |
+| UI-44-020 | High-contrast selection | partial | Partial: persistent local black/white layer/hover/box selection outlines, resize/rotation handles and vector anchor activity on Design/Whiteboard canvas; screen-space SVG pixel, keyboard, persistence and no-artwork-mutation checks. Specialized editing overlays, Slides/presentation and a system-wide contrast theme remain outside this option. See docs/SELECTION-CONTRAST.md. |
 | UI-44-021 | Accessible tooltips | planned | reference-verification-pending |
 | UI-44-022 | Accessible error announcements | partial | Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete. |
 | UI-44-023 | Accessible comment threads | implemented | Canvas pins have keyboard activation and original-source proofs; thread dialog supports focus trap/return, focused-thread headings, labeled filters/forms, pagination, readable authors/times, errors/status and plain-copy fallback at 125% UI scale. Native assistive-technology/reference acceptance pending. See docs/LOCAL-COMMENT-THREADS.md. |
