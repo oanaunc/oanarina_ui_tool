@@ -64,15 +64,15 @@ enum NodePasteboard {
         guard let source=CGImageSourceCreateWithData(data as CFData,[kCGImageSourceShouldCache:false] as CFDictionary),let actual=CGImageSourceGetType(source) as String?,rasters.map(\.rawValue).contains(actual) else{return ["kind":"empty"]}
         return ["kind":"image","data":try raster(data,type:NSPasteboard.PasteboardType(actual))]
     }
-    /** Figma's own copy lives in the HTML flavor between fixed markers. HTML from anywhere else never reaches the renderer. */
-    static func figmaHTML(_ item:NSPasteboardItem)->String? {
-        guard item.availableType(from:[nodes,svg])==nil,let data=item.data(forType:.html),data.count<=limit,let html=String(data:data,encoding:.utf8),html.contains("(figma)"),html.contains("(/figma)") else{return nil}
+    /** A copied .fig selection is recognized by the base64 of its fig-kiwi header in the HTML flavor. Other HTML never reaches the renderer. */
+    static func figHTML(_ item:NSPasteboardItem)->String? {
+        guard item.availableType(from:[nodes,svg])==nil,let data=item.data(forType:.html),data.count<=limit,let html=String(data:data,encoding:.utf8),html.contains("ZmlnLWtpd2") else{return nil}
         return html
     }
     static func read(from pasteboard:NSPasteboard = .general)throws->[String:String] {
         guard let item=pasteboard.pasteboardItems?.first else{return ["kind":"empty"]}
         if item.availableType(from:[nodes,svg])==nil,let file=try copiedFile(item){return file}
-        if let html=figmaHTML(item){return ["kind":"figma","data":html]}
+        if let html=figHTML(item){return ["kind":"fig","data":html]}
         guard let type=item.availableType(from:[nodes,svg]+rasters+[.string,.rtf]) else{return ["kind":"empty"]}
         if rasters.contains(type) {
             guard let data=item.data(forType:type) else{throw NSError(domain:"Unable to read clipboard image.",code:8)}
