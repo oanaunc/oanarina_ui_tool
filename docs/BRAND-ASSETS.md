@@ -2,12 +2,12 @@
 
 A brand project is a local `.oui` Design file with optional `brand` data: a kit, templates and assets. It opens with **Assets**, **Templates**, **Kit** and **Layers** tabs in the left sidebar. An asset selected on the canvas shows its editable content in the right sidebar. Older Forma builds open the same file as an ordinary Design file and do not enforce its locks.
 
-Everything here runs on this device. There are no accounts, reviewers, notifications, team libraries or cloud sync.
+Everything here runs on this device and is shared by passing files.
 
 ## Starting a project
 
 - **File → New brand project** or the **New brand project** tile on the Files screen creates an empty project with Assets and Templates pages.
-- **Templates → Brand → Campaign starter** creates a project with a sample kit, three published templates and one draft asset. All of it is original Forma example content.
+- **Templates → Brand → Campaign starter** creates a project with a sample kit, six published templates across five categories and one draft asset. All of it is original Forma example content.
 
 ## Templates
 
@@ -71,6 +71,8 @@ Sizes are reference values and platforms change theirs. Adding a size creates a 
 Status moves Draft → In review → Approved, or In review → Changes needed. Approved assets can be reopened to Draft. Status is a label you set on this device. It records when it changed, not who changed it, and it does not notify anyone. It does freeze slots, which the store enforces.
 
 ## Versions
+
+Each status change also records the asset's slot content automatically, keeping the latest 12 entries per asset. **Asset history** in the status section restores any entry as an undoable edit while the asset is editable. An image over 256 KB is not kept in that history, and stays as it is on restore.
 
 **Asset versions** compares one asset against the file's named local versions and can restore that asset's slot content as an undoable edit. It reads the existing 20-per-file named versions. Autosaves are not listed, and locked styling is not compared because it does not change.
 
