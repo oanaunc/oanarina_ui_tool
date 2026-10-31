@@ -143,5 +143,7 @@ export const messages=[
  'Brush presets','Brush preset choices','Illustration tools','Illustration tool choices','Edit points','Bend segments','Cut path','Erase path','Lasso points','Shape builder','Stretch',
 
  'Variable axes','Named instance','Custom position','Reset axes','Mixed axis values. Changing one sets all axes for the selected text.','Slider edits apply on release.',
+
+ 'Skin tone','Default skin tone','Light skin tone','Medium-light skin tone','Medium skin tone','Medium-dark skin tone','Dark skin tone','{count} local emoji. Search by name to find more. Appearance depends on the fonts on this Mac, so newer emoji can show as boxes on older systems.',
 ] as const;
 export type Message=typeof messages[number];
