@@ -25,6 +25,7 @@ import {mediaExportWarnings} from './media';
 import {exportCombinedArtwork,exportLayerArtwork} from './export-delivery';
 import {importFigBytes,setFigImportReport} from './fig-import';
 import {openDocumentForEditing,saveDocument} from './repository';
+import {offerImportRepair,useRepairableImport} from './document-recovery';
 import {desktopDocuments,markDesktopSaved} from './desktop-lifecycle';
 import type {DesktopBootstrap,DesktopDocumentState} from './desktop-lifecycle';
 import {exportSelection,visualBounds} from './transforms';
@@ -54,14 +55,14 @@ export async function openSelectedProject(file:File){
  const pendingSketch=getSketchReview();if(pendingSketch)cancelSketchReview(pendingSketch);if(/\.sketch$/i.test(file.name))return openSketchProjectFile(file);
  const pendingPdf=getPdfImportReview();if(pendingPdf)cancelPdfImportReview(pendingPdf);if(/\.pdf$/i.test(file.name))return openPdfProjectFile(file);
  const pendingRest=getFigmaRestReview();if(pendingRest)cancelFigmaRestReview(pendingRest);
- const isFig=/\.fig$/i.test(file.name),session=beginImportSession(isFig?'fig':'project',1,file.size),{task}=session,before=useEditor.getState();
+ const isFig=/\.fig$/i.test(file.name),session=beginImportSession(isFig?'fig':'project',1,file.size),{task}=session,before=useEditor.getState();let projectText:unknown;useRepairableImport.setState({offer:null});
  try{
   if(file.size>=50_000_000)throw new ImportInputError('Choose a project smaller than 50 MB.');
   const raw=await readImportFile(file,isFig?'bytes':'text',task.signal,bytes=>task.update({bytes}));session.check();
   await task.checkpoint('validating');session.check();
   const result=isFig?await importFigBytes(new Uint8Array(raw as ArrayBuffer),file.name,task.signal,stage=>task.update({stage})):undefined;
   let source=result?.document;
-  if(!isFig){const json=JSON.parse(raw as string);if(isFigmaRestJson(json)){task.update({format:'rest'});if(file.size>FIGMA_REST_LIMITS.bytes)throw new ImportInputError('Choose Figma REST JSON smaller than 20 MB.');const converted=importFigmaRestJson(json,file.name.replace(/\.json$/i,''));session.check();session.dispose();task.finish();const review=await requestFigmaRestReview(converted);return review?openReviewedFigmaRest(review):undefined;}source=parseDocument(raw as string);}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
+  if(!isFig){projectText=raw;const json=JSON.parse(raw as string);if(isFigmaRestJson(json)){task.update({format:'rest'});if(file.size>FIGMA_REST_LIMITS.bytes)throw new ImportInputError('Choose Figma REST JSON smaller than 20 MB.');const converted=importFigmaRestJson(json,file.name.replace(/\.json$/i,''));session.check();session.dispose();task.finish();const review=await requestFigmaRestReview(converted);return review?openReviewedFigmaRest(review):undefined;}source=parseDocument(raw as string);}session.check();if(!source)throw new ImportInputError('The selected project could not be converted.');
   await task.checkpoint('retaining');session.check();
   const mustRetain=desktopDocuments.state(before.doc).dirty||before.past.length>0&&before.savedAt!==before.doc.updatedAt;
   try{const retained=await saveDocument(before.doc,task.signal);if(!retained&&mustRetain)throw new ImportInputError('The current edited project cannot be retained. Save a .oui backup before opening another file.');}catch(error){task.signal.throwIfAborted();if(mustRetain)throw new ImportInputError('Your current edits could not be kept in local recovery. Save a .oui backup before opening another file.');}session.check();
@@ -70,7 +71,7 @@ export async function openSelectedProject(file:File){
   if(result){setFigImportReport({...result,document:opened.document});useEditor.getState().set({modal:'fig-import-report',toast:'Figma file imported as a new .oui project.'});}
   if(opened.warning)useEditor.getState().set({toast:opened.warning,recoveryAt:''});
   const loaded=useEditor.getState();setTimeout(()=>{if(useEditor.getState().doc===loaded.doc&&useEditor.getState().pageId===loaded.pageId)useEditor.getState().fit();},0);
- }catch(error){const reason=task.fail(error);if(!task.signal.aborted)throw new Error(reason??'The import could not finish.');}finally{session.dispose();}
+ }catch(error){const reason=task.fail(error);if(!task.signal.aborted&&projectText!==undefined)offerImportRepair(projectText,file.name);if(!task.signal.aborted)throw new Error(reason??'The import could not finish.');}finally{session.dispose();}
 }
 /** Review confirmation uses a fresh abortable delivery session; no source mutation before every validation succeeds. */
 async function openReviewedFigmaRest(review:FigmaRestReview){

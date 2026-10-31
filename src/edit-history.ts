@@ -37,19 +37,22 @@ export function applyDocumentPatch(from:DesignDocument,patch:DocumentPatch):Desi
 export class EditHistoryEncoder {
  private cache=new WeakMap<DesignDocument,WeakMap<DesignDocument,string>>();
  private encode(from:DesignDocument,to:DesignDocument){let row=this.cache.get(from);if(!row){row=new WeakMap();this.cache.set(from,row);}let value=row.get(to);if(value===undefined){value=JSON.stringify(documentPatch(from,to));row.set(to,value);}return value;}
- /** Walks outward from the head. A step over budget ends that direction: the chain cannot skip a link. */
- record(doc:DesignDocument,past:readonly DesignDocument[],future:readonly DesignDocument[]):EditHistoryRecord{
-  let bytes=0,count=0;const walk=(list:readonly DesignDocument[])=>{const out:string[]=[];let from=doc;for(const to of list){if(count>=EDIT_HISTORY_LIMITS.steps)break;const step=this.encode(from,to);if(step.length>EDIT_HISTORY_LIMITS.stepBytes||bytes+step.length>EDIT_HISTORY_LIMITS.bytes)break;bytes+=step.length;count++;out.push(step);from=to;}return out;};
+ /** Restored stacks reuse their stored steps instead of re-encoding the whole chain on the first save. */
+ seed(links:readonly HistoryLink[]){for(const {from,to,step} of links){let row=this.cache.get(from);if(!row){row=new WeakMap();this.cache.set(from,row);}row.set(to,step);}}
+ /** Walks outward from the head. A step over budget ends that direction: the chain cannot skip a link. Time spent encoding uncached steps is bounded per save; later saves extend the chain. */
+ record(doc:DesignDocument,past:readonly DesignDocument[],future:readonly DesignDocument[],budgetMs=Infinity):EditHistoryRecord{
+  let bytes=0,count=0,spent=0,computed=0;const walk=(list:readonly DesignDocument[])=>{const out:string[]=[];let from=doc;for(const to of list){if(count>=EDIT_HISTORY_LIMITS.steps)break;const cached=this.cache.get(from)?.has(to);if(!cached&&computed>0&&spent>budgetMs)break;const started=cached?0:performance.now(),step=this.encode(from,to);if(!cached){spent+=performance.now()-started;computed++;}if(step.length>EDIT_HISTORY_LIMITS.stepBytes||bytes+step.length>EDIT_HISTORY_LIMITS.bytes)break;bytes+=step.length;count++;out.push(step);from=to;}return out;};
   const newestFirst=[...past].reverse(),pastSteps=walk(newestFirst),futureSteps=walk(future);
   return {schema:1,documentId:doc.id,head:documentDigest(doc),past:pastSteps,future:futureSteps};
  }
 }
 export function validateHistoryRecord(value:unknown,documentId:string):EditHistoryRecord{const r=value as EditHistoryRecord;if(!r||typeof r!=='object'||r.schema!==1||r.documentId!==documentId||typeof r.head!=='string'||r.head.length>128||!Array.isArray(r.past)||!Array.isArray(r.future)||r.past.length+r.future.length>EDIT_HISTORY_LIMITS.steps||[...r.past,...r.future].some(s=>typeof s!=='string'||s.length>EDIT_HISTORY_LIMITS.stepBytes))throw Error('Invalid edit history record.');return r;}
 /** A step must be applicable and pass the complete document validators. Decoding stops at the first bad link and yields between steps. */
-async function decodeChain(head:DesignDocument,steps:readonly string[],pause:()=>Promise<void>){const out:DesignDocument[]=[];let from=head;for(const step of steps){try{const next=parseDocument(JSON.stringify(applyDocumentPatch(from,JSON.parse(step) as DocumentPatch)));if(next.id!==head.id)break;out.push(next);from=next;}catch{break;}await pause();}return out;}
-export interface RestoredHistory {past:DesignDocument[];future:DesignDocument[];dropped:number;}
+async function decodeChain(head:DesignDocument,steps:readonly string[],pause:()=>Promise<void>,links:HistoryLink[]){const out:DesignDocument[]=[];let from=head;for(const step of steps){try{const next=parseDocument(JSON.stringify(applyDocumentPatch(from,JSON.parse(step) as DocumentPatch)));if(next.id!==head.id)break;out.push(next);links.push({from,to:next,step});from=next;}catch{break;}await pause();}return out;}
+export interface HistoryLink {from:DesignDocument;to:DesignDocument;step:string;}
+export interface RestoredHistory {past:DesignDocument[];future:DesignDocument[];dropped:number;links:HistoryLink[];}
 /** Never rejects: a stale, damaged or foreign record yields empty stacks and the document opens normally. */
 export async function restoreHistory(value:unknown,doc:DesignDocument,pause:()=>Promise<void>=async()=>{}):Promise<RestoredHistory>{
- const empty={past:[],future:[],dropped:0};if(value===undefined||value===null)return empty;
- try{const record=validateHistoryRecord(value,doc.id);if(record.head!==documentDigest(doc))return {...empty,dropped:record.past.length+record.future.length};const pastSteps=await decodeChain(doc,record.past,pause),future=await decodeChain(doc,record.future,pause);return {past:pastSteps.reverse(),future,dropped:record.past.length+record.future.length-pastSteps.length-future.length};}catch{return empty;}
+ const empty={past:[],future:[],dropped:0,links:[]};if(value===undefined||value===null)return empty;
+ try{const record=validateHistoryRecord(value,doc.id);if(record.head!==documentDigest(doc))return {...empty,dropped:record.past.length+record.future.length};const links:HistoryLink[]=[],pastSteps=await decodeChain(doc,record.past,pause,links),future=await decodeChain(doc,record.future,pause,links);return {past:pastSteps.reverse(),future,links,dropped:record.past.length+record.future.length-pastSteps.length-future.length};}catch{return empty;}
 }
