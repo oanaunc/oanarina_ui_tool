@@ -72,7 +72,7 @@ function PrototypeSession(){
   validatePrototypeStateChange(s.doc,s.pageId,stateRef.current,next,transition);
   const before=stateRef.current,frameChanged=before.frameId!==next.frameId,overlayChanged=!same(before.overlays,next.overlays),visualChanged=!same(before.variants,next.variants)||!same(before.values,next.values);
   const kind=frameChanged?'frame':overlayChanged?'overlay':'state',overlayTransition=next.overlays.at(-1)?.transition??before.overlays.at(-1)?.transition,t=transition??(overlayChanged?overlayTransition:undefined);
-  if((frameChanged||overlayChanged||visualChanged)&&t&&t.type!=='instant'&&t.duration>0&&!reduced)setChange({kind,from:before,to:next,transition:t,start:performance.now(),visual:kind==='frame'&&t.type==='smart-animate'?visualNodes.current?.filter(n=>!n.id.startsWith('exiting-')):undefined});else setChange(null);
+  if((frameChanged||overlayChanged||visualChanged)&&t&&t.type!=='instant'&&t.duration>0&&!reduced)setChange({kind,from:before,to:next,transition:t,start:performance.now(),visual:kind==='frame'&&t.type==='smart-animate'?visualNodes.current??undefined:undefined});else setChange(null);
   stateRef.current=next;setState(next);
  },[reduced,s.doc,s.pageId]);
  const perform=useCallback((actions:PrototypeAction[],transient=false)=>{
