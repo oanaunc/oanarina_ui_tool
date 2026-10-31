@@ -754,10 +754,10 @@
     "category": "Home and file browser",
     "name": "Create from template",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Original template gallery creates independent editable local files with new identity, validates source and retains the current unsaved project before browser replacement; existing native openDocument forwards a new window. No community/cloud template service. See docs/LOCAL-TEMPLATE-GALLERY.md."
   },
   {
     "id": "UI-03-016",
@@ -5764,10 +5764,10 @@
     "category": "Strokes",
     "name": "Stroke scale behavior",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Existing ordinary leaf resize and K Scale semantics are tested; optional inherited scale/fixed stroke policy compensates literal stacks/dashes/edge widths under supported uniform authored scaling. Unsupported managed/locked/variable-width/Boolean/Motion paths refuse atomically; direct scripted transforms retain existing literal semantics. Full group/effect/stroke scaling reference parity is incomplete. See docs/AUTHORED-STROKE-SCALING.md."
   },
   {
     "id": "UI-18-029",
@@ -15874,30 +15874,30 @@
     "category": "Community and resources",
     "name": "Template gallery",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Home and Resources/Actions expose a searchable category gallery of six original free Design, Whiteboard and Presentation templates plus bounded personal local kits. No third-party template marketplace claim. See docs/LOCAL-TEMPLATE-GALLERY.md."
   },
   {
     "id": "UI-47-018",
     "category": "Community and resources",
     "name": "Template preview",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Selected-template page previews render isolated saved base artwork without changing the current design or registering template fonts. Existing 500-layer/4 MB font-safe preview limits and explicit diagnostics apply. See docs/LOCAL-TEMPLATE-GALLERY.md."
   },
   {
     "id": "UI-47-019",
     "category": "Community and resources",
     "name": "Template insertion",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "One selected page inserts editable artwork and supported remapped dependencies at the matching Design/Whiteboard page root with one Undo and real save/reopen. Comments/page settings/Motion omissions are reported; presentations create new decks instead of unregistered frame insertion. See docs/LOCAL-TEMPLATE-GALLERY.md."
   },
   {
     "id": "UI-47-020",
@@ -16304,10 +16304,10 @@
     "category": "FigJam whiteboarding",
     "name": "Templates",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Original retrospective and customer-journey templates create or insert native editable Whiteboard stickies/connectors, retaining relationships, Undo and persistence. No hosted team template catalog. See docs/LOCAL-TEMPLATE-GALLERY.md."
   },
   {
     "id": "UI-48-031",
@@ -17504,10 +17504,10 @@
     "category": "Performance and reliability",
     "name": "Large layer tree virtualization",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Cached iterative hierarchy indexing and a bounded virtualized Layers tree support logical ARIA siblings/depth, keyboard offscreen reveal, selection/filter preservation, drag/reparent, Undo/save and source-bound focus. Actual 20,000-layer flat hidden-layer files keep rendered rows bounded. Whole-canvas deep hierarchy acceptance remains separate. See docs/LAYER-TREE-VIRTUALIZATION.md."
   },
   {
     "id": "UI-53-005",
@@ -17534,10 +17534,10 @@
     "category": "Performance and reliability",
     "name": "Asset cache management",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Font cache inspection reports validated family/file/decoded byte counts and selectively removes downloaded Google/bundled faces while preserving imported/restricted/unknown records, registered faces and project embedding. Image/media cache management is not implemented. See docs/FONT-DOWNLOAD-MANAGEMENT.md."
   },
   {
     "id": "UI-53-008",
@@ -18014,10 +18014,10 @@
     "category": "Oanarina improvements after parity",
     "name": "Reusable personal starter kits",
     "priority": "after-parity",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": null,
-    "notes": ""
+    "notes": "Bounded private device-local full project starter kits support named save, lazy preview, independent creation/export, removal Undo and persistence without community publishing or cloud sync. Strict envelopes, transactional byte/count limits and source-bound abort protect existing data. See docs/LOCAL-TEMPLATE-GALLERY.md."
   },
   {
     "id": "UI-54-026",
@@ -18324,10 +18324,10 @@
     "category": "Google and installed font library",
     "name": "Google catalog refresh command",
     "priority": "must",
-    "status": "planned",
+    "status": "partial",
     "verification": "reference-verification-pending",
     "source": "https://developers.google.com/fonts/docs/developer_api",
-    "notes": "Catalog refresh is a maintainer script with an explicit snapshot path; a user-facing live refresh command is not implemented."
+    "notes": "Installed font catalog snapshot reload validates before replacing the last good snapshot. Bounded family downloads support a three-worker queue, cancellation through decode, retry, inflight deduplication and bounded bytes/files. Live upstream catalog synchronization remains absent. See docs/FONT-DOWNLOAD-MANAGEMENT.md."
   },
   {
     "id": "UI-55-027",
