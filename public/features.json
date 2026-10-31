@@ -4854,20 +4854,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Dynamic stroke wiggle",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Partial: reachable editable Forma sinusoidal width-wave on bounded open straight contour paths; shared artwork/export, Undo/save, source guards and atomic validation. Independent geometry; arbitrary cubic/closed networks, Smoothen and exact Figma noise remain unsupported. See docs/DYNAMIC-STROKES.md."
   },
   {
     "id": "UI-16-016",
     "category": "Freehand and Figma Draw",
     "name": "Dynamic stroke frequency",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Partial: real integer 1–16 bump frequency with deterministic local arc-length sampling, bounded generated work, Undo/save and rendered SVG pixel checks. Unsupported geometry and undersized sample spacing refuse; exact Figma algorithm/reference acceptance pending. See docs/DYNAMIC-STROKES.md."
   },
   {
     "id": "UI-16-017",
@@ -9334,10 +9334,10 @@
     "category": "Variants and properties",
     "name": "Hide irrelevant properties",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: opt-in main-component setting hides authored-hidden text/swap controls, retains restoration Booleans and values, with temporary reveal, Undo/save/library/clipboard validation. Independent documented relevance rules; nested exposure authoring, multi-instance editing and exact current Figma semantics remain outside this path. See docs/COMPONENT-PROPERTY-RELEVANCE.md."
   },
   {
     "id": "UI-28-025",
@@ -13084,10 +13084,10 @@
     "category": "Import and Figma interchange",
     "name": "Import progress and cancellation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Partial: browser Open/Place import panel with real byte progress, named preparation stages, cancellation and permanent source ownership; atomic raster batches and SVG review. Synchronous main-thread parsing and native picker/bootstrap paths are not interruptible. Existing Figma import subset unchanged. See docs/IMPORT-PROGRESS-RELIABILITY.md."
   },
   {
     "id": "UI-40-001",
@@ -13584,10 +13584,10 @@
     "category": "Dev Mode and inspection",
     "name": "Spacing inspection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": ""
+    "notes": "Partial: persistent read-only Inspect comparison with page-axis transformed layout gaps/overlaps, offsets, contained insets, searchable target, sampled/base Motion and guarded copy. Not painted-ink distances, local rotated padding or exact Figma acceptance. See docs/SPACING-INSPECTION.md."
   },
   {
     "id": "UI-41-011",
@@ -17554,10 +17554,10 @@
     "category": "Performance and reliability",
     "name": "Import cancellation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: abortable FileReader, detached image callbacks, terminated Figma worker and canceled repository preparations prevent late browser import publication. Synchronous stages and native dialogs remain outside cancellation. See docs/IMPORT-PROGRESS-RELIABILITY.md."
   },
   {
     "id": "UI-53-010",
@@ -17574,10 +17574,10 @@
     "category": "Performance and reliability",
     "name": "Corrupt import reporting",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Partial: explicit bounded failure reports for listed browser import paths preserve the outgoing document; fixed safe categories avoid private parser/source excerpts. Native whole-import reporting and other formats remain outside this path. See docs/IMPORT-PROGRESS-RELIABILITY.md."
   },
   {
     "id": "UI-53-012",
