@@ -143,5 +143,6 @@ export const messages=[
  'Keep shapes as vectors','Solid shapes stay sharp at any zoom. Text, images, gradients and effects stay at the chosen resolution, and a page with too many of those areas is flattened.',
  'Add column after {index}','Add row after {index}','Remove column {index}','Remove row {index}','Add after',
  'Shown at {x}% × {y}% · {width} × {height} px on canvas. Fields show the size before scale.','Apply scale to values','Select a layer.','This layer has no scale to apply.','Clear the mirrored scale first.','Apply scale on the main component.','Unlock this layer first.','Detach instances inside this layer first.','Main components cannot be rescaled this way.','This layer holds content that cannot be rescaled here.','Rich text cannot be rescaled here.','Apply the inner scale first.','Uneven scale with rotated contents would skew them. Scale evenly first.','Animated layers keep their scale.',
+ 'Gradient center','Angular gradient rotation','Diamond gradient size and rotation',
 ] as const;
 export type Message=typeof messages[number];
