@@ -797,7 +797,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Copy file link added to the file browser menu, in addition to Local links. Earlier limits stand: no hosted sharing, no OS handler, and native cross-file opening still refuses. Clipboard failure shows an error."
+    "notes": "Copy file link from the file browser and Local links; clipboard failure shows an error. Native cross-file opening refuses."
   },
   {
     "id": "UI-03-020",
@@ -864,10 +864,10 @@
     "category": "Home and file browser",
     "name": "File ownership display",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Local owner label from src/local-profile.ts, stored in file metadata and never in .oui. Stamped on first local save and on duplicate; opened or imported files and files saved with no profile name show Owner not recorded until set, with Undo. No accounts or access control, and profile renames do not update labels."
+    "notes": "Local owner label kept outside .oui, stamped on first local save and duplicate, editable with Undo. Profile renames do not update labels."
   },
   {
     "id": "UI-03-027",
@@ -1134,10 +1134,10 @@
     "category": "Navigation and editor shell",
     "name": "File save status",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Top bar label shows Saving…, Saved locally, Saved to .oui or Not saved from editor timestamps. No path is shown because the renderer receives none, and no cloud status exists."
+    "notes": "Top bar shows Saving…, Saved locally, Saved to .oui or Not saved from editor timestamps. No path is shown because the renderer receives none."
   },
   {
     "id": "UI-04-024",
@@ -1204,10 +1204,10 @@
     "category": "Navigation and editor shell",
     "name": "Connection state indicator",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Label reflects navigator.onLine with live online/offline updates and states what offline affects. It reports the device network only; no server or sync connection exists."
+    "notes": "Label reflects the device network with live online and offline updates and states what offline affects. Files stay on the Mac either way."
   },
   {
     "id": "UI-05-001",
@@ -1357,7 +1357,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "Partial: opaque page links for exact existing page identity, guarded review/open and bounded affine page fit. Same-file/browser repository matching with durable dirty recovery and transactional reload-pointer ownership; native cross-file refuses. No public URL or remote file fetch. See docs/LOCAL-NAVIGATION-LINKS.md. Source core/type/browser checks; native/reference acceptance pending."
+    "notes": "Local page links work. Native cross-file opening refuses."
   },
   {
     "id": "UI-05-016",
@@ -1404,10 +1404,10 @@
     "category": "Pages and document structure",
     "name": "Page section organization",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "Partial: real selectable page dividers use the documented blank leading-hyphen convention, with guarded create/convert/restore and ordinary one-Undo/save/reopen name/order edits. Local collapse/search retain canonical ordering and active-hidden notice; page keyboard/drag/context/thumbnail paths and permanent source/local/focus receipts are validated. Content-bearing legacy hyphen pages stay ordinary; later artwork restores ordinary behavior. No new schema, hidden controller or nested page folders; native/exact sidebar reference parity remains pending. See docs/PAGE-SECTIONS.md."
+    "notes": "Page dividers with guarded create, convert and restore, collapse and search. No nested page folders."
   },
   {
     "id": "UI-05-021",
@@ -1444,10 +1444,10 @@
     "category": "Pages and document structure",
     "name": "Document color profile",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "File information sets the profile with Undo, and it persists in .oui. Changing it assigns only: saved values stay the same, and there is no convert action that preserves appearance."
+    "notes": "File information assigns or converts. Convert rewrites paints, styles, palette, variables, keyframes and shader colors so appearance holds (browser pixels within 3 of 255), after a review that counts clipping, in one Undo. Values stay 8-bit; a round trip can move up to 2 steps; images stay; files with linked libraries refuse."
   },
   {
     "id": "UI-05-025",
@@ -2657,7 +2657,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: single-frame inspector offers explicit direct-child or all-descendant geometry bounds, including hidden/clipped nested overflow. Direct-child remains default; every descendant world transform/size and direct constraint metadata is preserved through shared derivation, Undo/save/reopen. Cached bounded hierarchy, live selector/context proof and final frame/content signatures reject stale/controllers atomically. Partial: layer rectangles, without paint-tight stroke/effect/occlusion fitting; all-descendant mask/liveBoolean/slice roles refuse. 2,000 subtree layers/20,000 page layers/1,024 ancestors. docs/FRAME-WORKFLOWS.md; core and browser checks. Native/reference verification pending."
+    "notes": "Adds a third fit choice, Painted bounds: strokes and effects included, unpainted containers, hidden layers and clipped overflow excluded. Keep fitted to contents (optional saved autoFit:{padding}) follows direct children in the same Undo. Mask, Boolean and slice roles still refuse; occlusion is not considered. Older builds ignore the field."
   },
   {
     "id": "UI-09-026",
@@ -2774,10 +2774,10 @@
     "category": "Sections groups and slices",
     "name": "Nest sections",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Explicit section nesting preserves world geometry and refuses cycles/locks/managed/animated/auto-layout conflicts. Full animated/auto-layout nesting parity remains unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Sections move into and out of auto layout. A section with animated layers moves when no ancestor on either side is animated or transformed, and stays out of auto layout. Other cases refuse with the reason. World geometry and keyframes are preserved."
   },
   {
     "id": "UI-10-008",
@@ -2807,7 +2807,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Copy/open a current-file section token works across pages; OS deep links, hosted links and cross-file resolution remain unfinished Evidence and limits: docs/SECTION-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Local section links work. OS deep links and cross-file resolution are absent."
   },
   {
     "id": "UI-10-011",
@@ -2854,10 +2854,10 @@
     "category": "Sections groups and slices",
     "name": "Resize group proportionally",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Group resize still saves one scale. The inspector now states percent and on-canvas size and offers Apply scale to values; an uneven scale changes position and size only and refuses rotated contents. See docs/FRAME-WORKFLOWS.md."
+    "notes": "Dragging a group handle or typing W or H now resizes the layers inside: positions and sizes change, strokes, radii and type keep their values. The K tool still scales. Groups that cannot resize keep the stored scale on a drag and refuse a typed size. Multi-selection drags still store a scale."
   },
   {
     "id": "UI-10-016",
@@ -2897,7 +2897,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Plain groups refit to direct children on any edit that changes them, inside out, in the same Undo, with no artwork change; generated instance groups follow without an override. Rotated, flipped, scaled, Boolean, mask, clipped, painted, auto layout, guide-bound, fill-sized and animated groups skip it, and headless MCP edits do not refit. Explicit Fit still covers rotated and scaled groups."
+    "notes": "Also covers sections and frames that opt in to Keep fitted to contents. Same skip list otherwise; headless MCP edits do not refit."
   },
   {
     "id": "UI-10-020",
@@ -5837,7 +5837,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: real shared SVG authored-backdrop replacement over the original earlier scene, with guarded radius/strength/visibility/type/removal, Undo/save. One independent root rectangle/ellipse at opacity 1, one effect, opaque square authored underlay and bounded contained static prefix; no nested targets, text/media/masks/networks/instances/source effects/affected Motion or presentation. No synthetic page background or CSS-only blur. Hidden/zero exact bypass, premultiplied mix and affine target pixels validated. See docs/BACKGROUND-BLUR.md. Native/reference acceptance pending; downloads frozen."
+    "notes": "Now also works on a direct child of a frame with one opaque solid fill, normal blending, no effects or stroke, including rotated frames. Output matches the page-level scene within 2 levels per channel. Deeper targets, group parents and the other existing limits remain; effect stacks, masks, text in the backdrop and presentation still refuse. Older builds refuse these files. docs/BACKGROUND-BLUR.md."
   },
   {
     "id": "UI-19-005",
@@ -6157,17 +6157,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: the supported background blur is clipped through its real shared target geometry, including eligible rounded rectangles and affine ellipse arcs, while original outside pixels are preserved. Integer-aligned filter regions avoid fractional mask leakage; source ownership/size and exact prefix-export retention validate before publication. General backdrop roots, nested/masked targets and effect stacks remain unsupported. See docs/BACKGROUND-BLUR.md. Browser/core/source-MCP/mock Bridge and independent reads are not native or Figma round-trip acceptance."
+    "notes": "The same clip applies to nested targets, using frame-local coordinates. General backdrop roots and effect stacks remain unsupported."
   },
   {
     "id": "UI-19-037",
     "category": "Effects and compositing",
     "name": "Shader effect assignment",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Overlay and Displace effects run through the SVG filter stack. Shaders generate a texture and cannot sample layer pixels in GLSL; Displace bends the layer with feDisplacementMap."
+    "notes": "Overlay, Displace and Sample layer modes run through the stack. Sample layer feeds the layer, without its effects, at up to 1024 px, to GLSL through f_source(uv) and replaces the layer at that point; Pixelate and Channel Split are bundled. Sampling passes through in the exported player and shows an empty texture in the inspector preview. Static exports warn if a sample was not ready. Older builds refuse these files."
   },
   {
     "id": "UI-19-038",
@@ -6184,10 +6184,10 @@
     "category": "Effects and compositing",
     "name": "Shader effect stacking",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Effects chain and reorder in the existing stack. Order is persistence-tested only, with no pixel test that reordering changes the output."
+    "notes": "Effects chain and reorder in the stack, and a browser pixel test proves a shader and blur order change output. Note that test reverses order through a store edit, not the UI; persistence was already covered."
   },
   {
     "id": "UI-19-040",
@@ -7624,20 +7624,20 @@
     "category": "Constraints and resizing",
     "name": "Fill container width",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row, column, grid, aspect, nested and min/max fill work. Layout convergence stops after 8 passes. A rotated child's Fill axis keeps its assigned size and is measured unrotated, while non-fill axes use the rotated box."
+    "notes": "Row, column, grid, aspect, nested and min/max fill work on the rotated, scaled box. At a quarter turn Fill moves to the local axis that shows; at about 45° Fill on both axes shares the smaller extent. Passes scale with depth up to 256, and a test fails at the old 8-pass limit. Older rotated Fill layouts change the next time the page is edited."
   },
   {
     "id": "UI-23-016",
     "category": "Constraints and resizing",
     "name": "Fill container height",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Row, column, grid, aspect, nested and min/max fill work. Layout convergence stops after 8 passes. A rotated child's Fill axis keeps its assigned size and is measured unrotated, while non-fill axes use the rotated box."
+    "notes": "Height: row, column, grid, aspect, nested and min/max fill work on the rotated, scaled box. At a quarter turn Fill moves to the local axis that shows; at about 45° Fill on both axes shares the smaller extent. Passes scale with depth up to 256, and a test fails at the old 8-pass limit. Older rotated Fill layouts change the next time the page is edited."
   },
   {
     "id": "UI-23-017",
@@ -7704,10 +7704,10 @@
     "category": "Constraints and resizing",
     "name": "Resize nested constrained frame",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Nested constrained resize works through the shared solver, and layout convergence stops after 8 passes. Rotated and scaled children now take their bounding box, which updates an older layout the next time its page is edited."
+    "notes": "Nested constrained resize works through the shared solver with depth-scaled convergence. Older layouts update on the next page edit."
   },
   {
     "id": "UI-23-024",
@@ -9297,7 +9297,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Text, Boolean and swap properties of nested instances appear when selected or exposed, and resolve through overrides at each level. Selecting several instances shows root properties only, and Hide irrelevant properties does not filter nested controls."
+    "notes": "Nested controls now honor Hide irrelevant properties. Selecting several instances still shows root properties only."
   },
   {
     "id": "UI-28-021",
@@ -9337,7 +9337,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Note change only: exposed nested controls are now authorable, but they ignore this setting. Multi-instance editing stays outside this path. See docs/COMPONENT-PROPERTY-RELEVANCE.md."
+    "notes": "Exposed nested instances follow the outer main's setting, and each nested control list follows its own main's. Unit tested only. Multi-instance editing stays outside this path."
   },
   {
     "id": "UI-28-025",
@@ -9387,7 +9387,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: reusable receiving-instance variant actions, nested materialized ownership, separate reaction binding, hover/press restoration, transient deterministic/collision-safe IDs, Undo/save/library closure and bounded presentation. Full trigger precedence/merging, arbitrary ancestor targets, nested self-scroll and native Bridge transfer remain unsupported. Slots remain separate planned requirements. See docs/INTERACTIVE-VARIANT-TRANSITIONS.md."
+    "notes": "Partial: reusable receiving-instance variant actions, nested materialized ownership, separate reaction binding, hover/press restoration, transient deterministic/collision-safe IDs, Undo/save/library closure and bounded presentation. Full trigger precedence/merging, arbitrary ancestor targets, nested self-scroll and native Bridge transfer remain unsupported. See docs/INTERACTIVE-VARIANT-TRANSITIONS.md. Variant actions work inside customized slots."
   },
   {
     "id": "UI-28-030",
@@ -9407,7 +9407,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: inspector defines up to 16 named slots on direct-child frames of a main component, keeps existing defaults, renames/removes definitions with Undo and strict validated references. Root-only slot-bearing main/instances; no nested template inheritance, preferred-content constraints or native Figma interchange. See docs/COMPONENT-SLOTS.md."
+    "notes": "Definition behavior is unchanged. Slot-bearing mains stay outside other components and instances; nested template inheritance and preferred-content constraints remain absent."
   },
   {
     "id": "UI-28-032",
@@ -9417,7 +9417,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: Customize forks actual default nodes with stable IDs into editable instance-local slot content; add/select/reorder/remove ordinary layers and ordinary nested instances, supported copy/paste/drawing/layer moves, shared rendering/constraints/save. Bounded islands; no nested slot-bearing content or full Figma slot semantics. See docs/COMPONENT-SLOTS.md."
+    "notes": "Customized slots now accept slot-bearing instances of other mains, with their own slots, Undo, save and copy. Main defaults, managed layers and self nesting refuse. Bounded islands remain. Older builds refuse these files."
   },
   {
     "id": "UI-28-033",
@@ -9427,7 +9427,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: per-slot Reset/Clear and Reset all overrides restore current defaults in one validated Undo; source definition removal warns about custom content loss, escaped independent layers are preserved, locks/library updates guard removal. Source MCP actions share the atomic pipeline. No native slot round trip. See docs/COMPONENT-SLOTS.md."
+    "notes": "Reset removes nested slot content, including nested slot-bearing instances, in one Undo. No native slot round trip."
   },
   {
     "id": "UI-29-001",
@@ -9514,10 +9514,10 @@
     "category": "Libraries and design systems",
     "name": "Enable library in file",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Explicit Enable installs real editable cached definitions, stable qualified IDs and saved dependency; linked instances/style/token consumers work with Undo/persistence. Local snapshot workflow only, with eight-library and graph budgets. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Local snapshot libraries enable per file with stable IDs, Undo and persistence, up to eight libraries."
   },
   {
     "id": "UI-29-010",
@@ -9564,10 +9564,10 @@
     "category": "Libraries and design systems",
     "name": "Library update notification",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Imported newer cached snapshot triggers local update availability, with ignore handling and per-asset accepted versions. No network polling, source-folder watching or live publisher notifications. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "A newer imported snapshot triggers an update notice, with ignore handling and per-asset accepted versions."
   },
   {
     "id": "UI-29-015",
@@ -9617,7 +9617,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: advisory deprecation/restoration for whole local component or variant-set publication groups, validated optional reasons in immutable snapshots/installed assets, review/usage/Actions advice and one Undo. Existing instances remain usable. No individual-variant status, cloud organization enforcement or exact Figma acceptance. See docs/LOCAL-LIBRARY-COMPONENT-LIFECYCLE.md."
+    "notes": "Component deprecation works in local snapshots, with no per-variant status."
   },
   {
     "id": "UI-29-020",
@@ -9674,20 +9674,20 @@
     "category": "Libraries and design systems",
     "name": "Swap library source",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Reviewed local source replacement for complete compatible component/set-only libraries uses explicit whole-group mappings and preserves linked layer/property/set identities and matching customized slot content. Dirty baselines, locks, incompatible topology, ambiguous siblings, styles/tokens/guides and installed-source merges refuse atomically. One Undo/Redo/save and guarded review are validated. No cloud source replacement. See docs/LOCAL-LIBRARY-SOURCE-SWAP.md."
+    "notes": "Reviewed local source replacement with atomic refusals for unsafe mappings."
   },
   {
     "id": "UI-29-026",
     "category": "Libraries and design systems",
     "name": "Missing library indicator",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Saved dependencies show missing local snapshot/cache and missing/removed source groups while cached editable artwork remains usable. Source files must be explicitly reimported; no remote availability monitoring. docs/LOCAL-COMPONENT-LIBRARIES.md."
+    "notes": "Missing snapshots and removed groups are shown while cached artwork stays usable."
   },
   {
     "id": "UI-29-027",
@@ -9747,7 +9747,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Components/Assets offers source-owned review and one-Undo generation of an ordinary editable documentation page: snapshot descriptions, property/variant text and fresh live default instances, with save/reopen. Bounded closures/variants/work; slots, unsafe ancestry and unsupported contexts refuse. No automatic regeneration, remote publishing or full reference parity claim. See docs/COMPONENT-DOCUMENTATION-PAGES.md."
+    "notes": "Editable linked documentation pages, with no automatic regeneration."
   },
   {
     "id": "UI-29-033",
@@ -10144,20 +10144,20 @@
     "category": "Variables and tokens",
     "name": "Publish variables",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Local snapshots publish collections with modes and aliases, and a file can publish variables alone. Per-collection exclusion is saved with Undo, and dangling aliases or bindings refuse by name. No hosted or team publishing; sharing is by snapshot file. docs/LOCAL-LIBRARY-VARIABLES.md."
+    "notes": "Collections publish in local snapshots with modes and aliases, with Undo on exclusions. Dangling aliases or bindings refuse by name. Sharing is by snapshot file. docs/LOCAL-LIBRARY-VARIABLES.md."
   },
   {
     "id": "UI-30-037",
     "category": "Variables and tokens",
     "name": "Remote variables",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "A consumer holds a linked read-only copy, enforced in the store edit path, with a per-file mode choice, named update review, mode mapping and detach with Undo. Saved-file MCP writes bypass the store guard but surface as conflicts. No live sync; updates arrive by importing a snapshot."
+    "notes": "A consumer holds a linked read-only copy, enforced in the store, with mode mapping, named update review and detach with Undo. Updates arrive by importing a snapshot; saved-file MCP writes surface as conflicts."
   },
   {
     "id": "UI-30-038",
@@ -10717,7 +10717,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Smart animate now also interpolates scale, corners, solid strokes, effect stacks and plain text size, letter spacing and line height; different words crossfade. Shape topology morphs, rich text size and mismatched stacks do not animate."
+    "notes": "Same-named rectangles, ellipses, polygons, stars and paths now morph, with curves subdivided to matching anchors and aligned by direction and start. Pairs that cannot match, such as different contour counts or open against closed, cross-fade. Rich text size and mismatched stroke or effect stacks do not animate."
   },
   {
     "id": "UI-33-004",
@@ -10997,7 +10997,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Interrupting a Smart animate frame change continues from what is on screen, tested as jump-free. Layers already fading out vanish at that moment, and overlay transitions keep the earlier behavior."
+    "notes": "Interrupting a Smart animate frame change continues from what is on screen, and layers already fading out keep their fade. Overlay transitions keep the earlier behavior."
   },
   {
     "id": "UI-33-032",
@@ -11197,7 +11197,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Note change only: nested instances now take per-instance properties and swaps, and authored variants can model states. Dedicated control templates are absent, and nested interactive combinations were not newly tested."
+    "notes": "Interactive variants work on nested instances and on instances two customized slots deep, tested through presentation with independent state. Dedicated control templates remain absent."
   },
   {
     "id": "UI-34-020",
@@ -11514,10 +11514,10 @@
     "category": "Prototype presentation",
     "name": "Prototype comments",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": ""
+    "notes": "Press C or use Comments in a running presentation: the prototype pauses, and a click places a thread anchored to the frame's axes with one Undo. In comment mode the panel buttons and Command-Z undo and redo; threads save in .oui and appear in Design. Not in Motion preview or exported prototype files; Inspect is read-only."
   },
   {
     "id": "UI-35-022",
@@ -11837,7 +11837,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Copy bounded opaque root-thread references and open them in the matching currently open .oui; valid links navigate pages, center actual pins, reset filters and focus paged/resolved threads without changing artwork or Undo. Clipboard fallback and stale asynchronous/retained handler ownership are validated. No public hosting, reply-specific targets, OS URL handler or cross-file automatic lookup. See docs/LOCAL-COMMENT-LINKS.md."
+    "notes": "Local thread links work. Reply-specific targets, an OS link handler and cross-file lookup are absent."
   },
   {
     "id": "UI-36-018",
@@ -11847,7 +11847,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Eight saved file-local emoji reactions work independently on roots/replies with distinct shared display-name labels, counts, accessible descriptions, one Undo/save and guarded picker/source/local receipts. No authenticated identities, arbitrary Unicode picker, cloud reactions or notifications. Private metadata stays out of artwork, libraries and explicit Figma delivery. See docs/LOCAL-COMMENT-REACTIONS.md."
+    "notes": "Eight fixed emoji reactions on local threads, with no full picker."
   },
   {
     "id": "UI-36-019",
@@ -11864,10 +11864,10 @@
     "category": "Comments and annotations",
     "name": "Comment on prototype",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Threads are ordinary comments with optional surface:'prototype': reply, resolve, delete, filter, link. Pins scroll with frame content; threads left in Design on the frame or its layers also appear. Lists 200 threads per frame. Older builds open these files. docs/PROTOTYPE-COMMENTS.md."
   },
   {
     "id": "UI-36-021",
@@ -11884,10 +11884,10 @@
     "category": "Comments and annotations",
     "name": "Annotation tool",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Inspect offers real layer annotation editing and optional HTML canvas marker navigation, with private note persistence/Undo. A dedicated pointer annotation placement tool is not implemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
+    "notes": "Annotate on canvas opens the editor at the clicked point; Measure on canvas takes two clicks with snapping to box points. Both also reach View and Actions, with Undo and persistence. Keyboard users have percentage fields in the sidebar."
   },
   {
     "id": "UI-36-023",
@@ -11904,50 +11904,50 @@
     "category": "Comments and annotations",
     "name": "Annotation category",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Annotations choose real named/color categories from their owning layer set. Per-layer scoped categories preserve coherent whole-set instance overrides; document-global categories and exact Figma category parity remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
+    "notes": "Notes pick a category from their layer or from any category in the file, which copies it to the layer. A category exists while a layer uses it. Older builds refuse files using the new annotation fields."
   },
   {
     "id": "UI-36-025",
     "category": "Comments and annotations",
     "name": "Annotation categories management",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Inspect creates, renames, recolors and deletes local annotation categories with atomic reference cleanup, Undo and persistence. Categories belong to one layer set; document-global category management remains unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
+    "notes": "File-wide rename, recolor, merge and delete in one Undo, reporting locked or inherited layers left unchanged. Empty file-level categories do not exist."
   },
   {
     "id": "UI-36-026",
     "category": "Comments and annotations",
     "name": "Annotated property reference",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Property annotations reference eight validated numeric fields and display their live authored values. Unsupported property types and general paint/style/prototype property references remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
+    "notes": "Twenty-one live properties, adding fill, stroke, radius, type, blend, layout and prototype target. Stacks summarize as a count; mismatched types read as unavailable."
   },
   {
     "id": "UI-36-027",
     "category": "Comments and annotations",
     "name": "Measurement annotation",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Measurement annotations compute transformed authored box width/height/diagonal using translation-independent affine linear vectors; actual geometry changes update values. Arbitrary point/edge and ink measurements remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
+    "notes": "Box width, height and diagonal, any two box points (optionally along one page axis), and painted width and height. Painted bounds use visualBounds, so they are conservative."
   },
   {
     "id": "UI-36-028",
     "category": "Comments and annotations",
     "name": "Distance annotation",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Distance annotations follow validated/remapped same-page targets and compute live center-to-center distances, with missing-target and insufficient numeric precision diagnostics. Edge-gap/arbitrary-point distances remain unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
+    "notes": "Box centers, centers along an axis, nearest box edge gap or overlap, or two chosen points. All live; a missing target reads as unavailable. Edge gaps use transformed boxes, not contours."
   },
   {
     "id": "UI-36-029",
@@ -11964,10 +11964,10 @@
     "category": "Comments and annotations",
     "name": "Annotation visibility",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Saved per-layer annotation marker visibility and an ephemeral global canvas marker toggle work with Undo for stored changes. HTML count markers stay outside Artwork exports; full on-canvas annotation text/measurement visibility parity remains unimplemented. See docs/LOCAL-LAYER-ANNOTATIONS.md."
+    "notes": "Saved per-layer visibility, a global marker toggle, and a detached overlay showing text, live values and lines. It never enters exported artwork. Labels are not rearranged when they overlap."
   },
   {
     "id": "UI-37-001",
@@ -12494,10 +12494,10 @@
     "category": "History and recovery",
     "name": "Version author",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: immutable optional local name/avatar labels captured for new named versions, validated list/preview, legacy author-not-recorded support. Stored outside .oui; no verified collaboration or per-edit attribution. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md."
+    "notes": "Immutable local name and avatar labels on new named versions."
   },
   {
     "id": "UI-38-018",
@@ -12557,7 +12557,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: Version history copies an opaque verified local snapshot reference and previews a pasted link with the matching file open. Actual saved snapshot ownership/data is revalidated before clipboard dispatch or read-only preview; current artwork/Undo/save remain unchanged. Permanent source/local-target receipts cancel queued storage reads and stale callbacks; fresh rendered recovery is validated. Current device/browser snapshots only, IDs only, bounded strict format; ordinary .oui files do not include history. No public URL, sharing permission, automatic foreign-file load or OS protocol handler. Clipboard adapter/native/reference limits remain explicit. See docs/LOCAL-VERSION-LINKS.md."
+    "notes": "Local version links work. An OS protocol handler and foreign-file loading are absent."
   },
   {
     "id": "UI-38-024",
@@ -13157,7 +13157,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Keep shapes as vectors writes solid fills and strokes as real PDF paths with clips, in paint order, through a dialog-only option off by default. Text, images, gradients, effects, blends and masks stay raster in place, and a page over 64 areas or 200,000 segments flattens. Both modes gain live http, https and mailto links on whole layers and an invisible Helvetica text layer; fonts are not embedded, and part-of-text links are not written. The native save path uses the flattened mode."
+    "notes": "With Keep shapes as vectors, Embed fonts and images (default on) writes text as a Type 0 CID TrueType subset with ToUnicode at browser glyph origins, and PNG and JPEG fills as original-pixel image objects; Poppler confirmed fonts, text and images. Rich text, decorations, non-Latin characters, non-static-TrueType or restricted fonts, adjusted or tiled images, gradients, effects, blends and masks stay raster, as does any line a pixel comparison cannot prove (for example Inter's 10:30). The native save path still flattens."
   },
   {
     "id": "UI-40-008",
@@ -13544,20 +13544,20 @@
     "category": "Dev Mode and inspection",
     "name": "iOS property inspection",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": "Inspect includes searchable/copyable iOS logical-point geometry, supported single solid color/stroke, typography and layout references, with explicit design-unit ratio and sampled/base Motion source. It does not infer device scale, Dynamic Type, native font/layout equivalence or runnable UIKit code. Read-only source guards and clipboard fallback are validated. See docs/PLATFORM-PROPERTY-INSPECTION.md."
+    "notes": "Adds @1x–@3x pixels, parent-relative positions, the file's color space, shadows and nearest Dynamic Type style. Adds SwiftUI and UIKit code for one layer. Type-checked once by hand; children and vector art are not generated."
   },
   {
     "id": "UI-41-007",
     "category": "Dev Mode and inspection",
     "name": "Android property inspection",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": "Inspect includes searchable/copyable Android dp geometry, baseline sp typography/em spacing, supported ARGB colors/strokes and layout references with explicit design-unit ratio and sampled/base source. Runtime density/font scaling, native constraints/resources and runnable Compose/XML code remain outside scope. Read-only source guards and clipboard fallback are validated. See docs/PLATFORM-PROPERTY-INSPECTION.md."
+    "notes": "Adds mdpi–xxxhdpi pixels, nearest Material type style, shadows, and Compose and XML code for one layer. Output has not been compiled. Display P3 uses ColorSpaces.DisplayP3; XML converts to sRGB and says so."
   },
   {
     "id": "UI-41-008",
@@ -13584,10 +13584,10 @@
     "category": "Dev Mode and inspection",
     "name": "Spacing inspection",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": "Partial: persistent read-only Inspect comparison with page-axis transformed layout gaps/overlaps, offsets, contained insets, searchable target, sampled/base Motion and guarded copy. Not painted-ink distances, local rotated padding or exact Figma acceptance. See docs/SPACING-INSPECTION.md."
+    "notes": "Measure offers layout boxes, painted bounds, or inside a rotated parent along its own axes. Hidden layers and non-parents refuse. Not nearest contour distances."
   },
   {
     "id": "UI-41-011",
@@ -13664,10 +13664,10 @@
     "category": "Dev Mode and inspection",
     "name": "Download selected asset",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": "Partial: read-only Inspect downloads of the chosen layer/subtree using real SVG/PNG/JPG or existing saved export profiles; locked artwork, multi-selection source, guarded preparation/cancellation and native handoff. Base artwork requires Motion closed; cloud/plugin assets and complete Dev Mode/native reference acceptance remain outside this path. See docs/INSPECT-ASSET-DOWNLOAD.md."
+    "notes": "Layer or subtree download in SVG, PNG, JPG or saved profiles; base artwork needs Motion closed."
   },
   {
     "id": "UI-41-019",
@@ -13894,10 +13894,10 @@
     "category": "Actions and keyboard",
     "name": "Search library components",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Partial: Actions searches current-file and enabled installed local library components/exact variants by name/tags/page/library, with filters, bounded pages, source navigation and one-Undo insertion. Disabled/missing provenance cannot be bypassed by local set aliases; advice is visible/accessibly described. No uninstalled cache/online/community search. See docs/ACTIONS-COMPONENT-SEARCH.md."
+    "notes": "Searches current-file and enabled installed libraries. A cached library that is not installed is not searched."
   },
   {
     "id": "UI-42-006",
@@ -13994,10 +13994,10 @@
     "category": "Actions and keyboard",
     "name": "Keyboard layout preference",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Partial: local Physical US key positions or Logical typed-key matching, persisted separately from artwork. Option/dead modified-letter fallback uses physical code; no national-layout tables or native OS remapping. See docs/KEYBOARD-PREFERENCES.md."
+    "notes": "Adds QWERTZ, AZERTY, Dvorak and Colemak tables that follow the printed letter, even with Option held. Punctuation they do not list stays at its US position, so those shortcuts stay reachable, but labels still print US glyphs. Figma's per-language remapped shortcuts are not reproduced. Real non-US hardware is untested."
   },
   {
     "id": "UI-42-016",
@@ -14007,7 +14007,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Partial: additional primary-modifier letter shortcuts for named commands, local persistence and removal/reset, live menu/help labels. Defaults/native shortcuts remain active; dispatch limited to eligible Design contexts. No arbitrary default replacement or text/vector/Motion context remapping. See docs/KEYBOARD-PREFERENCES.md."
+    "notes": "Turn a default off and replace it, including with bare or Shift letters; extra shortcuts run in Design, Prototype and Inspect. File, clipboard, Undo, Find, Actions and navigation defaults stay on. No Motion, vector or text-context remapping; Mac menu accelerators are fixed."
   },
   {
     "id": "UI-42-017",
@@ -14017,7 +14017,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard",
-    "notes": "Partial: rejects duplicate, default/native/browser/system/context reservations and unsupported chords before local publication; inline diagnostics. No OS-wide shortcut discovery. See docs/KEYBOARD-PREFERENCES.md."
+    "notes": "Adds tool-key reservations and refuses turning a default back on when its key is taken, naming the conflict. Forma cannot see shortcuts other apps register."
   },
   {
     "id": "UI-42-018",
@@ -14867,7 +14867,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Interface surfaces scale independently of SVG/playback coordinates; sidebar drag and popup placement tested at 125 percent, including nested color sampling. New source has not been built/tested in native WKWebView under the user requested build freeze Evidence and limits: docs/WORKFLOW-PREFERENCES.md; tests/e2e/workflow-preferences.spec.ts. Exact Figma reference verification remains pending."
+    "notes": "Scale reaches 150%, with presets at 135% and 150%. Menu bar, top bar, toolbar, sidebars, menus and root dialogs were checked at 1440×900, 1280×720 and 1024×640, with exact drawing and sidebar drag. Main menus now cap to the window. Not checked in native WKWebView above 125%; not every specialized dialog was opened at 150%."
   },
   {
     "id": "UI-45-005",
@@ -15074,20 +15074,20 @@
     "category": "Preferences and document settings",
     "name": "Profile display name",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: explicit local display name, bounded normalization, file-browser/editor initials, cross-window persistence/reset outside artwork. User-entered label only, no authenticated account or remote sync. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md."
+    "notes": "Local display name, stored on this device."
   },
   {
     "id": "UI-45-026",
     "category": "Preferences and document settings",
     "name": "Profile avatar",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: local PNG/JPEG/WebP import, bounded header/codec checks, center-cropped 128px PNG avatar, cancel/timeout and retained-session guards. Embedded PNG-only storage, no remote or organization avatars. See docs/LOCAL-PROFILE-AND-VERSION-AUTHORS.md."
+    "notes": "Local avatar, embedded as PNG and stored on this device."
   },
   {
     "id": "UI-45-027",
@@ -15274,10 +15274,10 @@
     "category": "Preferences and document settings",
     "name": "Open design links in desktop preference",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "retired",
+    "verification": "not-applicable",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Retired October 31, 2026: Forma is an offline Mac app with no hosted web app to hand links from."
   },
   {
     "id": "UI-45-046",
@@ -18887,7 +18887,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Explicit sampled-frame presenter with authored viewport, retained signed ancestor transforms/clips/sibling masks, opt-in transport/fullscreen/navigation/reduced-motion policy; affine frame-local native scrolling includes negative origins, fixed/sticky roots, scroll-to/preserve/restart and keyboard access. Source/history unchanged. Advanced/scrolled Smart Animate, nested independent scrolling and inset/custom positioned behavior remain absent; repeated active frames and positioned roots inside progressive ancestors refuse explicitly. docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md; docs/MOTION-FRAME-SCROLLING.md. Native/reference acceptance pending."
+    "notes": "Frames whose only motion is shader time now open preview. Other limits in the existing note are unchanged."
   },
   {
     "id": "UI-56-051",
@@ -18904,10 +18904,10 @@
     "category": "Motion workspace and timeline",
     "name": "Export animation MP4",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "MediaRecorder export remains codec dependent. WebM is encoded and decoded in Chromium source tests; Mac MP4 and browser/native codec end-to-end acceptance remain separate and pending under the release-build freeze. Shared track selection and graphical Bezier editing are now implemented; explicit frame presentation has its own partial scope. docs/MOTION-TIMELINE-WORKFLOWS.md; docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md."
+    "notes": "MP4 encodes frame by frame through WebCodecs as H.264 (High realtime, then Baseline) with exact timestamps and frame count, a stall watchdog, and optional AAC from a frame's audio or a picked WAV. Verified through the UI with ffprobe in Chromium and Playwright WebKit, and at encoder level in system WKWebView; the packaged app and older macOS were not run. Embedded video layers export their poster, and MediaRecorder remains the fallback. docs/ANIMATION-VIDEO-EXPORT.md."
   },
   {
     "id": "UI-56-053",
@@ -18924,10 +18924,10 @@
     "category": "Motion workspace and timeline",
     "name": "Export animation WebM",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "MediaRecorder export remains codec dependent. WebM is encoded and decoded in Chromium source tests; Mac MP4 and browser/native codec end-to-end acceptance remain separate and pending under the release-build freeze. Shared track selection and graphical Bezier editing are now implemented; explicit frame presentation has its own partial scope. docs/MOTION-TIMELINE-WORKFLOWS.md; docs/MOTION-TRACKS-AND-FRAME-PREVIEW.md."
+    "notes": "WebM encodes VP9, then VP8, with Opus audio through the same path, plus a sized segment, duration and Cues index. Video is opaque. Same verification and limits as MP4."
   },
   {
     "id": "UI-56-055",
@@ -18994,30 +18994,30 @@
     "category": "Motion workspace and timeline",
     "name": "Animated shader preview",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Shaders advance on the Motion canvas (384 px cap while playing), in the inspector preview, and in animation export via sampled copies (GIF tested). Motion frame preview needs ordinary keyframes, so a layer with only shader time won't open it."
+    "notes": "Shaders advance on the Motion canvas (384 px cap while playing), the inspector, export and frame preview, including frames with no keyframes."
   },
   {
     "id": "UI-56-062",
     "category": "Motion workspace and timeline",
     "name": "Interactive shader preview",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Pointer drives the inspector preview and, through an opt-in toggle, the Motion canvas. It is transient and never exported. It doesn't reach frame preview or prototypes."
+    "notes": "The pointer drives the inspector, the Motion canvas through its toggle, frame preview and prototypes. It is transient, never saved or exported."
   },
   {
     "id": "UI-56-063",
     "category": "Motion workspace and timeline",
     "name": "Shader parameter keyframes",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Number and color parameter tracks with Undo and persistence; values are edited through the timeline Value field. Shader tracks are left out of portable animation styles. Parameters can only be keyframed from the Motion inspector buttons, not the timeline's property picker."
+    "notes": "Number and color parameters keyframe from the Motion inspector and the timeline picker, with Undo and persistence. Shader tracks stay out of portable animation styles."
   },
   {
     "id": "UI-57-001",
