@@ -13,3 +13,5 @@ export function smartTypingEdit(n:DesignNode,text:string,cursor:number,options:{
  const run=typed.textRuns?.find(r=>r.start<=start&&r.end>start),patch=replaceTextRange(typed,start,cursor,replacement,run?[{...run,start:0,end:replacement.length}]:[]);
  return {patch,cursor:start+replacement.length,substituted:true};
 }
+/** Canvas text stays uncontrolled until blur, so one typed character is substituted directly in the live field. */
+export function smartCanvasInput(n:DesignNode,field:HTMLTextAreaElement,before:string,input:{inputType?:string;isComposing?:boolean},enabled:boolean){const result=smartTypingEdit({...n,text:before,textRuns:undefined},field.value,field.selectionStart,{enabled,inputType:input.inputType??'',composing:!!input.isComposing});if(result.substituted){field.value=result.patch.text;field.setSelectionRange(result.cursor,result.cursor);}return field.value;}

@@ -42,3 +42,5 @@ These defaults affect caller-integrated creation paths, including canvas drawing
 `tests/preferences.test.ts` covers defaults, immutable snapshots, versioned persistence/reload, invalid/corrupt data, reset isolation, cross-window notifications, blocked storage and creation properties. `tests/e2e/preferences.spec.ts` exercises actual dialog controls and consumers: custom nudge, shape/frame/text defaults, retained tools, hover/dimension visibility, wheel speed/inversion, right-button pan and context menu behavior, custom Shift rotation, saved/reloaded settings, reset without changing project artwork, and recovery from corrupt stored preferences.
 
 This implements a defined local preference set. It is not a claim of complete Figma settings parity. Accent controls, cursor choices, UI scaling/language, pressure/touchpad calibration, configurable native shortcuts and broader system integration remain separate requirements.
+
+Canvas gesture, export naming, export destination and Trash retention choices are stored separately. See docs/EDITOR-SHELL.md.
