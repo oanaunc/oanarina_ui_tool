@@ -40,7 +40,7 @@ The dev.12 preview adds [optional canvas scrollbars and a schematic minimap](doc
 
 Earlier preview additions include [canvas history and selection navigation](docs/CANVAS-NAVIGATION.md) and [frame presets/inspector actions](docs/FRAME-WORKFLOWS.md). Its name toggles and fit-to-content retain documented limits. The universal dev.12 Mac app and installer are Apple-notarized, stapled and Gatekeeper checked. Intel hardware runtime validation remains pending.
 
-The latest [source continuation](docs/UNRELEASED-ICONS-CODE-SVG-DIAGNOSTICS.md) adds a licensed offline editable icon library, local Whiteboard code cards, archived/generic foldable frame presets, selectable missing-image diagnostics, two guarded SVG stroke conversion options and read-only iOS/Android property references. Explicit limits remain partial; downloads stay frozen.
+The latest [source continuation](docs/UNRELEASED-IMPORTS-COMPONENTS-STROKES-INSPECTION.md) adds guarded browser imports with progress/cancellation and safe diagnostics, opt-in component property relevance, deterministic dynamic strokes, persistent spacing inspection and higher-contrast selection controls. It follows the [icons, code cards and SVG checkpoint](docs/UNRELEASED-ICONS-CODE-SVG-DIAGNOSTICS.md). Explicit limits remain partial; downloads stay frozen.
 
 ## Run
 
