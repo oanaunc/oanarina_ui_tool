@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {Project} from '../project';
+import {componentSlotFixture} from '../../tests/helpers/component-slot-fixture';
+test('component slot operations mutate actual content atomically, preserve escaped content, reset and Undo',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'forma-slots-'));try{const file=path.join(dir,'synthetic.oui'),d=componentSlotFixture(),pageId=d.pages[0].id,frame=d.pages[0].nodes.find(n=>n.slotInstance?.ownerId==='instance')!;await fs.writeFile(file,JSON.stringify(d));const project=await Project.open(file),before=await project.read(),custom=await project.apply(before.revision,[{op:'component_slot',pageId,nodeId:frame.id,action:'customize'},{op:'component_slot',pageId,nodeId:frame.id,action:'add_text'}]);assert.ok(custom.document.pages[0].nodes.find(n=>n.parentId===frame.id&&n.text==='Your content'));const bytes=await fs.readFile(file,'utf8');await assert.rejects(project.apply(custom.revision,[{op:'rename_document',name:'Must roll back'},{op:'update_node',pageId,nodeId:frame.id,properties:{width:2}}]),/main component/);assert.equal(await fs.readFile(file,'utf8'),bytes);const reset=await project.apply(custom.revision,[{op:'component_slot',pageId,nodeId:frame.id,action:'reset'}]);assert.equal(reset.document.pages[0].nodes.filter(n=>n.parentId===frame.id).length,1);assert.equal(reset.document.pages[0].nodes.find(n=>n.parentId===frame.id)!.text,'Default');const undo=await project.undo(reset.revision);assert.ok(undo.document.pages[0].nodes.find(n=>n.parentId===frame.id&&n.text==='Your content'));}finally{await fs.rm(dir,{recursive:true,force:true});}});

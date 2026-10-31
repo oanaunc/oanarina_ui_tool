@@ -1,3 +1,4 @@
+import {editableSlotContainer} from './component-slots';
 import {codeBlockRemovalSelection} from './whiteboard-code-blocks';
 import {remapAnnotations} from './layer-annotations';
 import {explicitFontFamilies} from './font-fallback';
@@ -45,7 +46,8 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  const page=source.pages.find(p=>p.id===pageId);if(!page)throw Error('The source page no longer exists.');
  const copied=copyWhiteboardSelection(source,pageId,selection);if(!copied.ids.length)throw Error('Select a layer to copy.');
  const primary=new Map(exportSelection(page.nodes,copied.ids).map(n=>[n.id,clone(n)])),dependencies=new Map<string,DesignNode>(),all=new Map(allNodes(source).map(n=>[n.id,n])),warnings:string[]=[];
- for(const n of primary.values())if(n.exportGhost){Object.assign(n,{annotations:undefined,developmentStatus:undefined,readyForDevelopment:undefined,componentId:null,sourceId:undefined,instanceRootId:undefined,overrideKeys:undefined,componentMetadata:undefined,propertyValues:undefined,variableBindings:undefined,styleIds:undefined,layoutGuideStyleId:undefined,layout:'none',sizingX:'fixed',sizingY:'fixed'});delete n.exportGhost;}
+ for(const n of primary.values())if(n.exportGhost){Object.assign(n,{annotations:undefined,slotInstance:undefined,slotOverrides:undefined,developmentStatus:undefined,readyForDevelopment:undefined,componentId:null,sourceId:undefined,instanceRootId:undefined,overrideKeys:undefined,componentMetadata:undefined,propertyValues:undefined,variableBindings:undefined,styleIds:undefined,layoutGuideStyleId:undefined,layout:'none',sizingX:'fixed',sizingY:'fixed'});delete n.exportGhost;}
+ const copiedSlotOwners=new Set([...primary.values()].filter(n=>n.type==='instance').map(n=>n.id)),orphanSlotOwners=new Set([...primary.values()].flatMap(n=>n.slotInstance&&!copiedSlotOwners.has(n.slotInstance.ownerId)?[n.slotInstance.ownerId]:[]));for(const n of primary.values())if(n.instanceRootId&&!copiedSlotOwners.has(n.instanceRootId)&&all.get(all.get(n.instanceRootId)?.componentId??'')?.componentMetadata?.slots?.length)orphanSlotOwners.add(n.instanceRootId);for(const n of primary.values()){if(n.slotInstance&&orphanSlotOwners.has(n.slotInstance.ownerId))delete n.slotInstance;if(n.instanceRootId&&orphanSlotOwners.has(n.instanceRootId)){delete n.instanceRootId;delete n.sourceId;delete n.componentKey;delete n.overrideKeys;}}
  const queue=[...primary.values()],visited=new Set<string>(),swapIds=swapPropertyIds(allNodes(source));
  for(let i=0;i<queue.length;i++){
   const n=queue[i];if(visited.has(n.id))continue;visited.add(n.id);if(visited.size>20000)throw Error('Clipboard supports at most 20,000 layers including dependencies.');
@@ -82,7 +84,7 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  if(records.codeBlocks?.length){doc.workspace='whiteboard';warnings.push('Code-block editing is retained in Whiteboards. Design and Slides copies receive ordinary editable frame and text layers.');}
  doc.whiteboard={...emptyWhiteboard(),...(records.codeBlocks?{codeBlocks:records.codeBlocks}:{}),stickies:records.stickies,tables:records.tables,connectors:records.connectors,mindMaps:records.mindMaps,drawings:records.drawings};
  doc.fonts=selectFontAssets(source.fonts??[],[...textFontRequests(nodes),...(doc.styles??[]).filter(s=>s.type==='text').flatMap(s=>explicitFontFamilies(s.value).map(family=>({family,weight:s.value.fontAxes?.wght??s.value.fontWeight??400,style:s.value.fontStyle==='italic'||(s.value.fontAxes?.ital??0)>=.5?'italic' as const:'normal' as const}))) ]);
- roots.splice(0,roots.length,...doc.pages[0].nodes.filter(n=>!n.parentId).map(n=>n.id));limit(doc);closedReferences(doc);const payload:DesignClipboard={format:'forma-clipboard',version:1,project:parseDocument(JSON.stringify(doc)),roots,origin:parent?point(worldMatrix(parent,page.nodes),0,0):{x:0,y:0},warnings:[...new Set(warnings)],slideRoles:Object.fromEntries((source.slides?.slides??[]).flatMap(s=>Object.entries(s.roles)).filter(([id])=>primary.has(id)))};bounded(JSON.stringify(payload));return payload;
+ hydrateLegacyInstances(doc);roots.splice(0,roots.length,...doc.pages[0].nodes.filter(n=>!n.parentId).map(n=>n.id));limit(doc);closedReferences(doc);const payload:DesignClipboard={format:'forma-clipboard',version:1,project:parseDocument(JSON.stringify(doc)),roots,origin:parent?point(worldMatrix(parent,page.nodes),0,0):{x:0,y:0},warnings:[...new Set(warnings)],slideRoles:Object.fromEntries((source.slides?.slides??[]).flatMap(s=>Object.entries(s.roles)).filter(([id])=>primary.has(id)))};bounded(JSON.stringify(payload));return payload;
 }
 export function parseDesignClipboard(raw:string):DesignClipboard{
  bounded(raw);const value=JSON.parse(raw) as DesignClipboard;if(value?.format!=='forma-clipboard'||value.version!==1)throw Error('This clipboard format is not supported.');
@@ -93,7 +95,7 @@ export function parseDesignClipboard(raw:string):DesignClipboard{
 /** Mutates a draft only; callers validate the complete result before committing it. */
 export function pasteDesignClipboard(destination:DesignDocument,pageId:string,payload:DesignClipboard,parentId?:string,reuseLocallyProvenReferences=false){
  const source=parseDesignClipboard(JSON.stringify(payload));hydrateLegacyInstances(destination);const page=destination.pages.find(p=>p.id===pageId);if(!page)throw Error('The destination page no longer exists.');const parent=page.nodes.find(n=>n.id===parentId);
- if(parentId&&(!parent||!['frame','group','section','component'].includes(parent.type)||parent.instanceRootId||isLocked(parent,page.nodes)))throw Error('Choose an unlocked container outside instances.');
+ if(parentId&&(!parent||!['frame','group','section','component'].includes(parent.type)||parent.instanceRootId&&!editableSlotContainer(parent,page.nodes)||isLocked(parent,page.nodes)))throw Error('Choose an unlocked container outside instances.');
  // The caller may prove an exact earlier local Copy from this editing session. A payload's
  // document ID alone is never authority to reuse coincident destination identifiers.
  const doc=source.project,reused=new Set<string>(),existingNodes=new Map(allNodes(destination).map(n=>[n.id,n]));

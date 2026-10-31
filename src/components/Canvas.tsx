@@ -1,4 +1,5 @@
 import {validateDocumentCalligraphicStrokes} from '../calligraphic-stroke';
+import {editableSlotContainer} from '../component-slots';
 import {SelectionPolygon,SelectionRect} from './SelectionOutline';
 import TextPathCanvasEditor from './TextPathCanvasEditor';
 import {validateDocumentTextPaths} from '../text-path';
@@ -113,7 +114,7 @@ export default function Canvas(){
  else if(s.tool==='pen'){if(pen.length>2&&Math.hypot(p.x-pen[0].x,p.y-pen[0].y)<7/s.zoom){completePen(true);return;}setPen([...pen,{...p,mode:'mirrored'}]);drag.current={docId:s.doc.id,pageId:s.pageId,sourceNodes:page.nodes,context:captureGesture(),kind:'pen-handle',start:p,screen:{x:e.clientX,y:e.clientY},nodes:page.nodes,ids:[],pan:s.pan};svg.current!.setPointerCapture(e.pointerId);return;}
  else if(!['move','scale'].includes(s.tool)){
  const type:NodeKind=s.tool==='pencil'?'path':s.tool as NodeKind,creationNodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;
- const parent=creationNodes.filter(n=>{if(!['frame','section','component'].includes(n.type)||n.instanceRootId||isLocked(n,creationNodes)||!effectiveVisible(n,creationNodes))return false;try{const local=canvasPointInNode(n,creationNodes,p);return local.x>=0&&local.y>=0&&local.x<n.width&&local.y<n.height;}catch{return false;}}).at(-1);
+ const parent=creationNodes.filter(n=>{if(!['frame','section','component'].includes(n.type)||n.instanceRootId&&!editableSlotContainer(n,creationNodes)||isLocked(n,creationNodes)||!effectiveVisible(n,creationNodes))return false;try{const local=canvasPointInNode(n,creationNodes,p);return local.x>=0&&local.y>=0&&local.x<n.width&&local.y<n.height;}catch{return false;}}).at(-1);
  const local=parent?canvasPointInNode(parent,creationNodes,p):p;
  const draft=node(type,{...drawingDefaults(type),x:local.x+(parent?.x??0),y:local.y+(parent?.y??0),width:0,height:0,parentId:parent?.id??null,...(type==='path'?{points:[{x:0,y:0}],fill:'none'}:{})});
  drag.current={docId:s.doc.id,pageId:s.pageId,sourceNodes:page.nodes,context:captureGesture(),kind:s.tool==='pencil'?'pencil':'create',start:p,screen:{x:e.clientX,y:e.clientY},nodes:creationNodes,ids:[],draft,pan:s.pan};

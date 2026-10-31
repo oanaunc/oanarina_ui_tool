@@ -1,0 +1,9 @@
+.component-slots,.component-slots fieldset,.component-slots section,.component-slots ul,.component-slots li{min-width:0;min-inline-size:0;max-width:100%;box-sizing:border-box}
+.component-slots{margin:12px 0;overflow-wrap:anywhere}
+.component-slots summary{cursor:pointer;font-weight:600;padding:8px 0}
+.component-slots section{padding:8px 0;border-top:1px solid var(--line)}
+.component-slots h4,.component-slots p,.component-slots label{overflow-wrap:anywhere;max-width:100%}
+.component-slots input,.component-slots select{min-width:0;max-width:100%;box-sizing:border-box}
+.component-slots button{white-space:normal;overflow-wrap:anywhere;max-width:100%;min-width:0;height:auto;min-height:28px}
+.component-slots .button-row{display:flex;flex-wrap:wrap;min-width:0;max-width:100%}
+.component-slots ul{margin:8px 0;padding-left:16px}
