@@ -532,7 +532,7 @@ extension Studio {
                 self.invoke(edit,"native-sample-color")
                 self.page(document,"return await wait(()=>[...document.querySelectorAll('[role=status]')].map(e=>e.textContent).find(t=>t.startsWith('Sampled ')),'sampled toast');"){value in
                     self.check((value as? String)?.contains("#336699")==true,"with no color picker open the sampled color goes to recent colors")
-                    self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await wait(()=>find('Sample canvas color'),'color picker');return \(fill);"){before in
+                    self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await wait(()=>document.querySelector('.paint-color-chip'),'color chip');document.querySelector('.paint-color-chip').click();await wait(()=>find('Sample canvas color'),'color picker');return \(fill);"){before in
                         self.invoke(edit,"native-sample-color")
                         self.page(document,"await wait(()=>\(fill)==='rgb(51, 102, 153)','sampled fill',4000);click('Sample screen color');await wait(()=>document.body.textContent.includes('Sample Screen Color'),'in-page guidance');await window.__studioCommand('undo');await wait(()=>\(fill)===\(self.json(before as? String ?? "")),'one undo',4000);return true;"){_ in
                             self.check(true,"the sampled color fills the open color picker's target with one Undo")
@@ -547,7 +547,7 @@ extension Studio {
         let fill="getComputedStyle(document.querySelector('#forma-design-canvas [data-node-id=\"accept-rect\"] rect, #forma-design-canvas [data-node-id=\"accept-rect\"] path')).fill"
         smokeScreenColor=NSColor(colorSpace:.displayP3,components:[0,1,0,1],count:4)
         loadDocument(document,acceptanceDocument("accept-sampler-p3","Sampler P3",extra:["colorProfile":"display-p3"])){
-            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await wait(()=>find('Sample canvas color'),'color picker');return true;"){_ in
+            self.page(document,"document.querySelector('[data-layer-id=\"accept-rect\"]').click();await wait(()=>document.querySelector('.paint-color-chip'),'color chip');document.querySelector('.paint-color-chip').click();await wait(()=>find('Sample canvas color'),'color picker');return true;"){_ in
                 self.invoke(edit,"native-sample-color")
                 self.page(document,"return await wait(()=>\(fill).startsWith('color(display-p3 0 1 0'),'wide sampled fill',4000);"){_ in
                     self.check(true,"a Display P3 file keeps the wide sampled coordinates instead of a clipped sRGB copy")
@@ -709,7 +709,7 @@ extension Studio {
             self.page(document,"const r=document.querySelector('#forma-design-canvas').getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2];"){value in
                 guard let at=value as? [Double] else{self.smokeFail("canvas point")}
                 self.dropOnWindow(document,[file],x:CGFloat(at[0]),y:CGFloat(at[1]))
-                self.page(document,"await wait(()=>find('Open PDF pages as project')&&!find('Open PDF pages as project').disabled,'PDF review from the real parser worker',15000);click('Open PDF pages as project');await wait(()=>document.querySelector('#forma-design-canvas pattern image, #forma-design-canvas image'),'PDF page image',10000);return document.title;"){_ in
+                self.page(document,"await wait(()=>find('Open PDF pages as project')&&!find('Open PDF pages as project').disabled,'PDF review from the real parser worker',15000);click('Open PDF pages as project');await wait(()=>[...document.querySelectorAll('#forma-design-canvas [data-node-id] *')].some(e=>getComputedStyle(e).fill==='rgb(255, 0, 0)'),'PDF page shape',10000);return document.title;"){_ in
                     self.check(true,"a PDF dropped from Finder runs its parser worker in WKWebView and opens its page image after review")
                     done()
                 }
