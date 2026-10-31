@@ -27,7 +27,7 @@ Plurals use `Intl.PluralRules`. A catalog keys the English plural and may give e
 
 ## Coverage
 
-Coverage is measured, not estimated. `tests/i18n.test.ts` counts `t()` calls with a Romanian entry against JSX text and label attributes still written directly in `src`. At this writing that is 448 of 2,531 occurrences, or 17.7%. Every command, menu group and toolbar tool is translated. Preferences, the action palette, Home, file information, text search, shortcut help and the keyboard dialogs are translated, and `tests/e2e/localization.spec.ts` fails if a catalog string appears there in English. Inspector panels, canvas and layer context menus, the document outline's rows, toasts, most validation messages and long-form dialogs such as Figma transfer stay in English.
+Coverage is measured, not estimated. `tests/i18n.test.ts` counts `t()` calls with a Romanian entry against JSX text and label attributes still written directly in `src`. At this writing that is 446 of 2,529 occurrences, or 17.6%. Every command, menu group and toolbar tool is translated. Preferences, the action palette, Home, file information, text search, shortcut help and the keyboard dialogs are translated, and `tests/e2e/localization.spec.ts` fails if a catalog string appears there in English. Inspector panels, canvas and layer context menus, the document outline's rows, toasts, most validation messages and long-form dialogs such as Figma transfer stay in English.
 
 The Mac menu bar is native and defined in `macos/main.swift`. It stays in English, so localized menu text applies to the web menu bar only. The Romanian and Arabic catalogs were written for this project and have not had native-speaker review. Arabic is labeled as a preview.
 

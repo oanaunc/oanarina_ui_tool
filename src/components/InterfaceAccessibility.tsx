@@ -1,4 +1,5 @@
 import {useEffect,useLayoutEffect,useRef,useState} from 'react';
+import {useEditor} from '../store';
 import {applyDocumentLanguage,watchLanguage} from '../i18n';
 import {watchInterfaceAccessibility} from '../interface-accessibility';
 import {watchDialogFocus,watchPanelNavigation} from '../focus-management';
@@ -26,6 +27,6 @@ function ErrorAnnouncer(){const [message,setMessage]=useState('');useEffect(()=>
 export default function InterfaceAccessibility(){
  useLayoutEffect(()=>watchLanguage(language=>applyDocumentLanguage(language)),[]);
  useLayoutEffect(()=>watchInterfaceAccessibility(),[]);
- useEffect(()=>{const offDialogs=watchDialogFocus(),offPanels=watchPanelNavigation();return()=>{offDialogs();offPanels();};},[]);
+ useEffect(()=>{const offDialogs=watchDialogFocus(document,()=>useEditor.getState().doc.id),offPanels=watchPanelNavigation();return()=>{offDialogs();offPanels();};},[]);
  return <><FocusTooltip/><ErrorAnnouncer/></>;
 }

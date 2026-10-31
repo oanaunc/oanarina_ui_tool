@@ -16,7 +16,7 @@ test('F6 reaches the Slides workspace',async({page})=>{
  await page.keyboard.press('F6');await page.keyboard.press('F6');expect(await page.evaluate(()=>!!document.activeElement?.closest('.slides-workspace'))).toBe(true);await page.keyboard.press('F6');expect(await page.evaluate(()=>!!document.activeElement?.closest('.menubar'))).toBe(true);
 });
 test('F6 skips a collapsed sidebar',async({page})=>{
- await start(page);await page.getByRole('button',{name:'Hide layers sidebar'}).click();const seen:string[]=[];for(let i=0;i<4;i++){await page.keyboard.press('F6');seen.push(await region(page));}expect(seen).not.toContain('left');
+ await start(page);await page.getByRole('button',{name:'Hide layers sidebar'}).click();await expect(page.getByRole('button',{name:'Show layers sidebar'})).toBeFocused();const seen:string[]=[];for(let i=0;i<4;i++){await page.keyboard.press('F6');seen.push(await region(page));}expect(seen).not.toContain('left');
 });
 test('the menu bar is one tab stop with arrow, Home, End and Escape keys',async({page})=>{
  await start(page);await page.keyboard.press('F6');const file=page.getByRole('menuitem',{name:'File',exact:true}),edit=page.getByRole('menuitem',{name:'Edit',exact:true}),help=page.getByRole('menuitem',{name:'Help',exact:true});await expect(file).toBeFocused();
@@ -27,12 +27,16 @@ test('the menu bar is one tab stop with arrow, Home, End and Escape keys',async(
  await page.keyboard.press('Escape');await expect(page.getByRole('menu',{name:'Edit'})).toHaveCount(0);await expect(edit).toBeFocused();
  await page.keyboard.press('Enter');await expect(page.getByRole('menu',{name:'Edit'})).toBeVisible();await page.keyboard.press('ArrowDown');await page.keyboard.press('Tab');await expect(page.getByRole('menu',{name:'Edit'})).toHaveCount(0);
 });
+test('dialogs pull stray focus back and leave a deliberate close alone',async({page})=>{
+ await start(page);await page.getByRole('button',{name:'Search actions'}).click();await page.keyboard.press('Escape');await page.keyboard.press('Meta+,');const dialog=page.getByRole('dialog').first();await expect(dialog).toBeVisible();
+ await page.getByRole('button',{name:'Open files'}).evaluate(el=>(el as HTMLElement).focus());await expect.poll(()=>page.evaluate(()=>!!document.activeElement?.closest('[role=dialog]'))).toBe(true);
+});
 test('activating a menu item by keyboard runs its command',async({page})=>{
  await start(page);await page.keyboard.press('F6');await page.keyboard.press('ArrowDown');await page.keyboard.press('ArrowUp');await expect(page.getByRole('menuitem',{name:/^Preferences/})).toBeFocused();await page.keyboard.press('Enter');await expect(page.getByRole('heading',{name:'Preferences'})).toBeVisible();
 });
 test('Tab order follows the screen, and F6 leaves the canvas where Tab selects siblings',async({page})=>{
- await start(page);const seen:string[]=[];
- for(let i=0;i<300;i++){await page.keyboard.press('Tab');const now=await region(page);if(seen.at(-1)!==now)seen.push(now);if(now==='canvas')break;}
+ await start(page);await page.waitForTimeout(500);const seen:string[]=[];
+ for(let i=0;i<300;i++){await page.keyboard.press('Tab');const now=await region(page);if(seen.at(-1)!==now&&now!=='body')seen.push(now);if(now==='canvas')break;}
  expect(seen).toEqual(['topbar','menubar','left','canvas']);
  await page.keyboard.press('Tab');expect(await region(page)).toBe('canvas');await page.keyboard.press('F6');expect(await region(page)).toBe('toolbar');await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:/^Help for/})).toBeFocused();await page.keyboard.press('Tab');expect(await region(page)).toBe('right');
  await page.keyboard.press('Shift+Tab');await page.keyboard.press('Shift+Tab');expect(await region(page)).toBe('toolbar');
