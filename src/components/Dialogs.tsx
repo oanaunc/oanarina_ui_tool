@@ -7,6 +7,7 @@ import FigmaRestReview from './FigmaRestReview';
 import FigmaRestImportButton from './FigmaRestImportButton';
 import LocalNavigationLinks from './LocalNavigationLinks';
 import VersionHistory from './VersionHistory';
+import BranchesDialog from './BranchesDialog';
 import SaveVersion from './SaveVersion';
 import DocumentCoverDialog from './DocumentCoverDialog';
 import ShortcutHelp from './ShortcutHelp';
@@ -64,6 +65,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  const close=()=>{if(modal==='fig-import-report')clearFigImportReport();if(modal==='svg-import')cancelSvgImport();else s.set({modal:null});};
  if(modal==='text-search')return <TextSearch key={s.doc.id}/>;
  if(modal==='move-to-page')return <MoveLayersDialog/>;
+ if(modal==='branches')return <BranchesDialog key={s.doc.id}/>;
  if(modal==='history')return <VersionHistory key={s.doc.id}/>;
  if(modal==='present')return <PrototypePresentation/>;
  if(modal==='file-cover')return <DocumentCoverDialog/>;

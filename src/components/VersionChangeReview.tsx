@@ -5,13 +5,13 @@ import type {VersionComparisonOptions} from '../version-review';
 import DocumentCoverPreview from './DocumentCoverPreview';
 
 /** Local, read-only comparison. Filters retain labels only, never artwork values. */
-export default function VersionChangeReview({older,current,pageId}:{older:DesignDocument;current:DesignDocument;pageId:string}){
+export default function VersionChangeReview({older,current,pageId,heading='Saved version → current design'}:{older:DesignDocument;current:DesignDocument;pageId:string;heading?:string}){
  const [query,setQuery]=useState(''),[kind,setKind]=useState<NonNullable<VersionComparisonOptions['kind']>>('all'),[view,setView]=useState<VersionComparisonOptions>({limit:50});
  const report=useMemo(()=>{try{return {comparison:compareVersionDocuments(older,current,view)};}catch(e){return {error:e instanceof Error?e.message:String(e)};}},[older,current,view]);
  const page=current.pages.find(p=>p.id===pageId),preview=useMemo(()=>page?{...current,pages:[page],fileCover:undefined}:undefined,[current,page]);
  if(report.error)return <p role="alert">{report.error}</p>;
  const c=report.comparison!;
- return <section aria-label="Version change summary"><h4>Saved version → current design</h4>
+ return <section aria-label="Version change summary"><h4>{heading}</h4>
   <p>{c.added} layers added · {c.removed} removed · {c.changed} changed ({c.moved} moved between pages).</p>
   <p>{c.pagesAdded} pages added · {c.pagesRemoved} removed · {c.pagesChanged} with changed settings, names, comments or layer ordering.</p>
   <p>Document changes: {c.documentFields.length?c.documentFields.join(', '):'none'}.</p>
