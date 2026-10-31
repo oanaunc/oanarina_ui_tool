@@ -20,11 +20,13 @@ export function layerStatusMatches(page:Page,status:LayerStatusFilter){
  const nodes=page.nodes,ids=new Set<string>();if(status==='all')return new Set(nodes.map(n=>n.id));
  if(status==='comments'&&page.comments.length>10_000)throw Error('The layer comment filter supports up to 10,000 pins per page. Use the Comments list to inspect this legacy page.');
  const flowIds=new Set(page.flows?.map(f=>f.frameId)??[]),lookup=status==='comments'?commentAnchorLookup(nodes):undefined,pins=status==='comments'?page.comments.map(c=>commentPosition(c,lookup!)).sort((a,b)=>a.x-b.x):[];let checks=0;if(pins.some(p=>!p.valid))throw Error('Some saved comment positions cannot be displayed. Use the Comments list to inspect them before filtering layers.');
+ const anchored=new Set(status==='comments'?page.comments.flatMap(c=>c.anchor?[c.anchor.nodeId]:[]):[]);
  const firstPin=(x:number)=>{let low=0,high=pins.length;while(low<high){const mid=(low+high)>>>1;if(pins[mid].x<x)low=mid+1;else high=mid;}return low;};
  for(const n of nodes){let match=false;
   if(status==='exportable')match=n.type==='slice'||!!n.exportSettings?.length;
   else if(status==='ready'||status==='completed')match=effectiveDevelopmentStatus(n)===status;
   else if(status==='prototype')match=!!n.targetId||!!n.reactions?.some(r=>r.actions.length)||flowIds.has(n.id);
+  else if(status==='comments'&&anchored.has(n.id))match=true;
   else if(status==='comments'&&pins.length){const matrix=lookup!.matrix(n.id);if(!matrix)throw Error('Comment intersection cannot inspect this hierarchy within its transform limits. Use the Comments list.');try{const inverse=inverseMatrix(matrix),corners=[[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(matrix,x,y)),minX=Math.min(...corners.map(p=>p.x)),maxX=Math.max(...corners.map(p=>p.x)),minY=Math.min(...corners.map(p=>p.y)),maxY=Math.max(...corners.map(p=>p.y));for(let i=firstPin(minX);i<pins.length&&pins[i].x<=maxX;i++){if(++checks>2_000_000)throw Error('The comment intersection filter exceeds its two-million-candidate limit. Narrow this page before filtering.');const c=pins[i];if(c.y<minY||c.y>maxY)continue;const p=point(inverse,c.x,c.y);if(p.x>=-1e-7&&p.y>=-1e-7&&p.x<=n.width+1e-7&&p.y<=n.height+1e-7){match=true;break;}}}catch(error){if(error instanceof Error&&error.message.includes('candidate limit'))throw error;/* Degenerate transforms contain no inspectable pin area. */}}
   if(match)ids.add(n.id);
  }

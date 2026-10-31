@@ -1,0 +1,18 @@
+import {assetFolder,styleFolderPaths} from './asset-usage';
+import {addVariable,removeVariable} from './design-systems';
+import type {VariableType} from './design-systems';
+import type {DesignDocument} from './model';
+export interface VariableGroup {path:string[];key:string;name:string;depth:number;own:number;total:number;}
+export const groupKey=(path:readonly string[])=>JSON.stringify(path);
+const collectionVariables=(d:Pick<DesignDocument,'variables'>,id:string)=>(d.variables??[]).filter(v=>v.collectionId===id);
+const within=(name:string,path:readonly string[])=>{const folder=assetFolder(name);return path.every((part,i)=>folder[i]===part);};
+/** A group exists only through slash-separated variable names: there is no second source of truth to migrate. */
+export function variableGroups(d:Pick<DesignDocument,'variables'>,collectionId:string):VariableGroup[]{const names=collectionVariables(d,collectionId).map(v=>v.name);return styleFolderPaths(names).map(path=>({path,key:groupKey(path),name:path.at(-1)!,depth:path.length-1,own:names.filter(n=>assetFolder(n).length===path.length&&within(n,path)).length,total:names.filter(n=>within(n,path)).length}));}
+function retarget(d:DesignDocument,collectionId:string,from:readonly string[],to:readonly string[]){const list=collectionVariables(d,collectionId).filter(v=>within(v.name,from));if(!list.length)throw Error('This variable group no longer exists.');if(to.length>from.length&&from.every((part,i)=>to[i]===part)&&from.length>0)throw Error('A group cannot move inside itself.');const moved=new Map(list.map(v=>{const parts=v.name.split('/').map(s=>s.trim()).filter(Boolean);return [v.id,[...to,...parts.slice(from.length)].join('/')] as const;})),others=new Set(collectionVariables(d,collectionId).filter(v=>!moved.has(v.id)).map(v=>v.name)),seen=new Set<string>();for(const name of moved.values()){if(others.has(name)||seen.has(name))throw Error(`A variable named ${name} already exists in this collection.`);seen.add(name);}for(const v of list)v.name=moved.get(v.id)!;}
+export function renameVariableGroup(d:DesignDocument,collectionId:string,path:readonly string[],raw:string){const name=raw.trim();if(!name||name.includes('/'))throw Error('Rename one group level. Use Move group to change its parent.');retarget(d,collectionId,path,[...path.slice(0,-1),name]);}
+export function moveVariableGroup(d:DesignDocument,collectionId:string,path:readonly string[],parent:readonly string[]){if(!path.length)throw Error('Choose a variable group.');retarget(d,collectionId,path,[...parent,path.at(-1)!]);}
+/** Lift the group's contents one level, keeping their variables and every binding. */
+export function ungroupVariables(d:DesignDocument,collectionId:string,path:readonly string[]){if(!path.length)throw Error('Choose a variable group.');retarget(d,collectionId,path,path.slice(0,-1));}
+export function addVariableToGroup(d:DesignDocument,collectionId:string,type:VariableType,path:readonly string[]){const base='New variable',names=new Set(collectionVariables(d,collectionId).map(v=>v.name));let index=1,name=[...path,base].join('/');while(names.has(name))name=[...path,base+' '+(++index)].join('/');return addVariable(d,collectionId,type,name);}
+export function deleteVariableGroup(d:DesignDocument,collectionId:string,path:readonly string[]){if(!path.length)throw Error('Choose a variable group.');const list=collectionVariables(d,collectionId).filter(v=>within(v.name,path));if(!list.length)throw Error('This variable group no longer exists.');for(const v of list)removeVariable(d,v.id);return list.length;}
+export const inVariableGroup=(name:string,path:readonly string[]|null)=>path===null||within(name,path);

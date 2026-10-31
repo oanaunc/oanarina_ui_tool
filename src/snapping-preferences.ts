@@ -1,6 +1,6 @@
 import type {EditorPreferences} from './preferences';
 import {defaultPreferences} from './preferences';
-import {defaultSnapping,snapMove} from './guides';
+import {defaultSnapping,pixelSnapUnit,snapMove} from './guides';
 import type {SnapPreferences,GuideLine} from './guides';
 import type {DesignNode} from './model';
 import {snapVectorPoint} from './vector-snapping';
@@ -18,7 +18,7 @@ export function effectiveSnapping(document:Partial<SnapPreferences>|undefined,lo
 /** Default/follow-document preserves legacy unsnapped drawing and vector-pixel behavior. */
 export function snapExplicitPixel(position:{x:number;y:number},document:Partial<SnapPreferences>|undefined,local:Readonly<LocalSnapping>){
  if(document?.enabled===false||local.pixelSnapping==='document'||local.pixelSnapping==='none')return position;
- const unit=local.pixelSnapping==='half'?.5:1;return {x:Math.round(position.x/unit)*unit,y:Math.round(position.y/unit)*unit};
+ const unit=pixelSnapUnit(local.pixelSnapping);return {x:Math.round(position.x/unit)*unit,y:Math.round(position.y/unit)*unit};
 }
 /** Explicit local overrides opt drawing endpoints into existing object/vector solvers. */
 export function snapDrawingEndpoint(o:{position:{x:number;y:number};nodes:DesignNode[];zoom:number;document?:Partial<SnapPreferences>;local:Readonly<LocalSnapping>;geometry?:VectorSnapIndex;disabled?:boolean}):{point:{x:number;y:number};lines:GuideLine[]}{

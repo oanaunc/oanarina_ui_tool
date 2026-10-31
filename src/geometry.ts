@@ -4,6 +4,8 @@ import {refuseVariableWidthConversion} from './variable-width';
 import {roundedPolygonPath} from './basic-shapes';
 import paper from 'paper/dist/paper-core.js';
 import {bounds,descendants} from './model';
+import {multiply,nodeMatrix,transformFromMatrix} from './transforms';
+import type {Matrix} from './transforms';
 import type {DesignNode,VectorPoint,VectorContour} from './model';
 const scope=new paper.PaperScope();scope.setup(new scope.Size(1,1));
 const number=(v:number)=>Math.round(v*100000)/100000;
@@ -41,15 +43,29 @@ export function geometry(n:DesignNode):paper.PathItem {
  p.translate(new scope.Point(n.x,n.y));if(n.rotation)p.rotate(n.rotation,new scope.Point(n.x+n.width/2,n.y+n.height/2));return p;
 }
 export function pathProperties(p:paper.PathItem):Partial<DesignNode>{const b=p.bounds,x=b.x,y=b.y,width=Math.max(.001,b.width),height=Math.max(.001,b.height);p.translate(new scope.Point(-x,-y));return {type:'path',cornerSmoothing:undefined,x,y,width,height,pathWidth:width,pathHeight:height,path:p.pathData,points:[],contours:undefined,closed:undefined,rotation:0,flipX:false,flipY:false,motionScaleX:undefined,motionScaleY:undefined};}
-export function combineGeometry(nodes:DesignNode[],op:'union'|'subtract'|'intersect'|'exclude'){
- if(!nodes.length)throw Error('Select vector shapes.');for(const n of nodes)refuseVariableWidthConversion(n);let result=geometry(nodes[0]);
- for(const n of nodes.slice(1)){const other=geometry(n);const previous=result;result=op==='union'?result.unite(other,{insert:false}):op==='subtract'?result.subtract(other,{insert:false}):op==='intersect'?result.intersect(other,{insert:false}):result.exclude(other,{insert:false});previous.remove();other.remove();}
- return result;
+const plainGroup=(n:DesignNode)=>n.type==='group'&&!n.booleanOp;
+const childOperands=(n:DesignNode,nodes:DesignNode[])=>nodes.filter(c=>c.parentId===n.id&&c.visible);
+const boolean=(a:paper.PathItem,b:paper.PathItem,op:NonNullable<DesignNode['booleanOp']>)=>{const out=op==='union'?a.unite(b,{insert:false}):op==='subtract'?a.subtract(b,{insert:false}):op==='intersect'?a.intersect(b,{insert:false}):a.exclude(b,{insert:false});a.remove();b.remove();return out;};
+/** A plain group contributes the union of its visible subtree through its own transform; an empty group contributes nothing. */
+function operandGeometry(n:DesignNode,nodes:DesignNode[],depth=0):paper.PathItem|null{if(depth>256)throw Error('Boolean operands are nested too deeply.');if(!plainGroup(n)){refuseVariableWidthConversion(n);return geometry(n);}let result:paper.PathItem|null=null;for(const child of childOperands(n,nodes)){const other=operandGeometry(child,nodes,depth+1);if(other)result=result?boolean(result,other,'union'):other;}if(result){const m=multiply(nodeMatrix(n),[1,0,0,1,-n.x,-n.y]);scope.activate();result.transform(new scope.Matrix(m[0],m[1],m[2],m[3],m[4],m[5]));}return result;}
+function combineOperands(nodes:DesignNode[],op:NonNullable<DesignNode['booleanOp']>,context:DesignNode[]){let result:paper.PathItem|null=null;for(const n of nodes){const other=operandGeometry(n,context);if(!other)continue;result=result?boolean(result,other,op):other;}return result;}
+export function combineGeometry(nodes:DesignNode[],op:'union'|'subtract'|'intersect'|'exclude',context=nodes){
+ if(!nodes.length)throw Error('Select vector shapes.');const result=combineOperands(nodes,op,context);if(!result)throw Error('Select vector shapes.');return result;
 }
-export function updateBooleans(nodes:DesignNode[]){
- for(const parent of nodes.filter(n=>n.booleanOp).reverse()){
-  const children=nodes.filter(n=>n.parentId===parent.id&&n.visible);if(!children.length){parent.path='';continue;}
-  const result=combineGeometry(children,parent.booleanOp!);const props=pathProperties(result);Object.assign(parent,props);result.remove();
+const emptyBoolean=(parent:Pick<DesignNode,'x'|'y'|'width'|'height'>):Partial<DesignNode>=>({type:'path',path:'',points:[],contours:undefined,closed:undefined,x:parent.x,y:parent.y,width:Math.max(.001,parent.width),height:Math.max(.001,parent.height),pathWidth:Math.max(.001,parent.width),pathHeight:Math.max(.001,parent.height),rotation:0,flipX:false,flipY:false,motionScaleX:undefined,motionScaleY:undefined});
+/** Result properties; an empty result (for example a disjoint intersection) keeps the fallback box so its layer stays selectable. */
+export function booleanResultProperties(result:paper.PathItem,fallback:Pick<DesignNode,'x'|'y'|'width'|'height'>){return result.isEmpty()?emptyBoolean(fallback):pathProperties(result);}
+/** The result takes the first operand's complete paint and stroke, including style and variable links. */
+export function booleanResultStyle(first:DesignNode,nodes:DesignNode[]):Partial<DesignNode>{let n=first;const seen=new Set<string>();while(plainGroup(n)&&!seen.has(n.id)){seen.add(n.id);n=childOperands(n,nodes)[0]??n;}const styleIds=Object.fromEntries(Object.entries(n.styleIds??{}).filter(([key])=>key==='paint'||key==='stroke')),variableBindings=Object.fromEntries(Object.entries(n.variableBindings??{}).filter(([key])=>/^(fill|stroke)/.test(key)));return structuredClone({fill:n.fill,stroke:n.stroke,strokeWidth:n.strokeWidth,...(n.paints?{paints:n.paints}:{}),...(n.strokes?{strokes:n.strokes}:{}),...(Object.keys(styleIds).length?{styleIds}:{}),...(Object.keys(variableBindings).length?{variableBindings}:{})});}
+const transformed=(a:DesignNode,b:DesignNode|undefined)=>!!b&&(['width','height','rotation','motionScaleX','motionScaleY'] as const).some(key=>(a[key]??0)!==(b[key]??0))||!!b&&(!!a.flipX!==!!b.flipX||!!a.flipY!==!!b.flipY);
+/** A Boolean's own transform is normalized away on every recompute, so a new one is baked into its operands. Sizes bake into shapes; a plain group keeps the scale on its subtree. */
+function bakeBooleanTransform(parent:DesignNode,nodes:DesignNode[]){const old=combineOperands(childOperands(parent,nodes),parent.booleanOp!,nodes);if(!old)return;const box=old.bounds;old.remove();if(box.width<=1e-9||box.height<=1e-9)return;const sx=parent.width/box.width,sy=parent.height/box.height,mapping:Matrix=multiply(multiply(nodeMatrix(parent),[sx,0,0,sy,0,0]),[1,0,0,1,-box.x,-box.y]);for(const child of nodes.filter(n=>n.parentId===parent.id)){const m=multiply(mapping,nodeMatrix(child)),a=Math.hypot(m[0],m[1]),b=Math.hypot(m[2],m[3]),bakes=!plainGroup(child)&&a>1e-9&&b>1e-9,target=bakes?{...child,width:child.width*a,height:child.height*b,motionScaleX:undefined,motionScaleY:undefined}:child,local:Matrix=bakes?[m[0]/a,m[1]/a,m[2]/b,m[3]/b,m[4],m[5]]:m,patch=transformFromMatrix(target,undefined,local),dx=patch.x!-child.x,dy=patch.y!-child.y,owned=new Set(descendants(nodes,[child.id]));for(const n of nodes)if(n.id!==child.id&&owned.has(n.id)){n.x+=dx;n.y+=dy;}Object.assign(child,bakes?{width:target.width,height:target.height}:{},patch);}}
+export function updateBooleans(nodes:DesignNode[],previous?:DesignNode[]){
+ const booleans=nodes.filter(n=>n.booleanOp);if(!booleans.length)return;const byId=new Map(nodes.map(n=>[n.id,n])),depth=(n:DesignNode)=>{let d=0,p=n.parentId?byId.get(n.parentId):undefined;while(p&&d<4096){d++;p=p.parentId?byId.get(p.parentId):undefined;}return d;},ordered=booleans.map(n=>({n,depth:depth(n)})).sort((a,b)=>a.depth-b.depth).map(entry=>entry.n);
+ if(previous)for(const parent of ordered)if(transformed(parent,previous.find(n=>n.id===parent.id&&n.booleanOp)))bakeBooleanTransform(parent,nodes);
+ for(const parent of [...ordered].reverse()){
+  const children=childOperands(parent,nodes);if(!children.length){parent.path='';continue;}
+  const result=combineOperands(children,parent.booleanOp!,nodes);if(!result){parent.path='';continue;}Object.assign(parent,booleanResultProperties(result,parent));result.remove();
  }
 }
 export function geometricArea(n:DesignNode){const p=geometry(n);if(p.fillRule==='evenodd')p.reorient(false);const a=Math.abs((p as paper.Path|paper.CompoundPath).area);p.remove();return a;}

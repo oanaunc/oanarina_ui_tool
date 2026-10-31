@@ -24,3 +24,11 @@ Limits: main canvas navigation is available in Design and Whiteboard documents; 
 Validation: 17 new core tests cover validation, atomic refusal, synchronization, override/reset, copying, variants, lock/cycle safety and Bridge API-contract omission behavior. Nine browser checks cover manager-to-inspector flows, actual artwork swaps, cross-page navigation, descriptions, accessibility and save/reopen/undo. The Bridge checks use a mock and are not real Figma acceptance.
 
 Source validation passed `npm test` (843 tests in 79 files), TypeScript compilation, all nine component-workflow browser checks and the existing mock-exported-instance Bridge interaction. The separate browser test **“the downloadable bridge archive contains the current component transfer implementation”** does not pass: the frozen downloadable ZIP predates current source. Regenerating that resource is deferred under the user's instruction to implement remaining features before producing more builds or packages. No ZIP or native release was generated for this change.
+
+## Multiple selected instances
+
+When two or more instance roots are selected, up to 200, the inspector replaces the single-instance controls with **Shared instance properties**, so an edit never lands on the first layer alone. Properties appear when every selected instance's main has one with the same name and type; a value that differs shows as Mixed. Variant axes appear when every instance belongs to a set with that axis, and only values every set offers are listed. Each change applies through the per-instance property and swap validation inside one edit, so one Undo restores all of them and any refused instance, such as a locked one, refuses the whole change. A selection mixing instances with other layers shows no component controls.
+
+## Property values across a swap
+
+Each main component owns its property IDs. A swap, including a variant change, copies each value to the new main's property with the same name and type. Values with no match stay stored, so swapping back restores them, while an edit made after the swap wins on the way back.

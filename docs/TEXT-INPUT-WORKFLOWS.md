@@ -31,3 +31,11 @@ Each fixed line occupies a fixed top-to-top advance; the actual baseline within 
 Meaningful core checks cover bounded token/search behavior, Unicode/style/paragraph preservation, plain-text validation/locks, SVG escaping, component synchronization/Undo, fixed and relative layout/overlap bounds, style mode clearing, Bridge refusal/mapping and linked overrides. MCP checks verify atomic refusal and Undo. Browser checks exercise accessible name/description, real picker and keyboard completion, cancellation, stale targets, unit conversion, glyph baselines/pixels, HTML clipboard and saved reopening. Source was frozen during browser runs.
 
 Status recommendations: UI22-040 implemented (reference verification pending); UI22-035 and UI22-042 partial with the catalog/OS limits above; UI22-055 implemented for multiplier/percent/fixed-pixel conversion (automatic mode and exact variable-rich-line parity are limits); UI22-054 remains planned.
+
+## Format shortcuts while typing
+
+Command or Control with B, I or U works inside the rich text editor and the canvas text editor. A selection formats exactly its characters; a mixed selection turns the format on first. A caret toggles the layer, like the Text menu command. Each shortcut commits any unsaved typing with the format as one Undo step, keeps the selection, and refuses on locked layers. Italic uses a real italic face when the family has one loaded, and browser synthesis otherwise.
+
+## Font style selection
+
+The Typography section's **Font style** select names the faces known for the family: catalog weights and italics, named instances across a variable `wght` range, and faces embedded in the project. It applies weight and italic together and always keeps the layer's current face selectable, including unusual numeric weights. Fonts installed on the Mac have no face list in the renderer, so they show Regular, Bold and their italics, and the numeric weight control stays available.

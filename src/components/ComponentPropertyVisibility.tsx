@@ -10,7 +10,7 @@ import {notifyError} from '../files';
 import {SwapOptions} from './ComponentWorkflowControls';
 
 /** Fresh rendered controls recover; any retained receipt stays permanently invalid. */
-function usePropertyProof(id:string,modal:string|null,isCurrent?:()=>boolean){const s=useEditor(),proof=useMemo(()=>({origin:captureColorContext(s),valid:true,id}),[s,id,modal,isCurrent]);
+export function usePropertyProof(id:string,modal:string|null,isCurrent?:()=>boolean){const s=useEditor(),proof=useMemo(()=>({origin:captureColorContext(s),valid:true,id}),[s,id,modal,isCurrent]);
  useLayoutEffect(()=>{proof.valid=sameColorContext(proof.origin,useEditor.getState());const off=useEditor.subscribe(live=>{if(!sameColorContext(proof.origin,live))proof.valid=false;});return()=>{proof.valid=false;off();};},[proof]);
  return ()=>{const live=useEditor.getState();if(isCurrent&&!isCurrent()||!proof.valid||!sameColorContext(proof.origin,live)||live.modal!==modal||live.mode!=='design'||live.home||live.uiHidden||live.motionOpen)throw Error('The component editing context changed. Review the current controls and retry.');return live;};
 }

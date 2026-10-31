@@ -33,7 +33,8 @@ import {EffectFilter} from './EffectFilter';
 import {scaledLocalPath} from '../geometry';
 import {textLines} from '../text-layout';
 import {fontSettings,positionedTextStyle} from '../rich-text';
-import {fillsFor,rasterGradient,strokesFor} from '../paints';
+import {fillsFor,strokesFor} from '../paints';
+import {ConicPaintDefinition} from './ConicPaintDefinition';
 import type {Paint,StrokeStyle} from '../paints';
 import type {DesignNode} from '../model';
 import {maskRegion,maskRuns,vectorPaintVisible} from '../masks';
@@ -41,10 +42,9 @@ import type {MaskMode} from '../masks';
 const directShaderFill=(p:Paint,n:DesignNode,profile:DocumentColorProfile|undefined)=>p.type==='shader'&&profile==='display-p3'&&!n.vectorNetwork;
 function paintValue(p:Paint,id:string,profile:DocumentColorProfile|undefined){return p.type==='solid'?displayColor(p.color,profile):`url(#${id})`;}
 function PaintDefinition({paint:p,id,n,strokeSpace=false,diagnosticKey,outset=0,direct=false}:{paint:Paint;id:string;n:DesignNode;strokeSpace?:boolean;diagnosticKey?:string;outset?:number;direct?:boolean}){
- const {profile}=useContext(ArtworkOutputContext);
  if(p.type==='shader')return <ShaderPaintDefinition paint={p} id={id} n={n} strokeSpace={strokeSpace} outset={outset} direct={direct}/>;
  if(p.type==='linear'||p.type==='radial')return <GradientPaintDefinition paint={p} id={id} width={n.width} height={n.height} userSpace={strokeSpace}/>;
- if(p.type==='angular'||p.type==='diamond')return <pattern id={id} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} patternUnits={strokeSpace?'userSpaceOnUse':undefined} patternContentUnits={strokeSpace?'userSpaceOnUse':'objectBoundingBox'}><image href={rasterGradient(p,profile)} width={strokeSpace?Math.max(.001,n.width):1} height={strokeSpace?Math.max(.001,n.height):1} preserveAspectRatio="none"/></pattern>;
+ if(p.type==='angular'||p.type==='diamond')return <ConicPaintDefinition paint={p} id={id} width={n.width} height={n.height} userSpace={strokeSpace}/>;
  if(p.type==='image')return <ImagePaintDefinition diagnosticKey={diagnosticKey} paint={p} id={id} width={strokeSpace?Math.max(1,n.width):n.width} height={strokeSpace?Math.max(1,n.height):n.height} userSpace={strokeSpace}/>;
  return null;
 }
