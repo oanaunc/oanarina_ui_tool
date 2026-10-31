@@ -1,3 +1,4 @@
+import {codeBlockRemovalSelection} from './whiteboard-code-blocks';
 import {remapAnnotations} from './layer-annotations';
 import {explicitFontFamilies} from './font-fallback';
 import {blankDocument,isLocked,node,parseDocument} from './model';
@@ -17,6 +18,7 @@ const clone=<T,>(value:T):T=>structuredClone(value);
 function bounded(raw:string){if(new TextEncoder().encode(raw).length>CLIPBOARD_LIMIT)throw Error('This selection exceeds the 20 MB clipboard limit. Copy fewer layers or use a .oui file.');}
 function limit(doc:DesignDocument){if(allNodes(doc).length>20000)throw Error('Clipboard supports at most 20,000 layers including dependencies.');}
 export function assertClipboardCutSafe(doc:DesignDocument,pageId:string,selection:string[]){
+ codeBlockRemovalSelection(doc,pageId,selection);
  const page=doc.pages.find(p=>p.id===pageId);if(!page)throw Error('The source page no longer exists.');if(page.nodes.some(n=>selection.includes(n.id)&&isLocked(n,page.nodes)))throw Error('Unlock the selected layers before cutting.');const copied=copyWhiteboardSelection(doc,pageId,selection),ids=new Set(copied.ids),mains=new Set(page.nodes.filter(n=>ids.has(n.id)&&n.type==='component').map(n=>n.id));
  if(!mains.size)return;const nodes=allNodes(doc),swaps=swapPropertyIds(nodes),references=(actions:NonNullable<DesignNode['reactions']>[number]['actions']):boolean=>actions.some(a=>mains.has(a.componentId??'')||(a.branches??[]).some(b=>references(b.actions)));
  const used=nodes.some(n=>!ids.has(n.id)&&(mains.has(n.componentId??'')||(n.componentMetadata?.properties??[]).some(p=>p.type==='instance-swap'&&mains.has(String(p.defaultValue)))||(swaps[n.componentId??'']??[]).some(id=>mains.has(String(n.propertyValues?.[id]??'')))||(n.reactions??[]).some(r=>references(r.actions))));
@@ -77,7 +79,8 @@ export function makeDesignClipboard(source:DesignDocument,pageId:string,selectio
  }
  if(source.componentLibraries?.some(l=>Object.values(l.maps.node).some(id=>ids.has(id))||Object.values(l.maps.style).some(id=>styleIds.has(id))||Object.values(l.maps.variable).some(id=>variableIds.has(id))||Object.values(l.maps.guide).some(id=>guideIds.has(id))))warnings.push('Library definitions are copied as local editable assets. Publication and update ownership are not transferred; existing shared bindings may remain linked when pasting within the same file.');
  const records=clone(copied.records),validConnectors=records.connectors.filter(c=>ids.has(c.fromId)&&ids.has(c.toId));if(validConnectors.length!==records.connectors.length)warnings.push('Connectors to uncopied objects are ordinary editable paths.');records.connectors=validConnectors;records.mindMaps=records.mindMaps.map(m=>({...m,connectorIds:m.connectorIds.filter(id=>validConnectors.some(c=>c.id===id))}));
- doc.whiteboard={...emptyWhiteboard(),stickies:records.stickies,tables:records.tables,connectors:records.connectors,mindMaps:records.mindMaps,drawings:records.drawings};
+ if(records.codeBlocks?.length){doc.workspace='whiteboard';warnings.push('Code-block editing is retained in Whiteboards. Design and Slides copies receive ordinary editable frame and text layers.');}
+ doc.whiteboard={...emptyWhiteboard(),...(records.codeBlocks?{codeBlocks:records.codeBlocks}:{}),stickies:records.stickies,tables:records.tables,connectors:records.connectors,mindMaps:records.mindMaps,drawings:records.drawings};
  doc.fonts=selectFontAssets(source.fonts??[],[...textFontRequests(nodes),...(doc.styles??[]).filter(s=>s.type==='text').flatMap(s=>explicitFontFamilies(s.value).map(family=>({family,weight:s.value.fontAxes?.wght??s.value.fontWeight??400,style:s.value.fontStyle==='italic'||(s.value.fontAxes?.ital??0)>=.5?'italic' as const:'normal' as const}))) ]);
  roots.splice(0,roots.length,...doc.pages[0].nodes.filter(n=>!n.parentId).map(n=>n.id));limit(doc);closedReferences(doc);const payload:DesignClipboard={format:'forma-clipboard',version:1,project:parseDocument(JSON.stringify(doc)),roots,origin:parent?point(worldMatrix(parent,page.nodes),0,0):{x:0,y:0},warnings:[...new Set(warnings)],slideRoles:Object.fromEntries((source.slides?.slides??[]).flatMap(s=>Object.entries(s.roles)).filter(([id])=>primary.has(id)))};bounded(JSON.stringify(payload));return payload;
 }

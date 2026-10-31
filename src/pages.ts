@@ -97,6 +97,6 @@ export function removeDocumentPage(input:DesignDocument,pageId:string):DesignDoc
  if(hasSplitMindMap(doc,ids))throw Error('This page shares a mind map with another page. Move the complete map onto one page before deleting.');
  doc.pages=doc.pages.filter(p=>p.id!==pageId);
  if(doc.componentSets)doc.componentSets=doc.componentSets.filter(s=>!ids.has(s.containerId));
- if(doc.whiteboard){const b=doc.whiteboard;b.stickies=b.stickies.filter(s=>!ids.has(s.frameId));b.tables=b.tables.filter(t=>!ids.has(t.frameId));const removedConnectors=new Set(b.connectors.filter(c=>ids.has(c.nodeId)).map(c=>c.id));b.connectors=b.connectors.filter(c=>!removedConnectors.has(c.id));b.mindMaps=b.mindMaps.filter(m=>!ids.has(m.rootId));b.drawings=b.drawings.filter(d=>!ids.has(d.nodeId));if(b.voting)b.voting.votes=b.voting.votes.filter(v=>!ids.has(v.nodeId));}
+ if(doc.whiteboard){const b=doc.whiteboard;if(b.codeBlocks)b.codeBlocks=b.codeBlocks.filter(c=>!ids.has(c.frameId));b.stickies=b.stickies.filter(s=>!ids.has(s.frameId));b.tables=b.tables.filter(t=>!ids.has(t.frameId));const removedConnectors=new Set(b.connectors.filter(c=>ids.has(c.nodeId)).map(c=>c.id));b.connectors=b.connectors.filter(c=>!removedConnectors.has(c.id));b.mindMaps=b.mindMaps.filter(m=>!ids.has(m.rootId));b.drawings=b.drawings.filter(d=>!ids.has(d.nodeId));if(b.voting)b.voting.votes=b.voting.votes.filter(v=>!ids.has(v.nodeId));}
  reconcileRemovedDocumentCover(input,doc);return validated(doc);
 }
