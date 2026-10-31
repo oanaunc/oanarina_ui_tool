@@ -67,3 +67,7 @@ Actual browsers cover review without document mutation; one Apply Undo restoring
 No app build, bundle, installer, native package, archive, version, download or website change is part of this source stage.
 
 Final frozen-source validation: 2,396 headless tests in 213 files passed; 31 focused domain/geometry/text-outline tests passed; 42 actual browser cases passed (18 Boolean-text plus 24 existing SVG-text-outline cases); editor and source MCP TypeScript passed. The shared decoder's absent/default point budget and its prior refusal message remain unchanged. Both root and an independent peer reviewed the final kernel/control/rounding guards without a remaining concrete blocker. Private managed port 5384 is stopped.
+
+## Character ranges
+
+Text with ranges now outlines, in Booleans and in SVG text outlines. Each range uses its own proven static TTF face, size, weight, style and tracking, with positions read from native layout of the whole line. A range that changes color, or anything else, refuses with a reason, because the Boolean result has one fill. The ASCII, static-TTF and exact-face rules are unchanged.

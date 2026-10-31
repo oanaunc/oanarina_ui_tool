@@ -1,6 +1,6 @@
 # Stroke-network branches
 
-UI-14-026 is **partial**: Forma now has an actual shared-vertex graph editor for bounded stroke forests. Filled regions, cycles and network fill-rule authoring (UI-14-027/028) remain unimplemented. This is not complete Figma vector-network parity.
+This page describes the shared-vertex graph editor and version 1 forests. Cycles, faces, holes and crossings are in [VECTOR-NETWORK-FACES.md](VECTOR-NETWORK-FACES.md), which replaces the refusals and appearance limits stated below wherever they differ.
 
 Select an independent open contour path, then use **Vector → Convert to stroke network**. Enter ordinary point editing first if the path has not yet been represented as contours. Conversion preserves the path coordinate box, transforms, active cubic controls and stroke appearance; each source anchor becomes an explicit vertex. Graph vertices and edge identities belong only to that layer. There is no inferred merging of coincident points.
 

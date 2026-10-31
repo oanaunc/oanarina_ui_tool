@@ -1,6 +1,6 @@
 # Vector network regions
 
-UI-14-027 (fill regions) and UI-14-028 (remove region fill) now have a real, bounded workflow. Both remain **partial**: a network can contain one simple cycle and any number of attached or disconnected stroke trees. Multiple faces, holes, nested cycles, self-crossings, inferred intersections, arbitrary region paint stacks and Figma reference parity are not implemented.
+This page describes version 2 graphs: one simple cycle with its fill on the layer. General faces, holes, per-face paint and flatten with fills are in [VECTOR-NETWORK-FACES.md](VECTOR-NETWORK-FACES.md), which replaces the single-cycle limits, refusals and stroke rules stated below wherever they differ.
 
 ## Working paths
 

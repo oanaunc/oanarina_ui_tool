@@ -1,6 +1,8 @@
 # Ordered multilingual font fallbacks
 
-This source pass implements an explicit local fallback policy for UI-22-038. The feature remains **partial**: there is no glyph-coverage detector, automatic language-to-font assignment or guarantee that every script is supported by the selected fonts.
+This source pass implements an explicit local fallback policy for UI-22-038, with measured glyph coverage. There is no automatic language-to-font assignment, and no guarantee that every script is supported by the selected fonts.
+
+**Layer font fallbacks** reports letters that no listed family paints, names their scripts, and offers one-click **Add fallback** with the first family that covers them all. Detection paints each letter with the family and with a family that does not exist; a glyph the family lacks falls through the same cascade, so the pixels match. This works for installed, WOFF2 and TTF faces alike. Punctuation, digits, symbols and marks are not checked, at most 256 distinct characters are, and a family that is itself the system sans default compares against serif, which can miss a gap. Coverage depends on the Mac's fonts, so it is a report and never changes the document without a click.
 
 ## Reachable workflow
 

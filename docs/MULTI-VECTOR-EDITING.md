@@ -19,3 +19,7 @@ Point changes preflight the live hierarchy again, validate all planned geometry 
 ## Validation
 
 Core checks cover qualified IDs, signed/nonuniform ancestry and path bases, equal canvas movement, tangent constraints, exact field preservation, Undo/Redo, `.oui` versions, plan cloning, deletion/malformed/overflow refusal, stale sessions and ownership/budget guards. The 20,000-layer / 64-ancestor / 4,096-anchor case verifies no `nodes.find` scans during mapping and movement planning. Browser checks use real selection, preview/drag, cross-path box selection, keyboard nudges/deletion, fine Control movement, 125% UI transforms, Undo/save/reopen, interruptions, stale/nonprimary pointers and explicit unsupported actions. Existing MCP multi-operation contour updates remain the interoperability path; no document schema, native IPC or new MCP operation is added.
+
+## Snapping
+
+With vector geometry snapping on, the grabbed anchor snaps to anchors and curves outside the moving contours, and every other selected anchor keeps the same canvas delta. Control and Command skip it, as in single-path editing. Handles do not snap.
