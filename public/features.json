@@ -4027,7 +4027,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Optional persisted vector anchor/curve snapping in single-path point dragging, with actual canvas hint, anchor priority, all-stationary-point cubic closest search, cached signed-affine targets, Command/Control bypass and one Undo/reopen. Budgets preserve ordinary drag with explanation; clipped/masked/managed targets excluded. Tangents, primitive boundaries, intersections, axis-only, networks and multivector snapping remain absent. docs/VECTOR-GEOMETRY-SNAPPING.md. Exact Figma reference/native acceptance remains pending."
+    "notes": "Rectangles, ellipses, polygons, stars, frames and sections are now targets, up to 1,024 shapes and stopping quietly at the budget, and points align to another anchor by axis. Tangent, multivector, intersection and network snapping are absent."
   },
   {
     "id": "UI-14-001",
@@ -4367,7 +4367,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Vector menu/action/point tools open original/result stroke-outline previews and convert one solid saved stroke to editable filled contours with caps, joins, positive dashes/signed phase, closed alignment, own affine baking, retained ancestor transforms, binding materialization, guarded Undo/save and post-derivation validation. Curves are bounded approximations. Gradient/image/multiple strokes, different or translucent fills, arrowheads, visible effects, zero dash lengths and unsupported topology refuse atomically; broader stroke outlining remains partial. Zero-radius rectangle arcs no longer interrupt rendered dash progression. Evidence and limits: docs/VECTOR-STROKE-OUTLINE.md; tests/vector-stroke-outline.test.ts; tests/e2e/vector-stroke-outline.spec.ts. Exact Figma reference/native acceptance remains pending."
+    "notes": "Gradient and image strokes now outline with their paint moved to the fill, though the paint maps to a slightly larger box and can shift a little. They need no visible fill alongside, and SVG export still refuses them. Multiple strokes and arrowheads stay unsupported."
   },
   {
     "id": "UI-14-035",
@@ -4437,7 +4437,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Offset now offers Miter (limit 4, bevel fallback), Round and a true clipped Square join, which cuts straight across at exactly the offset distance from the anchor on outer corners, in closed and open paths, with real preview, Apply and saved geometry. Curves are still flattened to 0.25 units and the existing geometry, topology and size limits apply. Exact Figma join equivalence remains unverified. docs/VECTOR-OFFSET.md."
+    "notes": "Offset now offers Miter (limit 4, bevel fallback), Round and a true clipped Square join, which cuts straight across at exactly the offset distance from the anchor on outer corners, in closed and open paths, with real preview, Apply and saved geometry. Curves are still flattened to 0.25 units and the existing geometry, topology and size limits apply. Exact Figma join equivalence remains unverified. docs/VECTOR-OFFSET.md. Square joins are also tested on curved closed and open paths; on flattened curves square and round differ by under 1% of area, and only real corners differ visibly."
   },
   {
     "id": "UI-14-042",
@@ -4447,7 +4447,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: real point-editing scissors with pointer or numeric interior-segment cuts. Exact de Casteljau splitting opens closed contours or splits open contours while preserving source ID, local path basis, affine pose, style, Undo and saved reopening. Cached bounded hierarchy/control geometry, ownership/context/session/capture guards, 125% UI and actual raster checks. Partial: supported centered solid stroke contours only; no filled-region knife, general network, multilayer/intersection batch or anchor cuts. docs/VECTOR-CUT.md. Native/reference acceptance pending."
+    "notes": "Segment scissors are unchanged, and a separate straight Knife slices filled shapes. No freehand or partial knife, no general networks, no anchor cuts."
   },
   {
     "id": "UI-14-043",
@@ -4457,7 +4457,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Vector menu, actions and point tools separate closed disjoint solid-filled compound regions into editable path children in one identity-preserving group. Holes, islands, cubic handles, transforms, opacity, references and component propagation survive preview/Apply/Undo/save. Partial: no arbitrary knife cuts, networks, crossing/touching/open contours, visible strokes, gradient/image paints, effects, masks or animation tracks. Child coordinate boxes are not tightened. Bounded topology and strict derived-state validation refuse atomically. docs/VECTOR-SEPARATION.md; tests/vector-separation.test.ts; tests/e2e/vector-separation.spec.ts. Native and reference acceptance pending."
+    "notes": "Knife slices rectangles, ellipses, polygons, stars and closed paths into editable pieces in an identity-preserving group, with one Undo. The line extends across the whole layer; solid fills only, no visible strokes, 512 anchors and 32 pieces. docs/VECTOR-SEPARATION.md."
   },
   {
     "id": "UI-14-044",
@@ -4467,7 +4467,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Geometric continuous round/square brush removes covered centerline intervals from supported solid stroke contours; exact retained cubic subdivisions, shared scene preview, bounded frozen-prefix feedback, one Undo/save/reopen and source-MCP persistence checks. Whole-path removal refuses; no filled-region/network/full-layer erasing. docs/VECTOR-ERASER-LASSO.md. Exact Figma reference/native acceptance remains pending."
+    "notes": "The eraser now removes brushed area from closed filled shapes, which can bite, open holes or split contours. Round brushes make short straight edges, the layer box is not tightened, and erasing everything is refused. Networks and open filled paths stay unsupported."
   },
   {
     "id": "UI-14-045",
@@ -4747,7 +4747,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Reachable Brush canvas tool materializes primitive vector stamps as one editable group, captured owner/affine mapping, shared artwork/export/masks, draft cancellation, one Undo and save/reopen. Primitive ellipse/rectangle/diamond/triangle brushes only; arbitrary art/stretch/scatter brushes, uncertain clipped/masked container ownership and native tablet/reference acceptance remain absent. docs/VECTOR-BRUSH-DRAWING.md."
+    "notes": "Primitive, sampled, scatter and stretch brushes draw editable output with draft cancellation and one Undo. Native tablet acceptance and uncertain clipped or masked container ownership remain open."
   },
   {
     "id": "UI-16-005",
@@ -4767,7 +4767,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Reusable device-local primitive preset library supports save/update/delete/reset and bounded JSON import/export. Arbitrary artwork, calligraphic/stretch/scatter and hosted/shared brush libraries remain absent. docs/VECTOR-BRUSH-DRAWING.md."
+    "notes": "Local library holds primitive, sampled, scatter and stretch presets with bounded JSON import and export. Hosted or shared libraries are absent."
   },
   {
     "id": "UI-16-007",
@@ -4777,7 +4777,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Save a named independent primitive brush with shape/aspect/spacing/direction/size/color/opacity and pressure response, edit/update/delete and persist it locally. Sampling arbitrary canvas artwork or creating unrestricted vector/art brushes remains absent. docs/VECTOR-BRUSH-DRAWING.md."
+    "notes": "Named brushes can be primitive, sampled or stretch and persist locally. Multi-color art is absent."
   },
   {
     "id": "UI-16-008",
@@ -4837,7 +4837,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Per-anchor width ratios form exact straight tapered bands, bevel triangles and exact round/square caps/round sectors, rendered as one nonzero filled path with correct single alpha. Numeric/normal-handle drafts, shared artwork/SVG/raster/masks/bounds, maximum-radius layout, Undo/save/components/clipboard/source MCP. One solid centered butt/round/square-cap, bevel/round-join stroke on bounded open straight contours; curves/closed/asymmetric/miter joins and editable Figma transfer absent. docs/VARIABLE-WIDTH-STROKES.md."
+    "notes": "Open curved paths convert to straight anchors within 0.1–4 layer units (Undo restores the handles), and all saved profiles stay straight open contours so older builds can read them. Closed contours, true curved envelopes, asymmetric widths and miter joins are absent. docs/VARIABLE-WIDTH-STROKES.md."
   },
   {
     "id": "UI-16-014",
@@ -4847,7 +4847,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Reachable contour/anchor picker, full symmetric width field and signed-affine normal handles with precision modifier, zero-delta no-op, one Undo/reopening, retained-handler and interruption guards. Controls support existing straight-contour anchors; inserted independent width positions, asymmetric widths and arbitrary curved-path width tools remain absent. docs/VARIABLE-WIDTH-STROKES.md."
+    "notes": "Add width point inserts a straight anchor at 1–99% of a segment with interpolated width. Placement is numeric only, not by clicking the stroke, and asymmetric widths are absent."
   },
   {
     "id": "UI-16-015",
@@ -4877,7 +4877,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Existing per-anchor profile controls create exact linear tapers between straight anchors, including zero-width tips, with actual filled-band rendering, Undo/save/export and validated source MCP. This records the same width-profile workflow rather than a separate implementation. Curved envelopes, dedicated taper presets and brush taper behavior remain absent. docs/VARIABLE-WIDTH-STROKES.md."
+    "notes": "Uniform, start, end and both-ends taper presets work along real contour length, with one Undo, and curved paths work through conversion. Presets are linear and replace existing ratios; brush taper is absent."
   },
   {
     "id": "UI-16-018",
@@ -4897,17 +4897,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Partial: same-layer self-owned open cubic/straight text baseline with plain LTR shaping, supported paints/strokes, guarded canvas text editing, Undo/save/clipboard and shared SVG/raster appearance. Fixed bounded geometry; rich RTL, multiple/closed baselines, components/masks/effects/animated ancestry and binary/Bridge text-path interchange remain unsupported. See docs/TEXT-ON-PATH.md."
+    "notes": "Ellipses, rectangles, polygons, stars and closed paths now convert, so text can run around a circle. Baselines stay open contours (a loop repeats its start point) and return closes them. Rich text, RTL, multiple baselines, components, masks, effects, animated ancestry and interchange stay unsupported."
   },
   {
     "id": "UI-16-020",
     "category": "Freehand and Figma Draw",
     "name": "Text path offset",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Partial: real percentage start-offset control along the owned baseline, with numeric editing/Undo/save and rendered glyph-position checks. No start-handle drag, path flipping or full Figma offset/control equivalence. See docs/TEXT-ON-PATH.md."
+    "notes": "Start offset has a numeric field and a canvas handle that drags along the real baseline with live glyph preview, Escape cancel and one Undo on release, and Flip text direction reverses the baseline. Exact Figma control equivalence is unverified. docs/TEXT-ON-PATH.md."
   },
   {
     "id": "UI-16-021",
@@ -4917,7 +4917,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Reachable exact-rectangle Shape Builder: bounded same-color consecutive sibling rectangles, real region click/drag picking, Merge/Extract/Subtract and explicit one-Undo Apply to ordinary editable paths. Source/context/gesture guards and save/reopen/export validated. Arbitrary curves, richer styles and full interaction parity remain unsupported; split-edge antialiasing limits are explicit. See docs/SHAPE-BUILDER.md."
+    "notes": "Plain rectangles keep the exact grid. Ellipses, polygons, stars, closed paths and transformed or rounded rectangles use curve Booleans proven against the union area, limited to 8 sources, 1,024 points and 64 regions. Same-color opaque unstroked sources only, networks unsupported, and a very fast drag can skip a very thin face. docs/SHAPE-BUILDER.md."
   },
   {
     "id": "UI-16-022",
@@ -5017,7 +5017,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Forma primitive brush/library JSON imports validate complete scalar/color schema, size/count/byte budgets and retained asynchronous context before replacing local settings. Third-party/native Figma brush formats and arbitrary art assets remain unsupported. docs/VECTOR-BRUSH-DRAWING.md."
+    "notes": "Forma brush JSON imports validate before use, including the new stretch field. Third-party and Figma brush formats are unsupported."
   },
   {
     "id": "UI-16-032",
@@ -5027,7 +5027,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Reachable selected-brush or complete local-library JSON download preserves supported primitive settings for reimport. No third-party/Figma brush export format. docs/VECTOR-BRUSH-DRAWING.md."
+    "notes": "Selected-brush and whole-library JSON export includes stretch settings. No third-party format."
   },
   {
     "id": "UI-16-033",
@@ -5044,10 +5044,10 @@
     "category": "Freehand and Figma Draw",
     "name": "Illustration mode toolbar",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Draw mode adds a Brush presets menu and an Illustration tools menu reaching Edit points, Bend, Cut, Erase, Lasso, Knife, Shape builder, Offset, Outline stroke, Separate regions and Linear/Radial repeat, with toolbar keyboard support and on-screen checks at 1100, 900 and 760 px. View state only, no separate Draw inspector, and the entries are not registered commands, so they are absent from Actions search. docs/STRETCH-BRUSHES.md."
   },
   {
     "id": "UI-16-035",
@@ -5074,10 +5074,10 @@
     "category": "Freehand and Figma Draw",
     "name": "Stretch brush creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Sampled vector brushes can stretch one silhouette along the whole stroke as one ordinary editable path, with holes kept, pressure on thickness only, one Undo, save and export. Art is warped by bounded cubic approximation, tight turns can fold a thick band, and there is no tiling or fixed end caps. Preset JSON gains an optional stretch field; .oui is unchanged. docs/STRETCH-BRUSHES.md."
   },
   {
     "id": "UI-16-038",
@@ -5087,7 +5087,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Explicit deterministic scatter settings use a saved uint32 seed and stamp ordinal/channel hashes for along/across offset, angle and size. Ordinary editable stamp groups use existing Undo/save/export, bounded anchors/path output and exact imported capsule extrema. No continuous warp or broader brush parity. See docs/VECTOR-SCATTER-BRUSH.md."
+    "notes": "Deterministic scatter is unchanged. Continuous warp now exists only as the separate stretch brush, and a preset cannot be both."
   },
   {
     "id": "UI-16-039",
@@ -5097,7 +5097,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Review one eligible closed opaque solid vector silhouette, normalize real cubic bounds and preserve holes/fill rule in a reusable local brush capsule. Signed affine source proof, exact owned preset publication and ordinary editable drawn paths are validated. Fonts, arcs, richer paints/strokes/controllers remain unsupported. See docs/VECTOR-SCATTER-BRUSH.md."
+    "notes": "A sampled silhouette can now become a stamp or a stretch brush. Source limits are unchanged."
   },
   {
     "id": "UI-17-001",
@@ -5737,7 +5737,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Image stroke paints render through the shared paint pipeline in original box space. Crop/tile stroke edge cases have no dedicated test, and the Bridge transfer is not a real round trip."
+    "notes": "Stroke and fill with one image paint match pixel for pixel across tile, crop, fit, scale and offset. The Bridge transfer is still not a real round trip."
   },
   {
     "id": "UI-18-026",
@@ -5757,7 +5757,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Existing reachable Vector Outline stroke workflow converts supported single solid vector strokes to editable filled contours with caps/joins/dashes/phase and own affine baking. Guarded preview/Undo/save and validated geometry; curved boundaries are bounded approximations. General multi-paint/image/gradient/translucent/effected/arrowhead strokes remain unsupported. Same concrete workflow as UI-14-034; no additional feature count invented. docs/VECTOR-STROKE-OUTLINE.md. Exact Figma reference/native acceptance remains pending."
+    "notes": "Gradient and image strokes now outline with their paint moved to the fill, though the paint maps to a slightly larger box and can shift a little. They need no visible fill alongside, and SVG export still refuses them. Multiple strokes and arrowheads stay unsupported."
   },
   {
     "id": "UI-18-028",
@@ -5777,7 +5777,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Geometry-local optional stroke profile and per-anchor width scales, numeric/normal handles, shared filled-band artwork/export/masks/bounds and Undo/persistence. Straight open contours, bounded positive basis, one solid centered butt/round/square-cap, bevel/round-join stroke; unsupported geometry/style conversions refuse before discarding metadata. Editable Figma Bridge refuses active profiles; inactive ratios are reported omitted. docs/VARIABLE-WIDTH-STROKES.md."
+    "notes": "Open curved paths convert to straight anchors within 0.1–4 layer units (Undo restores the handles), and all saved profiles stay straight open contours so older builds can read them. Closed contours, true curved envelopes, asymmetric widths and miter joins are absent. docs/VARIABLE-WIDTH-STROKES.md. Adds taper presets and width points. Editable Figma Bridge still refuses active profiles."
   },
   {
     "id": "UI-18-030",
@@ -7095,9 +7095,9 @@
     "name": "OpenType ligatures",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports liga/clig/dlig ligature tags in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "For TTF/OTF, the comparison shows per-text reach from cmap and Coverage tables, including whole-sequence ligature matching. WOFF2 and installed fonts stay unknown; this reads tables and does not shape text. docs/OPENTYPE-FEATURE-PREVIEWS.md."
   },
   {
     "id": "UI-22-018",
@@ -7105,9 +7105,9 @@
     "name": "OpenType alternates",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports font-specific alternate feature tags and numeric alternate indices in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "Alternate counts come from GSUB type 3 lookups, with a stated valid range. Unknown for WOFF2 and installed fonts."
   },
   {
     "id": "UI-22-019",
@@ -7115,9 +7115,9 @@
     "name": "Stylistic sets",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports ss01–ss20 stylistic-set tags in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "ssXX and cvXX show designer names from FeatureParams and the name table, tested on a fixture and checked by hand against system fonts. Bundled faces have no stylistic sets; WOFF2 and installed fonts stay unknown."
   },
   {
     "id": "UI-22-020",
@@ -7125,9 +7125,9 @@
     "name": "Variable font axes",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports numeric variable font axes in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "Sliders, number fields and named instances come from real fvar data for TTF/OTF, with hidden axes omitted and painted pixels proven to change. WOFF2 downloads expose only wght, because that is the only axis requested. Installed fonts are unknown, and a slider commits on release with no live canvas preview."
   },
   {
     "id": "UI-22-021",
@@ -7135,9 +7135,9 @@
     "name": "Optical sizing",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports the opsz variable-font axis in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "opsz appears as a real axis on fonts that have it. Same format limits as UI-22-020."
   },
   {
     "id": "UI-22-022",
@@ -7145,9 +7145,9 @@
     "name": "Tabular numerals",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports the tnum tabular-numeral tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
   },
   {
     "id": "UI-22-023",
@@ -7155,9 +7155,9 @@
     "name": "Proportional numerals",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports the pnum proportional-numeral tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
   },
   {
     "id": "UI-22-024",
@@ -7165,9 +7165,9 @@
     "name": "Fractions",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports the frac fraction tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
   },
   {
     "id": "UI-22-025",
@@ -7175,9 +7175,9 @@
     "name": "Kerning",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source supports the kern kerning tag in validated layer/range settings, with shared rendering, Undo/persistence and local text styles. Real same-font OpenType feature comparisons and bounded TTF/OTF GSUB/GPOS declarations are now available (UI-22-053; docs/OPENTYPE-FEATURE-PREVIEWS.md). Partial: complete font-specific named controls/applicability, native font/WOFF2 metadata and exact shaping/reference parity remain unverified or incomplete. Variable axes use their existing numeric settings; GSUB/GPOS declarations do not enumerate fvar axes."
+    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
   },
   {
     "id": "UI-22-026",
@@ -7275,9 +7275,9 @@
     "name": "Emoji input",
     "priority": "must",
     "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Local searchable 81-entry starter emoji catalog inserts Unicode into rich text with selection, Undo/save and context guards. Platform fonts supply glyphs. Full Unicode catalog, skin-tone/flag controls and native OS picker integration remain unfinished. See docs/TEXT-INPUT-WORKFLOWS.md."
+    "notes": "1,903 searchable emoji including 263 flags, keycaps and 234 ZWJ sequences, with a skin-tone control offered only where all five tones are verified. No native OS picker, categories or recents, and at most 100 results shown. Names are Unicode's formal wording, so everyday synonyms may not match."
   },
   {
     "id": "UI-22-036",
@@ -7344,10 +7344,10 @@
     "category": "Advanced typography",
     "name": "Emoji colon-code completion",
     "priority": "must",
-    "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Local colon-code suggestions and explicit Enter/Tab/click acceptance work in the rich text editor, preserving formatting and source text; IME and stale contexts are guarded. The starter code catalog does not cover the full emoji namespace. See docs/TEXT-INPUT-WORKFLOWS.md."
+    "notes": "Colon completion reaches all 1,903 catalog entries, covering every recommended Unicode 17 emoji except skin-tone variants. Generated codes come from Unicode names such as woman_rocket, not GitHub or Slack names, the 81 hand-kept codes stay first, and completion has no skin-tone control. docs/TEXT-INPUT-WORKFLOWS.md."
   },
   {
     "id": "UI-22-043",
@@ -7357,7 +7357,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: optional layer textVerticalTrim none/cap-height aligns outer text body to a measured browser H cap reference and last baseline. Shared wrap/auto-size/alignment/ellipsis/SVG/mask/export behavior preserves source and baseline intervals, Undo/styles/components/clipboard/MCP/Bridge validation. Inspector reports active/unsupported/estimated states; unsupported geometry exactly retains ordinary behavior. Partial: 64 plain first-line font styles; complex axes/features/smallcaps/raised runs fall back; headless uses explicit 0.7em estimate. Ink bounds conservative; editable CSS/Bridge report omission. docs/TEXT-VERTICAL-TRIM.md; core and actual font/pixel/context checks. Native/reference acceptance pending."
+    "notes": "Trim now survives features set to 0 and liga, clig, dlig, calt, kern, tnum, pnum, lnum, onum, frac and zero. Variable axes, small capitals, raised text and other features still fall back to normal geometry."
   },
   {
     "id": "UI-22-044",
