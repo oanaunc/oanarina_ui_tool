@@ -41,6 +41,7 @@ describe('code layer capture',()=>{
   expect(frame).toContain(CODE_LAYER_PAINTER);
   expect(frame).toContain("if(error?.name!=='SecurityError')throw error;dataUrl=await paintDom(w,h,m.scale,paint);");
   expect(CODE_LAYER_PAINTER).not.toMatch(/fetch|XMLHttpRequest|localStorage/);
+  expect(CODE_LAYER_PAINTER,'the painter runs outside capture, so it cannot use capture locals').not.toMatch(/\broot\b/);
  });
  it('escapes its patterns through two template literals',()=>{
   expect(CODE_LAYER_PAINTER).toContain('/\\s/.test(raw[i])');
