@@ -12464,10 +12464,10 @@
     "category": "History and recovery",
     "name": "Recover after crash",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
+    "notes": "Bounded write-ahead journal plus transactional recovery. A real renderer kill before autosave restores pending edits as one Undo step; stale or invalid journals are discarded. Edits inside the ~60 ms throttle, patches over 2 MB and OS/machine failure can still lose work. See docs/RECOVERY-RELIABILITY.md."
   },
   {
     "id": "UI-38-015",
@@ -12584,80 +12584,80 @@
     "category": "History and recovery",
     "name": "Branch creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "File → Branches forks atomically (main, base snapshot, working copy, registry) with a name check, 50 per file, no nesting. Local only; branches are not stored in .oui. See docs/LOCAL-BRANCHES.md."
   },
   {
     "id": "UI-38-027",
     "category": "History and recovery",
     "name": "Branch review",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Conflicts plus structural base→branch and base→main summaries with previews; \"Mark as reviewed\" stamps the exact branch revision with the local profile label. Single-user: no other reviewers, comments on the review or pixel diff."
   },
   {
     "id": "UI-38-028",
     "category": "History and recovery",
     "name": "Branch merge",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Pure headless three-way merge by page and layer identity, run from main, one Undo step, full validation before commit. Text does not merge within a string; no update-branch-from-main; dangling prototype links stay as they do on delete."
   },
   {
     "id": "UI-38-029",
     "category": "History and recovery",
     "name": "Branch conflict resolution",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Per-conflict main/branch choice for layer properties, delete vs edit, moves, cycles, stacking, pages, keyed library items and deleted component/variable/style references. Merge stays blocked until all are answered; resolutions are not persisted across dialog closes."
   },
   {
     "id": "UI-38-030",
     "category": "History and recovery",
     "name": "Branch archive",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Archive refuses edits, Restore reopens, and only archived branches delete from the device. Permanent deletion of main cascades to branches, bases and persisted Undo."
   },
   {
     "id": "UI-38-031",
     "category": "History and recovery",
     "name": "Branch status",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Real ahead, behind, diverged, conflict, merged and archived states from content comparison, with a top-bar indicator and native window title. Status reads each branch, so very large files are slow to fill."
   },
   {
     "id": "UI-38-032",
     "category": "History and recovery",
     "name": "Main branch protection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Per-file toggle refuses direct edits to main and requires a review of the current branch revision to merge. Self-imposed, no permissions; Undo/Redo stay available; MCP and direct .oui writes are outside the guard."
   },
   {
     "id": "UI-38-033",
     "category": "History and recovery",
     "name": "Edit history persistence",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
+    "notes": "Undo/Redo persist as layer patches in the same transaction as recovery. Limits: 60 steps, 12 MB total, 6 MB per step, 40 ms encoding per save; a stale or damaged record is ignored and over-quota history is dropped so the document still saves. In-memory Undo remains 100 steps; an explicit file open starts fresh."
   },
   {
     "id": "UI-38-034",
@@ -12665,9 +12665,9 @@
     "name": "File corruption recovery",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
+    "notes": "A stored file failing validation opens recovery choices from startup, Home or Storage: newest version as a copy, reported repaired copy, raw download; the record is never changed. Does not repair an IndexedDB database that cannot open."
   },
   {
     "id": "UI-38-035",
@@ -12684,10 +12684,10 @@
     "category": "History and recovery",
     "name": "Storage quota notification",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Database recovery and named snapshots persist, but undo stacks remain in memory. Abrupt termination before a pending write, browser eviction and arbitrary corrupt-database repair are not fully handled. Save failures are reported with a .oui backup instruction."
+    "notes": "File → Storage and recovery shows quota, durability and measured sizes; once-per-level notices at 80% and 95%; a specific \"storage is full\" message on failed writes; explicit durable storage request. Validated with simulated quota values and errors."
   },
   {
     "id": "UI-39-001",
@@ -17475,19 +17475,19 @@
     "name": "Large document loading",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain."
+    "notes": "Measured benchmark added and dense pages mount in batches; 20,000 layers first frame ~1.4 s vs ~5.8 s single pass (dev server, Chromium, M3 Max). The whole document is still parsed and kept in memory. See docs/PERFORMANCE-BENCHMARK.md."
   },
   {
     "id": "UI-53-002",
     "category": "Performance and reliability",
     "name": "Progressive page loading",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Pages with 3,000+ in-view layers mount root subtrees in ~800-layer batches with a progress indicator; pixels match the single-pass scene. Not applied to one dominant root, masks/blur fallbacks, drafts or non-Design views; later edits re-render in one pass."
   },
   {
     "id": "UI-53-003",
@@ -17535,9 +17535,9 @@
     "name": "Asset cache management",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Font cache inspection reports validated family/file/decoded byte counts and selectively removes downloaded Google/bundled faces while preserving imported/restricted/unknown records, registered faces and project embedding. Image/media cache management is not implemented. See docs/FONT-DOWNLOAD-MANAGEMENT.md."
+    "notes": "Storage dialog measures embedded assets, versions, branches and Undo history and clears Undo history of closed files. Font cache behavior is unchanged; there is no separate image cache to purge, embedded assets are only reported."
   },
   {
     "id": "UI-53-008",
@@ -17565,9 +17565,9 @@
     "name": "Long operation progress",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "A real multi-megabyte image recovery test passes. Animation export reports progress and supports cancellation, with 1,800-frame / 4,096-edge / 8-megapixel limits. Large-tree virtualization and comprehensive performance work remain."
+    "notes": "Adds a page-loading progress indicator alongside existing animation export progress. Other long operations, including merge and status checks on large files, have no progress or cancellation."
   },
   {
     "id": "UI-53-011",
@@ -17577,7 +17577,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: explicit bounded failure reports for listed browser import paths preserve the outgoing document; fixed safe categories avoid private parser/source excerpts. Native whole-import reporting and other formats remain outside this path. See docs/IMPORT-PROGRESS-RELIABILITY.md."
+    "notes": "Native file bootstrap and document-open now report fixed categories without source text. A rejected supported .oui offers \"Open a repaired copy\". Malformed JSON, unknown versions and other formats get a report only."
   },
   {
     "id": "UI-53-012",
@@ -17694,20 +17694,20 @@
     "category": "Performance and reliability",
     "name": "Renderer crash recovery",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Mac: a dead WebContent process reloads the same window into its document (real-kill smoke); more than three exits in 60 s pause on Try Again. Render exceptions offer Reload, Safe mode and Save backup. A browser tab needs a user reload; journal replay is not validated inside WKWebView."
   },
   {
     "id": "UI-53-024",
     "category": "Performance and reliability",
     "name": "Safe mode startup",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Help command, ?safe-mode=1, crash screen or two failed starts within 10 minutes skip the last file, fonts, plugins and replay; Restart normally returns to the file. Preferences are not reset; native path is exercised through a shim, not a real WKWebView crash loop."
   },
   {
     "id": "UI-53-025",
@@ -17754,10 +17754,10 @@
     "category": "Performance and reliability",
     "name": "Multi-window file conflict detection",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Web Locks presence, BroadcastChannel save notices and compare-and-write inside the save transaction; a stale window never overwrites newer work, and the guard holds without either API. Load newer, keep as copy, or overwrite; no merge or live sync. Conflict flow validated in browser only; the Mac app still focuses duplicates."
   },
   {
     "id": "UI-53-030",

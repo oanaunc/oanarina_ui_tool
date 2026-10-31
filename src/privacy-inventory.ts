@@ -11,6 +11,8 @@ export const localStorageCatalog:readonly StoredEntry[]=[
  {key:'forma-workspace-preferences',label:'Workspace preferences',holds:'Canvas gesture, export naming, export destination and Trash retention choices.',projectContent:false},
  {key:'forma-first-run',label:'First-run offer',holds:'A marker that the canvas tour was offered. No document data.',projectContent:false},
  {key:'forma-local-plugin-preferences-v1',label:'Plugin favorites and recents',holds:'Plugin IDs you starred or ran recently. No document data.',projectContent:false,clearable:true},
+ {key:'forma-startup-health-v1',label:'Startup health',holds:'Times of recent starts, used to offer safe mode. No document data.',projectContent:false},
+ {key:'forma-safe-mode-request-v1',label:'Safe mode request',holds:'A marker to start once in safe mode. No document data.',projectContent:false},
  {key:'oui-panel-layout',label:'Sidebar layout',holds:'Sidebar widths and collapsed state.',projectContent:false},
  {key:'forma-workspace-layouts-v1',label:'Workspace layouts',holds:'Names you gave saved layouts, with their panel and view settings.',projectContent:false,clearable:true},
  {key:'oui-page-viewports',label:'Page viewports',holds:'Zoom and scroll per page, keyed by document and page ID.',projectContent:false},

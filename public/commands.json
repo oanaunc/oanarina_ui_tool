@@ -1,5 +1,23 @@
 [
   [
+    "branches",
+    "Branches…",
+    "File",
+    ""
+  ],
+  [
+    "storage",
+    "Storage and recovery…",
+    "File",
+    ""
+  ],
+  [
+    "safe-mode",
+    "Restart in safe mode",
+    "Help",
+    ""
+  ],
+  [
     "design-health",
     "Design health report…",
     "Resources",
