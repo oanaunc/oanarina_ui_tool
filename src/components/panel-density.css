@@ -19,12 +19,13 @@
 .app .left-panel .page-search{position:relative;padding:0 12px 3px}
 .app .left-panel .page-divider-create{position:absolute;right:37px;top:-25px;margin:0;padding:3px}
 .app .left-panel .page-search-field{padding:1px 7px}
-.app .left-panel .page-row{padding:5px 9px}
+.app .left-panel .page-row{padding:5px 9px;min-height:27px}
 .app .left-panel .pages-list{padding-inline:12px}
 .app .left-panel .layer-root-drop{margin:2px 12px;padding:3px 8px;border-color:transparent;text-align:center}
 .app .left-panel .layer-root-drop.layer-drop-inside{border-color:var(--line)}
 .app .left-panel .library-button{padding:9px 17px}
 /* Inspector */
+.app .inspector-scroll{position:relative}
 .app .inspector-section{padding:8px 14px 10px}
 .app .inspector-section .section-title{min-height:22px;margin-bottom:5px}
 .app .inspector-section>h3,.app .inspector-section>h4{font-size:10px;font-weight:500;margin:0 0 6px;color:var(--text)}
