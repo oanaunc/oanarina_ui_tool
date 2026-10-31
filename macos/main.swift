@@ -73,7 +73,6 @@ final class DocumentWindow:NSObject,WKScriptMessageHandlerWithReply,WKNavigation
     static let bridge=#"""
     (()=>{const api=window.webkit.messageHandlers.studio,clipboardNonce='__FORMA_CLIPBOARD_NONCE__',usedEvents=new WeakSet(),eventPhase=Object.getOwnPropertyDescriptor(Event.prototype,'eventPhase').get,apply=Reflect.apply,send=api.postMessage.bind(api);let command,documentHandler,saveHandler,stateHandler,clipboardGrant,nativeHandler;
     const clipboardOperation=async(type,representations)=>{const grant=clipboardGrant;clipboardGrant=null;if(!grant||grant.kind!==type||performance.now()>grant.expires)throw Error('Use an explicit Copy, Cut or Paste action to access the Mac clipboard.');await grant.ready;return send({type,nonce:clipboardNonce,token:grant.token,...(representations?{representations}:{})})};window.desktop={
-      saveFolder:(name,files)=>api.postMessage({type:'saveFolder',name,files}),
       save:(name,data,base64=false,saveAs=false)=>api.postMessage({type:'save',name,data,base64,saveAs}),open:()=>api.postMessage({type:'open'}),fonts:()=>api.postMessage({type:'fonts'}),fontFaces:family=>api.postMessage({type:'fonts',family}),
       newWindow:(command='new')=>api.postMessage({type:'new',command}),openDocument:raw=>api.postMessage({type:'openDocument',raw}),openDocumentIds:()=>api.postMessage({type:'openDocumentIds'}),
       beginClipboard:(event,id)=>{if(!event||!event.isTrusted||apply(eventPhase,event,[])===0||usedEvents.has(event)||!['copy','cut','paste','copy-as-png'].includes(id))throw Error('Clipboard access requires a trusted command event.');usedEvents.add(event);const token=crypto.randomUUID(),kind=id==='paste'?'clipboardRead':'clipboardWrite';clipboardGrant={token,kind,expires:performance.now()+2000,ready:send({type:'clipboardAuthorize',nonce:clipboardNonce,token,kind})};},
@@ -112,22 +111,8 @@ final class DocumentWindow:NSObject,WKScriptMessageHandlerWithReply,WKNavigation
     case "openDocumentIds":replyHandler(studio.documents.compactMap{$0.state?.id ?? $0.session.documentId},nil)
     case "openDocument":guard let raw=body["raw"] as? String else{replyHandler(nil,"Invalid project");return};do{replyHandler(try studio.openRaw(raw),nil)}catch{replyHandler(nil,error.localizedDescription)}
     case "save":save(body,reply:replyHandler)
-    case "saveFolder":saveFolder(body,reply:replyHandler)
     default:replyHandler(nil,"Unsupported request")}}
     /** The person picks the parent in a system panel, per export. The renderer learns only whether it finished. */
-    func saveFolder(_ body:[String:Any],reply:@escaping(Any?,String?)->Void){
-        guard ready,let current=state,session.documentId==current.id,!saveInFlight,let raw=body["name"] as? String,let name=ExportFolder.folderName(raw),let list=body["files"] as? [[String:Any]] else{reply(nil,"Another save is in progress or the asset folder is invalid");return}
-        let files:[(String,Data)];do{files=try ExportFolder.decode(list)}catch{reply(nil,error.localizedDescription);return}
-        saveInFlight=true
-        let finish:(URL?)->Void={parent in
-            defer{self.saveInFlight=false}
-            guard let parent else{reply(false,nil);return}
-            do{try ExportFolder.write(files,named:name,in:parent);reply(true,nil)}catch{reply(nil,error.localizedDescription)}
-        }
-        if studio.smoke,let directory=studio.smokeSaveDirectory{finish(studio.smokeCancelSavePanels ? nil:directory);return}
-        let panel=NSOpenPanel();panel.canChooseFiles=false;panel.canChooseDirectories=true;panel.canCreateDirectories=true;panel.allowsMultipleSelection=false;panel.prompt="Export Here";panel.message="Forma adds a new folder here for these assets."
-        panel.beginSheetModal(for:window){response in finish(response == .OK ? panel.url:nil)}
-    }
     func save(_ body:[String:Any],reply:@escaping(Any?,String?)->Void){
         guard ready,let current=state,session.documentId==current.id else{reply(nil,"The document has not finished opening");return}
         guard !saveInFlight,let raw=body["data"] as? String,raw.utf8.count<150_000_000,let name=body["name"] as? String else{reply(nil,"Another save is in progress or export is invalid");return}
