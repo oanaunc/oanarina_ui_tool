@@ -1,3 +1,5 @@
+import ActionComponentSearch from './ActionComponentSearch';
+import {useEditor} from '../store';
 import {shortcutLabel,useKeyboardPreferences} from '../keyboard-preferences';
 import {useEffect,useId,useMemo,useRef,useState,useSyncExternalStore} from 'react';
 import {Search} from 'lucide-react';
@@ -6,7 +8,7 @@ import {clearRecentActions,getRecentActions,subscribeActionHistory} from '../act
 import {moveActiveAction,searchActions} from '../action-search';
 import type {PaletteCommand} from '../action-search';
 import './action-palette.css';
-export default function ActionPalette({onClose}:{onClose:()=>void}){
+function CommandActions({onClose,valid}:{onClose:()=>void;valid:()=>boolean}){
  const keyboard=useKeyboardPreferences(commands),commandRows=useMemo(()=>commands.map(c=>[c[0],c[1],c[2],shortcutLabel(c,keyboard)] as const),[keyboard]);
  const [query,setQuery]=useState(''),[category,setCategory]=useState('All'),[active,setActive]=useState(0);
  const recent=useSyncExternalStore(subscribeActionHistory,getRecentActions,getRecentActions),listId=useId(),hintId=useId(),input=useRef<HTMLInputElement>(null),list=useRef<HTMLDivElement>(null);
@@ -21,7 +23,7 @@ export default function ActionPalette({onClose}:{onClose:()=>void}){
  const results=sections.flatMap(section=>section.items),index=results.length?Math.max(0,Math.min(active,results.length-1)):-1,selected=results[index];
  useEffect(()=>{input.current?.focus();},[]);
  useEffect(()=>{if(selected)list.current?.querySelector<HTMLElement>(`[data-action-id="${selected[0]}"]`)?.scrollIntoView({block:'nearest'});},[selected]);
- function run(command:PaletteCommand,event:Event){onClose();runCommand(command[0],event);}
+ function run(command:PaletteCommand,event:Event){if(!valid())return;onClose();runCommand(command[0],event);}
  return <div className="action-palette">
   <div className="search-field large"><Search size={18}/><input ref={input} aria-label="Search actions" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls={listId} aria-activedescendant={selected?`${listId}-${selected[0]}`:undefined} aria-describedby={hintId} placeholder="Search actions, categories or keywords…" value={query} onChange={e=>{setQuery(e.target.value);setActive(0);}} onKeyDown={e=>{
    if(e.nativeEvent.isComposing)return;
@@ -38,3 +40,5 @@ export default function ActionPalette({onClose}:{onClose:()=>void}){
   <p className="action-palette-hint" id={hintId}><span>{results.length} action{results.length===1?'':'s'}</span><span>↑ ↓ navigate · Home / End · Enter run · Esc close</span></p>
  </div>;
 }
+
+export default function ActionPalette({onClose}:{onClose:()=>void}){const [mode,setMode]=useState('commands'),session=useRef({mode:'commands'}),rendered=session.current,valid=()=>session.current===rendered&&useEditor.getState().modal==='actions',change=(next:string)=>{if(session.current.mode===next)return;session.current={mode:next};setMode(next);};return <><div className="action-palette-modes" role="group" aria-label="Actions search type"><button aria-pressed={mode==='commands'} onClick={()=>change('commands')}>Commands</button><button aria-pressed={mode==='components'} onClick={()=>change('components')}>Components</button></div><div role="region" aria-label={mode==='commands'?'Command search':'Component search'}>{mode==='commands'?<CommandActions onClose={onClose} valid={valid}/>:<ActionComponentSearch onClose={onClose} validMode={valid}/>}</div></>;}
