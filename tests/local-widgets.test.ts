@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {blankDocument,descendants,parseDocument} from '../src/model';
+import {blankDocument,descendants,node,parseDocument} from '../src/model';
 import type {DesignDocument} from '../src/model';
 import {parseLocalWidget,searchLocalWidgets,validateLocalWidget,validateWidgetOutput} from '../src/local-widget-manifest';
 import type {LocalWidget,WidgetOutput,WidgetView} from '../src/local-widget-manifest';
@@ -32,3 +32,4 @@ describe('widget document model',()=>{
 import {validateWidgetMenu,validateWidgetView} from '../src/local-widget-manifest';
 import {it as widgetIt,expect as widgetExpect} from 'vitest';
 widgetIt('validates input views and color and separator menu items strictly',()=>{validateWidgetView({type:'input',action:'name',value:'x',placeholder:'p'});validateWidgetMenu([{type:'color',label:'Tint',action:'tint',value:'#112233'},{type:'separator'}]);for(const bad of [{type:'input'},{type:'input',action:'1bad'},{type:'input',action:'a',value:5},{type:'input',action:'a',extra:1},{type:'input',action:'a',placeholder:'x'.repeat(121)}])widgetExpect(()=>validateWidgetView(bad)).toThrow();for(const bad of [[{type:'color',label:'T',action:'t',value:'red'}],[{type:'color',label:'T',action:'t'}],[{type:'separator',label:'x'}]])widgetExpect(()=>validateWidgetMenu(bad)).toThrow();});
+it('carries a button hover fill onto its generated layer, validates it and clears it on conversion',()=>{const view={type:'stack',children:[{type:'button',label:'Go',action:'go',hoverFill:'#112233'}]} as never;const frame=node('frame',{id:'w',width:200,height:100});expect(widgetLayers(frame,view).find(n=>n.widgetAction==='go')!.widgetHover).toBe('#112233');expect(()=>validateWidgetOutput({state:{},view:{type:'button',label:'Go',action:'go',hoverFill:'red'}})).toThrow();const d=blankDocument();d.pages[0].nodes=[node('rectangle',{id:'r',widgetHover:'#112233'})];expect(()=>parseDocument(JSON.stringify(d))).toThrow('hover');});

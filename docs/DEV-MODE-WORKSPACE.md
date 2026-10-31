@@ -14,7 +14,7 @@ Handoff status, annotations, comments, developer resources and Code Connect stay
 
 ## Limits
 
-This is a local inspection workspace, not Figma Dev Mode. There are no seats, permissions, shared handoff or cloud libraries. See [VS Code integration](VSCODE-INTEGRATION.md) for the editor path.
+This is a local inspection workspace. There are no seats, permissions, shared handoff or cloud libraries. See [VS Code integration](VSCODE-INTEGRATION.md) for the editor path.
 
 The Layers panel disables its visibility and lock toggles and inline rename in Dev Mode. Every editor edit also passes one store check, which refuses any change outside handoff metadata (annotations, developer resources, status, comments, Code Connect and export settings), so a dialog cannot change artwork either. Read-only protects the open editor, not the file on disk: an MCP write or another app can still change a saved file. Native and reference acceptance are pending.
 

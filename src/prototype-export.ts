@@ -13,7 +13,7 @@ export type PrototypeEnvelope={format:typeof PROTOTYPE_FORMAT;version:typeof PRO
 export interface PrototypeRuntime {js:string;css:string;}
 export interface PrototypeSnapshotReport {frames:number;layers:number;pagesOmitted:number;commentsOmitted:number;layersOmitted:number;fontsEmbedded:number;fontsRestricted:string[];}
 /** Review metadata and file plumbing that a viewer has no use for. Rendering fields stay. */
-const privateNodeFields=['annotations','developmentStatus','readyForDevelopment','devResources','exportSettings','exportGhost','detachedFrom','layoutGuides','layoutGuideBindings','layoutGuideStyleId','componentMetadata','widget','widgetAction','widgetField','linkCard','slidePoll','slidePrototypeEmbed'] as const;
+const privateNodeFields=['annotations','developmentStatus','readyForDevelopment','devResources','exportSettings','exportGhost','detachedFrom','layoutGuides','layoutGuideBindings','layoutGuideStyleId','componentMetadata','widget','widgetAction','widgetField','widgetHover','linkCard','slidePoll','slidePrototypeEmbed'] as const;
 const actionComponents=(actions:PrototypeAction[]|undefined,out:Set<string>)=>{for(const a of actions??[]){if(a.componentId)out.add(a.componentId);for(const b of a.branches??[])actionComponents(b.actions,out);}};
 /** Components this page renders or can switch to, including nested instances and every variant in a used set. */
 function requiredComponents(document:DesignDocument,page:Page){
