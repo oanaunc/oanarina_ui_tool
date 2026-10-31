@@ -8,7 +8,6 @@ import {createWhiteboardDocument,addSticky,addConnector} from '../src/whiteboard
 import {worldMatrix} from '../src/transforms';
 import {useEditor} from '../src/store';
 import {createReaction} from '../src/prototype';
-import {createFigmaMock} from './helpers/figma-mock';
 import {copyEditorSelection,pasteEditorClipboard} from '../src/native-clipboard';
 import {reflow} from '../src/layout';
 
@@ -84,7 +83,7 @@ describe('self-contained cross-window clipboard boundary',()=>{
  });
  it('removes complete variant-set metadata atomically and restores it with one Undo',async()=>{
   const doc=blankDocument(),a=node('component',{name:'Default'}),b=node('component',{name:'Hover',x:300});doc.pages[0].nodes=[a,b];combineVariants(doc,doc.pages[0].id,[a.id,b.id]);const container=doc.componentSets![0].containerId;assertClipboardCutSafe(doc,doc.pages[0].id,[container]);const payload=makeDesignClipboard(doc,doc.pages[0].id,[container]);expect(payload.project.componentSets).toHaveLength(1);
-  useEditor.getState().load(doc);const before=useEditor.getState().doc;useEditor.getState().set({selection:[container]});useEditor.getState().remove();expect(allNodes(useEditor.getState().doc)).toHaveLength(0);expect(useEditor.getState().doc.componentSets).toEqual([]);expect(useEditor.getState().past).toHaveLength(1);const clean=parseDocument(JSON.stringify(useEditor.getState().doc));expect((await createFigmaMock().importDocument(clean)).type).toBe('imported');useEditor.getState().undo();expect(useEditor.getState().doc).toEqual(before);
+  useEditor.getState().load(doc);const before=useEditor.getState().doc;useEditor.getState().set({selection:[container]});useEditor.getState().remove();expect(allNodes(useEditor.getState().doc)).toHaveLength(0);expect(useEditor.getState().doc.componentSets).toEqual([]);expect(useEditor.getState().past).toHaveLength(1);useEditor.getState().undo();expect(useEditor.getState().doc).toEqual(before);
  });
  it('retains the local editable clipboard and undo when no native window exists',async()=>{
   const doc=blankDocument(),layer=node('rectangle',{x:40,y:70});doc.pages[0].nodes=[layer];useEditor.getState().load(doc);useEditor.getState().set({selection:[layer.id]});await copyEditorSelection();await pasteEditorClipboard();const nodes=allNodes(useEditor.getState().doc);expect(nodes).toHaveLength(2);expect(nodes.find(n=>n.id!==layer.id)).toMatchObject({x:64,y:94});useEditor.getState().undo();expect(allNodes(useEditor.getState().doc)).toEqual(doc.pages[0].nodes);

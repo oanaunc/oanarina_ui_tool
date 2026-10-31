@@ -77,7 +77,7 @@ export const messages=[
  'Dismiss import report','Importing file','Import cancelled','Import could not finish','Reading selected bytes','Validating file structure',
  'Decoding embedded artwork','Keeping the current project','Preparing the imported project','Close file dialog','Actions for {name}','Open file',
  'Duplicate file','Move to folder…','Move to Trash','Restore file','Delete permanently…','Saved on this Mac',
- 'Local files','Folders','Create folder','Organize projects into local folders.','Current file','Figma Bridge',
+ 'Local files','Folders','Create folder','Organize projects into local folders.','Current file','Import and export',
  'Local organization does not move exported files in Finder. Export .oui files for backups.','YOUR CREATIVE SPACE','LET’S MAKE SOMETHING','Good ideas start here.','An open canvas. A fresh perspective. Entirely yours.','Start from a template',
  'Original designs and your personal starter kits.','Start from scratch','Bring your next idea to life.','Explore the sample','A small brand, a thoughtful website.','Notes, diagrams and ideas on your Mac.',
  'Build, present and export your story.','Open a project','Open a .oui project or import a .fig file.','Showing {shown} of {total}. All files keeps every project.','Rename folder','Remove folder',

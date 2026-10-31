@@ -36,5 +36,5 @@ export default function FontLibrary(){
  {tab==='installed'&&!installed.length&&<p className="dialog-description">Installed font discovery is available in the native Mac application. Import a licensed TTF/OTF file to use a local font in the browser.</p>}
  {tab==='imported'&&!userFamilies.length&&<p className="dialog-description">Import individual TTF/OTF font files you are licensed to use. The app reads family, weight, italic style and embedding permissions. Font collections and compressed web font imports are not supported.</p>}
  {limit<(tab==='google'?rows.length:tab==='installed'?filteredInstalled.length:tab==='imported'?filteredUser.length:0)&&<button className="outline-button" onClick={()=>setLimit(limit+60)}>Show 60 more fonts</button>}</div>
- <p className="small-note">Catalog snapshot: October 29, 2026. Downloads contact Google’s font service. Imported fonts are cached locally; embedding respects the font’s OpenType permissions. Installed font files are never copied. The Figma Bridge requires fonts available in Figma.</p></>;
+ <p className="small-note">Catalog snapshot: October 29, 2026. Downloads contact Google’s font service. Imported fonts are cached locally; embedding respects the font’s OpenType permissions. Installed font files are never copied.</p></>;
 }

@@ -27,7 +27,7 @@ jobs:
       # Source validation does not regenerate the frozen release archives.
       - run: node scripts/test-mcp-source.mjs
       - run: npx playwright install --with-deps chromium
-      - run: npx playwright test --grep-invert 'the downloadable bridge archive contains the current component transfer implementation'
+      - run: npx playwright test
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -46,8 +46,6 @@ jobs:
       - run: npm run mcp:install
       - run: npm run build:mac
       - run: npm run mcp:test
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test tests/e2e/bridge-components.spec.ts
       - run: ditto -c -k --keepParent "build/Forma.app" build/Forma-development.zip
       - uses: actions/upload-artifact@v4
         with:

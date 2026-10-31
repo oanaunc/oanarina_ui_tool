@@ -37,7 +37,7 @@ assets=site/'images/apps/ui-tool';assets.mkdir(parents=True,exist_ok=True)
 for name in ['workspace.png','home.png']:shutil.copyfile(root/'build/screenshots'/name,assets/name)
 shutil.copyfile(root/'build/icon-1024.png',assets/'icon.png')
 files=site/'downloads/ui-tool';files.mkdir(parents=True,exist_ok=True)
-for src,dest in [('public/features.json','features.json'),('docs/FEATURE-REGISTER.md','FEATURE-REGISTER.md'),('public/figma-bridge.zip','figma-bridge.zip'),('LICENSE','License.txt')]:shutil.copyfile(root/src,files/dest)
+for src,dest in [('public/features.json','features.json'),('docs/FEATURE-REGISTER.md','FEATURE-REGISTER.md'),('LICENSE','License.txt')]:shutil.copyfile(root/src,files/dest)
 nav='<li><a href="archi-tool.html">Archi Tool</a></li>'
 addition=nav+'\n                                            <li><a href="ui-tool.html">UI Tool for Mac</a></li>'
 changed=[]

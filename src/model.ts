@@ -98,7 +98,7 @@ export function isLocked(n:DesignNode,nodes:DesignNode[]):boolean {let current:D
 export function parseDocument(raw:string):DesignDocument {
   if(raw.length>50_000_000)throw Error('This file exceeds the 50 MB project limit.');
   const d=JSON.parse(raw);
-  if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file or a Figma Bridge .oui file. Direct .fig files are not supported yet.');
+  if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file.');
   if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
   validateDocumentMetadata(d);validateColorProfile(d.colorProfile);validateDocumentShaders(d);
   validateDocumentSurfaces(d);
