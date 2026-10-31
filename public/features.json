@@ -4284,30 +4284,30 @@
     "category": "Vector pen and editing",
     "name": "Vector network branches",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: real owner-local shared-vertex stroke graphs with per-edge cubic handles, exact split/new leaf branches, shared vertex/handle dragging, edge deletion and explicit flatten. Graph1 forests remain compatible; graph2 adds one simple cycle plus trees, authoritative cycle-only fill and single compound stroke, and a strict deterministic legacy appearance cache with disclosed AA limits. One solid centered round stroke, no effects/masks/layout/components/affected Motion; optional one total solid region paint. Undo/save/oui1/2 and scoped copy supported. Bridge requires flatten; filled flatten requires Remove fill first. See docs/VECTOR-NETWORK-BRANCHES.md and docs/VECTOR-NETWORK-REGIONS.md. Native/reference acceptance pending."
+    "notes": "Graph version 3 holds any planar network: multiple cycles, faces and holes. Crossings become explicit junctions when edges are created or contours converted; moving a vertex or handle across an edge still refuses. Works under effects, masks, auto layout, instance copies and layer Motion, with any centered stroke stack; Smart Animate and Bridge refuse. docs/VECTOR-NETWORK-FACES.md. Older builds refuse version 3 files."
   },
   {
     "id": "UI-14-027",
     "category": "Vector pen and editing",
     "name": "Fill bounded vector region",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: one simple cycle plus acyclic branches can be selected by its true cycle geometry and given one total solid paint, with real inspector controls, typed graph2 metadata, headless pre/final validation, shared SVG fill-plus-single-stroke output, Undo/save and scoped copy identity. Forest closing and one closed contour conversion are reachable. Stable region identity survives exact splits and valid moves; five-decimal presentation topology also validates. Holes/multiple faces/cycles, extra paints, effects/masks/layout/components and affected Motion remain unsupported. Legacy ordinary Euler fallback has documented boundary antialiasing differences; current authoritative renderer does not fill retraced branches. See docs/VECTOR-NETWORK-REGIONS.md. Native/reference parity pending."
+    "notes": "Every bounded face can be picked on the canvas and given its own stack of 1–16 solid or gradient paints, with holes, Undo, save and SVG pixels tested. Image and shader paints on a region refuse. Region paints do not appear in selection colors or asset usage."
   },
   {
     "id": "UI-14-028",
     "category": "Vector pen and editing",
     "name": "Remove vector region fill",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: Remove region fill acts on the real selected one-cycle region through normal paint fields, preserves topology for refill, detaches edited bindings only after semantic change, and supports one Undo/save. Filled boundary deletion and flatten explicitly refuse until removal; removing then deleting a boundary downgrades safely to an ordinary graph1 forest. Stale source/candidate/session callbacks refuse. One total solid paint and one simple region only; general multiface/hole fill removal remains planned. See docs/VECTOR-NETWORK-REGIONS.md. Actual browser/core/source-MCP and independent review do not establish native/Figma parity."
+    "notes": "Remove region fill works per face and keeps the paint for refill. Deleting a boundary merges faces or removes the region in one Undo instead of refusing; a split gives both parts the paint."
   },
   {
     "id": "UI-14-029",
@@ -4354,10 +4354,10 @@
     "category": "Vector pen and editing",
     "name": "Flatten vector network",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Network flatten converts to ordinary contours with Undo, and per-point corner/smooth conversion exists. A filled graph2 region must have its fill removed first."
+    "notes": "Flatten keeps the picture: unfilled graphs give one open contour per edge, one paint stack stays on the layer with an even-odd fill, and each further stack becomes a fill layer below the stroke, in one Undo."
   },
   {
     "id": "UI-14-034",
@@ -4627,7 +4627,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Actual eligible static-TTF glyph outlines become ordinary editable vector operands in a reviewed live Boolean group. Holes, signed transforms, source/font proofs, atomic Undo/save and numeric amplification refusal are tested. Text stops being editable as text; broader fonts/shaping/native reference fidelity remain unsupported. See docs/BOOLEAN-TEXT-OPERANDS.md."
+    "notes": "Character ranges with different font, size, weight, style or tracking now outline in Booleans and SVG outlines; a range color change refuses. Still printable ASCII, exact static TTF, and text stops being editable as text."
   },
   {
     "id": "UI-15-013",
@@ -4834,20 +4834,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Variable width strokes",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Open curved paths convert to straight anchors within 0.1–4 layer units (Undo restores the handles), and all saved profiles stay straight open contours so older builds can read them. Closed contours, true curved envelopes, asymmetric widths and miter joins are absent. docs/VARIABLE-WIDTH-STROKES.md."
+    "notes": "Curves and closed contours are native: handles stay on the document, and the band follows the cubic envelope with widths along real length. Miter joins, gradients and asymmetric width bias work; dashes do not. Older builds refuse curved or closed profiles and miter or gradient profiles, and ignore widthBias. docs/VARIABLE-WIDTH-STROKES.md."
   },
   {
     "id": "UI-16-014",
     "category": "Freehand and Figma Draw",
     "name": "Width control points",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Add width point inserts a straight anchor at 1–99% of a segment with interpolated width. Placement is numeric only, not by clicking the stroke, and asymmetric widths are absent."
+    "notes": "Width points are added numerically or by clicking the stroke, by exact split, so the line does not move. Shift-drag or Anchor width bias % gives asymmetric widths. Width points are anchors, not a separate track."
   },
   {
     "id": "UI-16-015",
@@ -4857,27 +4857,27 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Partial: reachable editable Forma sinusoidal width-wave on bounded open straight contour paths; shared artwork/export, Undo/save, source guards and atomic validation. Independent geometry; arbitrary cubic/closed networks, Smoothen and exact Figma noise remain unsupported. See docs/DYNAMIC-STROKES.md."
+    "notes": "Wave runs on open and closed curves, with exact splits and a periodic seam. Effects, masks, instances and Motion are valid; live Booleans refuse. No Smoothen control, no network support, and it is a sine, not Figma's noise."
   },
   {
     "id": "UI-16-016",
     "category": "Freehand and Figma Draw",
     "name": "Dynamic stroke frequency",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Partial: real integer 1–16 bump frequency with deterministic local arc-length sampling, bounded generated work, Undo/save and rendered SVG pixel checks. Unsupported geometry and undersized sample spacing refuse; exact Figma algorithm/reference acceptance pending. See docs/DYNAMIC-STROKES.md."
+    "notes": "Integer frequency 1–16 works on the same curved and closed geometry, with the same exact sampling. Undersized spacing and the 512-anchor budget refuse."
   },
   {
     "id": "UI-16-017",
     "category": "Freehand and Figma Draw",
     "name": "Stroke taper",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Uniform, start, end and both-ends taper presets work along real contour length, with one Undo, and curved paths work through conversion. Presets are linear and replace existing ratios; brush taper is absent."
+    "notes": "Taper presets gain amount, smooth and keep-existing options. Stamped brushes gain start and end taper by real stroke length, floored at 5% of size. Stretch brushes have no taper (refused)."
   },
   {
     "id": "UI-16-018",
@@ -4887,17 +4887,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Partial: fixed-angle elliptical-nib sweeps on bounded open straight contour paths, angle/roundness controls, shared SVG/export, Undo/save. Solid centered round strokes only; no pressure, tilt, cubic brush, effects, masks, components or animation. See docs/CALLIGRAPHIC-STROKES.md."
+    "notes": "Nib sweeps curved and closed contours, and effects, masks, instances and Motion are valid. Pressure and tilt remain absent; auto layout and live Booleans refuse."
   },
   {
     "id": "UI-16-019",
     "category": "Freehand and Figma Draw",
     "name": "Text on path",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Ellipses, rectangles, polygons, stars and closed paths now convert, so text can run around a circle. Baselines stay open contours (a loop repeats its start point) and return closes them. Rich text, RTL, multiple baselines, components, masks, effects, animated ancestry and interchange stay unsupported."
+    "notes": "Closed baselines are native, and text passes the seam at any offset. 1–16 contours act as continuing baselines. Rich ranges and RTL work; effects, masks, instances and layer Motion are valid. Auto layout, live Booleans, Smart Animate, Bridge and SVG <textPath> import still refuse. Older builds refuse the new forms; earlier saved loops still open."
   },
   {
     "id": "UI-16-020",
@@ -4917,7 +4917,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Plain rectangles keep the exact grid. Ellipses, polygons, stars, closed paths and transformed or rounded rectangles use curve Booleans proven against the union area, limited to 8 sources, 1,024 points and 64 regions. Same-color opaque unstroked sources only, networks unsupported, and a very fast drag can skip a very thin face. docs/SHAPE-BUILDER.md."
+    "notes": "Fill-only networks are now sources, and network regions merge with neighbours in the network inspector. Same-color opaque unstroked sources are still required, and the very-fast-drag note stands."
   },
   {
     "id": "UI-16-022",
@@ -4937,7 +4937,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Simultaneous point/handle editing across2–16 selected contour paths: qualified anchor identities, world-space box/add/subtract selection, anchor/tangent draft dragging, precision modifier, nudge/Delete, exact no-op preservation, guarded atomic postderive edits, Undo/save/reopen. Up to4096 anchors/20000 page layers. Shared networks, cross-layer topology, anchor-fragment Cut and multi-vector snapping remain absent. docs/MULTI-VECTOR-EDITING.md. Exact Figma reference/native acceptance remains pending."
+    "notes": "Multi-vector anchor drags now snap to geometry outside the moving contours (handles do not). Shared networks, cross-layer topology and anchor-fragment Cut remain absent."
   },
   {
     "id": "UI-16-024",
@@ -5054,20 +5054,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Radial repeat",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Reachable staged radial repeat dialog with count/world pivot/radius/angle/rotate-copies, actual canvas preview and Apply materializing editable sibling subtrees in one guarded Undo. Signed affine geometry, masked sibling ordering, internal IDs/instances/paints, no-op source and saved reopening tested. Persistent live repeat objects/animation tracks remain absent; unsupported controllers/skew refuse. docs/LINEAR-RADIAL-REPEAT.md. Exact Figma reference/native acceptance remains pending."
+    "notes": "Keep live stores one layer whose copies follow its edits and Motion, with export bounds, editable count, pivot, angle and rotation, Expand to layers and Remove. Copies are not individually editable until expanded. Not allowed as a mask, Boolean or instance child, directly in auto layout, or nested; limit 4,096 copies per page. Bridge refuses; an older build shows only the source."
   },
   {
     "id": "UI-16-036",
     "category": "Freehand and Figma Draw",
     "name": "Linear repeat",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Unreleased source: Reachable staged linear repeat dialog with count/world X/Y steps, actual canvas preview/Cancel and editable materialized copies in one Undo. Preserves copied subtrees/references/appearance, original source and same-parent mask order; validated budgets and postderive checks. No persistent live repeat metadata or source animation-track copying. docs/LINEAR-RADIAL-REPEAT.md. Exact Figma reference/native acceptance remains pending."
+    "notes": "Same live repeat with count and X/Y steps, under the same limits."
   },
   {
     "id": "UI-16-037",
@@ -5597,7 +5597,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Independent widths now work on rounded boxes and per-corner radii with one tapered even-odd ring, for inside, center and outside alignment. Limits: no dashes, per-edge paints, non-box shapes, arrowheads or corner smoothing (refused)."
+    "notes": "Dash patterns now work on independent edges, per side and clipped to the ring, including rounded corners. Per-edge paints, non-box shapes, arrowheads and corner smoothing remain absent or refused."
   },
   {
     "id": "UI-18-012",
@@ -5765,29 +5765,29 @@
     "name": "Stroke scale behavior",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Existing ordinary leaf resize and K Scale semantics are tested; optional inherited scale/fixed stroke policy compensates literal stacks/dashes/edge widths under supported uniform authored scaling. Unsupported managed/locked/variable-width/Boolean/Motion paths refuse atomically; direct scripted transforms retain existing literal semantics. Full group/effect/stroke scaling reference parity is incomplete. See docs/AUTHORED-STROKE-SCALING.md."
+    "notes": "Fixed-width compensation now also covers point-width profiles, keeping anchor ratios. Other limits are unchanged: managed, locked, Boolean and Motion paths refuse, and direct scripted transforms keep literal semantics."
   },
   {
     "id": "UI-18-029",
     "category": "Strokes",
     "name": "Per-point stroke width",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Open curved paths convert to straight anchors within 0.1–4 layer units (Undo restores the handles), and all saved profiles stay straight open contours so older builds can read them. Closed contours, true curved envelopes, asymmetric widths and miter joins are absent. docs/VARIABLE-WIDTH-STROKES.md. Adds taper presets and width points. Editable Figma Bridge still refuses active profiles."
+    "notes": "Same native engine as UI-16-013, on open and closed contours. Bridge still refuses active profiles; SVG/PNG carry the band."
   },
   {
     "id": "UI-18-030",
     "category": "Strokes",
     "name": "Stroke variable binding",
     "priority": "must",
-    "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Primary stroke color/width variable assignments render through the actual first stack entry, including aliases/modes and materialized removal. Other entries retain literals; independent per-entry bindings remain unfinished. See docs/STROKE-STYLES.md."
+    "notes": "Each stack entry beyond the first binds its own color and width variables through its stable id (stroke@id, strokeWidth@id), so tokens follow reorder, with detach on literal edit and on removal. Older builds refuse these documents."
   },
   {
     "id": "UI-18-031",
@@ -6255,9 +6255,9 @@
     "name": "Import SVG",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Reviewed editable SVG layers and sanitized visual fallback are reachable. Full SVG/CSS/filter/mask/clip/typography conformance remains incomplete; see SVG-IMPORT.md."
+    "notes": "Reviewed editable SVG layers now cover stylesheets, filters, masks, any clip, curved text, per-character positions and image patterns, with reports for reductions. Full SVG, CSS and typography conformance remains incomplete; see docs/SVG-IMPORT.md."
   },
   {
     "id": "UI-20-006",
@@ -7097,7 +7097,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "For TTF/OTF, the comparison shows per-text reach from cmap and Coverage tables, including whole-sequence ligature matching. WOFF2 and installed fonts stay unknown; this reads tables and does not shape text. docs/OPENTYPE-FEATURE-PREVIEWS.md."
+    "notes": "TTF/OTF keep table data. For installed and WOFF2 faces the inspector now measures width with the feature off and on and says what it saw; no change proves nothing. WOFF2 tables are still unread, because that needs a Brotli decoder."
   },
   {
     "id": "UI-22-018",
@@ -7107,7 +7107,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Alternate counts come from GSUB type 3 lookups, with a stated valid range. Unknown for WOFF2 and installed fonts."
+    "notes": "Table data as before. Measured notes only for unreadable faces, and alternates that keep their advance read as no change."
   },
   {
     "id": "UI-22-019",
@@ -7117,7 +7117,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "ssXX and cvXX show designer names from FeatureParams and the name table, tested on a fixture and checked by hand against system fonts. Bundled faces have no stylistic sets; WOFF2 and installed fonts stay unknown."
+    "notes": "Table data as before. Measured notes only for unreadable faces, and alternates that keep their advance read as no change. Stylistic set names stay unavailable for WOFF2 and installed fonts."
   },
   {
     "id": "UI-22-020",
@@ -7127,7 +7127,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Sliders, number fields and named instances come from real fvar data for TTF/OTF, with hidden axes omitted and painted pixels proven to change. WOFF2 downloads expose only wght, because that is the only axis requested. Installed fonts are unknown, and a slider commits on release with no live canvas preview."
+    "notes": "Faces without readable tables now get axes measured by sweeping wght, wdth, opsz, slnt and GRAD. Found on system-ui and on SF loaded as a web font. New York found nothing, and Skia found nothing because its axes use a range outside the sweep. Extents are approximate; hidden and custom axes are not found. No live slider preview."
   },
   {
     "id": "UI-22-021",
@@ -7137,7 +7137,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "opsz appears as a real axis on fonts that have it. Same format limits as UI-22-020."
+    "notes": "opsz is measured the same way on those faces, with the same limits as UI-22-020."
   },
   {
     "id": "UI-22-022",
@@ -7147,7 +7147,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
+    "notes": "Measured width effect now reported for installed and WOFF2 fonts; table-level reach only for TTF/OTF."
   },
   {
     "id": "UI-22-023",
@@ -7157,7 +7157,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
+    "notes": "Measured width effect now reported for installed and WOFF2 fonts; table-level reach only for TTF/OTF."
   },
   {
     "id": "UI-22-024",
@@ -7167,7 +7167,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
+    "notes": "Measured width effect now reported for installed and WOFF2 fonts; table-level reach only for TTF/OTF."
   },
   {
     "id": "UI-22-025",
@@ -7177,7 +7177,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Each now reports real reach for the selected text on TTF/OTF: tnum, pnum, frac (contextual rules report a possibility, not a result) and kern (first glyph of a pair only). WOFF2 and installed fonts stay unknown."
+    "notes": "Measured width effect now reported for installed and WOFF2 fonts; table-level reach only for TTF/OTF. Verified with kerning on Times New Roman."
   },
   {
     "id": "UI-22-026",
@@ -7284,10 +7284,10 @@
     "category": "Advanced typography",
     "name": "Bidirectional text",
     "priority": "must",
-    "status": "partial",
-    "verification": "partial-implementation-validated; reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Mixed RTL/LTR scripts and rich spans use browser bidi/shaping within each rendered line, with full-paragraph first-strong Auto direction, actual glyph-order/Arabic joining/color pixels, logical source preservation, validation and persistence. Per-line SVG isolates do not retain arbitrary embedding or weak/neutral context across soft wraps; headless first-strong direction is a finite Unicode approximation. Full bidi paragraph-engine parity remains unfinished. docs/TEXT-DIRECTION-WORKFLOWS.md."
+    "notes": "Soft wraps carry paragraph bidi context through invisible marks (open embeddings, strong neighbours, Arabic number context), with no source change. Second-line order matches the browser's whole-paragraph layout, and the test fails with the marks removed. Native textarea caret, selection and typing were tested with Arabic and Hebrew plus Latin in Chromium. Per-paragraph direction overrides are not shown in the textarea. WKWebView is unverified."
   },
   {
     "id": "UI-22-037",
@@ -7304,20 +7304,20 @@
     "category": "Advanced typography",
     "name": "Multilingual font fallback",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: explicit ordered layer/range fallback family lists share safe SVG/inline/Canvas/DOM measurement, wrapping, optical metrics, text masks, CSS and eligible font embedding/export. Validated optional node/run/style fields preserve .oui v1/v2, Undo/components/clipboard/source MCP and missing-field metadata; Bridge reports omission. Actual Unicode-restricted mixed Greek/Cyrillic font, pixel/width, reorder and legacy-save checks. Partial: browser glyph selection without automatic script/coverage detection; available fonts/embedding permissions, headless estimates, native shaping/AT/Figma acceptance remain limits. docs/MULTILINGUAL-FONT-FALLBACK.md."
+    "notes": "Per-letter glyph coverage is measured for installed, WOFF2 and TTF faces, with script names and one-click Add fallback in one Undo. It does not assign fonts automatically. A family that is the system sans default can miss a gap. Bridge omission is unchanged."
   },
   {
     "id": "UI-22-039",
     "category": "Advanced typography",
     "name": "Text on curve baseline",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: browser SVG shapes plain single-line LTR glyphs on the actual cubic baseline, with shared appearance export, scoped resources and validated prototype variables. Browser glyph-cell/font-metric bounds are conservative; headless bounds explicitly estimated. Rich typography and arbitrary-font ink equivalence remain outside this scope. See docs/TEXT-ON-PATH.md."
+    "notes": "Browser SVG shapes rich single-line text on the actual cubic baselines: fonts, axes, features, baseline shift, decorations. Hebrew and Arabic mixed with Latin were verified in Chromium, not WKWebView. Bounds remain glyph-cell based."
   },
   {
     "id": "UI-22-040",
@@ -7377,7 +7377,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: optional layer/paragraph hangingQuotes controls measure quotation advances outside LTR physical left/right body edges, with body wrapping/auto-width, shared SVG/mask/export bounds, source/range preservation, style/component/clipboard/MCP validation and Undo/save/reopen. Partial: literal ASCII/curly/guillemet paragraph edges; lists, centered/justified text, RTL/bidi, interior tabs and ellipsis tails retain normal placement. Conservative ink bounds and font/fallback limits; editable Bridge reports omitted optical offsets, SVG retains displayed geometry. docs/HANGING-QUOTATION-MARKS.md; core/browser pixels, malformed metadata/retained-context/MCP checks. Native/reference verification pending."
+    "notes": "Now works in RTL, mixed-script and centered paragraphs. Justified text, lists, ellipsis tails, tabs and explicit bidi controls keep normal placement."
   },
   {
     "id": "UI-22-046",
@@ -12975,9 +12975,9 @@
     "name": "SVG import from Figma",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. SVG import offers validated editable layers with reduction reports or a sanitized visual asset. Paths, common shapes, groups, transforms, supported text/gradients/use and simple clips work. CSS, filters, arbitrary masks/clip paths and full text/paint semantics remain incomplete."
+    "notes": "Editable SVG import now applies stylesheets by selector with cascade, reads exported shadow and blur filter chains as effects, turns any clip or mask into an editable mask source, and keeps user-space gradients and one-image patterns. Tested with synthetic SVGs written to the known Figma export shape, with browser pixel comparison; no real Figma export was compared. Markers, pseudo selectors, focal radial gradients and multi-image patterns remain reduced."
   },
   {
     "id": "UI-39-030",
@@ -12995,9 +12995,9 @@
     "name": "Direct binary fig import",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Offline bounded fig-kiwi Design import via File Open, with validated scene/raster conversion and reduction report. Supported components become detached layers and native annotation blocks may retain snapshots; binary export and exact full-format parity remain unfinished. See docs/FIG-IMPORT.md."
+    "notes": "Offline .fig Design import keeps live components and instances with nested overrides, swaps, variants, properties, auto layout, constraints, local styles, variables with modes, vector anchors, masks, crops, Booleans and prototype links, in one cancellable worker. A settle pass drops any link that would move stored artwork and the report lists it. Tested only with generated files; field names are unverified against a real schema, so full .fig compatibility is not claimed. Binary export is absent."
   },
   {
     "id": "UI-39-032",
@@ -13017,7 +13017,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Sketch module worker proven in WKWebView from a Finder drop of a package zip. Earlier limits stand."
+    "notes": "Offline .sketch import keeps live symbols with path overrides, embedded library symbols, Boolean operands, rotation and reflection, masks, gradients, image fills, stacked borders, effects, rich text, shared styles, color variables, constraints and prototype flows. Unknown layers become visible placeholders; unknown curve data and circular symbols refuse. Smart layout, native glyph layout and bitmap crop polygons are reduced; tested with synthetic files only."
   },
   {
     "id": "UI-39-034",
@@ -13027,7 +13027,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "PDF worker proven in WKWebView from a Finder drop. Earlier limits stand."
+    "notes": "Each PDF page opens as editable shapes, images, clips, gradients and real text when it converts completely, or stays its rendered image with the reason listed in review; Keep every page as an image remains available. Patterns, mesh gradients, soft masks and image masks keep the page as an image. Text uses installed fonts, per run, and group opacity is flattened; tested with synthetic PDFs only."
   },
   {
     "id": "UI-39-035",
@@ -13057,7 +13057,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Partial: local offline GET-file REST JSON or bare DOCUMENT import through guarded Open/Figma transfer picker. Bounded editable supported geometry/plain text, detached component frames, explicit paint/image/transform/metadata reduction review and validation before new-project open. No API retrieval, missing-asset fetch or full fidelity. See docs/FIGMA-REST-JSON-IMPORT.md. Source core/type/browser checks; native and exact reference acceptance pending."
+    "notes": "Local REST JSON import keeps local components and instances live, variant sets, auto layout, constraints, styles built from first use, rich text, prototype interactions, flows and Booleans, in a cancellable worker. Library instances stay plain layers. Image bytes, variables and property definitions are absent from the input or not transferred; no API retrieval."
   },
   {
     "id": "UI-39-038",
@@ -13087,7 +13087,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Partial: browser Open/Place import panel with real byte progress, named preparation stages, cancellation and permanent source ownership; atomic raster batches and SVG review. Synchronous main-thread parsing and native picker/bootstrap paths are not interruptible. Existing Figma import subset unchanged. See docs/IMPORT-PROGRESS-RELIABILITY.md."
+    "notes": ".fig, REST, Sketch and PDF conversion run in owned workers that Cancel terminates, and .fig shows a converting stage with a layer count. .oui JSON parsing, SVG parsing and final validation remain synchronous, and native picker and bootstrap paths remain outside cancellation."
   },
   {
     "id": "UI-40-001",
@@ -17557,7 +17557,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: abortable FileReader, detached image callbacks, terminated Figma worker and canceled repository preparations prevent late browser import publication. Synchronous stages and native dialogs remain outside cancellation. See docs/IMPORT-PROGRESS-RELIABILITY.md."
+    "notes": "Terminable workers now stop .fig conversion and REST conversion immediately, as well as decoding, Sketch and PDF work. Synchronous .oui, SVG and final validation stages and native dialogs remain outside cancellation."
   },
   {
     "id": "UI-53-010",
@@ -17567,7 +17567,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Adds a page-loading progress indicator alongside existing animation export progress. Other long operations, including merge and status checks on large files, have no progress or cancellation."
+    "notes": "Imports add a converting stage with layers converted, alongside byte, stage, page and animation export progress. Merge and status checks on large files still have no progress or cancellation."
   },
   {
     "id": "UI-53-011",
@@ -17577,7 +17577,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Native file bootstrap and document-open now report fixed categories without source text. A rejected supported .oui offers \"Open a repaired copy\". Malformed JSON, unknown versions and other formats get a report only."
+    "notes": "Fixed .fig conversion limits and structural faults are now reported by name through the exact allowlist; other parser text stays hidden. Unsupported formats still get a report only, and repair stays .oui only."
   },
   {
     "id": "UI-53-012",
@@ -17727,7 +17727,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Canvas missing-image diagnostics distinguish missing, invalid and failed decoded authored image/poster paints, with selectable placeholders and Inspector status. Actual SVG image events, bounded indexing, source guards and replacement Undo/save are validated. Font/video/component/library/general resource diagnostics and broader occlusion semantics remain separate; see docs/MISSING-IMAGE-DIAGNOSTICS.md."
+    "notes": "Missing or unreadable .fig images now open as marked, replaceable image placeholders instead of refusing the file, and GIF and WebP fills are accepted. Missing Sketch symbols and unknown layers become visible gray placeholders. Font, video and general resource diagnostics remain separate."
   },
   {
     "id": "UI-53-027",
