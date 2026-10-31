@@ -8,7 +8,7 @@ Cuts use one ordinary Undo transaction and survive save/reopen, `.oui` versions 
 
 ## Partial scope and safeguards
 
-This is a scissors workflow on segments and anchors. The filled-shape [Knife](VECTOR-SEPARATION.md#knife) is a separate tool. This tool does not implement automatic cuts at all intersections, general vector networks, multi-layer cuts, separate output layers or cut-and-delete gaps. The existing Split at points operation remains available for selected anchors. It is not a claim of full Figma cut-tool parity or reference verification.
+This is a scissors workflow on segments and anchors. The filled-shape [Knife](VECTOR-SEPARATION.md#knife) is a separate tool. This tool does not implement automatic cuts at all intersections, general vector networks, multi-layer cuts, separate output layers or cut-and-delete gaps. The existing Split at points operation remains available for selected anchors.
 
 Supported input is a contour path with at most 32 contours and enough room for two new anchors within 512 total result anchors. Each contour needs at least two anchors. Coordinates, absolute control points and visible canvas controls must be finite and within ±1,000,000; the path needs a finite nonzero coordinate box and an invertible ancestor transform. A single cached path-to-world matrix and node-map ancestor lookup are reused for all controls and pointer hits, keeping tool preflight/render geometry work linear in page size plus controls. Pointer picking occurs against the visible world-space cubic, including nonuniform scale/reflection; the committed parameter subdivides the original local cubic exactly. Parameters within 0.00001 of either end, near-zero pieces and near-zero picked segments are refused.
 
