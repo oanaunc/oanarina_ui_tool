@@ -1,3 +1,4 @@
+import BlendControl from './BlendControl';
 import VectorNetworkControls from './VectorNetworkControls';
 import ComponentSlots from './ComponentSlots';
 import MixedFillEditor from './MixedFillEditor';
@@ -144,7 +145,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
  {sel.length>1?<MixedFillEditor key={JSON.stringify([page.id,s.selection])}/>:n.media?<VideoInspector key={n.id} n={n}/>:<section className="inspector-section" data-testid="fill-section"><FillEditor n={n} patch={patch}/></section>}
  <section className="inspector-section" data-testid="stroke-section"><StrokeEditor n={n} patch={patch}/><DynamicStrokeControls n={n}/><CalligraphicStrokeControls n={n}/><StrokeScaleControl/></section><TextPathControls n={n}/>
  <SelectionColors/><Section name="Design system"><DesignSystemInspector n={n}/></Section>
- {n.type==='text'&&<Section name="Character formatting"><TextVariants n={n}/><RichTextInspector n={n}/></Section>}<Section name="Layer"><NumberField label="Opacity %" value={n.opacity*100} min={0} max={100} onChange={v=>patch({opacity:v/100})}/><select aria-label="Blend mode" value={n.blendMode??'normal'} onChange={e=>patch({blendMode:e.target.value})}>{['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity'].map(mode=><option key={mode}>{mode}</option>)}</select>{containers.includes(n.type)&&<label className="check-row"><input type="checkbox" checked={n.isolate??false} onChange={e=>patch({isolate:e.target.checked})}/>Isolate blending</label>}</Section>
+ {n.type==='text'&&<Section name="Character formatting"><TextVariants n={n}/><RichTextInspector n={n}/></Section>}<Section name="Layer"><BlendControl n={n}/></Section>
  <section className="inspector-section" data-testid="effects-section"><EffectsEditor n={n} patch={patch}/></section>
  {sel.length===1&&<ComponentSlots key={'component-slots:'+n.id} selected={n}/>}
  {(n.type==='component'||n.type==='instance'||n.instanceRootId)&&<Section name="Component"><ComponentInspector n={n}/></Section>}

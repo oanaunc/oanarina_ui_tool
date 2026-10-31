@@ -1,3 +1,4 @@
+import {refusePassThroughPlayback} from './pass-through';
 import {GIFEncoder,applyPalette,quantize} from 'gifenc';
 import {visualBounds} from './transforms';
 import type {DesignNode} from './model';
@@ -7,7 +8,7 @@ import {exportSvg} from './files';
 export type AnimationFormat='gif'|'webm'|'mp4';
 export function recordingMime(format:AnimationFormat){if(format==='gif')return 'image/gif';if(typeof MediaRecorder==='undefined')return null;const options=format==='mp4'?['video/mp4','video/mp4;codecs=avc1.42E01E']:['video/webm;codecs=vp8','video/webm;codecs=vp9','video/webm'];return options.find(type=>MediaRecorder.isTypeSupported(type))??null;}
 export interface AnimationExportOptions {format:AnimationFormat;scale:number;duration:number;fps:number;quality:number;loop:boolean;transparent:boolean;signal:AbortSignal;onProgress:(value:number)=>void;}
-export async function renderAnimation(nodes:DesignNode[],motion:Timeline,options:AnimationExportOptions){const {format,scale,duration,fps,signal}=options,mime=recordingMime(format);if(!mime)throw Error(format.toUpperCase()+' recording is not supported by this browser. GIF is available.');if(!nodes.length)throw Error('Select artwork to animate.');const count=Math.max(2,Math.ceil(duration*fps));if(count>1800)throw Error('Use a shorter duration or lower frame rate (maximum 1,800 frames per export).');
+export async function renderAnimation(nodes:DesignNode[],motion:Timeline,options:AnimationExportOptions){refusePassThroughPlayback(nodes);const {format,scale,duration,fps,signal}=options,mime=recordingMime(format);if(!mime)throw Error(format.toUpperCase()+' recording is not supported by this browser. GIF is available.');if(!nodes.length)throw Error('Select artwork to animate.');const count=Math.max(2,Math.ceil(duration*fps));if(count>1800)throw Error('Use a shorter duration or lower frame rate (maximum 1,800 frames per export).');
  const sampled=Array.from({length:33},(_,i)=>visualBounds(sampleMotion(nodes,motion,duration*i/32))),b={x:Math.min(...sampled.map(b=>b.x)),y:Math.min(...sampled.map(b=>b.y)),width:0,height:0};b.width=Math.max(...sampled.map(p=>p.x+p.width))-b.x;b.height=Math.max(...sampled.map(p=>p.y+p.height))-b.y;
  const width=Math.max(1,Math.ceil(b.width*scale)),height=Math.max(1,Math.ceil(b.height*scale));if(width>4096||height>4096||width*height>8_000_000)throw Error('Animation is too large. Select a smaller frame or reduce export scale.');const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d',{willReadFrequently:format==='gif',alpha:format==='gif'})!;
  let failure:Error|undefined;const check=()=>{if(failure)throw failure;if(signal.aborted)throw new DOMException('Animation export cancelled.','AbortError');};

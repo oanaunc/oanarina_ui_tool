@@ -1,3 +1,4 @@
+import {validatePassThroughExportSource} from './pass-through';
 import {variableWidthBounds} from './variable-width';
 import type {DesignDocument,DesignNode,Page} from './model';
 import {effectiveVisible,isLocked,uid} from './model';
@@ -84,7 +85,7 @@ export function inspectFrameOverflow(page:Page,id:string){
   const values={left:Math.max(0,-b.x),top:Math.max(0,-b.y),right:Math.max(0,b.x+b.width-frame.width),bottom:Math.max(0,b.y+b.height-frame.height)};
   if(Object.values(values).some(v=>v>1e-6))entries.push({id:n.id,name:n.name,...values});
  }
- const nodes=exportSelection(page.nodes,[id]).map(n=>n.id===id?{...n,clip:false}:n),b=visualBounds(nodes);
+ const selected=exportSelection(page.nodes,[id]);validatePassThroughExportSource(page.nodes,selected);const nodes=selected.map(n=>n.id===id?{...n,clip:false}:n),b=visualBounds(nodes);
  if(![b.x,b.y,b.width,b.height].every(Number.isFinite))throw Error('Frame content exceeds finite preview bounds.');
  const pts=[[b.x,b.y],[b.x+b.width,b.y],[b.x+b.width,b.y+b.height],[b.x,b.y+b.height]].map(([x,y])=>point(inverse,x,y));
  if(pts.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y)))throw Error('Frame content exceeds finite preview bounds.');
@@ -95,7 +96,7 @@ export function inspectFrameOverflow(page:Page,id:string){
 /** Selected exports retain their required mask/clip ancestors; a wrapper removes the frame's world transform. */
 export function frameExportGeometry(page:Page,id:string,bounds:'frame'|'artwork'){
  const {frame,matrix,inverse}=geometry(page,id);if(frame.width<=0||frame.height<=0)throw Error('Use positive frame dimensions before exporting.');if(!effectiveVisible(frame,page.nodes))throw Error('Make the frame and its ancestors visible before exporting.');
- const nodes=exportSelection(page.nodes,[id]);
+ const nodes=exportSelection(page.nodes,[id]);validatePassThroughExportSource(page.nodes,nodes);
  for(const n of nodes)if(effectiveVisible(n,page.nodes))box(n,matrix(n));
  if(bounds==='frame')return {nodes,viewport:{x:0,y:0,width:frame.width,height:frame.height},transform:inverse};
  const viewport=visualBounds(nodes);if(![viewport.x,viewport.y,viewport.width,viewport.height].every(Number.isFinite))throw Error('The frame export has nonfinite bounds.');return {nodes,viewport,transform:undefined};

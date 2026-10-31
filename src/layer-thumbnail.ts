@@ -1,3 +1,4 @@
+import {hasPassThrough} from './pass-through';
 import type {DesignNode,Page} from './model';
 import {exportSelection} from './transforms';
 import {layerExportGeometry} from './export-plan';
@@ -12,6 +13,7 @@ export function layerPreviewIndex(nodes:DesignNode[]){
  return {nodes,byId,children,masks};
 }
 export function layerPreviewGeometry(index:ReturnType<typeof layerPreviewIndex>,id:string){
+ if(hasPassThrough(index.nodes))throw Error('Isolated layer previews are unavailable on pages with explicit pass-through blending. View the complete page canvas or export.');
  const target=index.byId.get(id);if(!target)throw Error('This layer is no longer available.');
  const keep=new Set<string>(),queue=[id],ancestors=new Set<string>();
  const addAncestors=(n:DesignNode)=>{let current=n,depth=0;const seen=new Set<string>();while(current.parentId){if(++depth>64||seen.has(current.parentId))throw Error('Preview supports up to 64 ancestor levels without cycles.');seen.add(current.parentId);const parent=index.byId.get(current.parentId);if(!parent)throw Error('A preview ancestor is missing.');if(n.id===id){if(parent.booleanOp)throw Error('Preview the live Boolean result instead of an individual operand inside it.');if(parent.mask)throw Error('Use mask inspection for layers inside a mask source.');if(parent.type==='slice')throw Error('Slice descendants do not paint. Move this layer outside the slice to preview it.');if(parent.media)throw Error('Preview this video poster layer as a whole instead of isolating its descendants.');if(parent.clip&&!['rectangle','image','frame','group','component','instance','section'].includes(parent.type))throw Error('Isolated previews require rectangular ancestor clips. Preview the clipped parent instead.');}if(!ancestors.has(parent.id)){ancestors.add(parent.id);const mask=index.masks.get(parent.id);if(mask)queue.push(mask);}current=parent;} };
