@@ -27,5 +27,10 @@ for arch in arm64 x86_64; do
  xcrun swiftc macos/main.swift macos/NativeSmoke.swift macos/ProjectFileSafety.swift macos/NodePasteboard.swift macos/ClipboardNativeSmoke.swift macos/LiveContext.swift macos/NativeIntegration.swift macos/IntegrationNativeSmoke.swift macos/NativeDrop.swift macos/AcceptanceNativeSmoke.swift -O -sdk "$SDK" -target "$arch-apple-macos13.0" -framework AppKit -framework WebKit -o "build/OanarinaUITool-$arch"
 done
 lipo -create build/OanarinaUITool-arm64 build/OanarinaUITool-x86_64 -output "$APP/Contents/MacOS/OanarinaUITool"
-codesign --force --sign - "$APP"
+# A sandboxed extension's container belongs to its signer, and macOS raises a consent prompt when an ad-hoc copy and a
+# release copy share one on the same Mac, so use the release identity here when this Mac has it.
+IDENTITY="${SIGNING_IDENTITY:-16B4420E76E5FB9B5EB8C984B5A54C07D7E8B739}"
+security find-identity -v -p codesigning | grep -q "$IDENTITY" || IDENTITY=-
+bash scripts/build-mac-extensions.sh "$APP" "$IDENTITY"
+codesign --force --sign "$IDENTITY" --timestamp=none "$APP"
 printf 'Built %s\n' "$APP"

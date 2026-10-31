@@ -15,7 +15,7 @@
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.oanarinaldi.ui-document</string>
+				<string>com.oanarinaldi.forma.project</string>
 			</array>
 		</dict>
 		<dict>
@@ -71,7 +71,7 @@
 			<key>UTTypeDescription</key>
 			<string>Oanarina Design Project</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.oanarinaldi.ui-document</string>
+			<string>com.oanarinaldi.forma.project</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -79,6 +79,16 @@
 					<string>oui</string>
 				</array>
 			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.oanarinaldi.forma.project</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Oanarina Design Project</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.oanarinaldi.ui-document</string>
 		</dict>
 	</array>
 	<key>UTImportedTypeDeclarations</key>

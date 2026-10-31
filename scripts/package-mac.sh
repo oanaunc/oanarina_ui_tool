@@ -12,6 +12,11 @@ if [[ -e "$DMG" ]]; then
  printf 'Refusing to overwrite existing release: %s\n' "$DMG" >&2
  exit 1
 fi
+# Inside out: each nested bundle gets its own timestamped signature before the app seals them.
+codesign --force --timestamp --options runtime --sign "$IDENTITY" "$APP/Contents/Library/Spotlight/FormaImporter.mdimporter"
+for extension in "$APP"/Contents/PlugIns/*.appex; do
+ codesign --force --timestamp --options runtime --entitlements macos/extensions/Extension.entitlements --sign "$IDENTITY" "$extension"
+done
 codesign --force --timestamp --options runtime --sign "$IDENTITY" "$APP"
 codesign --verify --deep --strict "$APP"
 notarize(){

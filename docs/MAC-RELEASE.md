@@ -20,3 +20,5 @@ FORMA_SMOKE_REPO="$PWD" "build/Forma.app/Contents/MacOS/OanarinaUITool" --integr
 ```
 
 Run them sequentially with the app loopback port free. Smoke windows use an isolated nonpersistent WebKit data store and temporary `.oui` files. They do not read or modify the user's project library, preferences, recent-document list or saved window sessions. Clipboard checks use a private named pasteboard, preserving the user's general clipboard. The lifecycle check exercises actual WKWebViews, native alerts and save-panel cancellation. These checks supplement manual interaction checks; they do not establish Intel runtime validation. See [Mac document windows](MAC-WINDOWS.md) and [raster clipboard acceptance](RASTER-CLIPBOARD.md) for scope.
+
+The app holds nested code: two Quick Look extensions and a Spotlight importer. `package-mac.sh` signs them first, each with a timestamp and the hardened runtime, the extensions with `macos/extensions/Extension.entitlements`, then the app. Run `scripts/smoke-mac-extensions.sh /Applications/Forma.app` on the installed release before describing Quick Look or Spotlight as working.

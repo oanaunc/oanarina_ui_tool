@@ -63,7 +63,25 @@ Setting the application appearance while running changes the actual WKWebView's 
 - **Dragging canvas layers to Finder**: starting a native drag from the canvas needs a new renderer-to-shell message, which the current rule against broadening IPC excludes. Needs a decision. The Export dialog preview can be dragged.
 - **App Sandbox**: not adopted. It needs entitlements, security-scoped bookmarks for session restoration and sibling access for the lock, MCP history and live files. It changes release signing, so it needs a decision.
 - **Update checks and release notes**: there is no release feed to read. They need one published first.
-- **Quick Look and Spotlight**: these need app extensions.
+
+## Quick Look and Spotlight
+
+Finder previews and thumbnails come from two sandboxed app extensions in `Contents/PlugIns`, `FormaQuickLook` and `FormaThumbnail`. Spotlight search comes from a classic importer, `Contents/Library/Spotlight/FormaImporter.mdimporter`. `scripts/build-mac-extensions.sh` builds all three, `build-mac.sh` runs it and `package-mac.sh` signs them inside out, before the app.
+
+All three share `macos/extensions/OuiProject.swift`, which keeps the app's 50 MB ceiling and format check, reads with no-follow and holds no path. Preview and thumbnail draw with `OuiRenderer.swift`, a Core Graphics simplification of the editor: solid, linear and radial paints, strokes, opacity, clipping, shapes, paths, embedded images and plain text. Effects, masks, blend modes, rich runs, conic paints and shaders are not drawn, and only inline raster data loads, so nothing is fetched. Text uses installed fonts and otherwise a system fallback, since the bundled fonts are not in the extension. A file that fails validation falls back to the system's generic view and is indexed with no project data.
+
+The Spotlight importer gives the title, description, page and layer names, fonts, page count, the Forma creator and up to 256 KB of authored text to the on-device index. Nothing is sent anywhere.
+
+Things this Mac taught, kept here because each one looked like something else:
+
+- `qlmanage -p` aborts on macOS 27 inside `EXConcreteExtension` with a nil dictionary key, for Apple's own Icon Composer extension as well. It says nothing about ours. A real `QLPreviewView` works, which is what the smoke uses.
+- Spotlight never called a `CSImportExtension` on macOS 27, though `mdimport -e` listed it, so the importer is the classic bundle.
+- Extensions are refused or skipped when ad-hoc signed. `build-mac.sh` therefore signs with the release identity when this Mac has it. A sandboxed extension's container belongs to its signer: an ad-hoc run followed by a signed one left `secinitd` waiting on a consent prompt, which looks like a hang. The first attempts used the identifiers `com.oanarinaldi.uitool.quicklook`, `.thumbnail` and `.spotlight`, whose containers are stuck that way on this Mac, so they are not reused.
+- `.oui` is now `com.oanarinaldi.forma.project`. The earlier identifier, `com.oanarinaldi.ui-document`, stays declared with no file extension, conforming to the new one. Thumbnails never reached the extension under the earlier identifier, while any other identifier worked with the same declaration, and Spotlight keeps resolving `.oui` to it after it is gone, so the importer claims both. The file format did not change.
+- macOS lists a third-party importer only for an app registered in `/Applications`, and registration takes several seconds to reach Spotlight.
+- Extensions in `/Applications` are enabled by default. A build elsewhere needs `pluginkit -a` and `pluginkit -e use`.
+
+To verify, install a signed copy in `/Applications`, wait a few seconds, then run `scripts/smoke-mac-extensions.sh /Applications/Forma.app`. It proves the thumbnail by its shape and pixels through `QLThumbnailGenerator`, the preview through a real `QLPreviewView` and the extension's own log line, the importer with `mdimport -t`, and the real index with `mdls` and `mdfind`, plus refusal of future, truncated, oversized and symbolic-link input. Finder's own Space-bar panel and icon drawing were not exercised directly: they use these same services.
 
 ## Validation
 
