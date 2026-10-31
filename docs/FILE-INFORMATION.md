@@ -6,6 +6,10 @@ The optional description is plain multiline text up to **10,000 UTF-16 code unit
 
 **Save description** makes one document edit, with Undo/Redo and the normal dirty/recovery behavior. **Clear description** only clears the draft; saving empty or whitespace-only text removes the optional field. Cancel, Escape and closing the dialog discard uncommitted drafts. Unchanged submissions do not add history or change the timestamp. Imported CR/CRLF or whitespace-only descriptions remain untouched until an explicit edit or Clear; merely opening the dialog does not enable saving a normalized value. If the file identity or stored description changed while a draft was open, its save is rejected instead of overwriting newer data. Renaming remains available through the existing Rename file action.
 
+## Library details
+
+The dialog also shows whether this file publishes a library, its version count and the libraries it uses. Owner, license, contact and tags are editable plain text, saved with **Save library details** in one Undo step and copied into snapshots published from this file. Empty fields are removed, and a file with no library record gains none by opening the dialog. See [published variables and local library details](LOCAL-LIBRARY-VARIABLES.md).
+
 ## Compatibility and persistence
 
 `DesignDocument.description?:string` is optional within the existing `.oui` v2 format. Older v1/v2 documents without it still open without a migration or invented default. Shared document parsing validates incoming values before import/replacement. The UI validates before editing; the shared metadata validator can also run in the store's final validation pipeline.

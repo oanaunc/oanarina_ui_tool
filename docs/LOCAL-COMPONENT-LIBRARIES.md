@@ -2,8 +2,9 @@
 
 Unreleased source. This is a local snapshot workflow, separate from Figma reference
 acceptance. It does not implement cloud library hosting, team permissions,
-organization approval, analytics or live collaboration. Existing downloads and
-native releases have not been rebuilt.
+organization approval or live collaboration. Existing downloads and native
+releases have not been rebuilt. Published variables, device analytics, component
+moves and conflict choices are in [their own guide](LOCAL-LIBRARY-VARIABLES.md).
 
 ## Reachable workflow
 
@@ -20,18 +21,18 @@ Available libraries have version history, descriptions, manual review/download
 and explicit cache removal. Search and page through the asset list. Component
 previews use standalone SVG images, so SVG definitions cannot collide with the
 live canvas. Style, variable and guide definitions have bounded textual previews.
-A set preview/insertion uses its default component; the ordinary local component
-browser can inspect the other installed variants. Large previews explicitly
-refuse instead of rendering incomplete artwork.
+A set preview can show any variant; insertion uses its default component. Large
+previews explicitly refuse instead of rendering incomplete artwork.
 
-Enable installs editable cached definitions on a dedicated library page and
-saves a dependency with stable source-to-local IDs. **Insert linked instance**
+Enable installs cached definitions on a dedicated library page and saves a
+dependency with stable source-to-local IDs. Components and styles stay editable;
+linked variable collections are read-only until detached. **Insert linked instance**
 creates a real linked component instance at the visible canvas center.
 **Go to cached source** navigates to its editable main. The existing style/token
 inspector can use installed shared styles and variables. Disable blocks this
 library widget's insertion and suppresses its update notification; definitions,
-instances and their links remain editable. Cached definitions remain visible in
-the ordinary local asset browser, even while the library widget is disabled.
+instances and their links remain editable. Disabled definitions leave the Assets
+component browser, which reports how many are hidden.
 
 Import a newer local snapshot to receive a local update notification. Review
 shows per-group added/changed/unchanged/removed state, local conflicts, installed
@@ -68,11 +69,13 @@ consumer overrides. Final normal component/style/layout derivation, reference
 checks and full project validation run before the atomic commit. General MCP
 editing does not acquire a privileged install path.
 
-Removing installed variables/modes is conservatively refused. Removing source
-asset groups never silently deletes local definitions. Changes that orphan
+Removing installed variables or modes in use needs an explicit decision in
+[update review](LOCAL-LIBRARY-VARIABLES.md). Removing source asset groups never
+silently deletes local definitions. Changes that orphan
 surviving consumer component, preferred, property or prototype references refuse.
-There is no automatic merge/force-overwrite/detach conflict resolution. Rollbacks
-can be explicitly reviewed as an older cached snapshot, with the same safeguards.
+There is no automatic merge. Style, guide and collection conflicts offer explicit
+replace or keep-local choices; component conflicts still refuse. Rollbacks can be
+explicitly reviewed as an older cached snapshot, with the same safeguards.
 
 Cross-document clipboard transfer creates ordinary local editable definitions
 and displays an ownership notice. It does not transfer publication/dependency

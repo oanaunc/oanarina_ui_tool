@@ -3,6 +3,7 @@ import {useId,useState} from 'react';
 import {applyDocumentDescription,DOCUMENT_DESCRIPTION_LIMIT,normalizedDocumentDescription} from '../document-metadata';
 import {useEditor} from '../store';
 import ColorProfileControl from './ColorProfileControl';
+import LibraryFileInformation from './LibraryFileInformation';
 import './file-information.css';
 
 export default function FileInformation(){
@@ -24,5 +25,6 @@ export default function FileInformation(){
   <div className="file-information-help" id={hint}><span>{t('Plain text, saved with your .oui project.')}</span><span>{formatNumber(description.length)} / {formatNumber(DOCUMENT_DESCRIPTION_LIMIT)}</span></div>
   {(error||validation)&&<p className="file-information-error" role="alert">{error||validation}</p>}
   <div className="button-row"><button className="primary-button" type="submit" disabled={!changed}>{t('Save description')}</button><button className="outline-button" type="button" disabled={!description.length&&(edited||original.description===undefined)} onClick={()=>{setDescription('');setEdited(true);setError('');}}>{t('Clear description')}</button><button className="outline-button" type="button" onClick={close}>{t('Cancel')}</button></div>
+  <LibraryFileInformation/>
  </form>;
 }
