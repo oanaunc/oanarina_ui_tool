@@ -4,7 +4,7 @@
 
 This is a working parity specification, not a claim of completeness or of implemented Figma compatibility. Reference links identify category-level starting points; each requirement marked reference-verification-pending still needs an in-app or documentation check. Several OS integration, reliability, and cross-product requirements are Oanarina requirements rather than verified Figma functions. Figma Design is the first implementation target; Draw, Dev Mode, FigJam, Slides, Sites, Buzz and Make remain in scope in later phases. Features introduced by a future Figma update require another audit.
 
-Status: {"implemented":1319,"partial":312,"planned":391}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
+Status: {"implemented":1320,"partial":317,"planned":385}. **planned** = not implemented; **partial** = material limits documented; **implemented** = working path with validation evidence. Production parity requires additional accessibility, performance, platform and user acceptance testing even for implemented items. Binary .fig Design import supports a documented subset; binary export remains planned.
 
 Machine-readable source: public/features.json. Regenerate this document with npm run inventory.
 
@@ -595,8 +595,8 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-16-035 | Radial repeat | partial | Unreleased source: Reachable staged radial repeat dialog with count/world pivot/radius/angle/rotate-copies, actual canvas preview and Apply materializing editable sibling subtrees in one guarded Undo. Signed affine geometry, masked sibling ordering, internal IDs/instances/paints, no-op source and saved reopening tested. Persistent live repeat objects/animation tracks remain absent; unsupported controllers/skew refuse. docs/LINEAR-RADIAL-REPEAT.md. Exact Figma reference/native acceptance remains pending. |
 | UI-16-036 | Linear repeat | partial | Unreleased source: Reachable staged linear repeat dialog with count/world X/Y steps, actual canvas preview/Cancel and editable materialized copies in one Undo. Preserves copied subtrees/references/appearance, original source and same-parent mask order; validated budgets and postderive checks. No persistent live repeat metadata or source animation-track copying. docs/LINEAR-RADIAL-REPEAT.md. Exact Figma reference/native acceptance remains pending. |
 | UI-16-037 | Stretch brush creation | planned | reference-verification-pending |
-| UI-16-038 | Scatter brush creation | planned | reference-verification-pending |
-| UI-16-039 | Sample a brush from canvas | planned | reference-verification-pending |
+| UI-16-038 | Scatter brush creation | partial | Explicit deterministic scatter settings use a saved uint32 seed and stamp ordinal/channel hashes for along/across offset, angle and size. Ordinary editable stamp groups use existing Undo/save/export, bounded anchors/path output and exact imported capsule extrema. No continuous warp or broader brush parity. See docs/VECTOR-SCATTER-BRUSH.md. |
+| UI-16-039 | Sample a brush from canvas | partial | Review one eligible closed opaque solid vector silhouette, normalize real cubic bounds and preserve holes/fill rule in a reusable local brush capsule. Signed affine source proof, exact owned preset publication and ordinary editable drawn paths are validated. Fonts, arcs, richer paints/strokes/controllers remain unsupported. See docs/VECTOR-SCATTER-BRUSH.md. |
 
 ## Fills and colors
 
@@ -1645,7 +1645,7 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-43-006 | Recent plugins | planned | reference-verification-pending |
 | UI-43-007 | Plugin permissions display | implemented | Installed-package review and run controls display every requested supported capability with explicit per-run grants; permissions are checked per request and before reviewed Apply. Bounded read/write capability details are visible; broader APIs remain separately planned. Native/reference verification pending. See docs/LOCAL-COMMAND-PLUGINS.md. |
 | UI-43-008 | Plugin iframe UI | planned | reference-verification-pending |
-| UI-43-009 | Plugin parameter input | planned | reference-verification-pending |
+| UI-43-009 | Plugin parameter input | partial | Strict optional local manifest definitions render trusted single-line text, finite number, checkbox and choice inputs; explicit runs receive copied scalar snapshots through mediated readParameters. Source/local/input cancellation, reviewed Apply and no project metadata leakage are validated. No arbitrary guest UI, dynamic schemas or Figma API compatibility. See docs/LOCAL-PLUGIN-PARAMETERS.md. |
 | UI-43-010 | Plugin message bridge | partial | Authenticated source-window/token bridge mediates closed bounded request/response messages through an opaque guardian/worker, with real CSP/network/source-forgery tests. No Figma API or arbitrary iframe UI protocol. See docs/LOCAL-COMMAND-PLUGINS.md. |
 | UI-43-011 | Plugin document read API | partial | Granted bounded redacted current-page and selection reads expose base layer IDs/names/geometry/text only. Private annotations/comments/images/fonts/audio/profile data and broader document APIs are excluded. See docs/LOCAL-COMMAND-PLUGINS.md. |
 | UI-43-012 | Plugin document write API | partial | One bounded proposal per run is shown for explicit reviewed Apply through ordinary validation, one Undo and persistence. Simple independent leaf updates/root creation only; controllers/richer fields refuse. See docs/LOCAL-COMMAND-PLUGINS.md. |
@@ -1837,10 +1837,10 @@ Machine-readable source: public/features.json. Regenerate this document with npm
 | UI-47-022 | Illustration library browsing | planned | reference-verification-pending |
 | UI-47-023 | Education resources | planned | reference-verification-pending |
 | UI-47-024 | Tutorial files | planned | reference-verification-pending |
-| UI-47-025 | In-app onboarding | planned | reference-verification-pending |
-| UI-47-026 | First-run canvas tour | planned | reference-verification-pending |
-| UI-47-027 | Tool contextual help | planned | reference-verification-pending |
-| UI-47-028 | Help center links | planned | reference-verification-pending |
+| UI-47-025 | In-app onboarding | partial | Help and current-tool entries open opt-in local guidance plus a measured six-control focus-only canvas tour for Design-mode Design/Whiteboard. No artwork, camera, tool or document/history changes; missing targets and stale focus/source receipts are handled. No automatic startup tutorial or tutorial files. See docs/EDITOR-LEARNING.md. |
+| UI-47-026 | First-run canvas tour | planned | A manually started focus-only canvas tour exists under onboarding. First-run detection, triggering and first-run lifecycle behavior remain unimplemented; no automatic startup behavior was added. See docs/EDITOR-LEARNING.md. |
+| UI-47-027 | Tool contextual help | partial | Current-tool guidance covers 17 actual toolbar tools, shows live personalized command bindings and links to keyboard shortcuts without activating tools. Specialized tools retain their own visible limits; broader contextual/reference coverage remains pending. See docs/EDITOR-LEARNING.md. |
+| UI-47-028 | Help center links | implemented | Fixed trusted links open existing Forma guide, product and privacy pages through normal browser links with no project identifiers. Link destinations and real UI paths are validated; the guide is explicitly a preview that may lag source. Native/reference verification remains separate. See docs/EDITOR-LEARNING.md. |
 | UI-47-029 | Release notes panel | implemented | v0.2.0-dev.9: Help/Actions opens bounded bundled release history, app-version marker, source/preview distinction, scope notes and validated public preview download/checksum. Development entries have no installer link; error/Retry/focus and unchanged selection/tool/project/history tested. Snapshot history, not live update discovery/native updater. docs/RELEASE-NOTES.md. |
 | UI-47-030 | Feedback submission | planned | reference-verification-pending |
 

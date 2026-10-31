@@ -5084,20 +5084,20 @@
     "category": "Freehand and Figma Draw",
     "name": "Scatter brush creation",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Explicit deterministic scatter settings use a saved uint32 seed and stamp ordinal/channel hashes for along/across offset, angle and size. Ordinary editable stamp groups use existing Undo/save/export, bounded anchors/path output and exact imported capsule extrema. No continuous warp or broader brush parity. See docs/VECTOR-SCATTER-BRUSH.md."
   },
   {
     "id": "UI-16-039",
     "category": "Freehand and Figma Draw",
     "name": "Sample a brush from canvas",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": ""
+    "notes": "Review one eligible closed opaque solid vector silhouette, normalize real cubic bounds and preserve holes/fill rule in a reusable local brush capsule. Signed affine source proof, exact owned preset publication and ordinary editable drawn paths are validated. Fonts, arcs, richer paints/strokes/controllers remain unsupported. See docs/VECTOR-SCATTER-BRUSH.md."
   },
   {
     "id": "UI-17-001",
@@ -14234,10 +14234,10 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin parameter input",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": ""
+    "notes": "Strict optional local manifest definitions render trusted single-line text, finite number, checkbox and choice inputs; explicit runs receive copied scalar snapshots through mediated readParameters. Source/local/input cancellation, reviewed Apply and no project metadata leakage are validated. No arbitrary guest UI, dynamic schemas or Figma API compatibility. See docs/LOCAL-PLUGIN-PARAMETERS.md."
   },
   {
     "id": "UI-43-010",
@@ -15954,10 +15954,10 @@
     "category": "Community and resources",
     "name": "In-app onboarding",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Help and current-tool entries open opt-in local guidance plus a measured six-control focus-only canvas tour for Design-mode Design/Whiteboard. No artwork, camera, tool or document/history changes; missing targets and stale focus/source receipts are handled. No automatic startup tutorial or tutorial files. See docs/EDITOR-LEARNING.md."
   },
   {
     "id": "UI-47-026",
@@ -15967,27 +15967,27 @@
     "status": "planned",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "A manually started focus-only canvas tour exists under onboarding. First-run detection, triggering and first-run lifecycle behavior remain unimplemented; no automatic startup behavior was added. See docs/EDITOR-LEARNING.md."
   },
   {
     "id": "UI-47-027",
     "category": "Community and resources",
     "name": "Tool contextual help",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Current-tool guidance covers 17 actual toolbar tools, shows live personalized command bindings and links to keyboard shortcuts without activating tools. Specialized tools retain their own visible limits; broader contextual/reference coverage remains pending. See docs/EDITOR-LEARNING.md."
   },
   {
     "id": "UI-47-028",
     "category": "Community and resources",
     "name": "Help center links",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "Fixed trusted links open existing Forma guide, product and privacy pages through normal browser links with no project identifiers. Link destinations and real UI paths are validated; the guide is explicitly a preview that may lag source. Native/reference verification remains separate. See docs/EDITOR-LEARNING.md."
   },
   {
     "id": "UI-47-029",
