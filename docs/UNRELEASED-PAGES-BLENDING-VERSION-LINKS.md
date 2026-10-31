@@ -1,0 +1,19 @@
+# Page organization, pass-through controls and local version links
+
+This continues the forms/backdrop/icon/network source checkpoint. The register retains 2,022 named requirements across 60 categories: 1,317 implemented, 294 partial and 411 planned. Three requirements gain tested, reachable subsets. This remains continuing implementation toward broader parity.
+
+| Area | Reachable behavior | Explicit limits |
+| --- | --- | --- |
+| [Page dividers](PAGE-SECTIONS.md) | Create, convert and restore real blank-page dividers with ordinary Undo/save. Collapse and context-preserving search organize the sidebar without changing the canvas. Canonical page drag and keyboard ordering remain available. | The documented leading-hyphen convention, without nested folders or implicit movement of section contents. Collapse is local interface state. Content-bearing legacy pages stay ordinary pages. |
+| [Explicit pass-through](PASS-THROUGH-BLENDING.md) | Guarded layer controls save a supported non-isolated container guarantee. Actual backdrop pixels, nested ordinary isolation/opacity, full-scene export, Undo/save and source-MCP validation are covered. | Independent unpainted 100%-opacity containers with explicit isolation false, without affected masks, components, Motion or presentation. Legacy normal groups already used the underlying non-isolated SVG capability; this adds explicit metadata and validation. General Figma pass-through opacity/effect semantics remain unsupported. |
+| [Local saved-version references](LOCAL-VERSION-LINKS.md) | Copy an opaque reference to a validated local snapshot and paste it into the matching open file's history panel for read-only review. Existing comparison and explicit Restore remain available. | Device-local repository references, without public URLs, native launch handlers, portable history, cross-file loading or cloud sharing. Snapshot absence and foreign ownership refuse before preview or clipboard dispatch. |
+
+The combined source retains strict backdrop/network/form ownership and pre/final derivation checks. A permanent regression caught a prototype variable change affecting pass-through artwork on a different page; the derived copy now refuses before publication, and a valid retry recovers. Static source-MCP SVG warns that form interaction is omitted and emits no native input controls. Fresh history controls recover after same-value source cycles while every prior receipt remains invalid.
+
+Independent reads cover the combined Canvas/Artwork, metadata validators, prototype, export delivery, Bridge and source MCP paths. API-contract mocks verify the supported native pass-through enum assignment; no real desktop round trip is claimed. No `.oui` migration, native resource/IPC/filesystem permission expansion or website change is introduced.
+
+## Validation
+
+The combined model passed 2,385 core tests across 212 files and 98 source MCP checks. Editor and MCP TypeScript checks pass. All 63 focused browser checks pass, including the new domains, existing history/prototype paths, off-page prototype refusal/recovery and the generic modifier-release regression. All 1,756 browser checks selected for the frozen-source sweep pass. The downloadable Bridge archive equality check was explicitly excluded because that existing download stays frozen; no refreshed archive is validated. Rebase onto the preceding source checkpoint preserves every production source byte. Its sole inherited test change waits for exact smooth-scroll completion and rendered pixels; all 11 affected Motion scroll cases pass on the final tree.
+
+Source/browser results remain separate from AppKit, native clipboard, assistive-technology, GPU and real Figma acceptance. No app/native build, package/release/version bump, signing/notarization, standalone automation/source archive refresh or website deployment is created. Dev.12 downloads stay frozen while implementation continues.
