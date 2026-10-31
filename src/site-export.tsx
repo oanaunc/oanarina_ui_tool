@@ -15,7 +15,7 @@ import {publishedItems,safeUrl,siteFilePath,siteOf,sitePageSegments} from './sit
 import type {SiteBreakpointId,SiteCollection,SiteData,SiteDocument,SiteItem,SiteLayer,SiteOverride,SitePage,SiteValue} from './site';
 import {embedDocument,embedSandbox} from './site-embed';
 import {SITE_BASE_CSS,SITE_REDUCED_CSS,SITE_RUNTIME} from './site-runtime';
-import {zipStore} from './slides-export';
+import {zipStore} from './zip-store';
 
 export type SiteBuildMode='export'|'preview';
 export interface SiteFile {path:string;text?:string;bytes?:Uint8Array;}
