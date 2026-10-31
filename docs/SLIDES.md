@@ -12,9 +12,9 @@ Comments are local annotations on a slide. They can be added, resolved and reope
 
 ## Video, polls and prototypes
 
-- **Video…** embeds a local MP4 or WebM of up to 20 MB in the slide. It shows its poster while editing and plays with its controls while presenting. The layer inspector sets loop, mute and autoplay. PDF, PNG and PowerPoint exports use the poster frame. Hosted video URLs are not supported.
-- **Poll** adds a question with 2–9 options as generated bars on the slide. **This works for one local presenter session only:** there is no audience link, join code or network. In Presenter view, count votes yourself with the + and − buttons or the number keys, for example from a show of hands. The audience view shows the bars. Counts are saved in the deck, each count is an Undo step, and a closed poll refuses more votes.
-- **Prototype…** embeds a saved copy of a Design `.oui` file of up to 16 MB, with at most 16 per deck and 32 MB in total. It starts at the first flow of the first page with interactions, shows that frame as a poster, and plays on the slide while presenting. Only click and press reactions run, without transition animation, and overlays open centered. Hover, drag, delay, key and scroll triggers need the full prototype player. The copy has no link to its source file, and deleting the last layer that shows it removes it from the deck.
+- **Video…** embeds a local MP4 or WebM of up to 20 MB in the slide. It shows its poster while editing and plays with its controls while presenting. The layer inspector sets loop, mute and autoplay. PowerPoint export carries the clip, and PDF and PNG exports use the poster frame.
+- **Poll** adds a question with 2–9 options as generated bars on the slide. The presenter does the counting. In Presenter view, count votes yourself with the + and − buttons or the number keys, for example from a show of hands. The audience view shows the bars. Counts are saved in the deck, each count is an Undo step, and a closed poll refuses more votes.
+- **Prototype…** embeds a saved copy of a Design `.oui` file of up to 16 MB, with at most 16 per deck and 32 MB in total. It starts at the first flow of the first page with interactions, shows that frame as a poster, and plays on the slide while presenting. Click, drag, while hovering, while pressing, mouse enter, leave, down and up, after delay, key and scroll reactions all run, with dissolve, move, push and slide transitions, and smart animate plays as a dissolve. Reduced motion turns transitions off. Overlays open centered. A key the prototype declares goes to the prototype, and every other key stays with the presenter. Gamepad reactions and form inputs need the full prototype player. The copy has no link to its source file, and deleting the last layer that shows it removes it from the deck.
 
 ## Export
 
@@ -28,7 +28,7 @@ Image/PDF deck exports are limited to 200 visible slides. PNG dimensions are lim
 
 ## Remaining scope
 
-Audience-joined polls, hosted video embeds, the full set of prototype triggers on a slide, collaborative presenting, cloud deck sharing, a second audience window, rich presentation charts and comprehensive Figma Slides template/theme parity remain unimplemented. Direct binary `.fig` support remains outside this workspace. The existing SVG/Figma Bridge limitations still apply to transfers of the underlying artwork; a Figma Slides deck is not reconstructed by the bridge.
+A second audience window, rich presentation charts and comprehensive Figma Slides template/theme parity remain unimplemented. Direct binary `.fig` support remains outside this workspace. The existing SVG/Figma Bridge limitations still apply to transfers of the underlying artwork; a Figma Slides deck is not reconstructed by the bridge.
 
 ## Validation
 

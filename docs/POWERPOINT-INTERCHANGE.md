@@ -15,11 +15,13 @@ Slides writes and reads `.pptx` files directly, with `fflate` for the package an
 | Rectangles, rounded rectangles, ellipses | Preset geometry |
 | Paths, polygons, stars | Custom geometry with lines and cubics |
 | Lines and arrows | Line preset with an end marker |
-| One solid fill, one solid stroke, opacity, rotation, horizontal flip | `solidFill`, `a:ln`, alpha, `a:xfrm` |
+| One solid, linear or radial fill, one solid stroke with dashes, caps and joins, opacity, rotation, horizontal flip | `solidFill`, `gradFill`, `a:ln`, `custDash`, alpha, `a:xfrm` |
+| One drop shadow and one inner shadow without spread, on shapes and pictures | `outerShdw`, `innerShdw` |
+| Embedded MP4 or WebM video, with loop and mute | Movie part, `a:videoFile`, `p14:media` and a click-to-play timeline node over the poster picture |
 | PNG, JPEG, GIF images with centered cover crops | `p:pic`, one media part per distinct image |
 | WebP and SVG images | Converted to PNG in the browser |
 
-Gradients, image paints on shapes, stacked paints, effects, masks, blending and text on a path are flattened to PNG pictures at up to 2× so they look right but stop being editable. Without a browser renderer they are omitted, and the export reports that. Every flatten or omission appears in a notice after export. Video exports as its poster, and playback is not written. Layers that sit outside a clipped frame are not clipped in PowerPoint, because the frame becomes a plain shape.
+Angular and diamond gradients, text gradients, image paints on shapes, stacked paints, spread shadows, text effects, blurs, masks, blending and text on a path are flattened to PNG pictures at up to 2× so they look right but stop being editable. Without a browser renderer they are omitted, and the export reports that. Every flatten or omission appears in a notice after export. WebM is embedded with a notice, because PowerPoint may not play it. Autoplay is not written. Layers that sit outside a clipped frame are not clipped in PowerPoint, because the frame becomes a plain shape.
 
 ## Import
 
@@ -27,7 +29,7 @@ Gradients, image paints on shapes, stacked paints, effects, masks, blending and 
 
 The reader follows relationships from the package root. It resolves placeholder position, text defaults, theme colors, luminance changes, theme fonts and backgrounds through the slide, layout and master. It shows master and layout artwork, applies group transforms including rotation and flips, and uses the `mc:Fallback` branch of alternate content.
 
-It reads text boxes and their runs, the preset shapes above plus 16 common presets such as arrows, stars and polygons, custom geometry, lines and connectors as straight lines, embedded PNG/JPEG/GIF pictures, tables as editable rectangles and text, notes, hidden slides and transitions.
+It reads solid, linear and radial gradient fills, shadows, dashes, caps and joins. A movie embedded in the file becomes a playable video layer when this browser can decode it, up to 20 MB, and stays its poster otherwise, with a notice. Linked movies are never fetched. It reads text boxes and their runs, the preset shapes above plus 16 common presets such as arrows, stars and polygons, custom geometry, lines and connectors as straight lines, embedded PNG/JPEG/GIF pictures, tables as editable rectangles and text, notes, hidden slides and transitions.
 
 These are reported in a notice rather than failing the import:
 
