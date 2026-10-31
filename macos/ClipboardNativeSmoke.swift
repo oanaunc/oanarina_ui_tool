@@ -94,13 +94,16 @@ extension Studio {
             }
         }
     }
-    func clipboardRasterFixture(_ tiff:Bool=false)->Data {
+    func clipboardRasterFixture(_ tiff:Bool=false,type:String?=nil)->Data {
         let context=CGContext(data:nil,width:3,height:2,bitsPerComponent:8,bytesPerRow:12,space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue)!
         context.setFillColor(CGColor(red:0.8,green:0.2,blue:0.4,alpha:0.5));context.fill(CGRect(x:0,y:0,width:3,height:2))
-        let output=NSMutableData(),destination=CGImageDestinationCreateWithData(output,(tiff ? "public.tiff":"public.png") as CFString,1,nil)!
+        let output=NSMutableData(),destination=CGImageDestinationCreateWithData(output,(type ?? (tiff ? "public.tiff":"public.png")) as CFString,1,nil)!
         CGImageDestinationAddImage(destination,context.makeImage()!,[kCGImagePropertyOrientation:tiff ? 6:1] as CFDictionary);if !CGImageDestinationFinalize(destination){smokeFail("raster fixture")};return output as Data
     }
     func clipboardRasterTests(_ destination:DocumentWindow){
+        let jpeg=NSPasteboardItem();jpeg.setData(clipboardRasterFixture(type:"public.jpeg"),forType:NodePasteboard.jpeg);nodePasteboard.clearContents();nodePasteboard.writeObjects([jpeg])
+        let normalized=try? NodePasteboard.read(from:nodePasteboard);check(normalized?["kind"]=="image" && normalized?["data"]?.hasPrefix("data:image/png;base64,")==true,"native JPEG normalizes to a bounded PNG before reaching the editor")
+        let forged=NSPasteboardItem();forged.setData(clipboardRasterFixture(),forType:NodePasteboard.jpeg);nodePasteboard.clearContents();nodePasteboard.writeObjects([forged]);check((try? NodePasteboard.read(from:nodePasteboard))==nil,"pasteboard data must match its declared image type")
         let image=NSPasteboardItem();image.setData(clipboardRasterFixture(),forType:.png);image.setString("Do not paste this fallback",forType:.string);nodePasteboard.clearContents();nodePasteboard.writeObjects([image]);destination.command("paste")
         clipboardWait(destination,"document.querySelectorAll('.layer-row').length===2 && document.body.textContent.includes('Pasted image')"){
             self.check(true,"native PNG takes precedence over text and creates an editable image")
