@@ -12,6 +12,10 @@ import {canvasNameIndex,placeCanvasNames} from '../src/canvas-names';
 import {layoutChildOutset} from '../src/layout-settings';
 import {createStroke} from '../src/paints';
 import {notifyError} from '../src/files';
+import {roundedPolygonPath} from '../src/basic-shapes';
+import {localPath} from '../src/geometry';
+import {validateDocumentCornerSmoothing} from '../src/corner-smoothing';
+import {additionalShortcutsEnabled,textFormatShortcut} from '../src/keyboard-preferences';
 const s=()=>useEditor.getState(),nodes=()=>s().doc.pages.find(p=>p.id===s().pageId)!.nodes;
 describe('rotation handle',()=>{
  const frame=node('frame',{id:'f',name:'Card',x:100,y:100,width:40,height:40});
@@ -53,4 +57,14 @@ describe('canvas names share a row',()=>{
 });
 describe('a failure stays until it is read',()=>{
  it('keeps an error message up, and an ordinary message clears it',()=>{s().newDocument();notifyError(Error('The file could not be read.'));expect(s()).toMatchObject({toast:'The file could not be read.',toastError:true});s().set({toast:'Project saved'});expect(s()).toMatchObject({toast:'Project saved',toastError:false});});
+});
+describe('shortcut contexts',()=>{
+ const key=(k:string,code:string)=>({key:k,code,metaKey:true,ctrlKey:false,altKey:false,shiftKey:false}),catalog=[['text-bold','Bold','Text','⌘B'],['text-italic','Italic','Text','⌘I']] as const,base={home:false,uiHidden:false,vectorEditId:null as string|null,motionOpen:false,mode:'design',tool:'move',doc:{}};
+ it('runs extra shortcuts in Motion and while editing a vector, but not over Home',()=>{expect(additionalShortcutsEnabled({...base,motionOpen:true})).toBe(true);expect(additionalShortcutsEnabled({...base,vectorEditId:'v',tool:'pen'})).toBe(true);expect(additionalShortcutsEnabled({...base,tool:'pen'})).toBe(false);expect(additionalShortcutsEnabled({...base,home:true})).toBe(false);});
+ it('follows a remapped format key while text is open and honors a default turned off',()=>{const settings={layout:'physical' as const,additional:{'text-bold':'⌘J'},disabled:['text-italic']};expect(textFormatShortcut(key('j','KeyJ'),catalog,settings)).toBe('bold');expect(textFormatShortcut(key('i','KeyI'),catalog,settings)).toBe(false);expect(textFormatShortcut(key('b','KeyB'),catalog,settings)).toBeUndefined();});
+});
+describe('polygon and star smoothing',()=>{
+ const square=[{x:0,y:0},{x:100,y:0},{x:100,y:100},{x:0,y:100}];
+ it('zero keeps the saved path, and smoothing stretches the corner along its edges',()=>{expect(roundedPolygonPath(square,10,0)).toBe(roundedPolygonPath(square,10));const eased=roundedPolygonPath(square,10,1);expect(eased).not.toBe(roundedPolygonPath(square,10));expect(eased.startsWith('M0 20')).toBe(true);expect(roundedPolygonPath(square,40,1).startsWith('M0 50')).toBe(true);});
+ it('reaches shapes through the shared path and validates',()=>{const n=node('polygon',{width:100,height:100,radius:10,cornerSmoothing:.6});expect(localPath(n)).not.toBe(localPath({...n,cornerSmoothing:undefined}));expect(()=>validateDocumentCornerSmoothing({pages:[{nodes:[n,node('star',{cornerSmoothing:.5})]}]})).not.toThrow();expect(()=>validateDocumentCornerSmoothing({pages:[{nodes:[node('ellipse',{cornerSmoothing:.5})]}]})).toThrow('polygons and stars');});
 });

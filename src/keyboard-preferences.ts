@@ -2,6 +2,7 @@ import {useSyncExternalStore} from 'react';
 import {isNamedKeyboardLayout,namedLayoutKey} from './keyboard-layouts';
 import type {NamedKeyboardLayout} from './keyboard-layouts';
 
+type FormatName='bold'|'italic'|'underline';
 export type KeyboardLayout='physical'|'logical'|NamedKeyboardLayout;
 export type ShortcutCatalog=readonly (readonly [string,string,string,string])[];
 export interface KeyboardPreferences {readonly layout:KeyboardLayout;readonly additional:Readonly<Record<string,string>>;readonly disabled?:readonly string[];}
@@ -43,7 +44,11 @@ export function validateKeyboardPreferences(value:unknown,catalog:ShortcutCatalo
 export function shortcutFromEvent(e:ShortcutEvent,layout:KeyboardLayout,isMac=typeof navigator==='undefined'||/Mac|iPhone|iPad/.test(navigator.platform)){if(e.isComposing)throw Error('Finish text composition before recording a shortcut.');const primary=isMac?e.metaKey:e.ctrlKey,other=isMac?e.ctrlKey:e.metaKey;if(other||e.altKey&&!primary)throw Error('Hold Command (Control on Windows) with one A–Z letter.');const key=shortcutKey(e,layout);return normalizeAdditionalShortcut((e.altKey?'⌥':'')+(e.shiftKey?'⇧':'')+(primary?'⌘':'')+key);}
 export function shortcutLabel(command:readonly [string,string,string,string],settings:KeyboardPreferences){return [defaultShortcutOff(command[0],settings)?'':command[3],settings.additional[command[0]]].filter(Boolean).join(' / ');}
 export function shortcutAria(command:readonly [string,string,string,string],settings:KeyboardPreferences){return [defaultShortcutOff(command[0],settings)?'':command[3],settings.additional[command[0]]].filter(Boolean).map(binding=>{const raw=binding.replace(/[⌘⌃⌥⇧]/g,''),key=({'⌫':'Backspace',Esc:'Escape','↵':'Enter','←':'ArrowLeft','→':'ArrowRight','−':'-','+':'Plus'} as Record<string,string>)[raw]??raw;return [binding.includes('⌃')?'Control':'',binding.includes('⌥')?'Alt':'',binding.includes('⇧')?'Shift':'',binding.includes('⌘')?'Meta':'',key].filter(Boolean).join('+');}).join(' ')||undefined;}
-export function additionalShortcutsEnabled(s:{home:boolean;uiHidden:boolean;vectorEditId:string|null;motionOpen:boolean;mode:string;tool:string;doc:{workspace?:string}}){return !s.home&&!s.uiHidden&&!s.vectorEditId&&!s.motionOpen&&['design','prototype','inspect'].includes(s.mode)&&s.doc.workspace!=='slides'&&['move','scale'].includes(s.tool);}
+/** Motion and vector editing take extra shortcuts too; each command still refuses what its own context does not allow. */
+export function additionalShortcutsEnabled(s:{home:boolean;uiHidden:boolean;vectorEditId:string|null;motionOpen:boolean;mode:string;tool:string;doc:{workspace?:string}}){return !s.home&&!s.uiHidden&&['design','prototype','inspect'].includes(s.mode)&&s.doc.workspace!=='slides'&&(['move','scale'].includes(s.tool)||!!s.vectorEditId);}
+const formatCommands={'text-bold':'bold','text-italic':'italic','text-underline':'underline'} as const;
+/** While text is being edited: a remapped format key, or false when its default was turned off. */
+export function textFormatShortcut(e:ShortcutEvent,catalog:ShortcutCatalog,settings:KeyboardPreferences){for(const [id,name] of Object.entries(formatCommands)){if(settings.additional[id]&&/[⌘]/.test(settings.additional[id])&&matchesKeyboardShortcut(e,settings.additional[id],settings.layout))return name as FormatName;}for(const id of Object.keys(formatCommands)){const binding=catalog.find(c=>c[0]===id)?.[3];if(binding&&settings.disabled?.includes(id)&&matchesKeyboardShortcut(e,binding,settings.layout))return false;}return undefined;}
 export function additionalCommand(e:ShortcutEvent,catalog:ShortcutCatalog,settings:KeyboardPreferences){return catalog.find(c=>settings.additional[c[0]]&&matchesKeyboardShortcut(e,settings.additional[c[0]],settings.layout));}
 let cached=defaultKeyboardPreferences,lastRaw:string|null|undefined,cachedCatalog:ShortcutCatalog|undefined,warning='';const listeners=new Set<()=>void>();
 function raw(){try{return typeof localStorage==='undefined'?null:localStorage.getItem(KEYBOARD_PREFERENCES_KEY);}catch{return null;}}

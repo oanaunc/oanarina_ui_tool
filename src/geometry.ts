@@ -35,7 +35,7 @@ export function localPath(n:DesignNode):string {
  if(n.type==='path'&&n.vectorNetwork)return n.vectorNetwork.version===3||n.strokes?.some(s=>s.cap!=='round'||s.join!=='round'||s.dash.length)?networkChainPath(n.vectorNetwork):networkPath(n.vectorNetwork);
  if(n.type==='path')return n.contours!==undefined?n.contours.map(c=>contourPath(c.points,c.closed)).join(' '):n.points.length?contourPath(n.points,n.closed):n.path;
  if(n.type==='ellipse')return ellipsePath(n);
- if(n.type==='polygon'||n.type==='star')return n.radius>0?roundedPolygonPath(shapePoints(n),n.radius):contourPath(shapePoints(n),true);
+ if(n.type==='polygon'||n.type==='star')return n.radius>0?roundedPolygonPath(shapePoints(n),n.radius,n.cornerSmoothing):contourPath(shapePoints(n),true);
  if(n.type==='line'||n.type==='arrow')return n.points.length?contourPath(n.points,false):`M0 0L${n.width} ${n.height}`;
  return smoothedBoxPath(n)??cornerPath(n.width,n.height,n.corners??[n.radius,n.radius,n.radius,n.radius]);
 }
