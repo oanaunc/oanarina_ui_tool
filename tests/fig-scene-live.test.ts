@@ -7,6 +7,7 @@ import {synchronizeComponents,detachInstance} from '../src/components-model';
 import {reflow} from '../src/layout';
 import {currentTextOutline} from '../src/text-outline';
 import {figVariantValues} from '../src/fig-components';
+import {embeddedImageState} from '../src/missing-assets';
 import {at,commands,id,network,raw,scene,solid} from './helpers/fig-synthetic';
 const nodes=(d:DesignDocument)=>d.pages.flatMap(p=>p.nodes);
 const named=(d:DesignDocument,name:string)=>nodes(d).find(n=>n.name===name)!;
@@ -130,5 +131,5 @@ it('keeps Boolean operands live when they reproduce the stored result, and the o
  expect(named(ok.document,'Union')).toMatchObject({booleanOp:'union',type:'path',width:30,height:10});expect(ok.document.pages[0].nodes).toHaveLength(3);expect(ok.issues.some(i=>i.code==='boolean-materialized')).toBe(false);
  expect(bad.document.pages[0].nodes).toHaveLength(1);expect(bad.document.pages[0].nodes[0].booleanOp).toBeUndefined();expect(bad.document.pages[0].nodes[0].width).toBe(30);expect(bad.issues.some(i=>i.code==='boolean-materialized')).toBe(true);expect(text.document.pages[0].nodes).toHaveLength(1);
 });
-it('keeps a missing or unreadable image as a replaceable placeholder instead of refusing the file',()=>{const paint={type:'IMAGE',image:{hash:Array(20).fill(7)},imageScaleMode:'FILL'},out=mapFigScene(scene([raw('ROUNDED_RECTANGLE',3,2,{fillPaints:[paint]})])),bad=scene([raw('ROUNDED_RECTANGLE',3,2,{fillPaints:[paint]})]);bad.images={['07'.repeat(20)]:new Uint8Array(40)};expect(out.document.pages[0].nodes[0].paints![0]).toMatchObject({type:'image',image:''});expect(out.issues.some(i=>i.code==='missing-image')).toBe(true);expect(mapFigScene(bad).issues.some(i=>i.code==='missing-image')).toBe(true);});
+it('keeps a missing or unreadable image as a replaceable placeholder instead of refusing the file',()=>{const paint={type:'IMAGE',image:{hash:Array(20).fill(7)},imageScaleMode:'FILL'},out=mapFigScene(scene([raw('ROUNDED_RECTANGLE',3,2,{fillPaints:[paint]})])),bad=scene([raw('ROUNDED_RECTANGLE',3,2,{fillPaints:[paint]})]);bad.images={['07'.repeat(20)]:new Uint8Array(40)};expect(out.document.pages[0].nodes[0].paints![0]).toMatchObject({type:'image',image:''});expect(out.issues.some(i=>i.code==='missing-image')).toBe(true);expect(mapFigScene(bad).issues.some(i=>i.code==='missing-image')).toBe(true);expect(embeddedImageState(out.document.pages[0].nodes[0].paints![0].image)).toBe('missing');});
 it('accepts GIF and WebP image fills by their stored dimensions',()=>{const gif=Uint8Array.from([71,73,70,56,57,97,3,0,2,0,0,0,0,0,0,0]),webp=Uint8Array.from([82,73,70,70,0,0,0,0,87,69,66,80,86,80,56,88,10,0,0,0,0,0,0,0,4,0,0,5,0,0]);expect(figRaster(gif)).toMatchObject({width:3,height:2});expect(figRaster(gif).data).toMatch(/^data:image\/gif/);expect(figRaster(webp)).toMatchObject({width:5,height:6});});
