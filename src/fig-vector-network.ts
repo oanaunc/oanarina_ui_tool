@@ -1,5 +1,6 @@
 import type {VectorContour,VectorPoint} from './model';
-import {contourPath} from './geometry';
+import {contourPath,geometricArea,geometry} from './geometry';
+import {node} from './model';
 /** The stored vector network is optional source detail; `fillGeometry` stays the visual truth.
  * The reader accepts a blob only when every count and every byte is accounted for. Anything else
  * returns undefined, so the caller keeps the baked outline instead of guessing at a layout. */
@@ -42,5 +43,10 @@ export function figNetworkContours(g:FigNetwork,{scaleX,scaleY,mirroring}:Option
  for(const e of rest)if(!taken.has(e.i))walk(e,e.s.start);
  for(const value of degree.values())if(value>2)junctions=true;
  return points>FIG_NETWORK_LIMITS.points||contours.length>1000?undefined:{contours,junctions};
+}
+/** Rebuilt geometry must draw what the file already baked. Anything else keeps the baked outline. */
+export function figSameArtwork(baked:string,rebuilt:string,fillRule?:'nonzero'|'evenodd'){
+ const probe=(path:string)=>{const n=node('path',{path,width:1,height:1,x:0,y:0,fillRule}),g=geometry(n),b=g.bounds,box=[b.x,b.y,b.width,b.height];g.remove();return {box,area:geometricArea(n)};},a=probe(baked),b=probe(rebuilt);
+ return a.box.every((v,i)=>Math.abs(v-b.box[i])<=.05)&&Math.abs(a.area-b.area)<=Math.max(.5,a.area*.01);
 }
 export const figContourPath=(contours:VectorContour[])=>contours.map(c=>contourPath(c.points,c.closed)).join(' ');

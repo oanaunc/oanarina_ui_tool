@@ -22,7 +22,7 @@ function comparable(n:DesignNode,key:string,bound:ReadonlySet<BindingField>):unk
 }
 export function figOverrideKeys(n:DesignNode,source:DesignNode,base:DesignNode,main:DesignNode){
  const keys:string[]=[],mine=n.variableBindings??{},theirs=source.variableBindings??{},bound=new Set(Object.keys(mine).filter(k=>mine[k as BindingField]===theirs[k as BindingField]) as BindingField[]);
- for(const key of overrideFields){if(key==='propertyValues'||n===base&&(key==='x'||key==='y'))continue;if(key==='x'||key==='y'){if(Math.abs(n[key]-base[key]-(source[key]-main[key]))>1e-6)keys.push(key);continue;}if(canonical(comparable(n,key,bound))!==canonical(comparable(source,key,bound)))keys.push(key);}
+ for(const key of overrideFields){if(key==='propertyValues'||n===base&&(key==='x'||key==='y'||key==='componentId'))continue;if(key==='x'||key==='y'){if(Math.abs(n[key]-base[key]-(source[key]-main[key]))>1e-6)keys.push(key);continue;}if(canonical(comparable(n,key,bound))!==canonical(comparable(source,key,bound)))keys.push(key);}
  return keys;
 }
 const propertyField:Record<string,ComponentProperty['type']>={TEXT_DATA:'text',VISIBLE:'boolean',OVERRIDDEN_SYMBOL_ID:'instance-swap'};
