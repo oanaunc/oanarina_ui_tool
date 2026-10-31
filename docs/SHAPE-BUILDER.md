@@ -1,10 +1,10 @@
-# Exact rectangle Shape Builder
+# Shape Builder
 
-This source stage implements a bounded, destructive Shape Builder workflow for **part of UI-16-021**. It does not implement arbitrary vector-region Shape Builder or Boolean operations with editable text (UI-15-012).
+This source stage implements a bounded, destructive Shape Builder workflow for UI-16-021. It uses an exact grid for plain rectangles and curve Booleans for other closed shapes. It does not implement Boolean operations with editable text (UI-15-012).
 
 ## Reachable workflow
 
-1. Select 2–16 eligible consecutive sibling rectangles in a Design document.
+1. Select 2–16 eligible consecutive sibling shapes in a Design document, or 2–8 when any of them is not a plain rectangle.
 2. Open **Shape builder** in the right inspector and choose **Start Shape builder**.
 3. Click or drag across regions. Every crossed arrangement interval is examined, including narrow regions between pointer events. Option-drag selects the subtraction operation. The native multiple-selection list provides keyboard access to every region, with Pick all/Clear actions.
 4. Choose Merge picked regions, Extract one region, or Subtract picked regions. Extraction requires exactly one region. Merge/extract create a picked path and, if needed, a remaining-area path. Subtraction creates only the remaining area; intentionally subtracting every region removes all selected source geometry.
@@ -14,13 +14,23 @@ Apply replaces the selected source layers, including their metadata, with ordina
 
 ## Geometry and limits
 
-The kernel builds an exact orthogonal cell arrangement in the common parent coordinates. Cells sharing the same source coverage and a cardinal connection form one selectable region. Reverse shared cell edges cancel; oriented boundaries are traced with a deterministic rightmost continuation so diagonal contacts stay separate. Signed area must equal the selected cell area before any output is accepted. Real holes use the existing even-odd path fill rule. No sampling or rectangle-bound approximation of curves is used.
+The kernel builds an exact orthogonal cell arrangement in the common parent coordinates. Cells sharing the same source coverage and a cardinal connection form one selectable region. Reverse shared cell edges cancel; oriented boundaries are traced with a deterministic rightmost continuation so diagonal contacts stay separate. Signed area must equal the selected cell area before any output is accepted. Real holes use the existing even-odd path fill rule. This grid path uses no sampling or curve approximation.
 
-Supported sources are unrounded, individually unrotated/unreflected/unscaled, independent rectangles with the same opaque solid visible fill and no visible stroke. An arbitrary finite invertible **shared** rotated/reflected/nonuniform ancestor transform is retained. Independent edge strokes are detected even if their base stroke width is zero. Sources must be consecutive siblings; this prevents moving their result across unrelated intervening artwork.
+Supported sources are independent shapes with the same opaque solid visible fill and no visible stroke. An arbitrary finite invertible **shared** rotated/reflected/nonuniform ancestor transform is retained. Independent edge strokes are detected even if their base stroke width is zero. Sources must be consecutive siblings; this prevents moving their result across unrelated intervening artwork.
 
-Unsupported inputs refuse before mutation: text, curves, polygons, networks, rounded corners, individual transforms, transparency, different colors, non-solid paints (including hidden non-solid paints), visible strokes, affected Motion tracks, components/managed instances/slots, clipping/masks, visible effects, automatic layout, forms/media ownership and blending. Output metadata is deliberately new ordinary-path metadata rather than an attempt to transfer source annotations, property bindings or component ownership.
+The grid applies to unrounded, unrotated, unscaled rectangles. Unsupported inputs refuse before mutation: text, networks, open paths, transparency, different colors, non-solid paints (including hidden non-solid paints), visible strokes, affected Motion tracks, components/managed instances/slots, clipping/masks, visible effects, automatic layout, forms/media ownership and blending. Output metadata is deliberately new ordinary-path metadata rather than an attempt to transfer source annotations, property bindings or component ownership.
 
 Budgets are explicit: 16 sources, 32 distinct coordinates on each axis, 961 grid cells, 3,844 boundary edges, 200 KB generated path data per path, 2 MB source-metadata inspection, 20,000 layers on the current page, 64 total source ancestry levels, and ±1,000,000 source/world-coordinate bounds. Distinct source edges must be at least 0.0001 parent-coordinate units apart. Combined parent-coordinate dimensions must not exceed 1,000,000. Document-wide generated-ID reservation is additionally limited to 1,000 pages and 100,000 total layers before collecting IDs.
+
+## Curved shapes
+
+Selections that include anything other than a plain rectangle use `src/shape-builder-curves.ts`. Accepted sources are rectangles including rounded, rotated, reflected and scaled ones, ellipses, polygons, stars and closed paths. Sources keep their own transforms because regions are built in the shared parent space.
+
+Each new shape divides every existing region into the part inside it and the part outside, and what remains of the shape becomes a new region. Disconnected pieces then become separate pickable faces, and each hole stays with the face around it. The faces must add back up to the area of the source union, within 0.1% or half a square unit, or the session refuses before anything can be picked. Output is checked the same way: merged faces must keep their total area. Curved output is ordinary cubic path data from Paper, so it is a boolean result, not exact analytic geometry. Slivers under 0.01 square units are dropped.
+
+Drags sample the pointer's path at about one unit per step, up to 256 samples between events, instead of the rectangle grid's exact interval crossing, so a very thin face can be skipped by a fast drag. All faces remain available in the region list.
+
+Budgets: 8 sources, 1,024 source path points, 64 regions, 200 KB per region or output. Going over any of them refuses. Same-color, opaque, stroke-free sources are still required, and text, images, networks, open paths and sources with children still refuse.
 
 ## Rendering distinction
 
@@ -34,7 +44,7 @@ The live session records document/page/selection/mode/modal/Motion, tool/camera/
 
 ## Reference and status
 
-The official [Figma Shape Builder article](https://help.figma.com/hc/en-us/articles/31616004109847-Create-custom-shapes-with-the-shape-builder-tool) describes region hover, drag merge, click extraction, Option subtraction and destructive results with Undo. Forma's supported exact-rectangle workflow is inspired by those named operations, with a separate explicit Apply step. General editable vector-network regions, arbitrary curved inputs, style reconciliation, Figma's full interaction/parity and broader raster-equivalence behavior remain unimplemented here. Recommend **partial** for UI-16-021; UI-15-012 remains planned.
+The official [Figma Shape Builder article](https://help.figma.com/hc/en-us/articles/31616004109847-Create-custom-shapes-with-the-shape-builder-tool) describes region hover, drag merge, click extraction, Option subtraction and destructive results with Undo. Forma's supported exact-rectangle workflow is inspired by those named operations, with a separate explicit Apply step. Editable vector-network regions, mixed-color style reconciliation, stroked sources, Figma's full interaction parity and broader raster-equivalence behavior remain unimplemented here.
 
 ## Verification
 
