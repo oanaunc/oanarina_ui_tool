@@ -1,0 +1,25 @@
+import {useMemo,useState} from 'react';
+import {useEditor} from '../store';
+import {download,notifyError,pickFile} from '../files';
+import {exportFilename} from '../frame-export-settings';
+import {applyPaletteImport,collectPalette,paletteFormats,parsePalette,PALETTE_BYTE_LIMIT,serializePalette} from '../palette-exchange';
+import type {Palette,PaletteFormat,PaletteSource} from '../palette-exchange';
+import './local-tools.css';
+const sources:{id:PaletteSource;label:string}[]=[{id:'palette',label:'Document palette'},{id:'variables',label:'Color variables'},{id:'styles',label:'Paint styles'},{id:'used',label:'Colors used in layers'}];
+export default function PaletteExchange(){
+ const s=useEditor(),[source,setSource]=useState<PaletteSource>('palette'),[format,setFormat]=useState<PaletteFormat>('ase'),[incoming,setIncoming]=useState<Palette|null>(null),[destination,setDestination]=useState<'palette'|'variables'>('palette'),[error,setError]=useState(''),[message,setMessage]=useState(''),colors=useMemo(()=>collectPalette(s.doc,source),[s.doc,source]),spec=paletteFormats.find(f=>f.id===format)!;
+ const choose=()=>{setError('');setMessage('');pickFile('.ase,.aco,.gpl,.sketchpalette,.swatches,.json,.css,.hex,.txt',async files=>{try{const file=files[0];if(file.size>PALETTE_BYTE_LIMIT)throw Error('Palette files can be up to 5 MB.');setIncoming(parsePalette(new Uint8Array(await file.arrayBuffer()),file.name));}catch(e){setIncoming(null);setError(e instanceof Error?e.message:'This palette could not be read.');}});};
+ const save=()=>{try{const data=serializePalette({name:s.doc.name,colors},format),name=exportFilename(s.doc.name,'-palette',spec.extension);void download(name,typeof data==='string'?data:new Blob([new Uint8Array(data).buffer],{type:'application/octet-stream'}),'text/plain').catch(notifyError);setMessage(colors.length+' colors exported.');}catch(e){setError(e instanceof Error?e.message:'This palette could not be exported.');}};
+ const apply=()=>{try{if(!incoming)return;let added=0,skipped=0;s.edit(d=>{const r=applyPaletteImport(d,incoming,destination);added=r.added;skipped=r.skipped;});setIncoming(null);setMessage(added+' colors imported'+(skipped?', '+skipped+' already present':'')+'. Undo removes them.');}catch(e){setError(e instanceof Error?e.message:'This palette could not be imported.');}};
+ return <div className="local-tool palette-exchange">
+  <p className="dialog-description">Move colors to and from other design tools as files. Nothing is uploaded. Only solid colors transfer; gradients, tints and transparency do not.</p>
+  {error&&<p role="alert" className="tool-warning">{error}</p>}{message&&<p role="status">{message}</p>}
+  <section aria-label="Export palette"><h3>Export</h3><div className="tool-row"><label className="tool-field">Colors from<select aria-label="Palette source" value={source} onChange={e=>setSource(e.target.value as PaletteSource)}>{sources.map(o=><option key={o.id} value={o.id}>{o.label}</option>)}</select></label><label className="tool-field">Format<select aria-label="Palette format" value={format} onChange={e=>setFormat(e.target.value as PaletteFormat)}>{paletteFormats.map(f=><option key={f.id} value={f.id}>{f.label}</option>)}</select></label></div>
+   <div className="tool-swatches" aria-label={colors.length+' colors to export'}>{colors.slice(0,64).map(c=><i key={c.hex} title={c.name+' '+c.hex} style={{background:c.hex}}/>)}{colors.length>64&&<small>+{colors.length-64}</small>}</div>
+   {format==='swatches'&&colors.length>30&&<p className="small-note">Procreate palettes hold 30 colors. Only the first 30 are written.</p>}
+   <div className="button-row"><button className="primary-button" disabled={!colors.length} onClick={save}>Export {colors.length} colors</button></div></section>
+  <section aria-label="Import palette"><h3>Import</h3><p className="small-note">Reads .ase, .aco, .gpl, .sketchpalette, .swatches, design tokens JSON, Tailwind color JSON, CSS custom properties and hex lists.</p><div className="button-row"><button className="outline-button" onClick={choose}>Choose palette file…</button></div>
+   {incoming&&<div className="tool-card"><strong>{incoming.name}</strong> <span>{incoming.colors.length} colors</span><div className="tool-swatches" aria-label="Imported colors">{incoming.colors.slice(0,64).map((c,i)=><i key={i} title={c.name+' '+c.hex} style={{background:c.hex}}/>)}{incoming.colors.length>64&&<small>+{incoming.colors.length-64}</small>}</div>{incoming.warnings.map(w=><p key={w} className="small-note">{w}</p>)}<div className="tool-row"><label className="tool-field">Add to<select aria-label="Palette import destination" value={destination} onChange={e=>setDestination(e.target.value as typeof destination)}><option value="palette">Document palette</option><option value="variables">New variable collection</option></select></label></div><div className="button-row"><button className="primary-button" disabled={s.doc.workspace==='slides'} onClick={apply}>Import colors</button><button onClick={()=>setIncoming(null)}>Discard</button></div></div>}
+  </section>
+ </div>;
+}

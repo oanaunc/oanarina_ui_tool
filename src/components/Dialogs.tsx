@@ -1,5 +1,6 @@
 import BrandDialogs from './BrandDialogs';
 import LearningDialog from './EditorLearning';
+import LocalToolDialog,{isLocalToolModal} from './LocalToolDialog';
 import SketchImport from './SketchImport';
 import LocalPlugins from './LocalPlugins';
 import ComponentPlayground from './ComponentPlayground';
@@ -53,6 +54,7 @@ export default function Dialogs(){const s=useEditor(),[query,setQuery]=useState(
  useEffect(()=>{if(s.modal==='export')setFormat(getPreferences().defaultExportFormat);},[s.modal]);
  if(!modal)return null;
  if(modal==='learning')return <LearningDialog/>;
+ if(isLocalToolModal(modal))return <LocalToolDialog modal={modal}/>;
  if(modal==='local-plugins')return <LocalPlugins key={s.doc.id}/>;
  if(modal==='component-playground')return <ComponentPlayground/>;
  if(modal==='sketch-import'||modal==='sketch-import-review')return <SketchImport key={s.doc.id+modal}/>;

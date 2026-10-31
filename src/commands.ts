@@ -25,6 +25,7 @@ import {selectionZoomCamera} from './workflow-preferences';
 import {canvasSelectionBounds} from './canvas-geometry';
 import {applyMotionEdits,sampleMotion} from './motion';
 import {recordAction} from './action-history';
+import {recordCommandUse} from './command-usage';
 import {copyEditorSelection,copyEditorSelectionAsPng,pasteEditorClipboard} from './native-clipboard';
 import {getPreferences,updatePreferences} from './preferences';
 import {toggleDrawMode} from './toolbelt';
@@ -43,6 +44,7 @@ import {createInstance,download,exportArtwork,importImages,notifyError,serialize
 import {descendants,effectiveVisible,isLocked,node} from './model';
 import type {DesignNode,Tool} from './model';
 export const commands=[
+ ['design-health','Design health report…','Resources',''],['palette-exchange','Import or export color palette…','Resources',''],['batch-transforms','Batch transforms…','Object',''],['code-export','Design-to-code export…','File',''],['export-queue','Export queue…','File',''],['workspace-layouts','Workspace layouts…','View',''],['device-preview','Side-by-side device preview…','View',''],['command-usage','Command usage…','Help',''],['bug-report','Create bug report bundle…','Help',''],['privacy-dashboard','Privacy dashboard…','Help',''],
  ['icons','Free icon library…','Resources',''],
  ['templates','Templates and personal starter kits…','Resources',''],
  ['linear-repeat','Linear repeat…','Object',''],['radial-repeat','Radial repeat…','Object',''],
@@ -71,7 +73,7 @@ export const commands=[
 ] as const;
 export function runCommand(id:string,event?:Event){executeCommand(id,event);}
 function shortcutCommand(id:string,event:KeyboardEvent,binding?:string,usageId=id){if(executeCommand(id,event)!==false)recordShortcutUse(usageId,binding??commands.find(c=>c[0]===id)?.[3]??event.key);}
-function executeCommand(id:string,event?:Event){if(event&&['copy','cut','paste','copy-as-png'].includes(id))window.desktop?.beginClipboard?.(event,id);if(typeof window!=='undefined'&&window.desktop?.newWindow&&['new','new-slides','new-whiteboard','sample'].includes(id)){void window.desktop.newWindow(id).catch(notifyError);return;}if(commands.some(c=>c[0]===id))recordAction(id);if(['open','save','save-as'].includes(id)&&typeof document!=='undefined')(document.activeElement as HTMLElement|null)?.blur();const s=useEditor.getState(),ns=currentPage().nodes,sel=ns.filter(n=>s.selection.includes(n.id));
+function executeCommand(id:string,event?:Event){if(event&&['copy','cut','paste','copy-as-png'].includes(id))window.desktop?.beginClipboard?.(event,id);if(typeof window!=='undefined'&&window.desktop?.newWindow&&['new','new-slides','new-whiteboard','sample'].includes(id)){void window.desktop.newWindow(id).catch(notifyError);return;}if(commands.some(c=>c[0]===id)){recordAction(id);recordCommandUse(id,event?.type==='keydown');}if(['open','save','save-as'].includes(id)&&typeof document!=='undefined')(document.activeElement as HTMLElement|null)?.blur();const s=useEditor.getState(),ns=currentPage().nodes,sel=ns.filter(n=>s.selection.includes(n.id));
  try{if(id==='tool-brush'){activateBrushTool();return;}if((id==='edit-vector'&&!s.vectorEditId)||id.startsWith('vector-')){if(s.motionOpen){const target=s.vectorEditId?ns.find(n=>n.id===s.vectorEditId):sel.length===1?sel[0]:undefined;if(id!=='edit-vector'||target?.type!=='path'||!Array.isArray(target.contours))throw Error('Close Motion before changing vector topology or converting geometry.');}const targets=ns.filter(n=>n.id===s.vectorEditId||s.selection.includes(n.id));if(targets.some(n=>isLocked(n,ns)))throw Error('Unlock the vector layer and its ancestors before editing geometry.');if(targets.some(n=>n.instanceRootId))throw Error('Detach the instance before editing vector geometry.');}if(id.startsWith('vector-')||['union','subtract','intersect','exclude','flatten'].includes(id))for(const n of sel)refuseVariableWidthConversion(n);if(id.startsWith('tool-')&&commands.some(c=>c[0]===id&&c[2]==='Tools')){s.set({tool:id.slice(5) as Tool});return;}if(s.doc.workspace==='slides'&&['paste','duplicate','delete','cut','import'].includes(id)){window.dispatchEvent(new CustomEvent('oanarina-slides-command',{detail:id}));return;}switch(id){
  case 'icons':if(s.motionOpen||s.uiHidden)throw Error('Close Motion and show the interface before opening the icon library.');s.set({modal:'icons'});break;
  case 'templates':if(s.motionOpen||s.uiHidden)throw Error('Close Motion and show the interface before opening Templates.');s.set({modal:'templates'});break;
