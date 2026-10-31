@@ -64,7 +64,7 @@ Settings cover page language, skip link, reduced motion and focus ring color. **
 
 **Form** creates a real labelled form with client-side validation. The canvas shows stand-in layers; the export renders native controls. A static site has no server, so Forma never receives submissions. Without an `https` endpoint, submitting shows "This form is not connected to a service, so nothing was sent." and the page's policy blocks form posts. With an endpoint, the browser posts directly to it, and that service's behavior is outside Forma.
 
-**Embed** is an `https` address or HTML, always in a sandboxed `iframe` with no referrer. HTML is rebuilt from an allow-list and stays in an opaque origin behind its own content security policy. Enabling scripts keeps the HTML as written and adds only `allow-scripts`. Same-origin access is offered only for address embeds with scripts on, because some third-party players need their own origin. Top-level navigation and popups are never allowed.
+**Embed** is an `https` address or HTML, always in a sandboxed `iframe` with no referrer. YouTube, Vimeo, Spotify and Loom share links become their player addresses, with scripts and own-origin access on because those players need them. Forma does not contact them; only a visitor's browser does, in the exported site. HTML is rebuilt from an allow-list and stays in an opaque origin behind its own content security policy. Enabling scripts keeps the HTML as written and adds only `allow-scripts`. Same-origin access is offered only for address embeds with scripts on, because some third-party players need their own origin. Top-level navigation and popups are never allowed.
 
 ## Preview
 
