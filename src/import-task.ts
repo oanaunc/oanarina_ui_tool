@@ -1,6 +1,6 @@
 import {trustedImportDiagnostic} from './trusted-import-diagnostics';
 /** Ephemeral import delivery state. Never serialized into a project or exported. */
-export type ImportFormat='project'|'fig'|'rest'|'pdf'|'sketch'|'raster'|'svg';
+export type ImportFormat='project'|'fig'|'rest'|'pdf'|'sketch'|'audio'|'raster'|'svg';
 export type ImportStage='reading'|'validating'|'decoding'|'retaining'|'opening';
 export interface ImportTaskState {id:number;format:ImportFormat;stage:ImportStage;status:'active'|'cancelled'|'failed';file:number;files:number;bytes:number;totalBytes:number;reason?:string;}
 const labels:Record<ImportStage,string>={reading:'Reading selected bytes',validating:'Validating file structure',decoding:'Decoding embedded artwork',retaining:'Keeping the current project',opening:'Preparing the imported project'};

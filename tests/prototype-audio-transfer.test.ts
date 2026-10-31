@@ -1,0 +1,15 @@
+import {it,expect} from 'vitest';
+import {blankDocument,node,parseDocument} from '../src/model';
+import {audioDataUrl} from '../src/prototype-audio';
+import type {PrototypeAudio} from '../src/prototype-audio';
+import {pcmWav} from './helpers/audio-fixture';
+import {makeDesignClipboard,parseDesignClipboard,pasteDesignClipboard} from '../src/clipboard-transfer';
+import {duplicateDocumentPage} from '../src/pages';
+import {prepareFigmaDelivery} from '../src/figma-delivery';
+import {prepareLibraryPublication,parseLocalLibrary} from '../src/local-library-package';
+import {exportSvg} from '../src/files';
+import {exportPageSvg} from '../mcp/svg';
+const media:PrototypeAudio={kind:'wav-pcm16',data:audioDataUrl(pcmWav()),sampleRate:8000,channels:1,frames:80,loop:false,volume:1};
+it('normal clipboard and page copies preserve local PCM with remapped frame identity and strict oui compatibility',()=>{const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('frame',{id:'audio-frame',prototypeAudio:media})];const payload=parseDesignClipboard(JSON.stringify(makeDesignClipboard(d,d.pages[0].id,['audio-frame']))),dest=blankDocument();pasteDesignClipboard(dest,dest.pages[0].id,payload);expect(dest.pages[0].nodes[0].prototypeAudio).toEqual(media);expect(dest.pages[0].nodes[0].id).not.toBe('audio-frame');const copy=duplicateDocumentPage(d,d.pages[0].id);expect(copy.document.pages[1].nodes[0].prototypeAudio).toEqual(media);expect(parseDocument(JSON.stringify(copy.document)).pages).toEqual(copy.document.pages);});
+it('static SVG/MCP and explicit Figma delivery omit private WAV bytes, report omissions and preserve the normal source',()=>{const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('frame',{id:'audio-frame',prototypeAudio:media})];const before=JSON.stringify(d),svg=exportSvg(d.pages[0].nodes);expect(svg).not.toContain(media.data);expect(svg).toContain('Prototype audio is omitted');const mcp=exportPageSvg(d,d.pages[0].id);expect(mcp.svg).not.toContain(media.data);expect(mcp.warnings.join(' ')).toContain('Prototype audio');expect(prepareFigmaDelivery(d).pages[0].nodes[0].prototypeAudio).toBeUndefined();expect(JSON.stringify(d)).toBe(before);});
+it('reusable publication omits unrelated private audio with one warning and refuses inbound private audio even outside reusable definitions',()=>{const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('component',{id:'main',name:'Button'}),node('frame',{id:'audio',prototypeAudio:media})];const before=JSON.stringify(d),snapshot=prepareLibraryPublication(d,{name:'Controls',description:'',version:1});expect(JSON.stringify(snapshot)).not.toContain(media.data);expect(snapshot.warnings.filter(w=>w.includes('prototype audio'))).toHaveLength(1);const forged=structuredClone(snapshot);forged.project.pages[0].nodes.push(node('frame',{id:'forged-audio',prototypeAudio:media}));expect(()=>parseLocalLibrary(JSON.stringify(forged))).toThrow(/prototype audio/);expect(JSON.stringify(d)).toBe(before);});

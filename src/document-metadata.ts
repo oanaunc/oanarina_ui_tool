@@ -1,4 +1,5 @@
 import {validateDocumentPassThrough} from './pass-through';
+import {validateDocumentPrototypeAudio} from './prototype-audio';
 import {validateDocumentNetworks} from './vector-network';
 import {validateDocumentPrototypeInputs} from './prototype-input';
 import {validateDocumentBackgroundBlur} from './background-blur';
@@ -62,6 +63,7 @@ export function validateDocumentMetadata(document:{workspace?:unknown;fileCover?
  validateDocumentArrowheads(document);
  validateComponentWorkflowMetadata(document);
  validateDocumentMedia(document);
+ validateDocumentPrototypeAudio(document);
 }
 /** Plain text is preserved literally; only line endings and empty clearing normalize. */
 export function normalizedDocumentDescription(value:string):string|undefined{
