@@ -394,50 +394,50 @@
     "category": "Mac system integration",
     "name": "System clipboard text",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.8: native focused text fields retain macOS editing; explicit external plain-text canvas paste creates an editable layer up to 100,000 characters. Rich cross-app text semantics and complete reference behavior remain partial. docs/NATIVE-CLIPBOARD.md."
+    "notes": "External plain text, including multi-line Unicode, pastes as an editable layer up to 100,000 characters; rich-text-only pasteboards paste their words. Styling from other apps is not kept. Focused-field system paste was not retested because smokes avoid the real clipboard. docs/NATIVE-CLIPBOARD.md"
   },
   {
     "id": "UI-02-011",
     "category": "Mac system integration",
     "name": "System clipboard images",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Adds explicit JPEG paste with bounded PNG normalization; bytes must match the declared type. Browser and Windows image clipboard remain unfinished."
+    "notes": "Mac: PNG, TIFF, JPEG, HEIC, WebP and GIF normalize to PNG, and Finder-copied image files paste their real pixels, not the icon. Only the first item or file is read; browser and Windows clipboards are out of scope."
   },
   {
     "id": "UI-02-012",
     "category": "Mac system integration",
     "name": "Clipboard SVG markup",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.8: native public.svg-image outgoing representation and explicit incoming design-canvas SVG import review. SVG received only as ordinary text remains text; slide/container SVG paste is refused. Unsupported SVG semantics have reviewed reductions. No private Figma editable clipboard. docs/NATIVE-CLIPBOARD.md."
+    "notes": "Outgoing public.svg-image; incoming SVG representations, whole-document SVG plain text and Finder-copied SVG all reach the validated import review. Slide containers still refuse SVG paste."
   },
   {
     "id": "UI-02-013",
     "category": "Mac system integration",
     "name": "Drag files from Finder",
     "priority": "must",
-    "status": "partial",
-    "verification": "reference-verification-pending",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working basic path with limits; see docs/IMPLEMENTATION.md. Full reference behavior remains incomplete."
+    "notes": "Finder drops tested through WKWebView's real drag destination with a test NSDraggingInfo: images land under the pointer with one Undo, batches work, TIFF and HEIC convert to PNG. SVG, PDF and Sketch reach their reviews, and .oui opens in its own window through the shell (.fig shares that shell path but was not dropped in a smoke). Mixed drops are refused. Slides and the Files screen take no images. A person's physical drag was not exercised."
   },
   {
     "id": "UI-02-014",
     "category": "Mac system integration",
     "name": "Drag assets to Finder",
     "priority": "must",
-    "status": "planned",
-    "verification": "reference-verification-pending",
+    "status": "partial",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": ""
+    "notes": "The Export dialog preview drags as WebKit's own NSFilePromiseProvider, named by the shell, with no new message; the promise's real write produced the exported image. Canvas layers and Assets cannot be dragged. Finder's side of the drop was not exercised."
   },
   {
     "id": "UI-02-015",
@@ -525,9 +525,9 @@
     "name": "Reduced motion preference",
     "priority": "must",
     "status": "partial",
-    "verification": "reference-verification-pending",
+    "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.9: Local Interface motion follows live system preference with Reduce/Allow overrides, reset and cross-window storage synchronization; scoped chrome policy leaves deliberate timeline playback, GIF exports and existing Prototype/Slides system policies intact. Present chrome is mostly immediate; broad motion/VoiceOver/native acceptance remains unverified while Mac is locked. docs/INTERFACE-MOTION.md."
+    "notes": "prefers-reduced-motion in WKWebView equals the macOS setting as it stood (off); the setting was not toggled. Earlier limits stand."
   },
   {
     "id": "UI-02-024",
@@ -537,7 +537,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Follow system, Increase and Standard work with a live prefers-contrast: more response and pass the rendered-text audit in both themes. Native WKWebView behavior is not verified, and canvas selection keeps its own option."
+    "notes": "prefers-contrast in WKWebView equals the macOS setting as it stood (off); the setting was not toggled. Canvas selection keeps its own option."
   },
   {
     "id": "UI-02-025",
@@ -5197,7 +5197,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Artwork canvas sampling works. Screen sampling is conditional on the browser EyeDropper API with abort/stale-result protection; the shipping Mac WKWebView has no native screen sampler Evidence and limits: docs/COLOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Edit > Sample Screen Color (⌃⌘C) runs NSColorSampler from the shell, and the sampled result goes to the open picker with one Undo or else to recent colors. The menu path and everything after the sampler's answer are tested; a person's sampler click is not. The in-page button only points to the menu."
   },
   {
     "id": "UI-17-011",
@@ -5217,7 +5217,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Artwork canvas sampling works. Screen sampling is conditional on the browser EyeDropper API with abort/stale-result protection; the shipping Mac WKWebView has no native screen sampler Evidence and limits: docs/COLOR-WORKFLOWS.md. Exact Figma reference verification remains pending."
+    "notes": "Same native path. Display P3 files keep the wide sampled coordinates. A person's sampler click is not tested."
   },
   {
     "id": "UI-17-013",
@@ -6634,10 +6634,10 @@
     "category": "Typography",
     "name": "Font style selection",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Font style select names catalog, variable wght and embedded faces, applying weight and italic together. Installed Mac fonts have no face list in the renderer and show Regular, Bold and italics plus the numeric weight control."
+    "notes": "The Font style select lists an installed family's named faces through the existing fonts message, with no paths. Core Text advance widths confirmed CSS weight reaches each of 12 Helvetica Neue faces. Width variants such as Condensed are omitted."
   },
   {
     "id": "UI-21-008",
@@ -7277,7 +7277,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "1,903 searchable emoji including 263 flags, keycaps and 234 ZWJ sequences, with a skin-tone control offered only where all five tones are verified. No native OS picker, categories or recents, and at most 100 results shown. Names are Unicode's formal wording, so everyday synonyms may not match."
+    "notes": "Adds the system Edit > Emoji & Symbols item. The item is verified; insertion by a person is not. Other earlier limits stand."
   },
   {
     "id": "UI-22-036",
@@ -13017,7 +13017,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Real owned-worker offline .sketch ZIP import, reviewed counted reductions and atomic new-project delivery. Editable bounded axis-aligned shapes, straight/cubic paths with retained incoming/outgoing and closing handles, base-style text and local PNG/JPEG; actual progress/cancel/decode deadlines, malformed refusal and dirty-source retention validated. Unknown curve modes, transforms, symbols, Booleans/masks and unknown classes refuse this subset; native/current Sketch full fidelity remains unverified. See docs/SKETCH-DOCUMENT-IMPORT.md."
+    "notes": "Sketch module worker proven in WKWebView from a Finder drop of a package zip. Earlier limits stand."
   },
   {
     "id": "UI-39-034",
@@ -13027,7 +13027,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Partial: real offline local PDF raster-page import with pinned compatible PDF.js, whole-document geometry/operator/pixel/resource/output limits, sequential rendering, thumbnail/reduction review, cancellation/deadline and guarded retained current edits. Each page becomes one embedded PNG with normal later crop/resize/Undo/save; PDF text/vectors are flattened. Scripts/annotations/forms/links/attachments excluded, no remote PDF/assets. Owned repository delivery preserves newer writers and rolls back unaccepted imports. See docs/PDF-DOCUMENT-IMPORT.md. Core/type/real browser pixels and independent review; parser allocation/codec/color limits and native packaging/reference acceptance explicit."
+    "notes": "PDF worker proven in WKWebView from a Finder drop. Earlier limits stand."
   },
   {
     "id": "UI-39-035",
@@ -14184,10 +14184,10 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin launch",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Explicit per-run launch can now open a mediated interface; a run with an open interface stays alive until close, Cancel, source change or the 10-minute limit. Native WKWebView acceptance pending."
+    "notes": "Real WKWebView acceptance: package from a real file, opaque worker with network refused, reviewed Apply and a mediated opaque interface frame. The 10-minute limit is covered only by browser tests."
   },
   {
     "id": "UI-43-005",
@@ -17704,10 +17704,10 @@
     "category": "Performance and reliability",
     "name": "Safe mode startup",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Help command, ?safe-mode=1, crash screen or two failed starts within 10 minutes skip the last file, fonts, plugins and replay; Restart normally returns to the file. Preferences are not reset; native path is exercised through a shim, not a real WKWebView crash loop."
+    "notes": "Two starts ended by a real WebContent SIGKILL enter safe mode. Restart normally returns to the same document and file binding, after fixing a shell session bug. Preferences are not reset."
   },
   {
     "id": "UI-53-025",
