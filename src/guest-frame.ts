@@ -1,0 +1,10 @@
+/** Shared opaque guest document host for plugin interfaces and code layers. The frame never receives its own origin. */
+export interface GuestFrameOptions {html:string;title:string;width:number;height:number;container:HTMLElement;kind:string;message:(value:unknown)=>void;}
+export interface GuestFrame {frame:HTMLIFrameElement;post:(value:unknown)=>void;resize:(width:number,height:number)=>void;dispose:()=>void;}
+const hex=()=>crypto.randomUUID().replaceAll('-','');
+export function startGuestFrame(o:GuestFrameOptions):GuestFrame{const token=hex()+hex(),frame=document.createElement('iframe');let rendered=false,flushed=false,disposed=false;const queue:unknown[]=[];frame.setAttribute('sandbox','allow-scripts');frame.setAttribute('allow',"camera 'none'; microphone 'none'; geolocation 'none'; clipboard-read 'none'; clipboard-write 'none'; fullscreen 'none'");frame.referrerPolicy='no-referrer';frame.title=o.title;frame.dataset.guestFrame=o.kind;frame.width=String(o.width);frame.height=String(o.height);frame.src=new URL('./local-guest-frame.html',document.baseURI).href+'#'+token;
+ // The editor's own CSP frame-src also refuses navigating this frame away to an external document.
+ const listener=(event:MessageEvent)=>{if(disposed||event.source!==frame.contentWindow||event.origin!=='null')return;if(!rendered){const m=event.data;if(m?.kind==='guest-ready'&&m.token===token){rendered=true;frame.contentWindow!.postMessage({kind:'guest-render',token,html:o.html},'*');}return;}if(!flushed&&event.data?.kind==='guest-rendered'&&event.data.token===token){flushed=true;for(const value of queue.splice(0))frame.contentWindow!.postMessage(value,'*');return;}o.message(event.data);};
+ window.addEventListener('message',listener);o.container.appendChild(frame);
+ return {frame,post:value=>{if(disposed)return;if(flushed)frame.contentWindow?.postMessage(value,'*');else queue.push(value);},resize:(width,height)=>{if(!disposed){frame.width=String(width);frame.height=String(height);}},dispose:()=>{if(disposed)return;disposed=true;window.removeEventListener('message',listener);frame.remove();}};
+}
