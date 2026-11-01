@@ -15,7 +15,7 @@ import DevicePreview from './DevicePreview';
 const tools:Record<string,{title:string;render:()=>ReactNode}>={
  'design-health':{title:'Design health report',render:()=><DesignHealth/>},
  'privacy-dashboard':{title:'Privacy dashboard',render:()=><PrivacyDashboard/>},
- 'bug-report':{title:'Bug report bundle',render:()=><BugReport/>},
+ 'bug-report':{title:'Send feedback',render:()=><BugReport/>},
  'palette-exchange':{title:'Color palette exchange',render:()=><PaletteExchange/>},
  'batch-transforms':{title:'Batch transforms',render:()=><BatchTransforms/>},
  'code-export':{title:'Design-to-code export',render:()=><CodeExport/>},

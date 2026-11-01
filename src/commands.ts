@@ -50,7 +50,7 @@ import {createInstance,exportArtwork,importImages,notifyError,openProject,pickFi
 import {descendants,effectiveVisible,isLocked,node} from './model';
 import type {DesignNode,Tool} from './model';
 export const commands=[
- ['branches','Branches…','File',''],['storage','Storage and recovery…','File',''],['safe-mode','Restart in safe mode','Help',''],['design-health','Design health report…','Resources',''],['palette-exchange','Import or export color palette…','Resources',''],['batch-transforms','Batch transforms…','Object',''],['code-export','Design-to-code export…','File',''],['export-queue','Export queue…','File',''],['workspace-layouts','Workspace layouts…','View',''],['device-preview','Side-by-side device preview…','View',''],['command-usage','Command usage…','Help',''],['bug-report','Create bug report bundle…','Help',''],['privacy-dashboard','Privacy dashboard…','Help',''],
+ ['branches','Branches…','File',''],['storage','Storage and recovery…','File',''],['safe-mode','Restart in safe mode','Help',''],['design-health','Design health report…','Resources',''],['palette-exchange','Import or export color palette…','Resources',''],['batch-transforms','Batch transforms…','Object',''],['code-export','Design-to-code export…','File',''],['export-queue','Export queue…','File',''],['workspace-layouts','Workspace layouts…','View',''],['device-preview','Side-by-side device preview…','View',''],['command-usage','Command usage…','Help',''],['bug-report','Send feedback…','Help',''],['privacy-dashboard','Privacy dashboard…','Help',''],
  ['icons','Free icon library…','Resources',''],
  ['resource-library','UI kits, illustrations and tutorials…','Resources',''],
  ['share-prototype','Export prototype file…','File',''],

@@ -9,7 +9,7 @@ export const messages=[
  'Templates, locked assets and batches on your Mac.','Responsive pages exported as static files.',
  'Branches…','Storage and recovery…','Restart in safe mode','On your Mac · Offline',
  'Draw tools','Toolbelt mode',
- 'Design health report…','Import or export color palette…','Batch transforms…','Design-to-code export…','Export queue…','Workspace layouts…','Side-by-side device preview…','Command usage…','Create bug report bundle…','Privacy dashboard…','Local widgets…','Code layer tool','New brand project','New site','Draw mode',
+ 'Design health report…','Import or export color palette…','Batch transforms…','Design-to-code export…','Export queue…','Workspace layouts…','Side-by-side device preview…','Command usage…','Send feedback…','Privacy dashboard…','Local widgets…','Code layer tool','New brand project','New site','Draw mode',
  'View','Page','Resources','Help','Tools','Prototype',
  'Canvas','Free icon library…','UI kits, illustrations and tutorials…','Export prototype file…','Templates and personal starter kits…','Linear repeat…','Radial repeat…','Separate vector regions…',
  'Outline vector stroke…','Slices and exports…','Show / hide slices','Offset vector path…','Select layers in box…','Document outline…',
