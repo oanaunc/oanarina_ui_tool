@@ -36,6 +36,8 @@
   "componentPropDefs",
   "componentPropNodeField",
   "componentPropRefs",
+  "condition",
+  "conditionalActions",
   "connectionType",
   "connectionURL",
   "content",
@@ -62,6 +64,9 @@
   "entries",
   "event",
   "exposure",
+  "expressionArguments",
+  "expressionFunction",
+  "expressionValue",
   "family",
   "fillGeometry",
   "fillPaints",
@@ -247,6 +252,10 @@
   "symbolID",
   "symbolIdValue",
   "symbolOverrides",
+  "targetVariable",
+  "targetVariableData",
+  "targetVariableID",
+  "targetVariableValue",
   "temperature",
   "textAlignHorizontal",
   "textAlignVertical",
@@ -320,13 +329,20 @@
   "connectionType": [
    "BACK",
    "CLOSE",
+   "CONDITIONAL",
    "INTERNAL_NODE",
    "NONE",
+   "SET_VARIABLE",
    "URL"
   ],
   "dataType": [
    "ALIAS",
-   "PROP_REF"
+   "BOOLEAN",
+   "COLOR",
+   "EXPRESSION",
+   "FLOAT",
+   "PROP_REF",
+   "STRING"
   ],
   "easingType": [
    "CUSTOM_CUBIC",
@@ -344,6 +360,24 @@
    "SPRING_PRESET_ONE",
    "SPRING_PRESET_THREE",
    "SPRING_PRESET_TWO"
+  ],
+  "expressionFunction": [
+   "ADDITION",
+   "AND",
+   "DIVIDE",
+   "EQUALS",
+   "GREATER_THAN",
+   "GREATER_THAN_OR_EQUAL",
+   "IS_TRUTHY",
+   "LESS_THAN",
+   "LESS_THAN_OR_EQUAL",
+   "MULTIPLY",
+   "NEGATE",
+   "NOT",
+   "NOT_EQUAL",
+   "OR",
+   "STRINGIFY",
+   "SUBTRACTION"
   ],
   "family": [
    "Inter"
