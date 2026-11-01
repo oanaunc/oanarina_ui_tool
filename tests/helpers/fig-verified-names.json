@@ -57,6 +57,7 @@
   "easingType",
   "effects",
   "endIndexExclusive",
+  "endOffset",
   "endingAngle",
   "entries",
   "event",
@@ -135,6 +136,7 @@
   "normalizedSize",
   "offset",
   "opacity",
+  "opacityVar",
   "overlayBackgroundAppearance",
   "overlayBackgroundInteraction",
   "overlayPositionType",
@@ -157,6 +159,7 @@
   "prototypeStartingPoint",
   "r",
   "radius",
+  "radiusVar",
   "range",
   "rangeShouldBeIteratedInReverse",
   "rebasedRange",
@@ -183,6 +186,7 @@
   "specImageHash",
   "specWidth",
   "spread",
+  "spreadVar",
   "stackAlign",
   "stackChildAlignSelf",
   "stackChildPrimaryGrow",
@@ -204,6 +208,9 @@
   "stackWrap",
   "starInnerScale",
   "startIndex",
+  "startOffset",
+  "startRadius",
+  "startRadiusVar",
   "startingAngle",
   "stateGroupPropertyValueOrders",
   "stops",
@@ -273,7 +280,9 @@
   "visible",
   "windingRule",
   "x",
-  "y"
+  "xVar",
+  "y",
+  "yVar"
  ],
  "values": {
   "backgroundType": [
@@ -285,7 +294,7 @@
    "PASS_THROUGH"
   ],
   "blurOpType": [
-   "NORMAL"
+   "PROGRESSIVE"
   ],
   "booleanOperation": [
    "INTERSECT",

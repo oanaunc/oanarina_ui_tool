@@ -1,4 +1,5 @@
 import type {BindingField,DesignVariable,VariableCollection,VariableType,VariableValue} from './design-systems';
+import type {DesignNode} from './model';
 import {color,flag,guid,list,number,object,optional,reference,string} from './fig-values';
 import type {Raw} from './fig-values';
 /** Local variable collections become real Forma collections. Mode choice is an explicit input everywhere, so a
@@ -38,6 +39,6 @@ export function figVariableTable(records:readonly Raw[],byId:ReadonlyMap<string,
  if(bad.size||dropped.size){issue('variable-cycle','Variables with unresolved or circular aliases kept their current values on each layer.');table.variables=table.variables.filter(v=>!bad.has(v.id));for(const [source,target] of [...table.variableId])if(bad.has(target)||dropped.has(source))table.variableId.delete(source);}
  return table;
 }
-const fields:Record<string,BindingField>={CORNER_RADIUS:'radius',WIDTH:'width',HEIGHT:'height',STACK_SPACING:'gap',FONT_SIZE:'fontSize',OPACITY:'opacity',STROKE_WEIGHT:'strokeWidth',TEXT_DATA:'text',VISIBLE:'visible'};
-/** Source field to Forma binding. Fields without an equivalent stay as resolved literals. */
-export const figBindingField=(field:string):BindingField|undefined=>fields[field];
+const fields:Record<string,BindingField>={CORNER_RADIUS:'radius',WIDTH:'width',HEIGHT:'height',STACK_SPACING:'gap',FONT_SIZE:'fontSize',OPACITY:'opacity',STROKE_WEIGHT:'strokeWidth',TEXT_DATA:'text',VISIBLE:'visible',STACK_PADDING_TOP:'paddingTop',STACK_PADDING_RIGHT:'paddingRight',STACK_PADDING_BOTTOM:'paddingBottom',STACK_PADDING_LEFT:'paddingLeft',RECTANGLE_TOP_LEFT_CORNER_RADIUS:'radiusTopLeft',RECTANGLE_TOP_RIGHT_CORNER_RADIUS:'radiusTopRight',RECTANGLE_BOTTOM_RIGHT_CORNER_RADIUS:'radiusBottomRight',RECTANGLE_BOTTOM_LEFT_CORNER_RADIUS:'radiusBottomLeft',MIN_WIDTH:'minWidth',MAX_WIDTH:'maxWidth',MIN_HEIGHT:'minHeight',MAX_HEIGHT:'maxHeight',LETTER_SPACING:'letterSpacing',PARAGRAPH_SPACING:'paragraphSpacing',PARAGRAPH_INDENT:'paragraphIndent',FONT_FAMILY:'fontFamily',GRID_ROW_GAP:'gapY',GRID_COLUMN_GAP:'gapX'};
+/** Source field to Forma binding. Fields without an equivalent stay as resolved literals. A wrapping frame keeps a gap per axis, so its spacing binds to the axis it runs along. */
+export const figBindingField=(field:string,n:Pick<DesignNode,'layout'|'gapX'>):BindingField|undefined=>{const horizontal=n.layout==='horizontal';if(n.gapX!==undefined&&field==='STACK_SPACING')return horizontal?'gapX':'gapY';if(field==='STACK_COUNTER_SPACING')return n.gapX===undefined?undefined:horizontal?'gapY':'gapX';return fields[field];};
