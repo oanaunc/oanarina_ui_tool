@@ -14,7 +14,7 @@ export interface CullRoot {id:string;bounds:CullRect|null;uncertain:boolean;}
 /** What one layer and everything under it can paint. An atomic layer keeps all its children: masks and Booleans need their siblings. */
 export interface CullEntry {id:string;bounds:CullRect|null;uncertain:boolean;atomic:boolean;children:string[];}
 export interface ViewportCullIndex {source:readonly DesignNode[];roots:CullRoot[];rootFor:Map<string,string>;entries:Map<string,CullEntry>;nodes:number;work:number;fallback:string;}
-export const VIEWPORT_CULL_LIMITS={nodes:200000,depth:256,points:2000000,strokes:1000000,world:1_000_000_000,padding:128} as const;
+export const VIEWPORT_CULL_LIMITS={nodes:200000,depth:256,points:2000000,strokes:1000000,world:1_000_000_000,padding:128,retainLayers:1500} as const;
 const finiteRect=(b:CullRect)=>[b.x,b.y,b.width,b.height,b.x+b.width,b.y+b.height].every(Number.isFinite)&&b.width>=0&&b.height>=0;
 function union(a:CullRect|null,b:CullRect):CullRect {if(!a)return {...b};const x=Math.min(a.x,b.x),y=Math.min(a.y,b.y);return {x,y,width:Math.max(a.x+a.width,b.x+b.width)-x,height:Math.max(a.y+a.height,b.y+b.height)-y};}
 function worldBox(b:CullRect,m:Matrix):CullRect {const p=[point(m,b.x,b.y),point(m,b.x+b.width,b.y),point(m,b.x+b.width,b.y+b.height),point(m,b.x,b.y+b.height)],x=Math.min(...p.map(p=>p.x)),y=Math.min(...p.map(p=>p.y));return {x,y,width:Math.max(...p.map(p=>p.x))-x,height:Math.max(...p.map(p=>p.y))-y};}
@@ -62,13 +62,24 @@ export function indexViewportRoots(nodes:readonly DesignNode[]):ViewportCullInde
  return result;
 }
 export interface CullCamera {zoom:number;pan:{x:number;y:number};}
+/** A big page keeps layers well past the view, so the compositor can move them without waiting for a redraw. */
+export const retainedReach=(layers:number,size:{width:number;height:number})=>layers<VIEWPORT_CULL_LIMITS.retainLayers?VIEWPORT_CULL_LIMITS.padding:Math.max(VIEWPORT_CULL_LIMITS.padding,Math.round(Math.max(size.width,size.height)*.3));
+/** Whether a layer can show in this view right now. */
+export function layerInView(index:ViewportCullIndex,id:string,camera:CullCamera,size:{width:number;height:number}){const entry=index.entries.get(id);if(!entry||entry.uncertain||!entry.bounds)return true;const b=entry.bounds,x=-camera.pan.x/camera.zoom,y=-camera.pan.y/camera.zoom;return b.x<=x+size.width/camera.zoom&&b.x+b.width>=x&&b.y<=y+size.height/camera.zoom&&b.y+b.height>=y;}
+/** Whether a list cut for one camera still covers another with room to spare. A view far inside it, or zoomed well past it, is worth cutting again. */
+export function cullStillCovers(cut:CullCamera,camera:CullCamera,size:{width:number;height:number},reach:number){
+ if(reach<=VIEWPORT_CULL_LIMITS.padding)return cut.zoom===camera.zoom&&cut.pan.x===camera.pan.x&&cut.pan.y===camera.pan.y;
+ if(camera.zoom>cut.zoom*1.5)return false;
+ const a=reach/cut.zoom,guard=reach*.75/camera.zoom,left=-cut.pan.x/cut.zoom-a,top=-cut.pan.y/cut.zoom-a,right=(size.width-cut.pan.x)/cut.zoom+a,bottom=(size.height-cut.pan.y)/cut.zoom+a,x=-camera.pan.x/camera.zoom,y=-camera.pan.y/camera.zoom;
+ return x-guard>=left&&y-guard>=top&&x+size.width/camera.zoom+guard<=right&&y+size.height/camera.zoom+guard<=bottom;
+}
 export interface ViewportCullResult {nodes:DesignNode[];omittedRoots:number;omittedNodes:number;retainedUncertain:number;fallback:string;}
 /** Camera units match SVG clientWidth/clientHeight, including a constant logical-screen safety margin. */
-export function cullViewportRoots(nodes:DesignNode[],index:ViewportCullIndex,camera:CullCamera,size:{width:number;height:number},keepIds:readonly string[]=[],enabled=true):ViewportCullResult {
+export function cullViewportRoots(nodes:DesignNode[],index:ViewportCullIndex,camera:CullCamera,size:{width:number;height:number},keepIds:readonly string[]=[],enabled=true,reach:number=VIEWPORT_CULL_LIMITS.padding):ViewportCullResult {
  const all=(fallback=''):ViewportCullResult=>({nodes,omittedRoots:0,omittedNodes:0,retainedUncertain:index.roots.filter(r=>r.uncertain).length,fallback});
  if(!enabled)return all('Culling is disabled for this view.');if(index.fallback)return all(index.fallback);
  if(index.source!==nodes||index.nodes!==nodes.length||![camera.zoom,camera.pan.x,camera.pan.y,size.width,size.height].every(Number.isFinite)||camera.zoom<=0||size.width<=0||size.height<=0)return all('The canvas viewport is not available.');
- const p=VIEWPORT_CULL_LIMITS.padding/camera.zoom,view={x:-camera.pan.x/camera.zoom-p,y:-camera.pan.y/camera.zoom-p,width:size.width/camera.zoom+2*p,height:size.height/camera.zoom+2*p};if(!finiteRect(view))return all('The canvas viewport is not finite.');
+ const p=reach/camera.zoom,view={x:-camera.pan.x/camera.zoom-p,y:-camera.pan.y/camera.zoom-p,width:size.width/camera.zoom+2*p,height:size.height/camera.zoom+2*p};if(!finiteRect(view))return all('The canvas viewport is not finite.');
  const outside=(b:CullRect)=>b.x>view.x+view.width||b.x+b.width<view.x||b.y>view.y+view.height||b.y+b.height<view.y,kept=new Set(keepIds),path=new Set<string>(),parents=new Map<string,string>();
  for(const entry of index.entries.values())for(const child of entry.children)parents.set(child,entry.id);
  for(const id of keepIds)for(let at:string|undefined=id;at!==undefined&&!path.has(at);at=parents.get(at))path.add(at);
