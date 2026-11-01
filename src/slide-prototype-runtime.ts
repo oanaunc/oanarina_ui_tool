@@ -5,10 +5,12 @@ import {executeActions,keyMatches,prototypeDocument,reactionsFor} from './protot
 import type {PrototypeAction,PrototypeReaction,PrototypeState,PrototypeTransition,PrototypeTrigger} from './prototype';
 import {interactiveActionResolver} from './interactive-variants';
 /** The reaction engine behind a prototype embedded on a slide. It owns no React state, so the triggers can be tested without a renderer. */
-export interface SlidePlayerStep {state:PrototypeState;transition?:PrototypeTransition;links:string[];scrollTo?:string;}
+export interface SlidePlayerStep {state:PrototypeState;transition?:PrototypeTransition;links:string[];scrollTo?:string;sounds?:{play?:PrototypeAudio;stop?:boolean}[];}
 interface Temporary {kind:'hover'|'press';nodeId:string;actions:PrototypeAction[];}
 const clone=<T,>(v:T):T=>structuredClone(v);
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+import {dragReactions} from './prototype-drag';
+import type {PrototypeAudio} from './prototype-audio';
 export const DRAG_THRESHOLD=4;
 export class SlidePlayerEngine {
  private temporary:Temporary[]=[];private base:PrototypeState|null=null;
@@ -16,9 +18,11 @@ export class SlidePlayerEngine {
  private page(state:PrototypeState){return prototypeDocument(this.document,state).pages.find(p=>p.id===this.pageId)!;}
  private actionsFor(state:PrototypeState,id:string,types:readonly PrototypeTrigger[]){const live=prototypeDocument(this.document,state),n=live.pages.find(p=>p.id===this.pageId)?.nodes.find(n=>n.id===id),reactions=n?reactionsFor(n).filter(r=>r.enabled&&types.includes(r.trigger)):[];if(!n||!reactions.length)return [];const bind=interactiveActionResolver(live,this.pageId);return reactions.flatMap(r=>bind(n.id,r.actions,r.id));}
  handles(state:PrototypeState,id:string,types:readonly PrototypeTrigger[]){const n=this.page(state).nodes.find(n=>n.id===id);return !!n&&reactionsFor(n).some(r=>r.enabled&&types.includes(r.trigger));}
- private run(state:PrototypeState,actions:PrototypeAction[],transient=false):SlidePlayerStep{const result=executeActions(this.document,this.pageId,state,actions);if(!transient&&this.temporary.length){if(state.frameId!==result.state.frameId||!same(state.overlays,result.state.overlays)){this.temporary=[];this.base=null;}else if(this.base)this.base={...this.base,values:{...this.base.values,...result.state.values},variants:{...this.base.variants,...result.state.variants}};}return {state:result.state,transition:result.transition,links:result.effects.flatMap(e=>e.type==='open-link'&&e.url?[e.url]:[]),scrollTo:result.effects.find(e=>e.type==='scroll-to')?.targetId};}
+ private run(state:PrototypeState,actions:PrototypeAction[],transient=false):SlidePlayerStep{const result=executeActions(this.document,this.pageId,state,actions);if(!transient&&this.temporary.length){if(state.frameId!==result.state.frameId||!same(state.overlays,result.state.overlays)){this.temporary=[];this.base=null;}else if(this.base)this.base={...this.base,values:{...this.base.values,...result.state.values},variants:{...this.base.variants,...result.state.variants}};}return {state:result.state,transition:result.transition,links:result.effects.flatMap(e=>e.type==='open-link'&&e.url?[e.url]:[]),scrollTo:result.effects.find(e=>e.type==='scroll-to')?.targetId,sounds:result.effects.flatMap((e):{play?:PrototypeAudio;stop?:boolean}[]=>{if(e.type==='stop-audio')return [{stop:true}];if(e.type!=='play-audio')return [];const clip=this.page(result.state).nodes.find(n=>n.id===e.targetId)?.prototypeAudio;return clip?[{play:clip}]:[];})};}
  /** Persistent triggers: click, drag, mouse enter, leave, down and up, and scroll. */
  fire(state:PrototypeState,id:string,type:PrototypeTrigger){const actions=this.actionsFor(state,id,[type]);return actions.length?this.run(state,actions):undefined;}
+ /** A drag runs only the reaction aimed along it when a layer answers swipes in several directions. */
+ fireDrag(state:PrototypeState,id:string,delta:{x:number;y:number}){const live=prototypeDocument(this.document,state),n=live.pages.find(p=>p.id===this.pageId)?.nodes.find(n=>n.id===id),reactions=n?dragReactions(reactionsFor(n).filter(r=>r.enabled&&r.trigger==='drag'),delta):[];if(!n||!reactions.length)return undefined;const bind=interactiveActionResolver(live,this.pageId);return this.run(state,reactions.flatMap(r=>bind(n.id,r.actions,r.id)));}
  /** While hovering and while pressing last only as long as the pointer stays. */
  begin(state:PrototypeState,id:string,kind:'hover'|'press'){if(this.temporary.some(t=>t.kind===kind&&t.nodeId===id))return undefined;const actions=this.actionsFor(state,id,[kind]);if(!actions.length)return undefined;if(!this.temporary.length)this.base=clone(state);this.temporary.push({kind,nodeId:id,actions:clone(actions)});return this.run(state,actions,true);}
  restore(kind:'hover'|'press',id?:string):SlidePlayerStep|undefined{const remaining=this.temporary.filter(t=>!(t.kind===kind&&(!id||t.nodeId===id)));if(remaining.length===this.temporary.length||!this.base)return undefined;let state=clone(this.base);for(const entry of remaining)state=executeActions(this.document,this.pageId,state,entry.actions).state;this.temporary=remaining;if(!remaining.length)this.base=null;return {state,links:[]};}
