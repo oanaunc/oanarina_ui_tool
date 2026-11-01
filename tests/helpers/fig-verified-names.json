@@ -5,6 +5,7 @@
   "alias",
   "animatedImage",
   "arcData",
+  "assetRef",
   "b",
   "backgroundColor",
   "backgroundEnabled",
@@ -64,6 +65,7 @@
   "fillGeometry",
   "fillPaints",
   "filterColorAdjust",
+  "firstCharacter",
   "floatValue",
   "fontMetaData",
   "fontName",
@@ -77,6 +79,8 @@
   "guidValue",
   "guids",
   "handleMirroring",
+  "hangingList",
+  "hangingPunctuation",
   "hash",
   "highlights",
   "historyOpsWithLoc",
@@ -86,17 +90,29 @@
   "id",
   "image",
   "imageScaleMode",
+  "indentationLevel",
+  "inheritEffectStyleID",
+  "inheritFillStyleID",
+  "inheritFillStyleIDForStroke",
+  "inheritTextStyleID",
   "initialValue",
   "innerRadius",
   "interactionType",
   "internalOnly",
   "isDeleted",
+  "isFirstLineOfList",
   "isPageDivider",
   "isSlotContent",
   "isSoftDeleted",
   "isStateGroup",
+  "key",
+  "leadingTrim",
   "letterSpacing",
   "lineHeight",
+  "lineType",
+  "lines",
+  "listSpacing",
+  "listStartOffset",
   "localID",
   "locked",
   "m00",
@@ -218,7 +234,12 @@
   "textData",
   "textDataValue",
   "textDecoration",
+  "textDecorationFillPaints",
+  "textDecorationSkipInk",
+  "textDecorationStyle",
+  "textDecorationThickness",
   "textTruncation",
+  "textUnderlineOffset",
   "textValue",
   "tint",
   "transform",
@@ -245,6 +266,7 @@
   "variableSetModes",
   "vectorData",
   "vectorNetworkBlob",
+  "version",
   "verticalConstraint",
   "vibrance",
   "vignette",
@@ -336,6 +358,15 @@
    "ON_CLICK",
    "ON_HOVER",
    "ON_PRESS"
+  ],
+  "leadingTrim": [
+   "CAP_HEIGHT"
+  ],
+  "lineType": [
+   "CHECKLIST",
+   "ORDERED_LIST",
+   "PLAIN",
+   "UNORDERED_LIST"
   ],
   "maskType": [
    "LUMINANCE",
@@ -453,6 +484,14 @@
    "SMALL_CAPS_FORCED",
    "TITLE",
    "UPPER"
+  ],
+  "textDecoration": [
+   "UNDERLINE"
+  ],
+  "textDecorationStyle": [
+   "DOTTED",
+   "SOLID",
+   "WAVY"
   ],
   "textTruncation": [
    "ENDING"
