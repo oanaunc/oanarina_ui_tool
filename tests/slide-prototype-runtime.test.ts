@@ -1,4 +1,6 @@
 import {describe,expect,it} from 'vitest';
+import {pcmWav} from './helpers/audio-fixture';
+import {audioDataUrl,canonicalPcmWav} from '../src/prototype-audio';
 import {blankDocument,node} from '../src/model';
 import {createPrototypeState,createReaction,defaultTransition} from '../src/prototype';
 import type {PrototypeTrigger} from '../src/prototype';
@@ -19,3 +21,5 @@ describe('slide prototype motion',()=>{
  it('runs gamepad reactions for the pressed button only',()=>{const {engine,state}=design('gamepad',r=>{r.gamepadButton=3;});expect(engine.gamepad(state,1)).toBeUndefined();expect(engine.gamepad(state,3)!.state.frameId).toBe('two');});
 });
 
+
+it('hands Play sound and Stop sound to the player, with the clip from its frame',()=>{const {engine,state}=design('click');const page=(engine as unknown as {document:{pages:{nodes:{id:string;type:string;prototypeAudio?:unknown;reactions?:{actions:unknown[]}[]}[]}[]}}).document.pages[0],wav=canonicalPcmWav(pcmWav()),clip={kind:'wav-pcm16',data:audioDataUrl(wav.bytes),sampleRate:wav.info.sampleRate,channels:wav.info.channels,frames:wav.info.frames,loop:false,volume:.7};const frame=page.nodes.find(n=>n.type==='frame')!;frame.prototypeAudio=clip;const owner=page.nodes.find(n=>n.reactions?.length)!;owner.reactions![0].actions=[{id:'p',type:'play-audio',targetId:frame.id},{id:'s',type:'stop-audio'}];const step=engine.fire(state,owner.id,'click')!;expect(step.sounds).toEqual([{play:clip},{stop:true}]);});
