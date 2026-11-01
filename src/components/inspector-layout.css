@@ -171,3 +171,8 @@
 .app .scale-anchor button[aria-pressed=true]::after{width:7px;height:7px;background:var(--selection)}
 .app .scale-anchor button:focus-visible{outline:2px solid var(--selection);outline-offset:-1px}
 .scale-tool-fields{display:grid;gap:6px;min-width:0}
+.app .inspector-more>details.inspector-more-options>:not(summary){margin-inline:0}
+.app .inspector-more>details.inspector-more-options[open]{padding-bottom:0;border-bottom:0}
+.app .inspector-more>details.inspector-more-options>summary{color:var(--text)}
+.app .inspector-more-options>.inspector-more{border-top:0}
+.app .scale-anchor button[aria-pressed=true]{box-shadow:none}
