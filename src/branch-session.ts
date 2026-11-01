@@ -1,3 +1,4 @@
+import {packedProject} from './image-sharing';
 import {create} from 'zustand';
 import {readBranchRegistry} from './branch-repository';
 import {fileFor,findBranch} from './branches';
@@ -19,6 +20,6 @@ export async function openBranchDocument(id:string,fit=true){
  const live=useEditor.getState(),mustRetain=desktopDocuments.state(live.doc).dirty||live.past.length>0&&live.savedAt!==live.doc.updatedAt;
  try{if(!await saveDocument(live.doc)&&mustRetain)throw Error();}catch{if(mustRetain)throw Error('Your current edits could not be kept in local recovery. Save a .oui backup before switching.');}
  const doc=await documentById(id,{includeTrashed:true});if(!doc)throw Error('This branch document is unavailable.');await markDocumentOpened(doc.id);
- const desktop=window.desktop as typeof window.desktop&{openDocument?:(raw:string)=>Promise<unknown>};if(desktop?.openDocument){await desktop.openDocument(JSON.stringify(doc));return false;}
+ const desktop=window.desktop as typeof window.desktop&{openDocument?:(raw:string)=>Promise<unknown>};if(desktop?.openDocument){await desktop.openDocument(packedProject(doc));return false;}
  useEditor.getState().load(doc);if(fit)setTimeout(()=>{if(useEditor.getState().doc.id===doc.id)useEditor.getState().fit();},0);return true;
 }
