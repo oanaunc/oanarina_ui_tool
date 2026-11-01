@@ -474,6 +474,12 @@
     "⌘V"
   ],
   [
+    "paste-over",
+    "Paste over selection",
+    "Edit",
+    "⇧⌘V"
+  ],
+  [
     "duplicate",
     "Duplicate",
     "Edit",

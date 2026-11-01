@@ -1,0 +1,25 @@
+import {beforeEach,describe,expect,it} from 'vitest';
+import {commands,runCommand} from '../src/commands';
+import {orderedMenu} from '../src/menu-order';
+import {node,parseDocument} from '../src/model';
+import type {DesignNode} from '../src/model';
+import {pasteOverTarget,placeOverSelection} from '../src/paste-over';
+import {useEditor} from '../src/store';
+import {worldMatrix} from '../src/transforms';
+const s=()=>useEditor.getState();
+const nodes=()=>s().doc.pages[0].nodes;
+const n=(id:string)=>nodes().find(a=>a.id===id)!;
+const seed=(list:DesignNode[])=>s().edit(d=>{d.pages[0].nodes=list;});
+const flush=()=>new Promise(resolve=>setTimeout(resolve));
+const copyThenSelect=(from:string,to:string[])=>{s().set({selection:[from]});s().copy();s().set({selection:to});};
+beforeEach(()=>{s().newDocument();});
+describe('Paste over selection',()=>{
+ it('lands on the selected layer, in its parent, directly above it, in one Undo',async()=>{seed([node('rectangle',{id:'source',x:900,y:900,width:40,height:40}),node('frame',{id:'f',x:100,y:100,width:300,height:300}),node('rectangle',{id:'a',parentId:'f',x:120,y:130,width:40,height:40}),node('rectangle',{id:'b',parentId:'f',x:200,y:200,width:40,height:40})]);copyThenSelect('source',['a']);const before=s().past.length;runCommand('paste-over');await flush();const pasted=n(s().selection[0]);expect(pasted.parentId).toBe('f');expect(pasted).toMatchObject({x:120,y:130});expect(nodes().filter(v=>v.parentId==='f').map(v=>v.id)).toEqual(['a',pasted.id,'b']);expect(s().past.length).toBe(before+1);expect(parseDocument(JSON.stringify(s().doc)).pages[0].nodes.find(v=>v.id===pasted.id)?.parentId).toBe('f');s().undo();expect(nodes().some(v=>v.id===pasted.id)).toBe(false);});
+ it('centers content of another size on the selection',async()=>{seed([node('rectangle',{id:'small',x:0,y:0,width:20,height:10}),node('frame',{id:'big',x:100,y:100,width:200,height:100})]);copyThenSelect('small',['big']);runCommand('paste-over');await flush();const pasted=n(s().selection[0]);expect(pasted.parentId).toBeNull();expect(pasted).toMatchObject({x:190,y:145});});
+ it('carries a group with its children and pastes a copy over its own source',async()=>{seed([node('group',{id:'g',x:10,y:10,width:50,height:50,fill:'none'}),node('rectangle',{id:'c',parentId:'g',x:20,y:20,width:10,height:10})]);copyThenSelect('g',['g']);runCommand('paste-over');await flush();const copy=n(s().selection[0]);expect(copy).toMatchObject({x:n('g').x,y:n('g').y});const child=nodes().find(v=>v.parentId===copy.id)!;expect(child).toMatchObject({x:20,y:20});expect(nodes().map(v=>v.parentId)).toEqual([null,'g',null,copy.id]);});
+ it('keeps world position under a rotated parent',()=>{const list=[node('frame',{id:'f',x:0,y:0,width:100,height:100,rotation:90}),node('rectangle',{id:'a',parentId:'f',x:10,y:20,width:30,height:30}),node('rectangle',{id:'p',parentId:'f',x:60,y:60,width:30,height:30})];placeOverSelection(list,['p'],['a']);const a=worldMatrix(list[1],list),p=worldMatrix(list[2],list);expect(p[4]).toBeCloseTo(a[4]);expect(p[5]).toBeCloseTo(a[5]);});
+ it('stacks above the topmost layer of a selection, using its parent',()=>{const list=[node('frame',{id:'f',x:0,y:0,width:100,height:100}),node('rectangle',{id:'a',parentId:'f',x:0,y:0,width:10,height:10}),node('rectangle',{id:'loose',x:300,y:0,width:10,height:10}),node('rectangle',{id:'top',x:400,y:0,width:10,height:10})];expect(pasteOverTarget(list,['a','loose'])).toEqual({parentId:undefined,over:['a','loose']});expect(pasteOverTarget(list,['f','a'])).toEqual({parentId:undefined,over:['f']});expect(pasteOverTarget(list,[])).toBeUndefined();});
+ it('refuses a locked parent without changing the file',async()=>{seed([node('rectangle',{id:'source',x:0,y:0,width:10,height:10}),node('frame',{id:'f',x:100,y:100,width:100,height:100,locked:true}),node('rectangle',{id:'a',parentId:'f',x:120,y:120,width:10,height:10})]);copyThenSelect('source',['a']);const doc=s().doc;runCommand('paste-over');await flush();expect(s().doc).toBe(doc);expect(s().toast).toMatch(/unlocked container/);});
+ it('with nothing selected pastes as Paste does',async()=>{seed([node('rectangle',{id:'source',x:10,y:10,width:10,height:10})]);copyThenSelect('source',[]);runCommand('paste-over');await flush();expect(n(s().selection[0])).toMatchObject({x:34,y:34});});
+ it('sits under Paste in the Edit menu with its shortcut',()=>{const ids=orderedMenu('Edit',commands).flatMap(e=>'command' in e?[e.command[0]]:[]);expect(ids[ids.indexOf('paste')+1]).toBe('paste-over');expect(commands.find(c=>c[0]==='paste-over')).toEqual(['paste-over','Paste over selection','Edit','⇧⌘V']);});
+});

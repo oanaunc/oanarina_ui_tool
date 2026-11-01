@@ -1,9 +1,10 @@
 import {test,expect} from '@playwright/test';
+import {openMoreOptions} from './inspector-helpers';
 import fs from 'node:fs/promises';
 import {blankDocument,node} from '../../src/model';
 import {chooseProject} from './open-helpers';
 const fixture=()=>{const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('rectangle',{id:'box',name:'Smooth box',x:100,y:100,width:200,height:150,radius:30,fill:'#ff0000'})];return d;};
-async function load(page:any,d=fixture()){await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await page.locator('[data-layer-id="box"]').click();await page.getByText('Corner smoothing',{exact:true}).click();}
+async function load(page:any,d=fixture()){await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await page.locator('[data-layer-id="box"]').click();await openMoreOptions(page);await page.getByText('Corner smoothing',{exact:true}).click();}
 async function state(page:any){return page.evaluate(async()=>{const path='/src/store.ts',{useEditor}=await import(path),s=useEditor.getState();return {doc:s.doc,past:s.past.length};});}
 async function setSmoothing(page:any,v:number){const input=page.getByRole('spinbutton',{name:'Corner smoothing %',exact:true});await input.fill(String(v));await input.press('Enter');}
 async function save(page:any){const pending=page.waitForEvent('download');await page.evaluate(()=>window.dispatchEvent(new CustomEvent('command',{detail:'save'})));return JSON.parse(await fs.readFile((await(await pending).path())!,'utf8'));}

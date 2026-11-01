@@ -1,4 +1,5 @@
 import {editableSlotContainer} from './component-slots';
+import {styleSlotKind} from './design-systems';
 import {codeBlockRemovalSelection} from './whiteboard-code-blocks';
 import {remapAnnotations} from './layer-annotations';
 import {explicitFontFamilies} from './font-fallback';
@@ -37,7 +38,7 @@ function closedReferences(doc:DesignDocument){
   for(const p of n.componentMetadata?.properties??[])if(!nodes.has(p.targetId)||p.type==='instance-swap'&&nodes.get(String(p.defaultValue))?.type!=='component')missing();
   for(const [id,value] of Object.entries(n.propertyValues??{})){const p=nodes.get(n.componentId??'')?.componentMetadata?.properties?.find(p=>p.id===id);if(!p||p.type==='instance-swap'&&nodes.get(String(value))?.type!=='component')missing();}
   if(n.prototypeInput&&!variables.has(n.prototypeInput.variableId))missing();
-  if(Object.values(n.variableBindings??{}).some(id=>!variables.has(id!))||Object.entries(n.styleIds??{}).some(([kind,id])=>styles.get(id!)?.type!==kind)||n.layoutGuideStyleId&&!guides.has(n.layoutGuideStyleId)||Object.entries(n.variableModes??{}).some(([id,mode])=>!collections.get(id)?.modes.some(m=>m.id===mode)))missing();
+  if(Object.values(n.variableBindings??{}).some(id=>!variables.has(id!))||Object.entries(n.styleIds??{}).some(([kind,id])=>styles.get(id!)?.type!==styleSlotKind(kind))||n.layoutGuideStyleId&&!guides.has(n.layoutGuideStyleId)||Object.entries(n.variableModes??{}).some(([id,mode])=>!collections.get(id)?.modes.some(m=>m.id===mode)))missing();
   if(n.targetId&&!nodes.has(n.targetId))missing();for(const r of n.reactions??[])for(const a of r.actions)if(['conditional','set-variable'].includes(a.type)||a.targetId&&!nodes.has(a.targetId)||a.componentId&&nodes.get(a.componentId)?.type!=='component')missing();
  }
  for(const set of doc.componentSets??[]){const container=nodes.get(set.containerId),variants=new Set(set.variants.map(v=>v.componentId));if(!container||!variants.has(set.defaultComponentId)||variants.size!==set.variants.length||set.variants.some(v=>nodes.get(v.componentId)?.type!=='component'||nodes.get(v.componentId)?.parentId!==container.id))missing();}

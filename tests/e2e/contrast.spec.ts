@@ -2,6 +2,7 @@ import {test,expect} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {blankDocument,node} from '../../src/model';
 import {createPaint} from '../../src/paints';
+import {openMoreOptions} from './inspector-helpers';
 
 test('explicit contrast pair checks thresholds and alpha without modifying the design',async({page})=>{
  const doc=blankDocument(),text=node('text',{name:'Contrast label',text:'Accessible colors',fill:'#777777'});doc.pages[0].nodes=[text];
@@ -26,7 +27,7 @@ test('explicit contrast pair checks thresholds and alpha without modifying the d
 
 test('paint values can be copied explicitly and complex paints are not misrepresented as an audit',async({page})=>{
  const doc=blankDocument(),solid=node('rectangle',{name:'Solid paint',paints:[{...createPaint('#000000'),opacity:.5}]}),gradient=node('rectangle',{name:'Gradient paint',x:300,paints:[createPaint('#ff0000','linear')]});doc.pages[0].nodes=[solid,gradient];
- await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),doc);await page.goto('/');await page.locator(`[data-layer-id="${solid.id}"]`).click();
+ await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),doc);await page.goto('/');await page.locator(`[data-layer-id="${solid.id}"]`).click();await openMoreOptions(page);
  const checker=page.locator('.contrast-checker');await checker.locator('summary').click();await checker.getByRole('button',{name:'Use selected paint',exact:true}).click();
  await expect(checker.getByRole('spinbutton',{name:'Contrast foreground opacity',exact:true})).toHaveValue('50');
  await expect(checker.getByLabel('Contrast ratio',{exact:true})).toHaveText('3.977:1');

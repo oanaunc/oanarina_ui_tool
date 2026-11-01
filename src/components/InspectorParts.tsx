@@ -3,12 +3,16 @@ import {ChevronDown} from 'lucide-react';
 export function Section({name,children,action}:{name:string;children:React.ReactNode;action?:React.ReactNode}){return <section className="inspector-section"><div className="section-title"><span>{name}</span>{action}</div>{children}</section>;}
 /** Disclosures opened by hand stay open from layer to layer, like the fuller layout controls. */
 const remembered=new Set<string>();
-/** A secondary section after Export. It starts closed unless the selected layer already uses it. */
+/** A secondary section after Export, or inside More options. It starts closed unless the selected layer already uses it. */
 export function MoreSection({name,scope,active=false,children}:{name:string;scope:string;active?:boolean;children:React.ReactNode}){
  const [open,setOpen]=useState(active||remembered.has(name));
  useEffect(()=>{setOpen(active||remembered.has(name));},[active,scope,name]);
  return <details className="inspector-disclosure more-section" open={open}><summary onClick={e=>{e.preventDefault();if(open)remembered.delete(name);else remembered.add(name);setOpen(!open);}} onKeyDown={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}} onKeyUp={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}}>{name}</summary><div className="more-body">{children}</div></details>;
 }
+let moreOpen=false;
+export const moreOptionsOpen=()=>moreOpen;
+/** Tools most layers never need. Opening it holds from layer to layer, as the sections inside do. */
+export function MoreOptions({children}:{children:React.ReactNode}){const [open,setOpen]=useState(moreOpen);return <details className="inspector-more-options" open={open}><summary onClick={e=>{e.preventDefault();moreOpen=!open;setOpen(!open);}} onKeyDown={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}} onKeyUp={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}}>More options</summary><div className="inspector-more">{children}</div></details>;}
 /** A native dropdown with a leading glyph, so the choice list stays the platform's. */
 export function GlyphSelect({label,glyph,value,onChange,title,children}:{label:string;glyph?:React.ReactNode;value:string|number;onChange:(value:string)=>void;title?:string;children:React.ReactNode}){return <label className={'glyph-select'+(glyph?' has-glyph':'')} title={title??label}>{glyph&&<span className="field-glyph" aria-hidden="true">{glyph}</span>}<select aria-label={label} value={value} onChange={e=>onChange(e.target.value)}>{children}</select><ChevronDown size={10} aria-hidden="true"/></label>;}
 /** One choice from a row of icons; each button keeps a spoken name. */

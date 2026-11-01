@@ -40,7 +40,7 @@ import type {LayoutGuide,LayoutGuideStyle,CanvasGuide,SnapPreferences} from './g
 import {validateMotionStyles,validateTimeline} from './motion';
 import type {MotionStyle,Timeline} from './motion';
 import {validateDesignSystems} from './design-systems';
-import type {BindingField,VariableCollection,DesignVariable,DesignStyle,StyleKind} from './design-systems';
+import type {BindingField,VariableCollection,DesignVariable,DesignStyle,StyleSlot} from './design-systems';
 import {validateComponents} from './components-model';
 import type {ComponentMetadata,ComponentSet} from './components-model';
 import type {Sizing,Constraint,Distribution} from './layout';
@@ -65,7 +65,7 @@ export interface DesignNode {autoFit?:{padding:number};liveRepeat?:import('./liv
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
   gridRows?:number;gridColumns?:GridTrack[];gridRowTracks?:GridTrack[];gridColumn?:number;gridRow?:number;gridColumnSpan?:number;gridRowSpan?:number;gridAlignX?:GridAlignment;gridAlignY?:GridAlignment;
   sizingX?:Sizing;sizingY?:Sizing;minWidth?:number;maxWidth?:number;minHeight?:number;maxHeight?:number;constraintX?:Constraint;constraintY?:Constraint;ignoreLayout?:boolean;paddings?:[number,number,number,number];gapX?:number;gapY?:number;justifyContent?:Distribution;alignItems?:'start'|'center'|'end'|'stretch'|'baseline';wrap?:boolean;layoutStacking?:'last-on-top'|'first-on-top';layoutIncludeStroke?:boolean;wrapDirection?:'forward'|'reverse';wrapAlign?:import('./layout-settings').WrapAlignment;
-  variableBindings?:Partial<Record<BindingField,string>>;variableModes?:Record<string,string>;styleIds?:Partial<Record<StyleKind,string>>;
+  variableBindings?:Partial<Record<BindingField,string>>;variableModes?:Record<string,string>;styleIds?:Partial<Record<StyleSlot,string>>;
   detachedFrom?:import('./audit-assets').DetachedProvenance;sourceId?:string;instanceRootId?:string;overrideKeys?:string[];overrideBindings?:string[];exposeNestedProperties?:true;swapOverrides?:import('./components-model').SwapOverrideMemory[];componentKey?:string;componentMetadata?:ComponentMetadata;propertyValues?:Record<string,string|boolean>;
   layoutGuideBindings?:LayoutGuideBindings;layoutGuides?:LayoutGuide[];layoutGuideStyleId?:string;reactions?:PrototypeReaction[];prototypeScroll?:'none'|'horizontal'|'vertical'|'both';prototypePosition?:'normal'|'fixed'|'sticky';
   clip:boolean; componentId:string|null; targetId:string|null; gradient:boolean;

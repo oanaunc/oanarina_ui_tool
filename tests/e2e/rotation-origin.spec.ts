@@ -2,7 +2,8 @@ import {test,expect} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {blankDocument,node} from '../../src/model';
 import {chooseProject} from './open-helpers';
-async function load(page:any){const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('rectangle',{id:'pivot-card',name:'Pivot card',x:100,y:100,width:160,height:100,fill:'#ff643c'})];await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await page.locator('[data-layer-id="pivot-card"]').click();await page.getByText('Rotation origin',{exact:true}).click();await page.getByRole('checkbox',{name:'Use custom rotation origin'}).check();return d;}
+import {openMoreOptions} from './inspector-helpers';
+async function load(page:any){const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('rectangle',{id:'pivot-card',name:'Pivot card',x:100,y:100,width:160,height:100,fill:'#ff643c'})];await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await page.locator('[data-layer-id="pivot-card"]').click();await openMoreOptions(page);await page.getByText('Rotation origin',{exact:true}).click();await page.getByRole('checkbox',{name:'Use custom rotation origin'}).check();return d;}
 async function state(page:any){return page.evaluate(async()=>{const path='/src/store.ts',{useEditor}=await import(path),s=useEditor.getState();return {doc:s.doc,past:s.past.length};});}
 async function pos(page:any,x=0,y=0){return page.locator('[data-node-id="pivot-card"]').evaluate((el:any,p:any)=>{const svg=el.ownerSVGElement,m=el.getScreenCTM(),q=svg.createSVGPoint();q.x=p.x;q.y=p.y;const result=q.matrixTransform(m);return {x:result.x,y:result.y};},{x,y});}
 async function command(page:any,id:string){await page.evaluate(id=>window.dispatchEvent(new CustomEvent('command',{detail:id})),id);}

@@ -17,7 +17,7 @@ export function nodeColorUsages(n:DesignNode,layer:AuditLayer){
  const usages:ColorUsage[]=[],add=(hex:string,channel:ColorChannel,linked:boolean,bindable:boolean)=>usages.push({hex,channel,layer,linked,bindable});
  if(n.type==='slice'||n.media)return usages;
  fillsFor(n).forEach((p,i)=>paintUsages(p,i===0,'fill',Boolean(n.variableBindings?.fill||n.styleIds?.paint),add));
- strokesFor(n).filter(s=>s.visible&&s.width>0).forEach((s,i)=>paintUsages(s.paint,i===0,'stroke',Boolean(n.variableBindings?.stroke||n.styleIds?.stroke),add));
+ strokesFor(n).filter(s=>s.visible&&s.width>0).forEach((s,i)=>paintUsages(s.paint,i===0,'stroke',Boolean(n.variableBindings?.stroke||n.styleIds?.stroke||n.styleIds?.strokePaint),add));
  if(n.type==='text')for(const r of n.textRuns??[])if(hexColor(r.fill))add(r.fill.toLowerCase(),'text-range',false,false);
  return usages;
 }
@@ -57,7 +57,7 @@ export function applyColorMerge(d:DesignDocument,hexes:readonly string[],canonic
  const bindVariable=target.kind==='variable'||target.kind==='existing-variable',bindStyle=target.kind==='style'||target.kind==='existing-style',changed:ColorMergeResult['changed']=[];let linkedLayers=0;
  for(const {n,pageId} of plan){
   const fills=structuredClone(fillsFor(n)),strokes=structuredClone(strokesFor(n)),recolor=(p:Paint)=>{let hit=false;if(!p.visible)return hit;if(p.type==='solid'&&members.has(p.color.toLowerCase())){p.color=canonical;hit=true;}else if(p.type!=='solid'&&p.type!=='image')for(const stop of p.stops??[])if(members.has(stop.color.toLowerCase())){stop.color=canonical;hit=true;}return hit;};
-  const fillLinked=Boolean(n.variableBindings?.fill||n.styleIds?.paint),strokeLinked=Boolean(n.variableBindings?.stroke||n.styleIds?.stroke);let linked=false,fillHit=false,strokeHit=false;
+  const fillLinked=Boolean(n.variableBindings?.fill||n.styleIds?.paint),strokeLinked=Boolean(n.variableBindings?.stroke||n.styleIds?.stroke||n.styleIds?.strokePaint);let linked=false,fillHit=false,strokeHit=false;
   fills.forEach((p,i)=>{if(i===0&&fillLinked)return;const hit=recolor(p);fillHit=fillHit||hit;if(hit&&i===0&&p.type==='solid'&&!p.surface){if(bindVariable){(n.variableBindings??={}).fill=tokenId;linked=true;}else if(bindStyle&&fills.filter(f=>f.visible).length===1&&fills.length===1&&p.opacity===1){(n.styleIds??={}).paint=tokenId;linked=true;}}});
   strokes.filter(s=>s.visible&&s.width>0).forEach((s,i)=>{if(i===0&&strokeLinked)return;const hit=recolor(s.paint);strokeHit=strokeHit||hit;if(hit&&i===0&&s.paint.type==='solid'&&!s.paint.surface&&bindVariable){(n.variableBindings??={}).stroke=tokenId;linked=true;}});
   if(fillHit){n.paints=fills;if(fills[0]?.type==='solid')n.fill=fills[0].color;}if(strokeHit){n.strokes=strokes;if(strokes[0]?.paint.type==='solid')n.stroke=strokes[0].paint.color;}

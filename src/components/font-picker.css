@@ -1,0 +1,17 @@
+.app .font-picker-field>button{display:flex;align-items:center;width:100%;height:24px;margin:0;padding-block:0;padding-inline:7px 18px;border:0;border-radius:5px;background:transparent;color:var(--text);font-size:10px;font-weight:400;justify-content:flex-start;text-align:start}
+.font-picker-field>button>span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.font-picker-field:has(>button:focus-visible){outline:2px solid var(--focus-ring,#bf9ce9);outline-offset:-1px}
+.app .font-picker-panel{position:fixed;z-index:55;width:264px;display:grid;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 6px #0003,0 12px 32px #0005;overflow:hidden;color:var(--text)}
+.font-picker-search{display:flex;align-items:center;gap:6px;padding:0 10px;height:36px;border-bottom:1px solid var(--line);color:var(--muted)}
+.app .font-picker-search input{flex:1;min-width:0;height:30px;margin:0;padding:0;border:0;background:transparent;color:var(--text);font-size:11px;box-shadow:none;outline:0}
+.font-picker-list{overflow-y:auto;overscroll-behavior:contain}
+.font-picker-row,.font-picker-head{position:absolute;inset-inline:0;height:28px;display:flex;align-items:center;gap:6px;padding-inline:10px;box-sizing:border-box}
+.font-picker-head{color:var(--muted);font-size:10px;font-weight:600}
+.font-picker-row{font-size:13px;cursor:default}
+.font-picker-row>span{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.font-picker-row>svg{flex:none}
+.font-picker-row>svg:last-child:not(:first-child){color:var(--muted)}
+.font-picker-row.active{background:var(--selection);color:#fff}
+.font-picker-row.active>svg:last-child:not(:first-child){color:inherit}
+.font-picker-off{visibility:hidden}
+.font-picker-note{margin:0;padding:8px 10px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;line-height:1.35}
