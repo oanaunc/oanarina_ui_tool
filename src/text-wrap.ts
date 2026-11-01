@@ -2,10 +2,10 @@ export type TextWrap='normal'|'balance'|'pretty';
 export interface WrapRange {from:number;to:number;}
 export const TEXT_WRAP_LIMITS={words:64,units:8192,lines:16,measurements:2100,paragraphs:32,totalMeasurements:4096} as const;
 export function validateTextWrap(value:unknown){if(value!==undefined&&!['normal','balance','pretty'].includes(value as string))throw Error('Text wrapping must be Normal, Balance or Pretty.');}
-/** Optimize only legal word boundaries with the existing greedy line count. Undefined means normal fallback. */
-export function optimizeTextWrap(text:string,greedy:readonly WrapRange[],measure:(from:number,to:number)=>number,firstWidth:number,restWidth:number,mode:TextWrap):WrapRange[]|undefined{
+/** Optimize only legal word boundaries with the existing greedy line count. `units` replaces the space-separated words where a line may also end elsewhere. Undefined means normal fallback. */
+export function optimizeTextWrap(text:string,greedy:readonly WrapRange[],measure:(from:number,to:number)=>number,firstWidth:number,restWidth:number,mode:TextWrap,units?:readonly WrapRange[]):WrapRange[]|undefined{
  if(mode==='normal'||text.length>TEXT_WRAP_LIMITS.units||greedy.length<2||greedy.length>TEXT_WRAP_LIMITS.lines||!Number.isFinite(firstWidth)||!Number.isFinite(restWidth)||Math.min(firstWidth,restWidth)<=0||/[^\S ]/u.test(text))return;
- const words=[...text.matchAll(/\S+/gu)].map(m=>({from:m.index,to:m.index+m[0].length}));if(words.length>TEXT_WRAP_LIMITS.words||words.length<greedy.length)return;
+ const words=units??[...text.matchAll(/\S+/gu)].map(m=>({from:m.index,to:m.index+m[0].length}));if(words.length>TEXT_WRAP_LIMITS.words||words.length<greedy.length)return;
  const starts=new Map(words.map((w,i)=>[w.from,i])),ends=new Map(words.map((w,i)=>[w.to,i+1]));let previous=0;const original:{from:number;to:number}[]=[];
  for(const range of greedy){const a=starts.get(range.from),b=ends.get(range.to);if(a===undefined||b===undefined||a!==previous||b<=a)return;original.push({from:a,to:b});previous=b;}if(previous!==words.length)return;
  let calls=0;const widths=new Map<string,number>(),width=(a:number,b:number)=>{const key=a+':'+b;if(widths.has(key))return widths.get(key)!;if(++calls>TEXT_WRAP_LIMITS.measurements)throw Error('wrap-budget');const value=measure(words[a].from,words[b-1].to);if(!Number.isFinite(value)||value<0)throw Error('wrap-metrics');widths.set(key,value);return value;};
