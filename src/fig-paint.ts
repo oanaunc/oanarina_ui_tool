@@ -1,4 +1,5 @@
 import type {Paint} from './paints';
+import type {ImageMatrix} from './image-paint';
 import {inverseMatrix,point} from './transforms';
 import type {Matrix} from './transforms';
 import {LINEAR_GRADIENT_LIMITS} from './linear-gradient';
@@ -13,10 +14,14 @@ export function applyFigGradient(p:Paint,m:Matrix):boolean{
  return conformal;
 }
 /** Crop transforms map the layer into image space: the window size and origin give the placed image directly.
- * Forma crop draws a cover-fitted box scaled by `scale`, so the same placement is stated in those terms. */
+ * Forma crop draws a cover-fitted box scaled by `scale`, so the same placement is stated in those terms when it can be.
+ * That box clips the picture, so it has to hold the whole layer. */
 export function figImageCrop(m:Matrix,width:number,height:number,imageWidth:number,imageHeight:number):{scale:number;offsetX:number;offsetY:number}|undefined{
  const u=m[0],v=m[3];if(!(u>0)||!(v>0)||Math.abs(m[1])+Math.abs(m[2])>1e-6||!(width>0)||!(height>0))return;
  const placedWidth=width/u,placedHeight=height/v;if(Math.abs(placedWidth/placedHeight-imageWidth/imageHeight)>.005*imageWidth/imageHeight)return;
  const cover=Math.max(width/imageWidth,height/imageHeight),scale=(placedWidth/imageWidth)/cover;if(!Number.isFinite(scale)||scale<.01||scale>1000)return;
- const offsetX=-m[4]*placedWidth-(width*scale-placedWidth)/2,offsetY=-m[5]*placedHeight-(height*scale-placedHeight)/2;return Math.abs(offsetX)<=1e6&&Math.abs(offsetY)<=1e6?{scale,offsetX,offsetY}:undefined;
+ const offsetX=-m[4]*placedWidth-(width*scale-placedWidth)/2,offsetY=-m[5]*placedHeight-(height*scale-placedHeight)/2;if(offsetX>1e-6||offsetY>1e-6||offsetX+width*scale<width-1e-6||offsetY+height*scale<height-1e-6)return;
+ return Math.abs(offsetX)<=1e6&&Math.abs(offsetY)<=1e6?{scale,offsetX,offsetY}:undefined;
 }
+/** Any other crop, stretched, turned or sheared, as the inverse of the source transform. Undefined when the transform collapses the image. */
+export function figImageMatrix(m:Matrix):ImageMatrix|undefined{try{const out=inverseMatrix(m);return out.every(v=>Number.isFinite(v)&&Math.abs(v)<=1e6)?[out[0],out[1],out[2],out[3],out[4],out[5]]:undefined;}catch{return;}}

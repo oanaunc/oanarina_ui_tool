@@ -57,13 +57,14 @@ import {forgetSpecLayouts,settleSpecs} from './spec-layers';
 import {validateDocumentSpecs} from './spec';
 import {detachInstance,hydrateLegacyInstances,insertInstance,synchronizeComponents,trackOverrides} from './components-model';
 import {create} from 'zustand';
+import {cloneDocumentValue} from './image-sharing';
 import {blankDocument,bounds,descendants,effectiveVisible,isLocked,node,reflow,uid} from './model';
 import type {DesignDocument,DesignNode,NodeKind,Tool} from './model';
 import {normalizedRootSelection,updateBooleans} from './geometry';
 import {applyConstraints} from './layout';
 import {updateTextMetrics} from './text-layout';
 import {sampleDocument} from './sample';
-const clone=<T,>(a:T):T=>structuredClone(a);
+const clone=cloneDocumentValue;
 interface EditorState {
  doc:DesignDocument;pageId:string;selection:string[];tool:Tool;lastShapeTool:ShapeTool;zoom:number;pan:{x:number;y:number};viewportRestored:boolean;previousViewport:boolean;nextViewport:boolean;cameraGesture:number|null;
  past:DesignDocument[];future:DesignDocument[];clipboard:DesignNode[];clipboardWhiteboard?:WhiteboardClipboard;clipboardOrigin?:{x:number;y:number};clipboardWorld?:Record<string,Matrix>;clipboardSwapProperties?:Record<string,string[]>;clipboardComponentSets?:ComponentSet[];clipboardSlideRoles?:Record<string,SlideRole>;savedAt:string;toast:string;toastError?:boolean;

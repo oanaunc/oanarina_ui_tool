@@ -2,6 +2,7 @@ import {editableSlotContainer} from './component-slots';
 import {codeBlockRemovalSelection} from './whiteboard-code-blocks';
 import {remapAnnotations} from './layer-annotations';
 import {explicitFontFamilies} from './font-fallback';
+import {packedProject} from './image-sharing';
 import {blankDocument,isLocked,node,parseDocument} from './model';
 import type {DesignDocument,DesignNode} from './model';
 import {allNodes,hydrateLegacyInstances,subtree} from './components-model';
@@ -117,5 +118,5 @@ export function pasteDesignClipboard(destination:DesignDocument,pageId:string,pa
  pasteWhiteboardSelection(destination,pageId,{documentId:doc.id,pageId:doc.pages[0].id,...doc.whiteboard!},map);
  const slide=destination.slides?.slides.find(s=>s.frameId===parentId);if(slide)for(const [id,role] of Object.entries(source.slideRoles??{}))slide.roles[remap(id)]=role;
  if(doc.fonts?.length){const existing=new Map((destination.fonts??[]).map(f=>[fontAssetKey(f),f]));for(const font of doc.fonts){const previous=existing.get(fontAssetKey(font));if(previous&&previous.data!==font.data)throw Error('The destination has a different embedded '+font.family+' font face. Resolve the font conflict before pasting.');existing.set(fontAssetKey(font),clone(font));}destination.fonts=[...existing.values()];}
- if(new TextEncoder().encode(JSON.stringify(destination)).length>50_000_000)throw Error('Pasting would exceed the 50 MB project limit. Paste into a smaller project.');parseDocument(JSON.stringify(destination));return source.roots.map(remap);
+ const raw=packedProject(destination);if(new TextEncoder().encode(raw).length>50_000_000)throw Error('Pasting would exceed the 50 MB project limit. Paste into a smaller project.');parseDocument(raw);return source.roots.map(remap);
 }

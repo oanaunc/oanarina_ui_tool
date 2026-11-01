@@ -1,3 +1,4 @@
+import {IMAGE_SHARING,shareImages,unpackImages} from './image-sharing';
 import {validateDocumentationLink} from './documentation-link';
 import type {LayerAnnotationSet} from './layer-annotations';
 import type {DevelopmentStatus} from './development-status';
@@ -97,9 +98,10 @@ export function effectiveVisible(n:DesignNode,nodes:DesignNode[]):boolean {
 }
 export function isLocked(n:DesignNode,nodes:DesignNode[]):boolean {let current:DesignNode|undefined=n;const seen=new Set<string>();while(current){if(current.locked||seen.has(current.id))return true;seen.add(current.id);current=nodes.find(a=>a.id===current!.parentId);}return false;}
 export function parseDocument(raw:string):DesignDocument {
-  if(raw.length>50_000_000)throw Error('This file exceeds the 50 MB project limit.');
+  if(raw.length>IMAGE_SHARING.expandedChars)throw Error('This file exceeds the 50 MB project limit.');
   const d=JSON.parse(raw);
-  if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file.');
+  if(d?.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file.');
+  if(raw.length-shareImages(d)>50_000_000)throw Error('This file exceeds the 50 MB project limit.');unpackImages(d);
   if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
   validateDocumentMetadata(d);validateColorProfile(d.colorProfile);validateDocumentShaders(d);
   validateDocumentSurfaces(d);

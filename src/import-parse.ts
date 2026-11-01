@@ -1,5 +1,6 @@
 import type {EditableSvgImport} from './svg-import';
 import type {ImportParseJob} from './import-parse-core';
+import {shareImages} from './image-sharing';
 import type {DesignDocument} from './model';
 export const IMPORT_PARSE_LIMIT_MS=60_000;
 /** Error classes decide the fixed message a person sees, so they survive the worker boundary by name. Nothing else does. */
@@ -18,6 +19,8 @@ function run<T>(job:ImportParseJob,signal?:AbortSignal):Promise<T>{
  });
 }
 export type ParsedProject={rest:true;document?:undefined}|{rest?:undefined;document:DesignDocument};
-export const parseProjectInWorker=(raw:string,signal?:AbortSignal)=>run<ParsedProject>({kind:'project',raw},signal);
+/** A worker's reply arrives with every image use as its own string. */
+const shared=<T extends object>(document:T)=>{shareImages(document);return document;};
+export const parseProjectInWorker=(raw:string,signal?:AbortSignal)=>run<ParsedProject>({kind:'project',raw},signal).then((out):ParsedProject=>out.document?{document:shared(out.document)}:out);
 export const parseSvgInWorker=(raw:string,name:string,signal?:AbortSignal)=>run<EditableSvgImport>({kind:'svg',raw,name},signal);
-export const validateDocumentInWorker=(document:DesignDocument,signal?:AbortSignal)=>run<DesignDocument>({kind:'validate',document},signal);
+export const validateDocumentInWorker=(document:DesignDocument,signal?:AbortSignal)=>run<DesignDocument>({kind:'validate',document},signal).then(shared);

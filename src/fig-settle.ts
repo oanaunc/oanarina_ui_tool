@@ -8,17 +8,18 @@ import {detachInstance,synchronizeComponents} from './components-model';
 import {textOutlineSignature} from './text-outline';
 import {detachEveryFigInstance} from './fig-components';
 import {figSameArtwork} from './fig-vector-network';
+import {cloneDocumentValue} from './image-sharing';
 /** The edit pipeline reapplies styles, variables, instances and auto layout on the first change. Stored positions are
  * the source's truth, so each live link has to reproduce them here; one that cannot is dropped before the file opens. */
 const pipeline=(d:DesignDocument)=>{applyDesignSystems(d);synchronizeComponents(d);applyDesignSystems(d);for(const p of d.pages){updateTextMetrics(p.nodes);reflow(p.nodes);updateBooleans(p.nodes);}};
 const GEOMETRY=.5;
 const moved=(a:DesignNode,b:DesignNode)=>(['x','y','width','height'] as const).some(k=>Math.abs(a[k]-b[k])>GEOMETRY)||Math.abs(a.rotation-b.rotation)>.01||!!a.flipX!==!!b.flipX||!!a.flipY!==!!b.flipY;
-const look=(n:DesignNode)=>JSON.stringify([n.visible,n.opacity,n.text,n.fill,n.stroke,n.strokeWidth,n.radius,n.fontSize,n.fontFamily,n.fontWeight,n.fontStyle??'normal',n.lineHeight,n.letterSpacing,n.paints,n.strokes,n.effects,n.layout,n.gap],(key,v)=>key==='id'?undefined:v);
+const look=(n:DesignNode)=>JSON.stringify([n.visible,n.opacity,n.text,n.fill,n.stroke,n.strokeWidth,n.radius,n.fontSize,n.fontFamily,n.fontWeight,n.fontStyle??'normal',n.lineHeight,n.letterSpacing,n.paints,n.strokes,n.effects,n.layout,n.gap],(key,v)=>key==='id'?undefined:key==='image'&&typeof v==='string'&&v.length>64?v.length+v.slice(-48):v);
 export interface FigSettleReport {detached:number;layouts:number;links:number;booleans:number;}
 export function settleFigDocument(input:DesignDocument):{document:DesignDocument;report:FigSettleReport}{
  const report:FigSettleReport={detached:0,layouts:0,links:0,booleans:0};let doc=input;
  for(let round=0;round<6;round++){
-  const draft=structuredClone(doc);let failure=false;try{pipeline(draft);}catch{failure=true;}
+  const draft=cloneDocumentValue(doc);let failure=false;try{pipeline(draft);}catch{failure=true;}
   if(failure){report.detached+=doc.pages.reduce((sum,p)=>sum+p.nodes.filter(n=>n.type==='instance'&&!n.instanceRootId).length,0);detachEveryFigInstance(doc);continue;}
   const after=new Map(draft.pages.flatMap(p=>p.nodes.map(n=>[n.id,n] as const))),all=doc.pages.flatMap(p=>p.nodes),before=new Map(all.map(n=>[n.id,n])),layouts=new Set<DesignNode>(),roots=new Set<string>(),unlink=new Set<DesignNode>(),baked=new Set<DesignNode>();
   const layoutOwner=(n:DesignNode)=>{let p=before.get(n.parentId??''),hops=0;while(p&&hops++<256){if(p.layout!=='none')return p;p=before.get(p.parentId??'');}return undefined;},rootOf=(n:DesignNode)=>n.type==='instance'&&!n.instanceRootId?n.id:n.instanceRootId;

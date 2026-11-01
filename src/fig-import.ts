@@ -1,5 +1,6 @@
 import {forgetSpecLayouts,settleSpecs} from './spec-layers';
 import {FIG_LIMITS} from './fig-limits';
+import {unpackImages} from './image-sharing';
 import {validateFigSceneRasters} from './fig-scene';
 import type {FigImportIssue,FigImportSummary,FigSceneImport} from './fig-scene';
 import type {DesignDocument} from './model';
@@ -23,7 +24,7 @@ export async function importFigBytes(bytes:Uint8Array,name:string,signal?:AbortS
  if(bytes.byteLength>=50_000_000)throw Error('Choose a .fig file smaller than 50 MB.');
  onStage?.('decoding');const result=await convertFigInWorker(bytes,name.replace(/\.fig$/i,'').slice(0,120)||'Imported design file',signal,onStage,clipboard);
  if(signal?.aborted)throw new DOMException('Design file import cancelled.','AbortError');
- onStage?.('decoding');await validateFigSceneRasters(result.document,signal);
+ unpackImages(result.document);onStage?.('decoding');const lost=await validateFigSceneRasters(result.document,signal);for(const issue of lost)if(!result.issues.some(i=>i.code===issue.code&&!i.nodeId)){result.issues.push(issue);result.complete=false;}
  if(signal?.aborted)throw new DOMException('Design file import cancelled.','AbortError');
  onStage?.('validating');forgetSpecLayouts();settleSpecs(result.document);
  return result;

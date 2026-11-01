@@ -1,3 +1,4 @@
+import {packedProject} from './image-sharing';
 import {captureColorContext,sameColorContext} from './color-edit-context';
 import {desktopDocuments} from './desktop-lifecycle';
 import {documentById,saveDocument,openReviewedLocalDocument} from './repository';
@@ -11,7 +12,7 @@ export function captureLocalNavigationAction(){const origin=captureColorContext(
 }
 export type LocalNavigationAction=ReturnType<typeof captureLocalNavigationAction>;
 export interface LocalLinkReview {target:LocalNavigationTarget;stored:string|null;}
-function content(target:LocalNavigationTarget){const raw=JSON.stringify(target.document);if(new TextEncoder().encode(raw).length>50_000_000)throw Error('Local links open projects smaller than 50 MB.');return raw;}
+function content(target:LocalNavigationTarget){const raw=packedProject(target.document);if(new TextEncoder().encode(raw).length>50_000_000)throw Error('Local links open projects smaller than 50 MB.');return raw;}
 export async function reviewLocalNavigationLink(proof:LocalNavigationAction,value:string):Promise<LocalLinkReview>{const s=proof.check(),link=parseLocalNavigationLink(value);if(link.documentId===s.doc.id)return {target:resolveLocalNavigationLink(s.doc,link),stored:null};
  if(typeof window!=='undefined'&&window.desktop)throw Error('This link belongs to another local file. Open its matching .oui file on this Mac first, then paste the link again.');
  const document=await documentById(link.documentId);proof.check();if(!document)throw Error('The linked local file is unavailable. Open it in Forma first, or restore it from Trash.');const target=resolveLocalNavigationLink(document,link);return {target,stored:content(target)};

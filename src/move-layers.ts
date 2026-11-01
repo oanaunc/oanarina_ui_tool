@@ -1,3 +1,4 @@
+import {packedProject} from './image-sharing';
 import {descendants,isLocked,parseDocument} from './model';
 import type {DesignDocument,DesignNode,Page} from './model';
 import {allNodes,hydrateLegacyInstances} from './components-model';
@@ -11,7 +12,7 @@ import {visibleLayerRows} from './selection';
 export interface MoveLayersRequest {sourcePageId:string;destinationPageId:string;nodeIds:string[];}
 export interface MoveLayersResult {document:DesignDocument;rootIds:string[];nodeIds:string[];flowCount:number;trackCount:number;validate:(doc:DesignDocument)=>void;}
 const clone=<T,>(v:T):T=>structuredClone(v);
-function validated(doc:DesignDocument){const raw=JSON.stringify(doc);if(new TextEncoder().encode(raw).length>50_000_000)throw Error('This move would exceed the 50 MB project limit.');return parseDocument(raw);}
+function validated(doc:DesignDocument){const raw=packedProject(doc);if(new TextEncoder().encode(raw).length>50_000_000)throw Error('This move would exceed the 50 MB project limit.');return parseDocument(raw);}
 const fail=(message:string):never=>{throw Error(message);};
 function page(doc:DesignDocument,id:string){return doc.pages.find(p=>p.id===id)??fail('A selected page is no longer available.');}
 function actions(list:PrototypeAction[]):PrototypeAction[]{return list.flatMap(a=>[a,...(a.branches??[]).flatMap(b=>actions(b.actions))]);}
