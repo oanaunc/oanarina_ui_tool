@@ -1,7 +1,9 @@
-import type {DesignDocument} from './model';
+import type {DesignDocument,DesignNode} from './model';
 import {containers,isLocked} from './model';
-import {placeGrid,validateGridNode} from './grid';
-import type {GridTrack} from './grid';
+import {gridCell,gridGeometry,placeGrid,validateGridNode} from './grid';
+import type {GridPlacement,GridTrack} from './grid';
+import {canvasSelectionRoots} from './canvas-geometry';
+import {inverseMatrix,point,worldMatrix} from './transforms';
 export type GridTrackAxis='column'|'row';
 export interface GridTrackOrderPlan {axis:GridTrackAxis;from:number;to:number;count:number;trackCount:number;order:number[];tracks:GridTrack[];assignments:{id:string;gridColumn?:number;gridRow?:number}[];rowMinimum?:number;pinnedCount:number;unchanged:boolean;}
 function sourceGrid(doc:DesignDocument,pageId:string,id:string){const page=doc.pages.find(p=>p.id===pageId),parent=page?.nodes.find(n=>n.id===id);if(!page||!parent||parent.layout!=='grid'||!containers.includes(parent.type))throw Error('Choose an existing grid container.');if(parent.type==='instance'||parent.instanceRootId)throw Error('Reorder grid tracks on the main component or detach its instance first.');if(isLocked(parent,page.nodes))throw Error('Unlock the grid container hierarchy before reordering tracks.');if(!Number.isFinite(parent.columns)||parent.columns<1)throw Error('Invalid grid column count.');validateGridNode(parent);return {page,parent};}
@@ -30,3 +32,28 @@ export function planGridTrackReorder(doc:DesignDocument,pageId:string,id:string,
 }
 export function reorderGridTracks(doc:DesignDocument,pageId:string,id:string,axis:GridTrackAxis,from:number,to:number,count=1){const plan=planGridTrackReorder(doc,pageId,id,axis,from,to,count);if(plan.unchanged)return plan;const {page,parent}=sourceGrid(doc,pageId,id);parent[axis==='column'?'gridColumns':'gridRowTracks']=structuredClone(plan.tracks);if(axis==='row')parent.gridRows=plan.rowMinimum;const changes=new Map(plan.assignments.map(a=>[a.id,a]));for(const n of page.nodes){const update=changes.get(n.id);if(update){const {id:_,...placement}=update;Object.assign(n,placement);}}return plan;}
 export function validateGridTrackOrderResult(doc:DesignDocument,pageId:string,id:string,plan:GridTrackOrderPlan){if(plan.unchanged)return;const page=doc.pages.find(p=>p.id===pageId),parent=page?.nodes.find(n=>n.id===id),key=plan.axis==='column'?'gridColumns':'gridRowTracks';if(!parent||JSON.stringify(parent[key])!==JSON.stringify(plan.tracks)||plan.axis==='row'&&parent.gridRows!==plan.rowMinimum||plan.assignments.some(a=>{const n=page!.nodes.find(n=>n.id===a.id);return !n||a.gridColumn!==undefined&&n.gridColumn!==a.gridColumn||a.gridRow!==undefined&&n.gridRow!==a.gridRow;}))throw Error('This grid is controlled by its component or workspace. Reorder its editable source instead.');}
+export interface GridCellDrop {parentId:string;id:string;column:number;row:number;columnSpan:number;rowSpan:number;changed:boolean;assignments:{id:string;gridColumn?:number;gridRow?:number}[];corners:{x:number;y:number}[];}
+const overlaps=(a:Pick<GridPlacement,'column'|'row'|'columnSpan'|'rowSpan'>,b:Pick<GridPlacement,'column'|'row'|'columnSpan'|'rowSpan'>)=>a.column<b.column+b.columnSpan&&b.column<a.column+a.columnSpan&&a.row<b.row+b.rowSpan&&b.row<a.row+a.rowSpan;
+const movableGrid=(parent:DesignNode|undefined,nodes:DesignNode[])=>!!parent&&parent.layout==='grid'&&parent.type!=='instance'&&!parent.instanceRootId&&!isLocked(parent,nodes);
+/** Every placed child is pinned to its current cell, so only the moved layer and whatever it trades places with change. A layer already in the grid swaps with what it lands on; one coming from outside sends the occupant to the next free cell. */
+function planGridCell(parent:DesignNode,kids:DesignNode[],moved:DesignNode,column:number,row:number):Omit<GridCellDrop,'corners'>|undefined{
+ const placed=placeGrid(parent,kids),from=placed.placements.find(p=>p.id===moved.id),columnSpan=from?.columnSpan??Math.min(placed.columnCount,moved.gridColumnSpan??1),rowSpan=from?.rowSpan??moved.gridRowSpan??1,target={column:Math.max(0,Math.min(placed.columnCount-columnSpan,column)),row:Math.max(0,row),columnSpan,rowSpan},others=placed.placements.filter(p=>p.id!==moved.id),hit=others.filter(p=>overlaps(p,target)),base={parentId:parent.id,id:moved.id,column:target.column,row:target.row,columnSpan,rowSpan};
+ if(from&&from.column===target.column&&from.row===target.row)return {...base,changed:false,assignments:[]};
+ const shifted=new Map<string,GridPlacement>();
+ if(from)for(const p of hit){const next={...p,column:p.column+from.column-target.column,row:p.row+from.row-target.row};if(next.column<0||next.row<0||next.column+next.columnSpan>placed.columnCount||next.row+next.rowSpan>placed.rowCount||overlaps(next,target)||others.some(o=>!hit.includes(o)&&overlaps(o,next)))return undefined;shifted.set(p.id,next);}
+ const out=new Set(from?[]:hit.map(p=>p.id)),assignments=[...others.map(p=>{const at=shifted.get(p.id)??p;return out.has(p.id)?{id:p.id,gridColumn:undefined,gridRow:undefined}:{id:p.id,gridColumn:at.column+1,gridRow:at.row+1};}),{id:moved.id,gridColumn:target.column+1,gridRow:target.row+1}];
+ return {...base,changed:true,assignments};
+}
+const nearestTrack=(position:number,offsets:number[],sizes:number[],gap:number)=>{for(let i=0;i+1<sizes.length;i++)if(position<offsets[i]+sizes[i]+gap/2)return i;return Math.max(0,sizes.length-1);};
+/** The cell under the pointer. `parentId` names a grid a layer is being dragged into; otherwise only its own grid qualifies, and a pointer outside it keeps the free move. */
+export function gridCellTarget(nodes:DesignNode[],ids:readonly string[],pointer:{x:number;y:number},margin=8,parentId?:string):GridCellDrop|undefined{
+ const roots=canvasSelectionRoots(nodes,[...ids]);if(roots.length!==1)return undefined;const moved=roots[0],parent=nodes.find(n=>n.id===(parentId??moved.parentId));if(!movableGrid(parent,nodes)||moved.ignoreLayout||moved.instanceRootId||isLocked(moved,nodes))return undefined;
+ const matrix=worldMatrix(parent!,nodes);let inverse;try{inverse=inverseMatrix(matrix);}catch{return undefined;}const local=point(inverse,pointer.x,pointer.y);if(local.x<-margin||local.y<-margin||local.x>parent!.width+margin||local.y>parent!.height+margin)return undefined;
+ const kids=nodes.filter(n=>n.parentId===parent!.id&&n.visible&&!n.ignoreLayout),g=gridGeometry(parent!,kids),gx=parent!.gapX??parent!.gap,gy=parent!.gapY??parent!.gap;if(!g.columns.length||!g.rows.length)return undefined;
+ const plan=planGridCell(parent!,kids,moved,nearestTrack(local.x,g.columnOffsets,g.columns,gx),nearestTrack(local.y,g.rowOffsets,g.rows,gy));if(!plan)return undefined;
+ const cell=gridCell(g,{id:moved.id,column:plan.column,row:Math.min(plan.row,g.rows.length-1),columnSpan:plan.columnSpan,rowSpan:Math.min(plan.rowSpan,g.rows.length-Math.min(plan.row,g.rows.length-1))},gx,gy);
+ return {...plan,corners:[[cell.x,cell.y],[cell.x+cell.width,cell.y],[cell.x+cell.width,cell.y+cell.height],[cell.x,cell.y+cell.height]].map(([x,y])=>point(matrix,x,y))};
+}
+export function applyGridCell(nodes:DesignNode[],drop?:GridCellDrop){if(!drop?.changed)return nodes;const next=new Map(drop.assignments.map(a=>[a.id,a]));return nodes.map(n=>{const a=next.get(n.id);return a?{...n,gridColumn:a.gridColumn,gridRow:a.gridRow}:n;});}
+/** One step through the cells for an arrow key. The edge of the grid stops the layer. */
+export function gridCellStep(nodes:DesignNode[],id:string,dx:number,dy:number){const moved=nodes.find(n=>n.id===id),parent=nodes.find(n=>n.id===moved?.parentId);if(!moved||!movableGrid(parent,nodes)||moved.instanceRootId)return nodes;const kids=nodes.filter(n=>n.parentId===parent!.id&&n.visible&&!n.ignoreLayout),placed=placeGrid(parent!,kids),from=placed.placements.find(p=>p.id===id);if(!from)return nodes;const column=from.column+dx,row=from.row+dy;if(column<0||row<0||column+from.columnSpan>placed.columnCount||row+from.rowSpan>placed.rowCount)return nodes;const plan=planGridCell(parent!,kids,moved,column,row);return plan?applyGridCell(nodes,{...plan,corners:[]}):nodes;}

@@ -31,6 +31,7 @@ import {constrainAspectPatch} from './transform-controls';
 import {defaultPageCamera,PageViewportCache,validPageCamera} from './page-viewports';
 import {CanvasNavigation} from './canvas-navigation';
 import {canvasSelectionBounds} from './canvas-geometry';
+import {layoutNudgeOrder} from './layout-reorder';
 import {duplicateDocumentPage,reorderDocumentPage,removeDocumentPage} from './pages';
 import {arrangeNodes} from './arrange';
 import type {ArrangeReference} from './arrange';
@@ -157,7 +158,7 @@ export const useEditor=create<EditorState>((commit,get)=>{
  findSelection:()=>{const s=get(),page=s.doc.pages.find(p=>p.id===s.pageId)!,ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,ids=s.selection.filter(id=>{const n=ns.find(n=>n.id===id);return n&&effectiveVisible(n,ns);});if(!ids.length)throw Error('Select a visible layer to find on the canvas.');const b=canvasSelectionBounds(ns,ids),el=typeof document==='undefined'?null:document.querySelector('[data-canvas]'),w=el?.clientWidth??1000,h=el?.clientHeight??750,z=Math.max(.05,Math.min(s.zoom,Math.max(80,w-80)/Math.max(1,b.width),Math.max(80,h-100)/Math.max(1,b.height)));set({zoom:z,pan:{x:w/2-(b.x+b.width/2)*z,y:h/2-(b.y+b.height/2)*z}},false,true);},
  select:(id,extend=false)=>set(s=>({selection:extend?s.selection.includes(id)?s.selection.filter(a=>a!==id):[...s.selection,id]:[id]})),
  fit:(selected=false)=>{const s=get(),ns=s.doc.pages.find(p=>p.id===s.pageId)!.nodes.filter(n=>n.visible&&(!selected||s.selection.includes(n.id))),b=bounds(ns);const el=document.querySelector('[data-canvas]'),w=el?.clientWidth??1000,h=el?.clientHeight??750,top=48,bottom=112,z=Math.max(.05,Math.min(Math.max(80,w-60)/(b.width||1),Math.max(80,h-top-bottom)/(b.height||1),2));set({zoom:z,pan:{x:(w-b.width*z)/2-b.x*z,y:top+(Math.max(80,h-top-bottom)-b.height*z)/2-b.y*z}},false,true);},
- move:(dx,dy)=>{const s=get();s.edit(d=>{const ns=d.pages.find(p=>p.id===s.pageId)!.nodes,roots=normalizedRootSelection(ns,s.selection).filter(n=>!isLocked(n,ns));const moves=roots.map(n=>{const parent=ns.find(p=>p.id===n.parentId),inverse=parent?inverseMatrix(worldMatrix(parent,ns)):undefined;return {ids:new Set(descendants(ns,[n.id])),dx:inverse?inverse[0]*dx+inverse[2]*dy:dx,dy:inverse?inverse[1]*dx+inverse[3]*dy:dy};});for(const move of moves)for(const n of ns)if(move.ids.has(n.id)){n.x+=move.dx;n.y+=move.dy;}});}
+ move:(dx,dy)=>{const s=get(),direction=dx<0?'left':dx>0?'right':dy<0?'up':'down',shown=s.doc.pages.find(p=>p.id===s.pageId)!.nodes,ordered=s.motionOpen?undefined:layoutNudgeOrder(shown,s.selection,direction);if(ordered){if(ordered!==shown)s.edit(d=>{const page=d.pages.find(p=>p.id===s.pageId)!;page.nodes=layoutNudgeOrder(page.nodes,s.selection,direction)!;});return;}s.edit(d=>{const ns=d.pages.find(p=>p.id===s.pageId)!.nodes,roots=normalizedRootSelection(ns,s.selection).filter(n=>!isLocked(n,ns));const moves=roots.map(n=>{const parent=ns.find(p=>p.id===n.parentId),inverse=parent?inverseMatrix(worldMatrix(parent,ns)):undefined;return {ids:new Set(descendants(ns,[n.id])),dx:inverse?inverse[0]*dx+inverse[2]*dy:dx,dy:inverse?inverse[1]*dx+inverse[3]*dy:dy};});for(const move of moves)for(const n of ns)if(move.ids.has(n.id)){n.x+=move.dx;n.y+=move.dy;}});}
 
  };
 });

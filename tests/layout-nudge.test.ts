@@ -1,0 +1,40 @@
+import {beforeEach,describe,expect,it} from 'vitest';
+import {applyGridCell,gridCellStep,gridCellTarget} from '../src/grid-ordering';
+import {layoutNudgeOrder} from '../src/layout-reorder';
+import {blankDocument,node} from '../src/model';
+import type {DesignNode} from '../src/model';
+import {useEditor} from '../src/store';
+import {placeGrid} from '../src/grid';
+const stack=(extra:Partial<DesignNode>={})=>[node('frame',{id:'p',x:0,y:0,width:400,height:120,layout:'horizontal',gap:10,padding:0,...extra}),...['a','b','c'].map((id,i)=>node('rectangle',{id,parentId:'p',x:i*60,y:0,width:50,height:50}))];
+const order=(nodes:DesignNode[])=>nodes.filter(n=>n.parentId==='p').map(n=>n.id);
+describe('arrow keys in auto layout',()=>{
+ it('moves one place along the flow',()=>{expect(order(layoutNudgeOrder(stack(),['a'],'right')!)).toEqual(['b','a','c']);expect(order(layoutNudgeOrder(stack(),['c'],'left')!)).toEqual(['a','c','b']);});
+ it('a vertical stack uses up and down',()=>{const nodes=stack({layout:'vertical'});expect(order(layoutNudgeOrder(nodes,['a'],'down')!)).toEqual(['b','a','c']);expect(order(layoutNudgeOrder(nodes,['b'],'up')!)).toEqual(['b','a','c']);});
+ it('stops at the ends and ignores the cross axis without nudging',()=>{const nodes=stack();expect(layoutNudgeOrder(nodes,['a'],'left')).toBe(nodes);expect(layoutNudgeOrder(nodes,['c'],'right')).toBe(nodes);expect(layoutNudgeOrder(nodes,['b'],'up')).toBe(nodes);});
+ it('moves a selection as a block',()=>{expect(order(layoutNudgeOrder(stack(),['a','b'],'right')!)).toEqual(['c','a','b']);});
+ it('steps over hidden siblings',()=>{const nodes=stack();nodes[2].visible=false;expect(order(layoutNudgeOrder(nodes,['a'],'right')!)).toEqual(['b','c','a']);});
+ it('leaves absolute children and plain frames to the ordinary nudge',()=>{const nodes=stack();nodes[1].ignoreLayout=true;expect(layoutNudgeOrder(nodes,['a'],'right')).toBeUndefined();expect(layoutNudgeOrder(stack({layout:'none'}),['a'],'right')).toBeUndefined();expect(layoutNudgeOrder([node('rectangle',{id:'r'})],['r'],'right')).toBeUndefined();});
+ it('a managed instance child refuses without nudging',()=>{const nodes=stack();nodes[1].instanceRootId='x';expect(layoutNudgeOrder(nodes,['a'],'right')).toBe(nodes);});
+ it('wrapped rows step to the neighboring row at the same place',()=>{const p=node('frame',{id:'p',x:0,y:0,width:130,height:200,layout:'horizontal',wrap:true,gap:10,padding:0}),kids=[[0,0],[60,0],[0,60],[60,60]].map(([x,y],i)=>node('rectangle',{id:'k'+i,parentId:'p',x,y,width:50,height:50})),nodes=[p,...kids];expect(order(layoutNudgeOrder(nodes,['k0'],'down')!)).toEqual(['k1','k2','k0','k3']);expect(order(layoutNudgeOrder(nodes,['k3'],'up')!)).toEqual(['k0','k3','k1','k2']);expect(layoutNudgeOrder(nodes,['k0'],'up')).toBe(nodes);expect(layoutNudgeOrder(nodes,['k3'],'down')).toBe(nodes);});
+});
+const grid=(extra:Partial<DesignNode>={},count=4)=>[node('frame',{id:'p',x:100,y:100,width:210,height:210,layout:'grid',columns:2,gridRows:2,gap:10,padding:0,...extra}),...Array.from({length:count},(_,i)=>node('rectangle',{id:'k'+i,parentId:'p',x:100+(i%2)*110,y:100+Math.floor(i/2)*110,width:100,height:100}))];
+const cells=(nodes:DesignNode[])=>{const p=nodes.find(n=>n.id==='p')!,placed=placeGrid(p,nodes.filter(n=>n.parentId==='p')).placements;return Object.fromEntries(placed.map(a=>[a.id,[a.row,a.column]]));};
+describe('grid cells',()=>{
+ it('finds the cell under the pointer and swaps with its occupant',()=>{const nodes=grid(),drop=gridCellTarget(nodes,['k0'],{x:260,y:260})!;expect([drop.row,drop.column,drop.changed]).toEqual([1,1,true]);expect(cells(applyGridCell(nodes,drop))).toEqual({k0:[1,1],k1:[0,1],k2:[1,0],k3:[0,0]});});
+ it('moves into an empty cell and keeps everything else in place',()=>{const nodes=grid({},3),drop=gridCellTarget(nodes,['k0'],{x:260,y:260})!;expect(cells(applyGridCell(nodes,drop))).toEqual({k0:[1,1],k1:[0,1],k2:[1,0]});});
+ it('the layer own cell is no change',()=>{const nodes=grid(),drop=gridCellTarget(nodes,['k0'],{x:120,y:120})!;expect(drop.changed).toBe(false);expect(applyGridCell(nodes,drop)).toBe(nodes);});
+ it('splits a gap down its middle',()=>{const nodes=grid();expect(gridCellTarget(nodes,['k3'],{x:204,y:120})?.column).toBe(0);expect(gridCellTarget(nodes,['k3'],{x:206,y:120})?.column).toBe(1);});
+ it('outside the grid keeps the free move',()=>{expect(gridCellTarget(grid(),['k0'],{x:900,y:900})).toBeUndefined();});
+ it('a spanning layer stays inside the columns',()=>{const nodes=grid({},3);nodes[1].gridColumnSpan=2;const drop=gridCellTarget(nodes,['k0'],{x:280,y:280})!;expect(drop.columnSpan).toBe(2);expect(drop.column).toBe(0);});
+ it('refuses a swap that cannot fit rather than scattering layers',()=>{const p=grid({columns:3,width:320},0)[0],a=node('rectangle',{id:'a',parentId:'p',width:100,height:100,gridColumnSpan:2,gridColumn:1,gridRow:1}),b=node('rectangle',{id:'b',parentId:'p',width:100,height:100,gridColumn:3,gridRow:1,gridColumnSpan:1});expect(gridCellStep([p,a,b],'b',-1,0)).toEqual(expect.any(Array));expect(cells(gridCellStep([p,a,b],'b',-1,0))).toEqual({a:[0,0],b:[0,2]});});
+ it('a layer from outside takes the cell and sends the occupant onward',()=>{const nodes=grid({gridRows:2},2),outside=node('rectangle',{id:'x',x:600,y:600,width:50,height:50}),all=[...nodes,outside],drop=gridCellTarget(all,['x'],{x:120,y:120},0,'p')!;expect(drop.changed).toBe(true);const moved=applyGridCell(all.map(n=>n.id==='x'?{...n,parentId:'p'}:n),drop);expect(cells(moved)).toEqual({k0:[1,0],k1:[0,1],x:[0,0]});});
+ it('locked grids and instances keep the free move',()=>{const nodes=grid({locked:true});expect(gridCellTarget(nodes,['k0'],{x:260,y:260})).toBeUndefined();const managed=grid();managed[1].instanceRootId='m';expect(gridCellTarget(managed,['k0'],{x:260,y:260})).toBeUndefined();});
+ it('a rotated grid reads the pointer in its own axes',()=>{const nodes=grid({rotation:90}),drop=gridCellTarget(nodes,['k0'],{x:150,y:260})!;expect([drop.row,drop.column]).toEqual([1,1]);});
+ it('arrow steps walk the cells and stop at the edge',()=>{const nodes=grid();expect(cells(layoutNudgeOrder(nodes,['k0'],'right')!)).toEqual({k0:[0,1],k1:[0,0],k2:[1,0],k3:[1,1]});expect(cells(layoutNudgeOrder(nodes,['k0'],'down')!)).toEqual({k0:[1,0],k1:[0,1],k2:[0,0],k3:[1,1]});expect(layoutNudgeOrder(nodes,['k0'],'left')).toBe(nodes);expect(layoutNudgeOrder(nodes,['k3'],'down')).toBe(nodes);});
+});
+describe('store nudge',()=>{
+ beforeEach(()=>{const doc=blankDocument();doc.pages[0].nodes=stack();useEditor.setState({doc,pageId:doc.pages[0].id,selection:['a'],past:[],future:[],motionOpen:false});});
+ it('reorders with one Undo and reflows',()=>{useEditor.getState().move(1,0);let s=useEditor.getState(),nodes=s.doc.pages[0].nodes;expect(order(nodes)).toEqual(['b','a','c']);expect(nodes.find(n=>n.id==='a')!.x).toBe(60);expect(s.past.length).toBe(1);s.undo();expect(order(useEditor.getState().doc.pages[0].nodes)).toEqual(['a','b','c']);});
+ it('adds no history at the edge',()=>{useEditor.getState().move(-1,0);expect(useEditor.getState().past.length).toBe(0);});
+ it('a free layer still nudges by pixels',()=>{const doc=blankDocument();doc.pages[0].nodes=[node('rectangle',{id:'r',x:10,y:10})];useEditor.setState({doc,pageId:doc.pages[0].id,selection:['r']});useEditor.getState().move(5,0);expect(useEditor.getState().doc.pages[0].nodes[0].x).toBe(15);});
+});
