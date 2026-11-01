@@ -6,7 +6,7 @@ import {isLocked,reflow} from './model';
 import type {DesignNode} from './model';
 import {inverseMatrix,point,worldMatrix} from './transforms';
 type Point={x:number;y:number};
-export interface SpacingHandle {key:string;id:string;axis:'x'|'y';value:number;zone:Point[];from:Point;to:Point;}
+export interface SpacingHandle {key:string;group?:string;id:string;axis:'x'|'y';value:number;zone:Point[];from:Point;to:Point;}
 export interface ShapeHandle {key:string;id:string;x:number;y:number;label:string;}
 export interface HandleModifiers {alt:boolean;shift:boolean;}
 /** Arc handles remember the last sweep, so a drag stops at empty or full instead of wrapping past it. */
