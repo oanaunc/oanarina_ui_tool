@@ -357,7 +357,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Working preview path; validated by core/browser tests or native smoke. Exact reference parity still needs per-feature audit."
+    "notes": "A wheel notch glides to its target around the pointer, and a dense stream follows at once. In the real WebKit view, 330 layers with 16 full-size screenshots redraw every frame with no scaled copy and no frame step above 4.2%. Automated runs could not deliver real wheel events to the app, so use with a physical mouse is unverified."
   },
   {
     "id": "UI-02-007",
@@ -5167,7 +5167,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: HSV controls use one undoable gesture with cancellation and inherited locks; bounded artwork pixel sampler, 24 local recent colors and selected-tree RGB inspection/replacement preserve alpha and unrelated bindings. Canvas sampling uses a bounded artwork snapshot, excluding editor chrome Evidence and limits: docs/COLOR-WORKFLOWS.md; tests/color-workflows.test.ts; tests/e2e/color-workflows.spec.ts. Exact Figma reference verification remains pending."
+    "notes": "The color square sets saturation and brightness in one undoable gesture with cancellation and inherited locks, and HSB fields take exact values. Hue survives at white and black."
   },
   {
     "id": "UI-17-008",
@@ -5337,7 +5337,7 @@
     "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
+    "notes": "Click the gradient bar to add a stop that keeps the ramp unchanged, or use Add stop for the widest gap. One Undo step, .oui persistence and browser workflows."
   },
   {
     "id": "UI-17-025",
@@ -5357,7 +5357,7 @@
     "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md. SVG gradients are checked by exported pixel colors."
+    "notes": "Drag a marker on the gradient bar, use arrow keys on it, or type a position in the Stops list. A drag is one Undo step, with .oui persistence and browser workflows."
   },
   {
     "id": "UI-17-027",
@@ -12997,7 +12997,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Offline .fig import keeps live structure in one cancellable worker. Spec blocks and other text-bearing layers now become frames of editable text, keeping their preview image only when no readable text is found. Tested only with generated files, so field names are unverified and full .fig compatibility is not claimed. Binary export is absent."
+    "notes": "Offline .fig import keeps live structure in one cancellable worker. Spec pages open as frames of editable text, read from the real block format and verified on one real file of headings, paragraphs and bullet lists; other block kinds follow the file schema only. Tested only with generated files, so field names are unverified and full .fig compatibility is not claimed. Binary export is absent."
   },
   {
     "id": "UI-39-032",
@@ -17727,7 +17727,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Missing or unreadable .fig images now open as marked, replaceable image placeholders instead of refusing the file, and GIF and WebP fills are accepted. Missing Sketch symbols and unknown layers become visible gray placeholders. Font, video and general resource diagnostics remain separate."
+    "notes": "Missing or unreadable .fig images open as replaceable image placeholders, shown as a transparent checkerboard on the canvas only, instead of refusing the file. They select and move like any layer, and the inspector states the problem. Export leaves them empty."
   },
   {
     "id": "UI-53-027",

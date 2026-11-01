@@ -1,7 +1,27 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-10-31",
+  "asOf": "2026-11-01",
   "releases": [
+    {
+      "version": "1.0.1",
+      "channel": "preview",
+      "title": "Forma 1.0.1",
+      "notes": [
+        "Spec pages in .fig files now open as a page of editable text inside a frame, with headings, paragraphs, bold text and lists that reflow as you type.",
+        "A mouse wheel now zooms and pans smoothly. Each notch glides, and the canvas no longer flickers.",
+        "A rebuilt color panel floats beside the inspector, with a large color square, slim hue and alpha sliders, and HEX, RGB, HSL and HSB values.",
+        "Gradients have one bar: drag a stop to move it, click the bar to add one, and edit exact values in the Stops list.",
+        "A missing image is now a plain transparent checkerboard, and it moves and selects like any other layer."
+      ],
+      "limits": [
+        "Spec pages are verified on one real file holding headings, paragraphs and bullet lists. Tables, code, quotes, images and embeds follow the file format but have not been tested on real files.",
+        "Forma is an offline Mac app. Multiplayer, accounts, hosted publishing and AI generation are not included.",
+        "Catalog fonts that are not bundled, cached or installed still download from Google Fonts when requested, which the Privacy dashboard discloses.",
+        "VoiceOver, physical trackpad, printer and tablet use, Intel Macs and older macOS versions are not fully verified.",
+        "Open limits are listed per requirement in the Feature register.",
+        "Importing .fig and Sketch files is otherwise tested on self-authored files, so some content may arrive reduced or as an image, and the import report says what happened. Binary .fig export is not available."
+      ]
+    },
     {
       "version": "1.0.0",
       "channel": "preview",

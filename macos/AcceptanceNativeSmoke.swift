@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("workflow",{self.acceptWorkflow(document,directory,$0)}),("zoom",{self.acceptWheelZoom(document,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("services",{self.acceptServices(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("workflow",{self.acceptWorkflow(document,directory,$0)}),("zoom",{self.acceptWheelZoom(document,$0)}),("glide",{self.acceptWheelGlide(document,false,$0)}),("glide-images",{self.acceptWheelGlide(document,true,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("services",{self.acceptServices(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -603,6 +603,30 @@ extension Studio {
             }
         }
     }
+    func zoomPage(_ nodes:inout [[String:Any]]){
+        let template=nodes.first{$0["id"] as? String=="accept-rect"} ?? [:],frameTemplate=nodes.first{$0["id"] as? String=="accept-frame"} ?? [:]
+        nodes.removeAll()
+        for f in 0..<6{
+            var frame=frameTemplate;frame["id"]="zf\(f)";frame["name"]="Frame \(f)";frame["x"]=f*460;frame["y"]=0;frame["width"]=402;frame["height"]=874;frame["fill"]="#ffffff";nodes.append(frame)
+            for i in 0..<53{var row=template;row["id"]="zf\(f)r\(i)";row["parentId"]="zf\(f)";row["x"]=f*460+16;row["y"]=i*16;row["width"]=370;row["height"]=12;row["fill"]=i%2==0 ? "#ddddee":"#eeeedd";nodes.append(row)}
+        }
+    }
+    /** Slow wheel steps in the real WebKit view over about 330 layers: the camera itself moves in small steps, and the canvas never swaps to a scaled copy. */
+    func acceptWheelGlide(_ document:DocumentWindow,_ screenshots:Bool,_ done:@escaping()->Void){
+        // Sixteen full-size phone screenshots painted over the layers, as a page of reference screens is.
+        let shots="const c=document.createElement('canvas');c.width=1125;c.height=2436;const g=c.getContext('2d');for(let i=0;i<2000;i++){g.fillStyle=`hsl(${i*37%360} 70% ${30+i%50}%)`;g.fillRect(i*131%1125,i*197%2436,40+i%200,20+i%90);}const url=c.toDataURL('image/png');for(let i=0;i<16;i++){const im=document.createElementNS('http://www.w3.org/2000/svg','image');im.setAttribute('href',url);im.setAttribute('x',String(i%8*400));im.setAttribute('y',String((i>>3)*860));im.setAttribute('width','375');im.setAttribute('height','812');document.querySelector('#forma-design-canvas [data-camera]').append(im);}await new Promise(r=>setTimeout(r,800));"
+        loadDocument(document,acceptanceDocument("accept-glide","Glide",edit:zoomPage)){
+            self.page(document,(screenshots ? shots:"")+"const el=document.querySelector('#forma-design-canvas'),camera=el.querySelector('[data-camera]'),b=el.getBoundingClientRect(),seen=[],gaps=[];let on=true,copies=0,last=performance.now();const watch=t=>{gaps.push(t-last);last=t;seen.push(camera.getAttribute('transform'));if(el.style.transform)copies++;if(on)requestAnimationFrame(watch);};requestAnimationFrame(watch);for(let i=0;i<8;i++){el.dispatchEvent(new WheelEvent('wheel',{deltaY:i<4?-4:4,clientX:b.left+b.width/2,clientY:b.top+b.height/2,metaKey:true,bubbles:true,cancelable:true}));await new Promise(r=>setTimeout(r,130));}await new Promise(r=>setTimeout(r,500));on=false;const zooms=seen.map(t=>Number(/scale\\(([\\d.]+)\\)/.exec(t)[1])),steps=zooms.slice(1).map((z,i)=>Math.max(z/zooms[i],zooms[i]/z)),sorted=[...gaps].sort((a,c)=>a-c);return {frames:seen.length,distinct:new Set(seen).size,biggest:Math.max(...steps),copies,layer:getComputedStyle(el).willChange,p95:sorted[Math.floor(sorted.length*.95)]};"){value in
+                let body=value as? [String:Any]
+                print("glide \(body ?? [:])")
+                self.check((body?["distinct"] as? Int ?? 0)>=16,"slow wheel steps glide through many camera positions (\(body?["distinct"] ?? "none"))")
+                self.check((body?["biggest"] as? Double ?? 9)<1.08,"no single frame of a wheel step jumps (\(body?["biggest"] ?? "none"))")
+                if !screenshots{self.check((body?["copies"] as? Int ?? 1)==0,"about 330 layers redraw every frame instead of swapping to a scaled copy (p95 \(body?["p95"] ?? "none") ms)")}
+                self.check((body?["layer"] as? String)=="transform","the canvas keeps one compositor layer between gestures")
+                done()
+            }
+        }
+    }
     /** Real Command-scroll events into the shipped editor on a page of about 330 layers, at the pace of a turning mouse wheel. */
     func acceptWheelZoom(_ document:DocumentWindow,_ done:@escaping()->Void){
         func wheel(_ lines:Int32,_ x:CGFloat,_ y:CGFloat){
@@ -612,15 +636,7 @@ extension Studio {
             guard let event=NSEvent(cgEvent:cg) else{smokeFail("wheel event")}
             document.window.sendEvent(event)
         }
-        let edit:(inout [[String:Any]])->Void={nodes in
-            let template=nodes.first{$0["id"] as? String=="accept-rect"} ?? [:],frameTemplate=nodes.first{$0["id"] as? String=="accept-frame"} ?? [:]
-            nodes.removeAll()
-            for f in 0..<6{
-                var frame=frameTemplate;frame["id"]="zf\(f)";frame["name"]="Frame \(f)";frame["x"]=f*460;frame["y"]=0;frame["width"]=402;frame["height"]=874;frame["fill"]="#ffffff";nodes.append(frame)
-                for i in 0..<53{var row=template;row["id"]="zf\(f)r\(i)";row["parentId"]="zf\(f)";row["x"]=f*460+16;row["y"]=i*16;row["width"]=370;row["height"]=12;row["fill"]=i%2==0 ? "#ddddee":"#eeeedd";nodes.append(row)}
-            }
-        }
-        loadDocument(document,acceptanceDocument("accept-zoom","Zoom",edit:edit)){
+        loadDocument(document,acceptanceDocument("accept-zoom","Zoom",edit:zoomPage)){
             self.page(document,"const el=document.querySelector('#forma-design-canvas'),b=el.getBoundingClientRect();window.__wheel=[];el.addEventListener('wheel',e=>window.__wheel.push([e.deltaY,e.wheelDeltaY,e.metaKey,e.deltaMode]));window.__gaps=[];let last=performance.now();const tick=t=>{window.__gaps.push(t-last);last=t;if(window.__gapsOn)requestAnimationFrame(tick);};window.__gapsOn=true;requestAnimationFrame(tick);return [b.left+b.width/2,b.top+b.height/2,window.__zoomNow=null];"){value in
                 guard let at=value as? [Any],let x=at[0] as? Double,let y=at[1] as? Double else{self.smokeFail("zoom point")}
                 document.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)

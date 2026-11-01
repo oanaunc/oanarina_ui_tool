@@ -2,7 +2,7 @@ import {effectiveStrokeWidth} from './edge-strokes';
 import {validateSurfaceSource} from './surface-paint';
 import type {DesignNode} from './model';
 import type {Matrix} from './transforms';
-import {identity,multiply,nodeMatrix,point} from './transforms';
+import {identity,multiply,nodeMatrix} from './transforms';
 export const MISSING_ASSET_LIMITS={layers:20_000,depth:256,paints:50_000,images:512,sourceBytes:64_000_000,imageBytes:20_000_000} as const;
 export type EmbeddedImageState='missing'|'invalid'|'unknown'|'ready'|'broken';
 export function embeddedImageState(source:unknown):EmbeddedImageState {
@@ -25,4 +25,3 @@ export function imageAssetIndex(nodes:DesignNode[]){
  for(const s of n.strokes??[]){if(++paintCount>50_000)throw Error('Image diagnostics exceed the 50,000-paint scan budget.');if(s.paint.surface?.kind==='pattern'||s.paint.surface?.kind==='noise'){validateSurfaceSource(s.paint.surface);continue;}if(s.paint.type==='image')add(n,'stroke',s.id,s.paint.image,s.visible&&effectiveStrokeWidth(s,n)>0&&s.paint.visible&&s.paint.opacity>0);}}
  return rows;
 }
-export function diagnosticAnchor(row:ImageAssetRow){return point(row.matrix,0,0);}

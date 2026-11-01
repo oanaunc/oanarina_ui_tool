@@ -3,6 +3,8 @@ export function colorHsv(hex:string){const [r,g,b]=hexRgb(hex).map(v=>v/255),max
 export function hsvColor(h:number,s:number,v:number){if(![h,s,v].every(Number.isFinite))throw Error('Use finite color values.');return parseColor(`${h}, ${clamp(s)*100}, ${clamp(v)*100}`,'HSB')!.color;}
 const clamp=(n:number,max=1)=>Math.max(0,Math.min(max,n));
 export function hexRgb(hex:string){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));}
+/** A straight blend between two colors, as a gradient ramp draws it. */
+export function mixHex(a:string,b:string,t:number){const from=hexRgb(a),to=hexRgb(b);return '#'+from.map((v,i)=>Math.round(v+(to[i]-v)*t).toString(16).padStart(2,'0')).join('');}
 export function colorString(hex:string,mode:ColorMode){if(mode==='HEX')return hex.toUpperCase();const [r,g,b]=hexRgb(hex).map(v=>v/255);if(mode==='RGB')return [r,g,b].map(v=>Math.round(v*255)).join(', ');const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min,l=(max+min)/2;let h=d===0?0:max===r?((g-b)/d)%6:max===g?(b-r)/d+2:(r-g)/d+4;h=(h*60+360)%360;const s=mode==='HSB'?(max?d/max:0):d===0?0:d/(1-Math.abs(2*l-1));return [Math.round(h),Math.round(s*100)+'%',Math.round((mode==='HSB'?max:l)*100)+'%'].join(', ');}
 export function parseColor(input:string,mode:ColorMode):{color:string;alpha?:number}|null {
  const text=input.trim();if(/^#[a-f0-9]{3,8}$/i.test(text)){let h=text.slice(1);if(h.length===3||h.length===4)h=h.split('').map(c=>c+c).join('');if(h.length!==6&&h.length!==8)return null;return {color:'#'+h.slice(0,6).toLowerCase(),...(h.length===8?{alpha:parseInt(h.slice(6),16)/255}:{})};}

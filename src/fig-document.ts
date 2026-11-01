@@ -1,12 +1,12 @@
 import {gunzipSync,unzlibSync} from 'fflate';
 import {readCrdtDocument} from './fig-document-crdt';
 import type {Raw} from './fig-values';
-/** A spec block is a page of text in a design file. Its storage is not public, so this reads what it can prove, in order of trust:
- * the node's own text data, then any structured blocks under any field name, then text inside byte fields. Every field name
- * beyond textData is an assumption, which is why matching is by shape, and a miss falls back to the block's preview image. */
-export type FigDocumentBlock={kind:'heading';level:number;text:string}|{kind:'paragraph';text:string}|{kind:'list';ordered:boolean;items:string[]};
-export type FigDocumentSource='text-data'|'structured'|'crdt'|'recovered';
-export interface FigDocumentContent {blocks:FigDocumentBlock[];source:FigDocumentSource;}
+/** Spec pages with specBlockType fields are read by fig-spec-document. This is for other unknown layers that hold text: it reads what it can prove, in order of trust:
+ * the node's own text data, then any structured blocks under any field name, then text inside byte fields. Matching is by shape, and a miss falls back to the layer's preview image. */
+export type FigDocumentBlock={kind:'heading';level:number;text:string}|{kind:'paragraph';text:string}|{kind:'list';ordered:boolean;items:string[];indent?:number}|{kind:'quote';text:string}|{kind:'code';text:string}|{kind:'rule'}|{kind:'spacer'}|{kind:'table';rows:string[][]}|{kind:'image';hash:string;width:number;height:number};
+export type FigDocumentSource='spec'|'text-data'|'structured'|'crdt'|'recovered';
+export interface FigDocumentContent {blocks:FigDocumentBlock[];source:FigDocumentSource;omitted?:number;}
+type TextBlock=Extract<FigDocumentBlock,{kind:'heading'|'paragraph'|'list'}>;
 const LIMIT={values:200_000,depth:64,characters:1_000_000,blocks:2000,bytes:20_000_000,inflated:50_000_000,runs:500};
 /** Appearance and identity, never the document's words. */
 const SKIPPED=/^(name|guid|parentIndex|phase|type)$|paint|geometry|snapshot|transform|plugin|export|effect|stroke|fill|prototype|interaction|reaction|override|symbol|layout|stack|constraint|variable|annotation|measure|font|style(id|override)|size|radius|opacity|blendmode|guides?$|grid/i;
@@ -17,8 +17,8 @@ const label=(o:Raw)=>{for(const k of LABELS){const v=o[k];if(typeof v==='string'
 const levelOf=(o:Raw,name:string)=>{const a=(o.attrs&&typeof o.attrs==='object'?o.attrs:{}) as Raw,raw=o.level??a.level??o.headingLevel??a.headingLevel,digit=/([1-6])/.exec(name);const value=typeof raw==='number'?raw:digit?Number(digit[1]):/subtitle/i.test(name)?2:1;return Math.max(1,Math.min(6,value));};
 function inlineText(value:unknown,depth=0):string{if(depth>LIMIT.depth)return '';if(typeof value==='string')return value;if(Array.isArray(value))return value.map(v=>inlineText(v,depth+1)).join('');if(!value||typeof value!=='object')return '';const o=value as Raw;for(const k of ['text','characters','plainText','value'])if(typeof o[k]==='string')return o[k] as string;for(const k of INLINE)if(o[k]!==undefined)return inlineText(o[k],depth+1);return '';}
 class Collector {
- blocks:FigDocumentBlock[]=[];size=0;seen=0;
- add(block:FigDocumentBlock){this.size+=block.kind==='list'?block.items.join('').length:block.text.length;if(this.size>LIMIT.characters||this.blocks.length>=LIMIT.blocks)return;const last=this.blocks.at(-1);if(block.kind==='list'&&last?.kind==='list'&&last.ordered===block.ordered)last.items.push(...block.items);else this.blocks.push(block);}
+ blocks:TextBlock[]=[];size=0;seen=0;
+ add(block:TextBlock){this.size+=block.kind==='list'?block.items.join('').length:block.text.length;if(this.size>LIMIT.characters||this.blocks.length>=LIMIT.blocks)return;const last=this.blocks.at(-1);if(block.kind==='list'&&last?.kind==='list'&&last.ordered===block.ordered)last.items.push(...block.items);else this.blocks.push(block);}
  text(raw:string){const lines=raw.split(/\r\n|\r|\n|\u2028|\u2029/);for(const line of lines){const text=line.trim();if(!text)continue;const hash=/^(#{1,6})\s+(.+)$/.exec(text),bullet=/^[-*•◦]\s+(.+)$/.exec(text),numbered=/^\d{1,4}[.)]\s+(.+)$/.exec(text);if(hash)this.add({kind:'heading',level:hash[1].length,text:hash[2]});else if(bullet)this.add({kind:'list',ordered:false,items:[bullet[1]]});else if(numbered)this.add({kind:'list',ordered:true,items:[numbered[1]]});else this.add({kind:'paragraph',text});}}
  /** Reading order is the order stored, unless every sibling carries a fractional position. */
  visit(value:unknown,depth=0,ordered?:boolean):void{
@@ -57,6 +57,7 @@ export function figDocumentContent(raw:Raw,blob:(index:number)=>Uint8Array|undef
  const recovered=new Collector();for(const bytes of fields)recoveredRuns(bytes,recovered);return recovered.result('recovered');
 }
 export const figDocumentMessages:Record<FigDocumentSource,string>={
+ spec:'Spec pages became frames of editable text, using their stored words and block types.',
  'text-data':'Spec blocks became editable text, using their own stored text and line types.',
  structured:'Spec blocks became editable headings, paragraphs and lists, in stored reading order.',
  crdt:'Spec blocks became editable text read from their stored editing history. Compare with the hidden original preview.',

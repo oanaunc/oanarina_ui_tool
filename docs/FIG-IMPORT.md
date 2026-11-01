@@ -15,7 +15,7 @@ After import, review **Figma import report**, then edit the converted project. S
 - Component sets become variant sets, in their stored property order. Text, Boolean and instance-swap properties become component properties when one layer consumes them.
 - Auto layout, constraints, min and max sizes, and absolute children stay live. Local paint, text and effect styles and variable collections with every mode become real Forma styles and variables, linked where the layer agrees with them.
 - Vector anchors, masks, image crops, gradient handles, corner smoothing, independent stroke weights, mixed text ranges and prototype links and flows map to native Forma data.
-- Spec blocks and other text-bearing page layers become a frame of editable text, with headings, paragraphs and lists in reading order. See [Spec blocks](#spec-blocks).
+- Spec pages become a frame of editable text, with headings, paragraphs, lists, tables and code in reading order. See [Spec blocks](#spec-blocks).
 
 The report lists what stayed live and every known reduction; it is not a guarantee of complete appearance or behavior parity. Stored positions win over live structure: before the file opens, Forma runs its own edit pipeline on a copy, and any instance, auto layout frame, Boolean or style link that would move or change the stored artwork is dropped to plain layers and reported, so the first edit cannot rearrange the file. Unsupported containers or malformed input fail before replacing the current artwork; a missing or unreadable image stays a marked placeholder you can replace.
 
@@ -39,16 +39,14 @@ Copying out of Forma writes SVG markup as plain text and as an SVG flavor, throu
 
 ## Spec blocks
 
-A spec block is a page of text stored in a design file. Forma reads it in this order and stops at the first success:
+A spec page is a `SPEC_BLOCK` with `specBlockType` `DOCUMENT`, and its child blocks hold the content. Each child names its kind in `specBlockType`: headings, paragraphs, ordered, unordered and to-do list items, code, quotes, rules, tables, images, embeds and embedded canvases. Its words are in `specBlockContent`, a plain-text edit history.
 
-1. Real child layers in the file's hierarchy, which stay live layers.
-2. The block's own `textData`: `characters`, per-line `lineType`, and per-character sizes that mark headings.
-3. Structured blocks under any field name, including JSON text and JSON in byte fields. A block is recognized by its shape: a type label such as heading, paragraph, list or list item, with text or inline content.
-4. A strict Yjs update in a byte field or referenced blob, which must parse to its last byte.
-5. Printable sentences in byte fields. These have no structure, and the report says so.
+Forma replays that history from `historyOpsWithLoc` and `historyStringContentBuffer`, or uses `snapshotText` when stored. Inline `**bold**`, `*italic*`, `~~strike~~`, `` `code` `` and `[links](https://example.com)` are stored as literal markdown and become formatting.
 
-Text becomes a white vertical auto layout frame at the block's stored size. A long page grows instead of overflowing. The stored preview stays as a hidden **Original preview** layer inside the frame. Headings use fixed sizes by level, not the source's own type styles.
+The page becomes a white vertical auto layout frame of editable layers in stored order. It keeps its stored size as a minimum height and grows as text is added. Headings use fixed sizes by level. Interior blank lines stay as spacers, and trailing ones are dropped.
 
-A block keeps its preview as a flat image only when none of these finds readable text, and the import report says that. A block with no text and no preview is omitted and reported. Other unknown layer types that hold readable text or child layers are read the same way; those with neither are omitted and reported, as before.
+If any block's history cannot be proven, for example a range that falls outside the text, the whole page keeps its stored preview image and the report says so. Forma does not show partial or wrong words. Embedded canvases, and images or embeds without a usable reference, are left out and reported, and the stored preview stays as a hidden **Original preview** layer.
 
-**What is assumed.** No real spec block has been read by these tests. `SPEC_BLOCK` and `previewRasterSnapshot` come from the existing mapper. Whether a spec block has child layers, stores `textData`, or uses JSON or Yjs is unknown, so each route is a guess tested only with fixtures written here. The decoder reads each file's own embedded schema, so unknown field names do reach this code by name.
+**What was checked.** The format comes from the schema embedded in a real file, whose four pages of 54 blocks imported with their words matching the stored previews. That file holds headings, paragraphs and bullet lists only. Tables, code, quotes, rules, to-do items, images and embeds follow the schema's field names and are tested with fixtures written here, not real files. The tests in this repository use only self-authored files.
+
+Other unknown layers, and spec blocks without `specBlockType`, are read by shape: real child layers, then `textData`, then structured blocks under any field name, then a strict Yjs update, then printable sentences in byte fields. Those routes are guesses tested only with fixtures written here. A layer with no readable text keeps its preview as a flat image, and one with no text and no preview is omitted and reported.

@@ -16,7 +16,7 @@ async function open(page:Page,doc:DesignDocument,options:{cache?:string;holdBoot
 }
 async function fitStartup(page:Page){await page.waitForFunction(()=>(window as any).viewportFits.length>0);await page.evaluate(()=>{for(const fn of(window as any).viewportFits.splice(0))fn();});await expect(page.locator('svg.canvas')).toBeVisible();}
 async function camera(page:Page){return page.locator('svg.canvas > g[transform]').getAttribute('transform');}
-async function pan(page:Page,x:number,y:number){const before=await camera(page),box=await page.locator('svg.canvas').boundingBox();await page.mouse.move(box!.x+box!.width/2,box!.y+box!.height/2);await page.mouse.wheel(x,y);await expect.poll(()=>camera(page)).not.toBe(before);}
+async function pan(page:Page,x:number,y:number){const before=await camera(page),box=await page.locator('svg.canvas').boundingBox();await page.mouse.move(box!.x+box!.width/2,box!.y+box!.height/2);await page.mouse.wheel(x,y);await expect.poll(()=>camera(page)).not.toBe(before);await page.waitForTimeout(400);}
 async function save(page:Page,saved:string[]){const count=saved.length;await page.locator('svg.canvas').focus();await page.keyboard.press('Meta+s');await expect.poll(()=>saved.length).toBe(count+1);return JSON.parse(saved.at(-1)!);}
 
 test('page cameras survive switches and reload while camera-only changes leave project/history/native dirty untouched',async({page})=>{

@@ -1,13 +1,14 @@
 import {describe,expect,it} from 'vitest';
 import {decodeFigContainerInWorker} from '../src/fig-container-core';
 import {figDocumentContent} from '../src/fig-document';
+import {collaborativeText,figInlineMarks,figSpecContent} from '../src/fig-spec-document';
 import {readCrdtDocument} from '../src/fig-document-crdt';
 import {mapFigScene} from '../src/fig-scene';
 import {synchronizeComponents} from '../src/components-model';
 import {reflow} from '../src/layout';
 import {encodeMessage,encodeSchema,figCanvas} from './helpers/fig-fixture';
 import type {KiwiDefinition} from '../src/fig-kiwi';
-/** Everything here is self-authored. Spec block field names are assumed, except the kinds of field a TEXT layer already uses. */
+/** Everything here is self-authored. The specBlock fields follow the real format; the routes for layers without them match by shape. */
 const id=(n:number)=>({sessionID:7,localID:n});
 const at=(x:number,y:number)=>({m00:1,m01:0,m02:x,m10:0,m11:1,m12:y});
 const page=(...extra:Record<string,unknown>[])=>({nodeChanges:[{guid:id(1),type:'DOCUMENT'},{guid:id(2),type:'CANVAS',name:'Page',parentIndex:{guid:id(1),position:'a'}},...extra],blobs:[] as {bytes:number[]}[]});
@@ -16,6 +17,40 @@ const nodes=(message:Record<string,unknown>)=>{const out=mapFigScene({message,im
 const none=()=>undefined;
 const doc={type:'doc',content:[{type:'heading',attrs:{level:1},content:[{type:'text',text:'Hierarchy evaluation'}]},{type:'paragraph',content:[{type:'text',text:'First '},{type:'text',text:'paragraph.'}]},{type:'bullet_list',content:[{type:'list_item',content:[{type:'paragraph',content:[{type:'text',text:'One'}]}]},{type:'list_item',content:[{type:'paragraph',content:[{type:'text',text:'Two'}]}]}]},{type:'ordered_list',content:[{type:'list_item',content:[{type:'text',text:'Step'}]}]},{type:'heading',attrs:{level:2},content:[{type:'text',text:'Second heading'}]}]};
 const expected=[{kind:'heading',level:1,text:'Hierarchy evaluation'},{kind:'paragraph',text:'First paragraph.'},{kind:'list',ordered:false,items:['One','Two']},{kind:'list',ordered:true,items:['Step']},{kind:'heading',level:2,text:'Second heading'}];
+const encoder=new TextEncoder();
+const history=(...ops:([number,string]|[number,number])[])=>{let bytes='';const historyOpsWithLoc=ops.map(([start,value])=>{if(typeof value==='number')return {type:'DELETE',range:{startIndex:start,endIndexExclusive:value},rangeShouldBeIteratedInReverse:true};const from=encoder.encode(bytes).length;bytes+=value;return {type:'INSERT',range:{startIndex:start,endIndexExclusive:start+value.length},contentBytesInBuffer:{startIndex:from,endIndexExclusive:encoder.encode(bytes).length}};});return {historyOpsWithIds:[],historyOpsWithLoc,historyStringContentBuffer:encoder.encode(bytes)};};
+const block=(n:number,parent:number,position:string,specBlockType:string,text='',fields:Record<string,unknown>={})=>({guid:id(n),type:'SPEC_BLOCK',parentIndex:{guid:id(parent),position},specBlockType,specBlockContent:text?history([0,text]):history(),...fields});
+const specPage=(...children:Record<string,unknown>[])=>page(spec({specBlockType:'DOCUMENT',specBlockContent:history()}),...children);
+describe('spec pages in the real storage format',()=>{
+ it('replays an edit history, including corrections and characters beyond one byte',()=>{
+  expect(collaborativeText(history([0,'Medin'],[4,5],[4,'um']))).toBe('Medium');expect(collaborativeText(history([0,'Așa e 🙂'],[2,3],[2,'ă']))).toBe('Așă e 🙂');expect(collaborativeText({snapshotText:'Stored',historyOpsWithLoc:[]})).toBe('Stored');expect(collaborativeText(history())).toBe('');
+ });
+ it('refuses a history it cannot prove rather than showing wrong words',()=>{
+  expect(collaborativeText(history([3,'late']))).toBeUndefined();expect(collaborativeText({historyOpsWithLoc:[{type:'INSERT',range:{startIndex:0,endIndexExclusive:9},contentBytesInBuffer:{startIndex:0,endIndexExclusive:2}}],historyStringContentBuffer:encoder.encode('ab')})).toBeUndefined();expect(collaborativeText({historyOpsWithLoc:[{type:'DELETE',range:{startIndex:0,endIndexExclusive:9}}]})).toBeUndefined();
+ });
+ it('turns stored markdown marks into formatting',()=>{
+  expect(figInlineMarks('**Preserve:** heading *and* ~~body~~ `code` [link](https://example.com) snake_case 2*3*4','Mono')).toEqual({text:'Preserve: heading and body code link snake_case 2*3*4',runs:[{start:0,end:9,fontWeight:700},{start:18,end:21,fontStyle:'italic'},{start:22,end:26,decorations:['line-through']},{start:27,end:31,fontFamily:'Mono'},{start:32,end:36,hyperlink:'https://example.com',decorations:['underline']}]});
+ });
+ it('imports a page and its child blocks as an editable page instead of an empty frame',()=>{
+  const {out,all,text}=nodes(specPage(block(4,3,'a','HEADING_1','Medium'),block(5,3,'b','PARAGRAPH','First paragraph.'),block(6,3,'c','PARAGRAPH'),block(7,3,'d','UNORDERED_LIST_ITEM','**Keep:** this'),block(8,3,'e','UNORDERED_LIST_ITEM','**Test:** that'),block(9,3,'f','PARAGRAPH'))),frame=all.find(n=>n.name==='Hierarchy evaluation')!;
+  expect(frame).toMatchObject({type:'frame',layout:'vertical',width:850,height:1100,minHeight:1100,sizingY:'hug'});expect(text.map(n=>n.text)).toEqual(['Medium','First paragraph.','Keep: this\nTest: that']);expect(text[0].fontSize).toBe(40);expect(text[2].listStyle).toBe('bullet');expect(text[2].textRuns).toEqual([{start:0,end:5,fontWeight:700},{start:11,end:16,fontWeight:700}]);expect(all.filter(n=>n.parentId===frame.id).map(n=>n.name)).toEqual(['Medium','First paragraph.','Empty line','Keep: this\nTest: that'.slice(0,60)]);
+  expect(all.some(n=>n.name==='Original preview')).toBe(false);expect(out.issues.map(i=>i.code)).toContain('spec-block-text');expect(out.issues.map(i=>i.code)).not.toContain('spec-block-raster');expect(out.document.pages[0].nodes.every(n=>n.width>0)).toBe(true);
+ });
+ it('keeps its stored page height for a short page and grows past it for a long one',()=>{
+  const short=nodes(specPage(block(4,3,'a','PARAGRAPH','One line.'))).all.find(n=>n.type==='frame')!;expect(short.height).toBe(1100);
+  const long=nodes(specPage(...Array.from({length:70},(_,i)=>block(4+i,3,String.fromCharCode(40+i),'PARAGRAPH','Paragraph '+i+' '+'words '.repeat(60))))).all.find(n=>n.type==='frame')!;expect(long.height).toBeGreaterThan(1100);
+ });
+ it('reads the other block kinds in order',()=>{
+  const kids=new Map<number,Record<string,unknown>[]>([[3,[block(4,3,'a','HEADING_3','Sub'),block(5,3,'b','CODE_BLOCK','let a=1'),block(6,3,'c','BLOCK_QUOTE','Said'),block(7,3,'d','HORIZONTAL_RULE'),block(8,3,'e','ORDERED_LIST_ITEM','One'),block(9,3,'f','ORDERED_LIST_ITEM','Two',{specBlockIndentLevel:1}),block(10,3,'g','TODO_LIST_ITEM_CHECKED','Done'),block(11,3,'h','TABLE')]],[11,[block(12,11,'a','TABLE_ROW'),block(13,11,'b','TABLE_ROW')]],[12,[block(14,12,'a','TABLE_CELL','A'),block(15,12,'b','TABLE_CELL','B')]],[13,[block(16,13,'a','TABLE_CELL','C')]]]);
+  const content=figSpecContent({guid:id(3),specBlockType:'DOCUMENT'},b=>kids.get((b.guid as {localID:number}).localID)??[])!;
+  expect(content.blocks).toEqual([{kind:'heading',level:3,text:'Sub'},{kind:'code',text:'let a=1'},{kind:'quote',text:'Said'},{kind:'rule'},{kind:'list',ordered:true,items:['One'],indent:0},{kind:'list',ordered:true,items:['Two'],indent:1},{kind:'paragraph',text:'☑ Done'},{kind:'table',rows:[['A','B'],['C']]}]);
+  const all=nodes(page(spec({specBlockType:'DOCUMENT',specBlockContent:history()}),...[...kids.values()].flat())).all;expect(all.filter(n=>n.name==='Cell')).toHaveLength(4);expect(all.find(n=>n.name==='Code')).toBeTruthy();expect(all.find(n=>n.name==='Divider')?.width).toBeGreaterThan(100);
+ });
+ it('keeps the stored preview when any block cannot be proven, and reports what a page left out',()=>{
+  const broken=nodes(specPage(block(4,3,'a','PARAGRAPH','Fine'),{...block(5,3,'b','PARAGRAPH'),specBlockContent:history([9,'bad'])}));expect(broken.all.find(n=>n.name==='Hierarchy evaluation')!.type).toBe('image');expect(broken.out.issues.map(i=>i.code)).toContain('spec-block-raster');
+  const embed=nodes(specPage(block(4,3,'a','PARAGRAPH','Words here'),block(5,3,'b','EMBEDDED_CANVAS')));expect(embed.text.map(n=>n.text)).toEqual(['Words here']);expect(embed.all.find(n=>n.name==='Original preview')).toMatchObject({visible:false});expect(embed.out.issues.map(i=>i.code)).toContain('spec-block-embed');
+ });
+});
 describe('spec blocks become editable pages (self-authored fixtures)',()=>{
  it('imports a stored block tree as a frame of text layers in reading order, with the preview kept hidden',()=>{
   const {out,all,text}=nodes(page(spec({richDocument:doc}))),frame=all.find(n=>n.name==='Hierarchy evaluation')!;
