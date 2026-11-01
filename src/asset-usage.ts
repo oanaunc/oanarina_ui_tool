@@ -1,5 +1,6 @@
 import type {DesignDocument,DesignNode} from './model';
 import {effectiveVisible} from './model';
+import {styleSlotKind} from './design-systems';
 import {parseExpression} from './prototype';
 import type {PrototypeAction} from './prototype';
 export const assetKinds=['variable','collection','paint-style','text-style','effect-style','stroke-style','guide-style','component'] as const;
@@ -30,7 +31,7 @@ export function buildAssetUsageIndex(doc:DesignDocument,limits:{maxReferences?:n
   const actions=(list:PrototypeAction[],where:Partial<AssetReference>,depth=0)=>{if(depth>16){uncertain.add('variable');uncertain.add('component');warnings.add('Prototype action depth exceeds the audit limit.');return;}for(const a of list){step();if(a.variableId)ref('variable',a.variableId,'prototype','Prototype action variable',where);if(a.componentId)ref('component',a.componentId,'prototype','Prototype component action',where);if(a.expression)expression(a.expression,where,'Prototype expression');for(const b of a.branches??[]){expression(b.condition,where,'Prototype branch condition');actions(b.actions,where,depth+1);}}};
   for(const [id,{node:n,pageId,pageName}] of nodes){step();const where={pageId,pageName,nodeId:id,nodeName:n.name},sourceAssetKey=n.type==='component'?assetKey('component',id):undefined;
    for(const [field,target] of Object.entries(n.variableBindings??{}))if(target)ref('variable',target,'binding',field+' variable binding',where);
-   for(const [kind,target] of Object.entries(n.styleIds??{}))if(target){ref((kind+'-style') as AssetKind,target,'style',kind+' style assignment',where);const actual=stylesById.get(target);if(actual&&actual.type!==kind){ref((actual.type+'-style') as AssetKind,target,'style','Mismatched '+kind+' style reference (ignored by rendering)',where);warnings.add('A saved style reference has the wrong kind. Its matching definition is retained as a potential dependency.');}}
+   for(const [slot,target] of Object.entries(n.styleIds??{}))if(target){const kind=styleSlotKind(slot);ref((kind+'-style') as AssetKind,target,'style',kind+' style assignment',where);const actual=stylesById.get(target);if(actual&&actual.type!==kind){ref((actual.type+'-style') as AssetKind,target,'style','Mismatched '+kind+' style reference (ignored by rendering)',where);warnings.add('A saved style reference has the wrong kind. Its matching definition is retained as a potential dependency.');}}
    if(n.layoutGuideStyleId)ref('guide-style',n.layoutGuideStyleId,'guide','Layout guide style assignment',where);
    if(n.componentId)ref('component',n.componentId,'instance','Instance main component',where);
    for(const [collection] of Object.entries(n.variableModes??{}))ref('collection',collection,'mode','Explicit layer collection mode',where);

@@ -41,11 +41,15 @@ unsupported screen API and a delayed API callback after a mode switch.
 
 A color style is a named color saved in the file. Layers link to it, so changing the style changes every layer that uses it.
 
-- **Save one.** Select a layer, click its fill chip, then choose **Save as color style** under Recent colors. Give it a name and press Create style. The layer is now linked to it. A slash in the name makes a folder, like `Brand/Olive`.
-- **Apply one.** Click a fill chip and open the **Styles** tab. Search if you need to, then click a style. For several selected layers, use the Paint style row in the inspector.
+- **Save one.** Select a layer, click its fill or stroke chip, then choose **Save as color style** under Recent colors. Give it a name and press Create style. The layer is now linked to it. A slash in the name makes a folder, like `Brand/Olive`.
+- **Apply one.** Click a fill or stroke chip and open the **Styles** tab. Search if you need to, then click a style. For several selected layers, use the Paint style row in the inspector, or the Stroke color style row when their strokes differ.
 - **Change one.** Hover a style in the Styles tab and click its edit button. Changes reach every layer using it, in one Undo. Styles & colors in the left panel lists them too.
-- **Stop using one.** A linked fill shows the style's name, with a Detach style button beside it. The layer keeps its color. Changing that fill by hand in the Custom tab also detaches it, and deleting a style leaves its layers with the color they had.
+- **Stop using one.** A linked fill or stroke shows the style's name, with a Detach style button beside it. The layer keeps its color. Changing that color by hand in the Custom tab also detaches it, and deleting a style leaves its layers with the color they had. Changing a stroke's weight does not.
 
 Styles belong to the file they were saved in. To use them in another file, publish that file as a local library and install it there.
 
-Color styles apply to fills, including text. A style can hold a gradient or several fills, and those are changed in Manage styles rather than the color panel. Strokes have their own stroke styles.
+Color styles apply to fills, including text, and to strokes. On a stroke, the style sets the first stroke's color. Its weight and any other strokes stay the layer's own, and a style holding several fills gives the stroke the top visible one. A saved stroke style in the Design system section is a separate thing that holds a whole stroke with its weight, and a stroke uses one or the other.
+
+## Gradient styles
+
+A style can hold a gradient. Gradient fills and strokes show the same **Custom** and **Styles** tabs in their settings, so a gradient saves as a style, applies, shows its name and detaches as a color does. The style's edit view changes its type, stops and angle, and every layer using it follows in one Undo. Switching the type there turns a style solid or gradient everywhere it is used. Canvas gradient handles work on a layer's own gradient, not on a style. A style holding several fills, an image or a shader is changed in Manage styles.

@@ -1,6 +1,6 @@
 import type {DesignDocument,DesignNode} from './model';
-import {applyDesignSystems,bindingTypeOf,styleFields} from './design-systems';
-import type {BindingField,DesignStyle,DesignVariable,StyleKind} from './design-systems';
+import {applyDesignSystems,bindingTypeOf,styleFields,styleSlotKind} from './design-systems';
+import type {BindingField,DesignStyle,DesignVariable,StyleKind,StyleSlot} from './design-systems';
 import {fillsFor,strokesFor} from './paints';
 import {colorDistance,documentIndexes,hexColor,pageIndex} from './audit-index';
 import type {AuditLayer,PageIndex} from './audit-index';
@@ -25,7 +25,7 @@ export function literalField(n:DesignNode,field:AuditField):string|number|undefi
  if(field==='opacity')return n.opacity<1?n.opacity:undefined;
  const s=strokesFor(n)[0];return s?.visible&&s.width>0?s.width:undefined;
 }
-const linkedStyle=(n:DesignNode,field:AuditField)=>field==='fill'?n.styleIds?.paint:field==='stroke'||field==='strokeWidth'?n.styleIds?.stroke:field==='fontSize'?n.styleIds?.text:undefined;
+const linkedStyle=(n:DesignNode,field:AuditField)=>field==='fill'?n.styleIds?.paint:field==='stroke'?n.styleIds?.strokePaint??n.styleIds?.stroke:field==='strokeWidth'?n.styleIds?.stroke:field==='fontSize'?n.styleIds?.text:undefined;
 type ResolvedTable=Map<string,{variable:DesignVariable;value:string|number}[]>;
 /** Every variable resolved once per distinct effective mode set, using a map so large token files stay linear. */
 function tokenTable(d:DesignDocument,modes:Record<string,string>,byId:Map<string,DesignVariable>,collections:Map<string,{id:string;defaultModeId:string}>):ResolvedTable{
@@ -48,7 +48,7 @@ export function auditTokens(doc:DesignDocument):TokenAudit{
  for(const index of documentIndexes(doc)){const memo=new Map<string,Record<string,string>>();for(const n of index.page.nodes){
   if(n.type==='slice')continue;const layer=index.layer(n),blocked=layer.locked?'Unlock this layer first.':undefined;
   for(const [field,id] of Object.entries(n.variableBindings??{}))if(id){const v=byId.get(id);if(!v)push({kind:'missing-variable',field,layer,value:id,alternatives:0,changesAppearance:false,blocked:blocked??(layer.managed?'Edit the main component.':undefined)});else if(!allowed(v,field))push({kind:'scope-mismatch',field,layer,value:v.name,alternatives:0,changesAppearance:false,blocked:'Change the variable scope or bind another variable.'});}
-  for(const [kind,id] of Object.entries(n.styleIds??{}))if(id){const style=styles.get(id);if(!style)push({kind:'missing-style',field:kind,layer,value:id,alternatives:0,changesAppearance:false,blocked:blocked??(layer.managed?'Edit the main component.':undefined)});else if(style.type!==kind)push({kind:'wrong-style-kind',field:kind,layer,value:style.name,alternatives:0,changesAppearance:false,blocked:blocked??(layer.managed?'Edit the main component.':undefined)});}
+  for(const [kind,id] of Object.entries(n.styleIds??{}))if(id){const style=styles.get(id);if(!style)push({kind:'missing-style',field:kind,layer,value:id,alternatives:0,changesAppearance:false,blocked:blocked??(layer.managed?'Edit the main component.':undefined)});else if(style.type!==styleSlotKind(kind))push({kind:'wrong-style-kind',field:kind,layer,value:style.name,alternatives:0,changesAppearance:false,blocked:blocked??(layer.managed?'Edit the main component.':undefined)});}
   if(layer.managed||n.type==='instance'||generated.has(n.id)||n.media)continue;
   const modes=effectiveModes(n,index,memo),key=JSON.stringify(Object.entries(modes).sort());let table=tables.get(key);if(!table){table=tokenTable(doc,modes,byId,collections);tables.set(key,table);}
   for(const field of FIELDS){
@@ -74,7 +74,7 @@ export function applyTokenFixes(d:DesignDocument,issues:readonly TokenIssue[]):T
   const page=d.pages.find(p=>p.id===issue.layer.pageId);if(!page){skipped++;continue;}const index=indexes.get(page.id)??pageIndex(page);indexes.set(page.id,index);const n=index.byId.get(issue.layer.nodeId);
   if(!n||index.locked(n)||issue.blocked){skipped++;continue;}const managed=index.managed(n)||n.type==='instance';
   if(issue.kind==='missing-variable'){if(!managed&&n.variableBindings?.[issue.field as BindingField]===issue.value){delete n.variableBindings[issue.field as BindingField];applied++;changed.push({pageId:page.id,nodeId:n.id,field:issue.field});}else skipped++;continue;}
-  if(issue.kind==='missing-style'||issue.kind==='wrong-style-kind'){const kind=issue.field as StyleKind;if(!managed&&n.styleIds?.[kind]){delete n.styleIds[kind];applied++;changed.push({pageId:page.id,nodeId:n.id,field:issue.field});}else skipped++;continue;}
+  if(issue.kind==='missing-style'||issue.kind==='wrong-style-kind'){const kind=issue.field as StyleSlot;if(!managed&&n.styleIds?.[kind]){delete n.styleIds[kind];applied++;changed.push({pageId:page.id,nodeId:n.id,field:issue.field});}else skipped++;continue;}
   const target=issue.suggestion;if(!target||managed){skipped++;continue;}
   if(target.type==='variable'){const field=issue.field as AuditField,v=d.variables?.find(v=>v.id===target.id);if(!v||n.variableBindings?.[field as BindingField]||linkedStyle(n,field)||String(literalField(n,field))!==issue.value){skipped++;continue;}(n.variableBindings??={})[field as BindingField]=v.id;}
   else{const kind=target.kind!;if(!d.styles?.some(s=>s.id===target.id&&s.type===kind)||n.styleIds?.[kind]){skipped++;continue;}(n.styleIds??={})[kind]=target.id;}
