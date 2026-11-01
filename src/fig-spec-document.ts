@@ -1,5 +1,6 @@
 import type {FigDocumentBlock,FigDocumentContent} from './fig-document';
-import type {TextRun} from './rich-text';
+import {paragraph,specInlineMarks} from './spec';
+import type {SpecBlock} from './spec';
 import type {Raw} from './fig-values';
 /** A spec page as real files store it: a DOCUMENT block whose child blocks each name their kind in specBlockType and keep their words in specBlockContent. */
 const LIMIT={ops:200_000,characters:1_000_000,blocks:4000,depth:32};
@@ -17,14 +18,27 @@ export function collaborativeText(value:unknown):string|undefined{
  for(const raw of pending){const range=span(raw.rebasedRange??raw.range);if(!range||raw.type==='INSERT'&&typeof raw.content!=='string')return;ops.push({type:raw.type,range,content:raw.content as string|undefined});}
  return apply([],ops,text=>text.split(''))??apply([],ops,text=>[...text]);
 }
-/** Inline marks are stored as literal markdown, and a spec page shows them as formatting. */
-const MARKS=/\*\*(.+?)\*\*|(?<![\w*])\*(?!\s)(.+?)\*(?![\w*])|(?<!\w)_(?!\s)(.+?)_(?!\w)|~~(.+?)~~|`(.+?)`|\[([^\]\n]+)\]\((https?:[^)\s]+)\)/g;
-export function figInlineMarks(source:string,mono:string):{text:string;runs:TextRun[]}{
- const runs:TextRun[]=[];let text='',at=0;
- for(const m of source.matchAll(MARKS)){text+=source.slice(at,m.index);at=m.index+m[0].length;const inner=m[1]??m[2]??m[3]??m[4]??m[5]??m[6],start=text.length;text+=inner;const end=text.length;if(m[1]!==undefined)runs.push({start,end,fontWeight:700});else if(m[2]!==undefined||m[3]!==undefined)runs.push({start,end,fontStyle:'italic'});else if(m[4]!==undefined)runs.push({start,end,decorations:['line-through']});else if(m[5]!==undefined)runs.push({start,end,fontFamily:mono});else runs.push({start,end,hyperlink:m[7],decorations:['underline']});}
- return {text:text+source.slice(at),runs};
-}
+export const figInlineMarks=specInlineMarks;
 const headingLevel=(type:string)=>Number(/^HEADING_([1-6])$/.exec(type)?.[1]??0);
+const depth=(indent:number|undefined)=>{const value=Math.min(6,Math.max(0,indent??0));return value?{indent:value}:{};};
+/** The page as Spec layer blocks. Images and embedded canvases resolve through the caller, which owns the file's assets and layers. */
+export function figSpecBlocks(content:FigDocumentContent,image:(hash:string)=>{src:string;width:number;height:number},canvas:(block:Extract<FigDocumentBlock,{kind:'canvas'}>)=>{nodeId:string;pageId?:string;name?:string}):SpecBlock[]{
+ const out:SpecBlock[]=[],id=()=>crypto.randomUUID();
+ for(const b of content.blocks)switch(b.kind){
+  case 'heading':out.push({id:id(),kind:'heading',level:b.level,text:b.text});break;
+  case 'paragraph':out.push({id:id(),kind:'paragraph',text:b.text});break;
+  case 'list':for(const text of b.items)out.push({id:id(),kind:b.ordered?'number':'bullet',text,...depth(b.indent)});break;
+  case 'todo':out.push({id:id(),kind:'todo',text:b.text,checked:b.checked,...depth(b.indent)});break;
+  case 'quote':out.push({id:id(),kind:'quote',text:b.text});break;
+  case 'code':out.push({id:id(),kind:'code',text:b.text});break;
+  case 'rule':out.push({id:id(),kind:'divider'});break;
+  case 'spacer':out.push(paragraph());break;
+  case 'table':{const width=Math.min(30,Math.max(1,...b.rows.map(r=>r.length)));out.push({id:id(),kind:'table',rows:b.rows.slice(0,200).map(r=>Array.from({length:width},(_,i)=>r[i]??''))});break;}
+  case 'image':{const found=image(b.hash);out.push({id:id(),kind:'image',src:found.src,width:b.width||found.width,height:b.height||found.height});break;}
+  case 'canvas':out.push({id:id(),kind:'frame',...canvas(b)});break;
+ }
+ return out.length?out:[paragraph()];
+}
 /** Reads a spec page in stored order. Undefined means some text could not be proven, so the caller keeps the stored preview instead of showing partial words. */
 export function figSpecContent(root:Raw,kids:(block:Raw)=>Raw[]):FigDocumentContent|undefined{
  const blocks:FigDocumentBlock[]=[];let omitted=0,size=0,failed=false,seen=0;
@@ -38,13 +52,13 @@ export function figSpecContent(root:Raw,kids:(block:Raw)=>Raw[]):FigDocumentCont
   if(type==='HORIZONTAL_RULE'){add({kind:'rule'});return;}
   if(type==='IMAGE'){const hash=block.specImageHash;if(typeof hash==='string'&&/^[\da-f]{40}$/i.test(hash))add({kind:'image',hash:hash.toLowerCase(),width:Number(block.specWidth)||0,height:Number(block.specHeight)||0});else omitted++;return;}
   if(type==='EMBED'||type==='VIDEO'){const url=block.specEmbedUrl;if(typeof url==='string'&&/^https?:\/\//i.test(url))add({kind:'paragraph',text:`[${url}](${url})`});else omitted++;return;}
-  if(type==='EMBEDDED_CANVAS'){omitted++;return;}
+  if(type==='EMBEDDED_CANVAS'){const layers=kids(block).filter(k=>k.type!=='SPEC_BLOCK');if(!layers.length)omitted++;blocks.push({kind:'canvas',width:Number(block.specWidth)||0,height:Number(block.specHeight)||0,layers});return;}
   const text=words(block);
   if(type==='CODE_BLOCK')add({kind:'code',text});
   else if(type==='BLOCK_QUOTE'){if(text)add({kind:'quote',text});}
   else if(level){if(text.trim())add({kind:'heading',level,text:text.trim()});}
   else if(type==='ORDERED_LIST_ITEM'||type==='UNORDERED_LIST_ITEM')add({kind:'list',ordered:type==='ORDERED_LIST_ITEM',items:[text],indent:indent+Number(block.specBlockIndentLevel||0)});
-  else if(type==='TODO_LIST_ITEM_CHECKED'||type==='TODO_LIST_ITEM_UNCHECKED')add({kind:'paragraph',text:(type==='TODO_LIST_ITEM_CHECKED'?'☑ ':'☐ ')+text});
+  else if(type==='TODO_LIST_ITEM_CHECKED'||type==='TODO_LIST_ITEM_UNCHECKED')add({kind:'todo',text,checked:type==='TODO_LIST_ITEM_CHECKED',indent:indent+Number(block.specBlockIndentLevel||0)});
   else if(type!=='DOCUMENT')for(const line of text.split('\n'))add(line.trim()?{kind:'paragraph',text:line}:{kind:'spacer'});
   for(const child of kids(block))visit(child,type==='DOCUMENT'?indent:indent+1,depth+1);
  };

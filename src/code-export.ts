@@ -1,8 +1,11 @@
+import {flattenSpecs} from './spec-layers';
 import type {DesignDocument,DesignNode} from './model';
 import {fillsFor,strokesFor} from './paints';
 import {resolveVariable} from './design-systems';
 import {hexColor,pageIndex} from './audit-index';
 import type {PageIndex} from './audit-index';
+/** Generated code wants real boxes and text, which is what a spec paints as. */
+const specsAsLayers=(doc:DesignDocument):DesignDocument=>doc.pages.some(p=>p.nodes.some(n=>n.type==='spec'))?{...doc,pages:doc.pages.map(p=>({...p,nodes:flattenSpecs(p.nodes,doc.pages)}))}:doc;
 /** Starting-point code generation. Output is approximate by nature and every known reduction is reported as a warning. */
 export type CodeTarget='html-css'|'react'|'swiftui'|'compose'|'css-tokens'|'tailwind'|'dtcg'|'swift-tokens'|'android-tokens';
 export const codeTargets:{id:CodeTarget;label:string;tokens:boolean}[]=[{id:'html-css',label:'HTML and CSS',tokens:false},{id:'react',label:'React (TSX, inline styles)',tokens:false},{id:'swiftui',label:'SwiftUI',tokens:false},{id:'compose',label:'Jetpack Compose',tokens:false},{id:'css-tokens',label:'CSS custom properties',tokens:true},{id:'tailwind',label:'Tailwind theme (JSON)',tokens:true},{id:'dtcg',label:'Design tokens (JSON)',tokens:true},{id:'swift-tokens',label:'Swift constants',tokens:true},{id:'android-tokens',label:'Android resources (XML)',tokens:true}];
@@ -67,7 +70,7 @@ function tokenOutput(d:DesignDocument,p:CodePreset,warn:(m:string)=>void):CodeFi
  const xml=(s:string)=>html(s).replace(/'/g,'&apos;'),snake=(s:string)=>s.replace(/-/g,'_').replace(/^(\d)/,'t$1');return [{name:'values/tokens.xml',language:'xml',content:'<?xml version="1.0" encoding="utf-8"?>\n<resources>\n'+named.map(r=>pad+(r.type==='color'?'<color name="'+snake(r.key)+'">'+r.value+'</color>':r.type==='number'?'<dimen name="'+snake(r.key)+'">'+r.value+'dp</dimen>':r.type==='boolean'?'<bool name="'+snake(r.key)+'">'+r.value+'</bool>':'<string name="'+snake(r.key)+'">'+xml(String(r.value))+'</string>')).join('\n')+'\n</resources>\n'}];
 }
 /** Pure and read-only. Unsupported layers still appear as placeholders, so output structure matches the selection. */
-export function generateCode(doc:DesignDocument,pageId:string,selection:readonly string[],presetValue:CodePreset):CodeOutput{
+export function generateCode(source:DesignDocument,pageId:string,selection:readonly string[],presetValue:CodePreset):CodeOutput{const doc=specsAsLayers(source);
  const preset=validateCodePreset(presetValue),warnings=new Set<string>(),warn=(m:string)=>{warnings.add(m);};if(codeTargets.find(t=>t.id===preset.target)?.tokens)return {files:tokenOutput(doc,preset,warn),warnings:[...warnings],layers:0};
  const page=doc.pages.find(p=>p.id===pageId);if(!page)throw Error('The current page no longer exists.');const index=pageIndex(page),built=buildTrees(index,selection,warn),{trees}=built;if(!trees.length)throw Error('This page has no visible layers to export.');const name=selection.length===1?index.byId.get(selection[0])?.name??page.name:page.name;
  const files=preset.target==='html-css'?htmlOutput(trees,preset,doc):preset.target==='react'?reactOutput(trees,preset,doc,name):preset.target==='swiftui'?swiftOutput(trees,preset,name):composeOutput(trees,preset,name);

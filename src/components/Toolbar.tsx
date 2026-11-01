@@ -5,7 +5,7 @@ import {useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {toolbarFocusIndex} from '../toolbar-navigation';
 import {captureColorContext,sameColorContext} from '../color-edit-context';
 import type {ColorEditContext} from '../color-edit-context';
-import {MousePointer2,Frame,Square,Circle,Minus,ArrowUpRight,Hexagon,Star,PenTool,Pencil,Paintbrush,Type,Hand,Scaling,MessageCircle,Plus,ChevronDown,Scan,SquareDashed,Code2,Search,LayoutTemplate,PenLine,Braces,ZoomIn,Play,Clapperboard} from 'lucide-react';
+import {MousePointer2,Frame,Square,Circle,Minus,ArrowUpRight,Hexagon,Star,PenTool,Pencil,Paintbrush,Type,Hand,Scaling,MessageCircle,Plus,ChevronDown,Scan,SquareDashed,Code2,Search,LayoutTemplate,PenLine,Braces,FileText,ZoomIn,Play,Clapperboard} from 'lucide-react';
 import {convertToTextPath} from '../text-path-actions';
 import DrawToolMenus from './DrawToolMenus';
 import {notifyError} from '../files';
@@ -20,7 +20,7 @@ const groups:[string,Tool,typeof Square,string][][]=[
  [['Frame','frame',Frame,'F'],['Section','section',SquareDashed,'⇧S'],['Slice','slice',Scan,'S']],
  [['Rectangle','rectangle',Square,'R'],['Ellipse','ellipse',Circle,'O'],['Line','line',Minus,'L'],['Arrow','arrow',ArrowUpRight,'⇧L'],['Polygon','polygon',Hexagon,''],['Star','star',Star,'']],
  [['Pen','pen',PenTool,'P'],['Pencil','pencil',Pencil,'⇧P'],['Brush','brush',Paintbrush,'']],
- [['Text','text',Type,'T'],['Code layer','code',Braces,'']], [['Comment','comment',MessageCircle,'C']]
+ [['Text','text',Type,'T'],['Spec','spec',FileText,''],['Code layer','code',Braces,'']], [['Comment','comment',MessageCircle,'C']]
 ];
 const shapeGroup=groups[2],textGroup=groups[4],[penItem,pencilItem,brushItem]=groups[3];
 /** Draw leads with the drawing tools as direct buttons; every other tool stays one mode change away. */

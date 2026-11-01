@@ -1,3 +1,4 @@
+import {forgetSpecLayouts,settleSpecs} from './spec-layers';
 import {FIG_LIMITS} from './fig-limits';
 import {validateFigSceneRasters} from './fig-scene';
 import type {FigImportIssue,FigImportSummary,FigSceneImport} from './fig-scene';
@@ -24,7 +25,7 @@ export async function importFigBytes(bytes:Uint8Array,name:string,signal?:AbortS
  if(signal?.aborted)throw new DOMException('Design file import cancelled.','AbortError');
  onStage?.('decoding');await validateFigSceneRasters(result.document,signal);
  if(signal?.aborted)throw new DOMException('Design file import cancelled.','AbortError');
- onStage?.('validating');
+ onStage?.('validating');forgetSpecLayouts();settleSpecs(result.document);
  return result;
 }
 export function selectedFigBytes(base64:string):Uint8Array{

@@ -48,6 +48,7 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | Tool | Behavior |
 | --- | --- |
 | `inspect_project` | Document/page metadata, layer counts and current SHA-256 revision |
+| `read_spec` | List spec layers, or read one as Markdown with `forma://` references to its frames and images |
 | `read_nodes` | Search, filter IDs and paginate layers; asset bytes omitted by default |
 | `read_document` | Complete JSON, optionally including assets; maximum response 5 MB |
 | `read_design_system` | Typed variables, collections/modes, local styles and component sets |
@@ -75,7 +76,7 @@ Default asset-omitted document reads also omit opaque local-library edit-baselin
 
 Source `import_image_asset` takes `revision`, `pageId`, `dataUrl` (`data:image/png;base64,…`) and optional `name`, `x`, `y`, `displayWidth`. It preserves aspect ratio and returns natural/display dimensions, bytes, node ID and new revision without echoing the asset. Supports bounded noninterlaced 8-bit RGB/RGBA static PNG; other raster formats, indexed/grayscale/16-bit/interlaced PNG, animation and compressed metadata are refused. No asset paths or network URLs are accepted. See [PNG import](../docs/MCP-PNG-IMPORT.md) for validation and limits. The frozen standalone download does not include this new source tool yet.
 
-`apply_operations` supports `rename_document`, `create_page`, `rename_page`, `duplicate_page`, `reorder_page`, `delete_page`, `create_node`, `update_node`, `delete_node` and `set_design_system`. Nodes can specify an optional unique `id` when created, so children can reference parents created earlier in the same atomic batch. Node `properties` use the shared `.oui` node fields; changing `id` or `type` through an update is rejected. Deleting a frame also deletes its descendants; deleting an owned instance child records a visibility override. Moving a container moves its descendants.
+`apply_operations` supports `rename_document`, `create_page`, `rename_page`, `duplicate_page`, `reorder_page`, `delete_page`, `create_node`, `update_node`, `update_spec`, `delete_node` and `set_design_system`. `update_spec` replaces a spec's blocks from Markdown and keeps the frames and images its `forma://` references name. Nodes can specify an optional unique `id` when created, so children can reference parents created earlier in the same atomic batch. Node `properties` use the shared `.oui` node fields; changing `id` or `type` through an update is rejected. Deleting a frame also deletes its descendants; deleting an owned instance child records a visibility override. Moving a container moves its descendants.
 
 A minimal operation batch, after obtaining the revision and page ID:
 

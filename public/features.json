@@ -5417,7 +5417,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Real local paint/effect-style and scoped color-variable assignment; independent selected-layer maps, lock skipping, competing-channel detachment, collection modes, validated creation, Undo/save/recovery and managed-overwrite refusal Evidence and limits: docs/DESIGN-SYSTEM-ASSIGNMENTS.md; tests/design-system-actions.test.ts; tests/e2e/design-system-actions.spec.ts. Exact Figma reference verification remains pending."
+    "notes": "The color panel has Custom and Styles tabs. Search saved styles and apply one to the selected layer, or to several from the Paint style row. tests/e2e/color-styles.spec.ts; docs/COLOR-WORKFLOWS.md."
   },
   {
     "id": "UI-17-033",
@@ -9447,7 +9447,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
+    "notes": "Save as color style in the color panel names the current fill as a style. Styles are listed there and in Styles & colors, with folders from a slash in the name. Changing one updates every layer using it as one Undo, and they save in the .oui file. tests/color-styles.test.ts; tests/e2e/color-styles.spec.ts; docs/COLOR-WORKFLOWS.md."
   },
   {
     "id": "UI-29-003",
@@ -9717,7 +9717,7 @@
     "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2.0-dev.2: reachable UI, version-two project persistence, validation and undo; core/browser checks in docs/VALIDATION-v0.2-systems-motion.md. Reference acceptance remains separately pending. Local style bindings update consumers; JSON library import remaps identifiers and aliases."
+    "notes": "A linked fill shows its style name with a Detach style button; the layer keeps its color. Changing a linked fill by hand also detaches it. tests/e2e/color-styles.spec.ts."
   },
   {
     "id": "UI-29-030",
@@ -12997,7 +12997,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Offline .fig import keeps live structure in one cancellable worker. Spec pages open as frames of editable text, read from the real block format and verified on one real file of headings, paragraphs and bullet lists; other block kinds follow the file schema only. Tested only with generated files, so field names are unverified and full .fig compatibility is not claimed. Binary export is absent."
+    "notes": "Offline .fig import keeps live structure in one cancellable worker. Spec pages open as Spec layers you edit block by block, read from the real block format and verified on one real file of headings, paragraphs and bullet lists; other block kinds follow the file schema only. Tested only with generated files, so field names are unverified and full .fig compatibility is not claimed. Binary export is absent."
   },
   {
     "id": "UI-39-032",
@@ -20218,5 +20218,365 @@
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040450253-Masks",
     "notes": "v0.2.0-dev.4: reachable editing, history/persistence where applicable, core/browser checks and universal Mac build/smoke. See docs/VALIDATION-v0.2-svg-masks-selection.md; exact reference acceptance remains separate. Alpha/vector/luminance source modes mask following same-parent siblings until the next mask. Nested vector mode uses opaque geometry; bounds are conservative, and exact Figma nested-composition parity is unverified."
+  },
+  {
+    "id": "UI-61-001",
+    "category": "Spec pages",
+    "name": "Spec layer type",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "A spec is one layer holding versioned blocks in the .oui file, validated on open and before every edit. Older builds refuse files that contain one. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-002",
+    "category": "Spec pages",
+    "name": "Spec tool in the toolbar",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Text tool menu → Spec, or the Spec tool command. A click places an 850 wide page and opens it. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-003",
+    "category": "Spec pages",
+    "name": "Import spec pages as Spec layers",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Pages with readable blocks become Spec layers with their stored words and block kinds. Verified on one real file of headings, paragraphs and bullet lists; other kinds follow the file format and are tested on fixtures written here. docs/FIG-IMPORT.md."
+  },
+  {
+    "id": "UI-61-004",
+    "category": "Spec pages",
+    "name": "Edit a spec by double-click",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Double-click, Enter on a selected spec, or Inspector → Edit opens the page over the canvas at the same scale, and Escape or a click outside closes it. Words stay within 4 points of where the canvas painted them. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-005",
+    "category": "Spec pages",
+    "name": "Heading blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-006",
+    "category": "Spec pages",
+    "name": "Paragraph blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-007",
+    "category": "Spec pages",
+    "name": "Bulleted list blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-008",
+    "category": "Spec pages",
+    "name": "Numbered list blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-009",
+    "category": "Spec pages",
+    "name": "To-do blocks with checkboxes",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-010",
+    "category": "Spec pages",
+    "name": "Quote blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-011",
+    "category": "Spec pages",
+    "name": "Code blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-012",
+    "category": "Spec pages",
+    "name": "Divider blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-013",
+    "category": "Spec pages",
+    "name": "Table blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. Tab moves between cells and adds a row at the end. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-014",
+    "category": "Spec pages",
+    "name": "Image blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Reachable from the slash menu with .oui persistence, Undo and painted output. Choose or paste PNG, JPEG, WebP or GIF up to 20 MB, embedded in the file. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-015",
+    "category": "Spec pages",
+    "name": "Slash command block menu",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Type / to filter 13 block choices; arrows, Return, Tab and Escape drive it. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-016",
+    "category": "Spec pages",
+    "name": "Markdown prefix shortcuts",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "#, -, 1., >, [], ``` and --- change the line as they are typed. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-017",
+    "category": "Spec pages",
+    "name": "Inline markdown formatting",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Marks stay literal in the block, as real files store them. They show as formatting until the line takes the caret. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-018",
+    "category": "Spec pages",
+    "name": "Format keys in spec text",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Command-B, I, E, K and Shift-Command-S wrap the selection in marks. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-019",
+    "category": "Spec pages",
+    "name": "Drag a block to reorder",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Drag the handle beside a block; a line shows where it lands. One step of the page Undo. tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-020",
+    "category": "Spec pages",
+    "name": "Block options menu",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Click a block handle to turn it into another kind, duplicate or delete it. tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-021",
+    "category": "Spec pages",
+    "name": "Move a block by keyboard",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Shift-Command-Up and Down. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-022",
+    "category": "Spec pages",
+    "name": "Nested list indent",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Tab and Shift-Tab, up to six levels and one deeper than the line above. Numbering carries across nested bullets. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-023",
+    "category": "Spec pages",
+    "name": "Paste markdown as blocks",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Pasted markdown on a plain line becomes blocks, including tables and to-dos. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-024",
+    "category": "Spec pages",
+    "name": "Copy spec as Markdown",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Inspector → Copy as Markdown. Command-A twice in a page selects every block, and Copy then gives Markdown. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-025",
+    "category": "Spec pages",
+    "name": "Live frame embeds",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "/frame embeds a frame by reference. It repaints when the frame changes, resizes the page with it, and reports a deleted frame. Specs never show inside each other. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-026",
+    "category": "Spec pages",
+    "name": "Embed a frame from another page",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "The frame list covers every page, current page first, and an embed keeps its page. Frames only show from the open file. docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-027",
+    "category": "Spec pages",
+    "name": "Go to an embedded frame",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Go to frame on a hovered embed closes the page, opens the frame’s page and zooms to it. tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-028",
+    "category": "Spec pages",
+    "name": "Page height follows content",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Height follows the words, with the stored page height as a floor. A height change sets that floor. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-029",
+    "category": "Spec pages",
+    "name": "Page width reflow",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Changing width reflows the page, down to 320. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-030",
+    "category": "Spec pages",
+    "name": "One Undo per editing session",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "An open page saves as you pause, and Undo afterwards takes the whole session back in one step. Inside the page, Undo walks back typing and block changes. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-031",
+    "category": "Spec pages",
+    "name": "Spec text in Inspect",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Inspect lists block count and the full Markdown. docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-032",
+    "category": "Spec pages",
+    "name": "Spec in artwork export",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "SVG, PNG, JPG and PDF render a spec through the normal artwork path, including live frames. Generated code uses its text and boxes, without frames. tests/spec.test.ts and tests/e2e/spec-layer.spec.ts; docs/SPEC-PAGES.md."
+  },
+  {
+    "id": "UI-61-033",
+    "category": "Spec pages",
+    "name": "Read a spec through local MCP",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "read_spec lists specs or returns one as Markdown, over the local stdio server only. mcp/tests/spec.test.ts."
+  },
+  {
+    "id": "UI-61-034",
+    "category": "Spec pages",
+    "name": "Write a spec through local MCP",
+    "priority": "must",
+    "status": "implemented",
+    "verification": "implementation-validated; reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "The update_spec operation replaces a page from Markdown with revision checks and MCP Undo, keeping referenced frames and images. mcp/tests/spec.test.ts."
+  },
+  {
+    "id": "UI-61-035",
+    "category": "Spec pages",
+    "name": "Find and replace inside specs",
+    "priority": "must",
+    "status": "planned",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Find and replace reads text layers only, so words in a spec are not searched yet."
+  },
+  {
+    "id": "UI-61-036",
+    "category": "Spec pages",
+    "name": "Collapsible toggle blocks",
+    "priority": "must",
+    "status": "planned",
+    "verification": "reference-verification-pending",
+    "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
+    "notes": "Absent. The real block format has no toggle kind, so a file could not carry one."
   }
 ]

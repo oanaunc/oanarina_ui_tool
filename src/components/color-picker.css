@@ -47,3 +47,34 @@
 .gradient-stop .forma-color-picker{min-width:0}
 .gradient-geometry{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:6px 0}
 .app .gradient-geometry>.number-field{height:24px;min-height:24px;margin:0}
+.color-tabs{display:flex;gap:2px}
+.app .color-tabs>button{height:24px;padding:0 8px;border-radius:5px;font-size:11px;color:var(--muted);background:none}
+.app .color-tabs>button[aria-selected="true"]{background:var(--hover);color:var(--text);font-weight:600;box-shadow:none}
+.color-styles{display:grid;gap:8px;min-width:0;font-size:11px}
+.color-styles-title{display:flex;align-items:center;gap:6px;height:20px}.color-styles-title strong{font-weight:600}
+.app .color-styles-title>button{width:20px;height:20px;padding:0;color:var(--muted);border-radius:4px;display:grid;place-items:center}
+.app .color-styles-title>button:hover{background:var(--hover);color:var(--text)}
+.color-styles-search{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.app .color-styles-search input{flex:1;min-width:0;height:24px;padding:0 6px;font-size:11px}
+.app .color-styles-search button{width:22px;height:22px;padding:0;display:grid;place-items:center;border-radius:4px;color:var(--muted);flex:none}
+.app .color-styles-search button:hover{background:var(--hover);color:var(--text)}
+.color-style-list{display:grid;gap:1px;max-height:260px;overflow:auto}
+.color-style-folder{padding:6px 4px 2px;font-size:10px;color:var(--muted)}
+.color-style-row{display:flex;align-items:center;border-radius:5px}
+.color-style-row:hover,.color-style-row.active{background:var(--hover)}
+.app .color-style-apply{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:26px;padding:0 6px;background:none;color:var(--text);font-size:11px;text-align:left}
+.color-style-apply span{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.color-style-apply i,.color-style-preview i{flex:none;width:14px;height:14px;border-radius:3px;box-shadow:inset 0 0 0 1px #ffffff26}
+.app .color-style-edit{flex:none;width:24px;height:24px;padding:0;display:grid;place-items:center;border-radius:4px;background:none;color:var(--muted);opacity:0}
+.color-style-row:hover .color-style-edit,.color-style-edit:focus-visible{opacity:1}
+.app .color-style-edit:hover{color:var(--text)}
+.color-styles-empty{display:grid;gap:8px;margin:0;color:var(--muted);line-height:1.4}.color-styles-empty p{margin:0}
+.color-style-field{display:grid;grid-template-columns:72px 1fr;align-items:center;gap:6px;color:var(--muted)}
+.app .color-style-field input{min-width:0;height:26px;padding:0 6px;font-size:11px}
+.color-style-preview{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.app .color-style-primary{height:28px;border-radius:6px;background:var(--accent,#0d99ff);color:#fff;font-size:11px;font-weight:600}
+.color-styles small{color:var(--muted);line-height:1.4}
+.app .color-save-style{justify-self:start;padding:0;height:20px;background:none;color:var(--accent,#0d99ff);font-size:11px}
+.app .color-save-style:hover{text-decoration:underline}
+.app .color-styles .forma-color-picker-panel{margin:0;padding:0;border:0;background:none;box-shadow:none}
+.app .color-styles .forma-color-picker-panel .color-picker-square{height:150px}

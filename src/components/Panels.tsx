@@ -1,3 +1,4 @@
+import SpecPanel from './SpecPanel';
 import {t} from '../i18n';
 import LayerIcon from './LayerIcon';
 import {isComponentLayer} from '../canvas-chrome';
@@ -153,8 +154,8 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
  <PositionSection n={n} sel={sel} nodes={page.nodes} parent={parent} origin={origin} patch={patch} patchLayout={patchLayout} layoutLocked={Boolean(layoutLocked)}/>
  <LayoutSection n={n} parent={parent} patch={patch} patchLayout={patchLayout} layoutLocked={Boolean(layoutLocked)}/>
  <BlendControl n={n} radius={<NumberField label="Radius" glyph={<CornerGlyph/>} value={n.radius} min={0} onChange={radius=>patch({radius})}/>}/>
- {n.type==='text'&&<TypographySection n={n} patch={patch}/>}
- {sel.length>1?<MixedFillEditor key={JSON.stringify([page.id,s.selection])}/>:n.media?<VideoInspector key={n.id} n={n}/>:n.type==='code'?<CodeLayerPanel key={n.id} n={n}/>:<section className="inspector-section" data-testid="fill-section"><FillEditor n={n} patch={patch} styles={<DesignSystemInspector n={n} only="fill"/>}/></section>}
+ {n.type==='text'&&<TypographySection n={n} patch={patch}/>}{n.type==='spec'&&sel.length===1&&<SpecPanel key={n.id} n={n}/>}
+ {sel.length>1&&<section className="inspector-section" data-testid="mixed-fill-style"><DesignSystemInspector n={n} only="fill"/></section>}{sel.length>1?<MixedFillEditor key={JSON.stringify([page.id,s.selection])}/>:n.media?<VideoInspector key={n.id} n={n}/>:n.type==='code'?<CodeLayerPanel key={n.id} n={n}/>:<section className="inspector-section" data-testid="fill-section"><FillEditor n={n} patch={patch} styles={<DesignSystemInspector n={n} only="fill"/>}/></section>}
  {selectedStrokesDiffer(s.doc,s.pageId,s.selection)&&<MixedFillEditor role="stroke" key={'strokes:'+JSON.stringify([page.id,s.selection])}/>}<section className="inspector-section" data-testid="stroke-section" hidden={selectedStrokesDiffer(s.doc,s.pageId,s.selection)}><StrokeEditor n={n} patch={patch}/>{strokesFor(n).length>0&&<><DynamicStrokeControls n={n}/><CalligraphicStrokeControls n={n}/></>}</section>
  <section className="inspector-section" data-testid="effects-section"><EffectsEditor n={n} patch={patch}/></section>
  </>}
@@ -174,7 +175,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
  {sel.length===1&&<RotationOriginControls key={'rotation-origin:'+n.id} n={n}/>}{sel.length===1&&<CornerSmoothingControls key={'corner-smoothing:'+n.id} n={n}/>}
  {['rectangle','frame','component','instance'].includes(n.type)&&<details key={'corners:'+n.id} open={!!n.corners} className="inspector-disclosure"><summary>Independent corners</summary><div className="field-grid">{['Top left','Top right','Bottom right','Bottom left'].map((label,i)=><NumberField key={label} label={label} value={n.corners?.[i]??n.radius} min={0} onChange={value=>{const corners:[number,number,number,number]=n.corners?[...n.corners]:[n.radius,n.radius,n.radius,n.radius];corners[i]=value;patch({corners});}}/>)}</div><button className="text-button" onClick={()=>patch({corners:undefined})}>Use uniform radius</button></details>}
  <MoreSection name="Stroke scaling" scope={scope}><section aria-label="Stroke scaling"><StrokeScaleControl/></section></MoreSection>
- <MoreSection name="Design system" scope={scope} active={[n.variableBindings,n.styleIds,n.variableModes].some(v=>v&&Object.keys(v).length>0)}>{sel.length>1&&<DesignSystemInspector n={n} only="fill"/>}<DesignSystemInspector n={n} only="stroke"/><DesignSystemInspector n={n} only="effect"/><DesignSystemInspector n={n}/></MoreSection>
+ <MoreSection name="Design system" scope={scope} active={[n.variableBindings,n.styleIds,n.variableModes].some(v=>v&&Object.keys(v).length>0)}><DesignSystemInspector n={n} only="stroke"/><DesignSystemInspector n={n} only="effect"/><DesignSystemInspector n={n}/></MoreSection>
  <MoreSection name="Selection colors" scope={scope}><SelectionColors/></MoreSection>
  {sel.length===1&&n.type==='frame'&&<MoreSection name="Frame" scope={scope}><FrameActions key={n.id} id={n.id}/></MoreSection>}{sel.length===1&&n.type==='section'&&<MoreSection name="Section" scope={scope} active><SectionActions key={n.id+':'+n.name+':'+n.parentId} id={n.id}/></MoreSection>}{sel.length===1&&n.type==='group'&&!n.booleanOp&&<MoreSection name="Group bounds" scope={scope}><GroupBounds key={n.id} id={n.id}/></MoreSection>}
  {sel.length===1&&<MoreSection name="Position in frame" scope={scope}><FrameRelativePosition key={'frame-relative:'+n.id} id={n.id}/></MoreSection>}

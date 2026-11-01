@@ -3,6 +3,23 @@
   "asOf": "2026-11-01",
   "releases": [
     {
+      "version": "1.0.2",
+      "channel": "preview",
+      "title": "Forma 1.0.2",
+      "notes": [
+        "Specs are now their own layer. A spec page in a .fig file imports as a Spec layer, not a frame, and the Text tool menu makes a new one.",
+        "Write in a spec block by block. Type / for a menu of blocks, or start a line with #, -, 1., >, [], ``` or --- and it changes as you type.",
+        "Headings, paragraphs, lists, to-dos, quotes, code, dividers, tables and images are all blocks. Drag one to move it, or click its handle for more options.",
+        "Embed a live frame with /frame. Change the frame and the spec shows the change.",
+        "Copy any spec as Markdown, paste Markdown in as blocks, and let a local agent read or write a spec through Forma’s MCP server.",
+        "Save a fill as a named color style from the color panel. Find it again in the new Styles tab, apply it to other layers, and change it once to update them all."
+      ],
+      "limits": [
+        "Spec import is verified on one real file holding headings, paragraphs and bullet lists. Other block kinds, including embedded canvases, follow the file format and have not been seen in a real file.",
+        "Find and replace does not look inside specs yet, and text selection stays inside one block."
+      ]
+    },
+    {
       "version": "1.0.1",
       "channel": "preview",
       "title": "Forma 1.0.1",

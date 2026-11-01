@@ -1,4 +1,5 @@
 import type {DesignNode,NodeKind,Tool} from './model';
+import {SPEC_PAGE} from './spec-layers';
 export const shapeTools=['rectangle','ellipse','line','arrow','polygon','star'] as const;
 export type ShapeTool=typeof shapeTools[number];
 export const isShapeTool=(tool:unknown):tool is ShapeTool=>shapeTools.includes(tool as ShapeTool);
@@ -18,5 +19,5 @@ export function shapeDragGeometry(type:NodeKind,start:Point,end:Point,options:{c
  if(width>1e6||height>1e6||Math.abs(x)>1e6||Math.abs(y)>1e6)throw Error('The drawn shape exceeds the document limit.');
  return {x,y,width,height,...(line?{pathWidth:width||1,pathHeight:height||1,points:[{x:a.x-x,y:a.y-y},{x:width?b.x-x:1,y:height?b.y-y:1}]}:{})};
 }
-export function defaultShapeClick(type:NodeKind,start:Point,center=false){const width=type==='frame'?390:type==='code'?400:160,height=type==='frame'?844:type==='code'?300:type==='text'?40:100;const centered=center&&supportsCenterDrawing(type);return {...shapeDragGeometry(type,start,{x:start.x+width/(centered?2:1),y:start.y+height/(centered?2:1)},{center:centered}),...(['line','arrow'].includes(type)?{points:[],pathWidth:undefined,pathHeight:undefined}:{})};}
+export function defaultShapeClick(type:NodeKind,start:Point,center=false){const width=type==='frame'?390:type==='code'?400:type==='spec'?SPEC_PAGE.defaultWidth:160,height=type==='frame'?844:type==='code'?300:type==='text'?40:type==='spec'?SPEC_PAGE.defaultHeight:100;const centered=center&&supportsCenterDrawing(type);return {...shapeDragGeometry(type,start,{x:start.x+width/(centered?2:1),y:start.y+height/(centered?2:1)},{center:centered}),...(['line','arrow'].includes(type)?{points:[],pathWidth:undefined,pathHeight:undefined}:{})};}
 export function repeatShapeState(tool:ShapeTool):{tool:Tool;vectorEditId:null;vectorSelection:string[]}{return {tool,vectorEditId:null,vectorSelection:[]};}

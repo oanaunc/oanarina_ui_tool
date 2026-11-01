@@ -1,6 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {decodeFigContainerInWorker} from '../src/fig-container-core';
 import {figDocumentContent} from '../src/fig-document';
+import type {SpecBlock} from '../src/spec';
 import {collaborativeText,figInlineMarks,figSpecContent} from '../src/fig-spec-document';
 import {readCrdtDocument} from '../src/fig-document-crdt';
 import {mapFigScene} from '../src/fig-scene';
@@ -32,34 +33,36 @@ describe('spec pages in the real storage format',()=>{
   expect(figInlineMarks('**Preserve:** heading *and* ~~body~~ `code` [link](https://example.com) snake_case 2*3*4','Mono')).toEqual({text:'Preserve: heading and body code link snake_case 2*3*4',runs:[{start:0,end:9,fontWeight:700},{start:18,end:21,fontStyle:'italic'},{start:22,end:26,decorations:['line-through']},{start:27,end:31,fontFamily:'Mono'},{start:32,end:36,hyperlink:'https://example.com',decorations:['underline']}]});
  });
  it('imports a page and its child blocks as an editable page instead of an empty frame',()=>{
-  const {out,all,text}=nodes(specPage(block(4,3,'a','HEADING_1','Medium'),block(5,3,'b','PARAGRAPH','First paragraph.'),block(6,3,'c','PARAGRAPH'),block(7,3,'d','UNORDERED_LIST_ITEM','**Keep:** this'),block(8,3,'e','UNORDERED_LIST_ITEM','**Test:** that'),block(9,3,'f','PARAGRAPH'))),frame=all.find(n=>n.name==='Hierarchy evaluation')!;
-  expect(frame).toMatchObject({type:'frame',layout:'vertical',width:850,height:1100,minHeight:1100,sizingY:'hug'});expect(text.map(n=>n.text)).toEqual(['Medium','First paragraph.','Keep: this\nTest: that']);expect(text[0].fontSize).toBe(40);expect(text[2].listStyle).toBe('bullet');expect(text[2].textRuns).toEqual([{start:0,end:5,fontWeight:700},{start:11,end:16,fontWeight:700}]);expect(all.filter(n=>n.parentId===frame.id).map(n=>n.name)).toEqual(['Medium','First paragraph.','Empty line','Keep: this\nTest: that'.slice(0,60)]);
+  const {out,all,text}=nodes(specPage(block(4,3,'a','HEADING_1','Medium'),block(5,3,'b','PARAGRAPH','First paragraph.'),block(6,3,'c','PARAGRAPH'),block(7,3,'d','UNORDERED_LIST_ITEM','**Keep:** this'),block(8,3,'e','UNORDERED_LIST_ITEM','**Test:** that'),block(9,3,'f','PARAGRAPH'))),page=all.find(n=>n.name==='Hierarchy evaluation')!;
+  expect(page).toMatchObject({type:'spec',width:850,height:1100,minHeight:1100,clip:true});expect(text).toEqual([]);expect(page.spec!.blocks.map(b=>[b.kind,'text' in b?b.text:''])).toEqual([['heading','Medium'],['paragraph','First paragraph.'],['paragraph',''],['bullet','**Keep:** this'],['bullet','**Test:** that']]);
   expect(all.some(n=>n.name==='Original preview')).toBe(false);expect(out.issues.map(i=>i.code)).toContain('spec-block-text');expect(out.issues.map(i=>i.code)).not.toContain('spec-block-raster');expect(out.document.pages[0].nodes.every(n=>n.width>0)).toBe(true);
  });
  it('keeps its stored page height for a short page and grows past it for a long one',()=>{
-  const short=nodes(specPage(block(4,3,'a','PARAGRAPH','One line.'))).all.find(n=>n.type==='frame')!;expect(short.height).toBe(1100);
-  const long=nodes(specPage(...Array.from({length:70},(_,i)=>block(4+i,3,String.fromCharCode(40+i),'PARAGRAPH','Paragraph '+i+' '+'words '.repeat(60))))).all.find(n=>n.type==='frame')!;expect(long.height).toBeGreaterThan(1100);
+  const short=nodes(specPage(block(4,3,'a','PARAGRAPH','One line.'))).all.find(n=>n.type==='spec')!;expect(short.height).toBe(1100);
+  const long=nodes(specPage(...Array.from({length:70},(_,i)=>block(4+i,3,String.fromCharCode(40+i),'PARAGRAPH','Paragraph '+i+' '+'words '.repeat(60))))).all.find(n=>n.type==='spec')!;expect(long.height).toBeGreaterThan(1100);
  });
  it('reads the other block kinds in order',()=>{
   const kids=new Map<number,Record<string,unknown>[]>([[3,[block(4,3,'a','HEADING_3','Sub'),block(5,3,'b','CODE_BLOCK','let a=1'),block(6,3,'c','BLOCK_QUOTE','Said'),block(7,3,'d','HORIZONTAL_RULE'),block(8,3,'e','ORDERED_LIST_ITEM','One'),block(9,3,'f','ORDERED_LIST_ITEM','Two',{specBlockIndentLevel:1}),block(10,3,'g','TODO_LIST_ITEM_CHECKED','Done'),block(11,3,'h','TABLE')]],[11,[block(12,11,'a','TABLE_ROW'),block(13,11,'b','TABLE_ROW')]],[12,[block(14,12,'a','TABLE_CELL','A'),block(15,12,'b','TABLE_CELL','B')]],[13,[block(16,13,'a','TABLE_CELL','C')]]]);
   const content=figSpecContent({guid:id(3),specBlockType:'DOCUMENT'},b=>kids.get((b.guid as {localID:number}).localID)??[])!;
-  expect(content.blocks).toEqual([{kind:'heading',level:3,text:'Sub'},{kind:'code',text:'let a=1'},{kind:'quote',text:'Said'},{kind:'rule'},{kind:'list',ordered:true,items:['One'],indent:0},{kind:'list',ordered:true,items:['Two'],indent:1},{kind:'paragraph',text:'☑ Done'},{kind:'table',rows:[['A','B'],['C']]}]);
-  const all=nodes(page(spec({specBlockType:'DOCUMENT',specBlockContent:history()}),...[...kids.values()].flat())).all;expect(all.filter(n=>n.name==='Cell')).toHaveLength(4);expect(all.find(n=>n.name==='Code')).toBeTruthy();expect(all.find(n=>n.name==='Divider')?.width).toBeGreaterThan(100);
+  expect(content.blocks).toEqual([{kind:'heading',level:3,text:'Sub'},{kind:'code',text:'let a=1'},{kind:'quote',text:'Said'},{kind:'rule'},{kind:'list',ordered:true,items:['One'],indent:0},{kind:'list',ordered:true,items:['Two'],indent:1},{kind:'todo',text:'Done',checked:true,indent:0},{kind:'table',rows:[['A','B'],['C']]}]);
+  const made=nodes(page(spec({specBlockType:'DOCUMENT',specBlockContent:history()}),...[...kids.values()].flat())).all.find(n=>n.type==='spec')!;expect(made.spec!.blocks.map(b=>b.kind)).toEqual(['heading','code','quote','divider','number','number','todo','table']);expect(made.spec!.blocks.at(-1)).toMatchObject({rows:[['A','B'],['C','']]});
  });
  it('keeps the stored preview when any block cannot be proven, and reports what a page left out',()=>{
   const broken=nodes(specPage(block(4,3,'a','PARAGRAPH','Fine'),{...block(5,3,'b','PARAGRAPH'),specBlockContent:history([9,'bad'])}));expect(broken.all.find(n=>n.name==='Hierarchy evaluation')!.type).toBe('image');expect(broken.out.issues.map(i=>i.code)).toContain('spec-block-raster');
-  const embed=nodes(specPage(block(4,3,'a','PARAGRAPH','Words here'),block(5,3,'b','EMBEDDED_CANVAS')));expect(embed.text.map(n=>n.text)).toEqual(['Words here']);expect(embed.all.find(n=>n.name==='Original preview')).toMatchObject({visible:false});expect(embed.out.issues.map(i=>i.code)).toContain('spec-block-embed');
+  const embed=nodes(specPage(block(4,3,'a','PARAGRAPH','Words here'),block(5,3,'b','EMBEDDED_CANVAS'))),made=embed.all.find(n=>n.type==='spec')!;expect(made.spec!.blocks.map(b=>b.kind)).toEqual(['paragraph','frame']);expect(embed.out.issues.map(i=>i.code)).toContain('spec-block-embed');
+ });
+ it('keeps an embedded canvas live: its stored layers land in a frame beside the page and the block points at it',()=>{
+  const child={guid:id(6),type:'FRAME',name:'Screen',parentIndex:{guid:id(5),position:'a'},size:{x:300,y:200},transform:at(0,0),visible:true,fillPaints:[]},canvas=block(5,3,'b','EMBEDDED_CANVAS','',{specWidth:300,specHeight:200}),{all,out}=nodes(specPage(block(4,3,'a','PARAGRAPH','Words'),canvas,child)),made=all.find(n=>n.type==='spec')!,frame=made.spec!.blocks[1] as Extract<SpecBlock,{kind:'frame'}>,holder=all.find(n=>n.id===frame.nodeId)!;
+  expect(holder).toMatchObject({type:'frame',width:300,height:200,x:made.x+made.width+80});expect(all.find(n=>n.name==='Screen')?.parentId).toBe(holder.id);expect(out.issues.map(i=>i.code)).not.toContain('spec-block-embed');
  });
 });
 describe('spec blocks become editable pages (self-authored fixtures)',()=>{
  it('imports a stored block tree as a frame of text layers in reading order, with the preview kept hidden',()=>{
-  const {out,all,text}=nodes(page(spec({richDocument:doc}))),frame=all.find(n=>n.name==='Hierarchy evaluation')!;
-  expect(frame).toMatchObject({type:'frame',width:850,height:1100,layout:'vertical',x:40,y:60});expect(text.map(n=>n.text)).toEqual(['Hierarchy evaluation','First paragraph.','One\nTwo','Step','Second heading']);expect(text.map(n=>n.listStyle??'none')).toEqual(['none','none','bullet','number','none']);expect(text[0].fontSize).toBeGreaterThan(text[1].fontSize);expect(text.every(n=>n.parentId===frame.id&&n.textResize==='auto-height')).toBe(true);
-  const ys=text.map(n=>n.y);expect([...ys].sort((a,b)=>a-b)).toEqual(ys);const hidden=all.find(n=>n.name==='Original preview')!;expect(hidden).toMatchObject({type:'image',visible:false,ignoreLayout:true,parentId:frame.id});expect(out.issues.map(i=>i.code)).toContain('spec-block-text');expect(out.issues.map(i=>i.code)).not.toContain('spec-block-raster');expect(out.issues.map(i=>i.code)).not.toContain('layout-materialized');
+  const {out,all}=nodes(page(spec({richDocument:doc}))),made=all.find(n=>n.name==='Hierarchy evaluation')!;
+  expect(made).toMatchObject({type:'spec',width:850,height:1100,x:40,y:60});expect(made.spec!.blocks.map(b=>[b.kind,'text' in b?b.text:''])).toEqual([['heading','Hierarchy evaluation'],['paragraph','First paragraph.'],['bullet','One'],['bullet','Two'],['number','Step'],['heading','Second heading']]);expect(all.some(n=>n.name==='Original preview')).toBe(false);expect(out.issues.map(i=>i.code)).toContain('spec-block-text');
  });
- it('keeps a first edit from rearranging the page, and grows a long page instead of overflowing',()=>{
-  const {all}=nodes(page(spec({richDocument:doc}))),copy=structuredClone(all);synchronizeComponents({pages:[{nodes:copy}]} as never);reflow(copy);for(const n of copy.filter(n=>n.type==='text'))expect(n.y).toBeCloseTo(all.find(a=>a.id===n.id)!.y,3);
-  const long={type:'doc',content:Array.from({length:80},(_,i)=>({type:'paragraph',content:[{type:'text',text:'Paragraph '+i+' '+'words '.repeat(60)}]}))},grown=nodes(page(spec({richDocument:long}))).all.find(n=>n.type==='frame')!;expect(grown.height).toBeGreaterThan(1100);expect(grown.sizingY).toBe('hug');
+ it('grows a long page instead of overflowing',()=>{
+  const long={type:'doc',content:Array.from({length:80},(_,i)=>({type:'paragraph',content:[{type:'text',text:'Paragraph '+i+' '+'words '.repeat(60)}]}))},grown=nodes(page(spec({richDocument:long}))).all.find(n=>n.type==='spec')!;expect(grown.height).toBeGreaterThan(1100);
  });
  it('emits real child layers rather than a flat image, which the old path dropped',()=>{
   const child={guid:id(4),type:'TEXT',name:'Body',parentIndex:{guid:id(3),position:'a'},size:{x:300,y:40},transform:at(10,20),fontSize:16,fontName:{family:'Inter',style:'Regular'},textData:{characters:'Real child text'}},{all,out}=nodes(page(spec({}),child));expect(all.find(n=>n.name==='Hierarchy evaluation')!.type).toBe('frame');expect(all.find(n=>n.name==='Body')!.text).toBe('Real child text');expect(all.some(n=>n.type==='image')).toBe(false);expect(out.issues.map(i=>i.code)).toContain('spec-block-layers');
@@ -87,7 +90,7 @@ describe('spec blocks become editable pages (self-authored fixtures)',()=>{
  });
  it('keeps an unknown spec field through the real kiwi decoder, because the file carries its own schema',()=>{
   const f=(name:string,type:number,value:number,array=false)=>({name,type,value,array}),schema:KiwiDefinition[]=[{name:'NodeType',kind:0,fields:['DOCUMENT','CANVAS','SPEC_BLOCK'].map((n,i)=>f(n,0,i))},{name:'GUID',kind:1,fields:[f('sessionID',-4,1),f('localID',-4,2)]},{name:'ParentIndex',kind:1,fields:[f('guid',1,1),f('position',-6,2)]},{name:'Vector',kind:1,fields:[f('x',-5,1),f('y',-5,2)]},{name:'NodeChange',kind:2,fields:[f('guid',1,1),f('parentIndex',2,2),f('type',0,3),f('name',-6,4),f('size',3,5),f('richDocumentJson',-6,6)]},{name:'Message',kind:2,fields:[f('nodeChanges',4,1,true)]}],message={nodeChanges:[{guid:id(1),type:'DOCUMENT'},{guid:id(2),type:'CANVAS',name:'Page',parentIndex:{guid:id(1),position:'a'}},{guid:id(3),type:'SPEC_BLOCK',name:'Spec',parentIndex:{guid:id(2),position:'a'},size:{x:400,y:300},richDocumentJson:JSON.stringify(doc)}]};
-  const decoded=decodeFigContainerInWorker(figCanvas({schema:encodeSchema(schema),message:encodeMessage(message,schema)})),out=mapFigScene(decoded,'File');expect(out.document.pages[0].nodes.filter(n=>n.type==='text').map(n=>n.text)[0]).toBe('Hierarchy evaluation');
+  const decoded=decodeFigContainerInWorker(figCanvas({schema:encodeSchema(schema),message:encodeMessage(message,schema)})),out=mapFigScene(decoded,'File');expect(out.document.pages[0].nodes.find(n=>n.type==='spec')?.spec?.blocks[0]).toMatchObject({text:'Hierarchy evaluation'});
  });
 });
 /** A hand-written Yjs v1 update: an XML fragment holding a heading and a paragraph. This proves the reader, not that any design file uses Yjs. */

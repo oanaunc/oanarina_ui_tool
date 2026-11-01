@@ -3,7 +3,7 @@ import {readCrdtDocument} from './fig-document-crdt';
 import type {Raw} from './fig-values';
 /** Spec pages with specBlockType fields are read by fig-spec-document. This is for other unknown layers that hold text: it reads what it can prove, in order of trust:
  * the node's own text data, then any structured blocks under any field name, then text inside byte fields. Matching is by shape, and a miss falls back to the layer's preview image. */
-export type FigDocumentBlock={kind:'heading';level:number;text:string}|{kind:'paragraph';text:string}|{kind:'list';ordered:boolean;items:string[];indent?:number}|{kind:'quote';text:string}|{kind:'code';text:string}|{kind:'rule'}|{kind:'spacer'}|{kind:'table';rows:string[][]}|{kind:'image';hash:string;width:number;height:number};
+export type FigDocumentBlock={kind:'heading';level:number;text:string}|{kind:'paragraph';text:string}|{kind:'list';ordered:boolean;items:string[];indent?:number}|{kind:'quote';text:string}|{kind:'code';text:string}|{kind:'rule'}|{kind:'spacer'}|{kind:'table';rows:string[][]}|{kind:'image';hash:string;width:number;height:number}|{kind:'todo';text:string;checked:boolean;indent?:number}|{kind:'canvas';width:number;height:number;layers:Raw[]};
 export type FigDocumentSource='spec'|'text-data'|'structured'|'crdt'|'recovered';
 export interface FigDocumentContent {blocks:FigDocumentBlock[];source:FigDocumentSource;omitted?:number;}
 type TextBlock=Extract<FigDocumentBlock,{kind:'heading'|'paragraph'|'list'}>;
@@ -57,9 +57,9 @@ export function figDocumentContent(raw:Raw,blob:(index:number)=>Uint8Array|undef
  const recovered=new Collector();for(const bytes of fields)recoveredRuns(bytes,recovered);return recovered.result('recovered');
 }
 export const figDocumentMessages:Record<FigDocumentSource,string>={
- spec:'Spec pages became frames of editable text, using their stored words and block types.',
+ spec:'Spec pages became Spec layers you can edit block by block, using their stored words and block types.',
  'text-data':'Spec blocks became editable text, using their own stored text and line types.',
  structured:'Spec blocks became editable headings, paragraphs and lists, in stored reading order.',
- crdt:'Spec blocks became editable text read from their stored editing history. Compare with the hidden original preview.',
- recovered:'Text in these spec blocks was recovered without its structure, so headings, lists and order may differ. Compare with the hidden original preview.',
+ crdt:'Spec blocks became editable text read from their stored editing history.',
+ recovered:'Text in these spec blocks was recovered without its structure, so headings, lists and order may differ.',
 };

@@ -10,7 +10,7 @@ import Darwin
 extension Studio {
     var acceptanceFilter:Set<String>? {ProcessInfo.processInfo.environment["FORMA_ACCEPTANCE"].map{Set($0.split(separator:",").map(String.init))}}
     func acceptanceSteps(_ document:DocumentWindow,_ directory:URL)->[(String,Step)] {
-        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("workflow",{self.acceptWorkflow(document,directory,$0)}),("zoom",{self.acceptWheelZoom(document,$0)}),("glide",{self.acceptWheelGlide(document,false,$0)}),("glide-images",{self.acceptWheelGlide(document,true,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("services",{self.acceptServices(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
+        return [("open-panel",{self.acceptOpenPanel(document,directory,$0)}),("save",{self.acceptSaveAs(document,directory,$0)}),("export",{self.acceptDesignExports(document,directory,$0)}),("zip",{self.acceptProjectZips(document,directory,$0)}),("p3",{self.acceptDisplayP3(document,directory,$0)}),("shader",{self.acceptShaders(document,directory,$0)}),("code",{self.acceptCodeLayer(document,directory,$0)}),("painter",{self.acceptCodePainter(document,directory,$0)}),("plugin",{self.acceptPlugin(document,directory,$0)}),("widget",{self.acceptWidget(document,directory,$0)}),("video",{self.acceptVideo(document,directory,$0)}),("crash",{self.acceptCrash(document,directory,$0)}),("undo-reopen",{self.acceptUndoReopen(document,$0)}),("drop",{self.acceptDrop(document,directory,$0)}),("workflow",{self.acceptWorkflow(document,directory,$0)}),("zoom",{self.acceptWheelZoom(document,$0)}),("glide",{self.acceptWheelGlide(document,false,$0)}),("glide-images",{self.acceptWheelGlide(document,true,$0)}),("spec",{self.acceptSpec(document,directory,$0)}),("spec-file",{self.acceptSpecFile(document,directory,$0)}),("color-style",{self.acceptColorStyle(document,directory,$0)}),("sampler",{self.acceptSampler(document,$0)}),("fonts",{self.acceptInstalledFaces(document,$0)}),("ax",{self.acceptAccessibility(document,$0)}),("keyboard",{self.acceptKeyboard(document,$0)}),("interface",{self.acceptInterface(document,$0)}),("font-export",{self.acceptExportedFont(document,directory,$0)}),("pdf",{self.acceptPdfDrop(document,directory,$0)}),("sketch",{self.acceptSketchDrop(document,directory,$0)}),("services",{self.acceptServices(document,directory,$0)}),("drag",{self.acceptDragOut(document,directory,$0)})]
     }
     func runAcceptanceSmoke(_ initial:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(initial);return}
@@ -624,6 +624,101 @@ extension Studio {
                 if !screenshots{self.check((body?["copies"] as? Int ?? 1)==0,"about 330 layers redraw every frame instead of swapping to a scaled copy (p95 \(body?["p95"] ?? "none") ms)")}
                 self.check((body?["layer"] as? String)=="transform","the canvas keeps one compositor layer between gestures")
                 done()
+            }
+        }
+    }
+    /** Real typing in the shipped color panel: a fill saved under a name, applied to another layer, then changed everywhere from the style. */
+    func acceptColorStyle(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        let codes:[Character:UInt16]=["O":31,"l":37,"i":34,"v":9,"e":14,"1":18,"2":19,"3":20]
+        func press(_ text:String,_ then:@escaping()->Void){for c in text{self.key(document,String(c),codes[c] ?? 0)};self.later(0.25){then()}}
+        let open="const button=l=>[...document.querySelectorAll('button')].find(b=>(b.getAttribute('aria-label')||b.textContent)===l),row=id=>document.querySelector(`[data-layer-id=\"${id}\"]`);"
+        loadDocument(document,acceptanceDocument("accept-color","Color")){
+            document.window.makeFirstResponder(document.web)
+            self.page(document,open+"row('accept-rect').click();await wait(()=>button('Fill 1 color picker'),'the fill row');button('Fill 1 color picker').click();await wait(()=>button('Save as color style'),'the save button under recent colors');button('Save as color style').click();await wait(()=>document.activeElement?.getAttribute('aria-label')==='Style name','the name field');document.activeElement.select();return true;"){_ in
+                press("Olive"){
+                    self.page(document,open+"button('Create style').click();await wait(()=>button('Apply style Olive'),'the saved style');button('Close the color picker').click();row('accept-frame-2').click();await wait(()=>button('Fill 1 color picker'),'the second layer');button('Fill 1 color picker').click();await wait(()=>[...document.querySelectorAll('[role=tab]')].find(t=>t.textContent==='Styles'),'the styles tab');[...document.querySelectorAll('[role=tab]')].find(t=>t.textContent==='Styles').click();await wait(()=>button('Apply style Olive'),'the style in the second layer panel');button('Apply style Olive').click();await wait(()=>button('Detach style'),'the second layer linked');button('Edit style Olive').click();await wait(()=>document.querySelector('[aria-label=\"Style Olive hex\"]'),'the style color field');const hex=document.querySelector('[aria-label=\"Style Olive hex\"]');hex.focus();hex.select();return true;"){_ in
+                        press("112233"){
+                            self.key(document,"\r",36)
+                            self.later(0.4){
+                                document.session.file=directory.appendingPathComponent("Color.oui")
+                                self.js(document,"await window.__studioSave();return true;"){_ in
+                                    guard let data=try? ProjectFileSafety.readBounded(directory.appendingPathComponent("Color.oui")),let saved=try? JSONSerialization.jsonObject(with:data) as? [String:Any],let pages=saved["pages"] as? [[String:Any]],let nodes=pages[0]["nodes"] as? [[String:Any]] else{self.smokeFail("color file missing")}
+                                    let styles=(saved["styles"] as? [[String:Any]] ?? []).filter{$0["type"] as? String=="paint"},linked=nodes.filter{($0["styleIds"] as? [String:Any])?["paint"] != nil}
+                                    self.check(styles.count==1 && styles[0]["name"] as? String=="Olive","the file holds one color style with the typed name")
+                                    self.check(linked.count==2,"both layers link to the style")
+                                    self.check(linked.allSatisfy{($0["fill"] as? String)?.lowercased()=="#112233"},"changing the style changed both layers")
+                                    done()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /** A real design file named by whoever runs this, read on this Mac only. Only counts are reported; without the variable there is nothing to check. */
+    func acceptSpecFile(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        guard let path=ProcessInfo.processInfo.environment["FORMA_SMOKE_SPEC_FILE"] else{done();return}
+        smokeReadyOverride={imported in
+            imported.session.file=directory.appendingPathComponent("Real.oui")
+            self.page(imported,"await window.__studioSave();await wait(()=>[...document.querySelectorAll('button')].find(b=>b.textContent==='Continue editing'),'the import report');[...document.querySelectorAll('button')].find(b=>b.textContent==='Continue editing').click();await new Promise(r=>setTimeout(r,300));const row=document.querySelector('.lucide-file-text').closest('[data-layer-id]');row.click();await new Promise(r=>setTimeout(r,200));await window.__studioCommand('fit-selection');await new Promise(r=>setTimeout(r,900));const p=document.querySelector(`[data-spec-page=\"${row.dataset.layerId}\"]`),r=p?.getBoundingClientRect(),x=r?r.left+r.width/2:0,y=r?r.top+r.height/3:0;return {painted:document.querySelectorAll('[data-spec-page]').length,point:r?[x,y]:[]};"){value in
+                let body=value as? [String:Any],point=body?["point"] as? [Double] ?? []
+                guard let data=try? ProjectFileSafety.readBounded(directory.appendingPathComponent("Real.oui")),let saved=try? JSONSerialization.jsonObject(with:data) as? [String:Any],let pages=saved["pages"] as? [[String:Any]] else{self.smokeFail("real file did not save")}
+                let specs=pages.flatMap{($0["nodes"] as? [[String:Any]] ?? []).filter{$0["type"] as? String=="spec"}},blocks=specs.map{(($0["spec"] as? [String:Any])?["blocks"] as? [Any])?.count ?? 0}
+                self.check(specs.count>0 && blocks.allSatisfy{$0>0},"a real file's spec pages arrive as Spec layers with blocks (\(specs.count), \(blocks.reduce(0,+)) blocks)")
+                self.check((body?["painted"] as? Int ?? 0)>0 && point.count==2,"the canvas paints a real spec")
+                guard point.count==2 else{done();return}
+                imported.window.makeFirstResponder(imported.web)
+                func send(_ type:NSEvent.EventType,_ count:Int){let at=imported.web.convert(NSPoint(x:CGFloat(point[0]),y:CGFloat(point[1])),to:nil);guard let event=NSEvent.mouseEvent(with:type,location:at,modifierFlags:[],timestamp:ProcessInfo.processInfo.systemUptime,windowNumber:imported.window.windowNumber,context:nil,eventNumber:1,clickCount:count,pressure:1) else{self.smokeFail("mouse event")};imported.window.sendEvent(event)}
+                func click(_ count:Int,_ then:@escaping()->Void){send(.leftMouseDown,count);self.later(0.06){send(.leftMouseUp,count);self.later(0.1){then()}}}
+                imported.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
+                click(1){click(2){}}
+                self.later(0.8){
+                    self.page(imported,"return {rows:document.querySelectorAll('[data-spec-row]').length};"){value in
+                        let rows=(value as? [String:Any])?["rows"] as? Int ?? 0
+                        self.check(rows>0,"a real double-click opens a real spec as blocks (\(rows) rows)")
+                        self.key(imported,"\u{1b}",53)
+                        self.later(0.3){done()}
+                    }
+                }
+            }
+        }
+        check(openURL(URL(fileURLWithPath:path)),"the app opens the real design file")
+    }
+    /** Real clicks and keys in the shipped editor: the Spec tool, a markdown prefix, the slash menu, and what reaches the saved file. */
+    func acceptSpec(_ document:DocumentWindow,_ directory:URL,_ done:@escaping()->Void){
+        let codes:[Character:UInt16]=["T":17,"i":34,"t":17,"l":37,"e":14,"-":27," ":49,"p":35,"o":31,"n":45,"/":44,"d":2,"a":0,"s":1,"k":40]
+        func press(_ text:String,_ then:@escaping()->Void){for c in text{self.key(document,String(c),codes[c] ?? 0)};self.later(0.2){then()}}
+        func enter(_ then:@escaping()->Void){self.key(document,"\r",36);self.later(0.2){then()}}
+        loadDocument(document,acceptanceDocument("accept-spec","Spec"){nodes in nodes.removeAll()}){
+            self.page(document,"await window.__studioCommand('deselect');await window.__studioCommand('tool-spec');const r=document.querySelector('#forma-design-canvas').getBoundingClientRect();return [r.left+80,r.top+80];"){value in
+                guard let at=value as? [Double] else{self.smokeFail("canvas point")}
+                document.window.makeFirstResponder(document.web)
+                self.mouse(document,.leftMouseDown,CGFloat(at[0]),CGFloat(at[1]));self.mouse(document,.leftMouseUp,CGFloat(at[0]),CGFloat(at[1]))
+                self.later(0.5){
+                    self.page(document,"await wait(()=>document.activeElement?.getAttribute('aria-label')==='Heading 1','the new spec opens on its heading');return true;"){_ in
+                        press("Title"){enter{press("- point"){enter{enter{press("/"){
+                            self.page(document,"await wait(()=>document.querySelector('[aria-label=\"Blocks\"]'),'typing a slash opens the block menu');return document.querySelectorAll('[aria-label=\"Blocks\"] [role=option]').length;"){count in
+                                self.check((count as? Int ?? 0)>=13,"a real slash key opens the block menu (\(count ?? "none") choices)")
+                                press("todo"){enter{press("task"){
+                                    self.key(document,"\u{1b}",53)
+                                    self.later(0.4){
+                                        document.session.file=directory.appendingPathComponent("Spec.oui")
+                                        self.js(document,"const closed=!document.querySelector('[data-spec-editor]'),painted=[...document.querySelectorAll('[data-spec-page] tspan')].map(t=>t.textContent).join(' '),rows=[...document.querySelectorAll('[data-spec-row]')].map(r=>r.dataset.kind+':'+r.textContent),active=document.activeElement?.getAttribute('aria-label')??document.activeElement?.tagName;await window.__studioSave();return {closed,painted,rows,active};"){value in
+                                            let body=value as? [String:Any],painted=body?["painted"] as? String ?? ""
+                                            self.check(body?["closed"] as? Bool==true,"Escape leaves the page and the canvas paints it")
+                                            self.check(painted.contains("Title") && painted.contains("point") && painted.contains("task"),"the canvas paints what was typed (\(painted))")
+                                            guard let data=try? ProjectFileSafety.readBounded(directory.appendingPathComponent("Spec.oui")),let saved=try? JSONSerialization.jsonObject(with:data) as? [String:Any],let pages=saved["pages"] as? [[String:Any]],let nodes=pages[0]["nodes"] as? [[String:Any]],let spec=nodes.first(where:{$0["type"] as? String=="spec"})?["spec"] as? [String:Any],let blocks=spec["blocks"] as? [[String:Any]] else{self.smokeFail("spec file missing")}
+                                            let kinds=blocks.compactMap{$0["kind"] as? String}
+                                            self.check(kinds.contains("heading") && kinds.contains("bullet") && kinds.contains("todo"),"the saved file holds a spec layer with real blocks (\(kinds.joined(separator:" ")))")
+                                            done()
+                                        }
+                                    }
+                                }}}
+                            }
+                        }}}}}}
+                    }
+                }
             }
         }
     }
