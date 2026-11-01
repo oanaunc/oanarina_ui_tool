@@ -149,6 +149,8 @@ export function smartAnimate(from:Page,fromId:string,to:Page,toId:string,progres
  for(const n of a)if(!used.has(n.id)){const exitingParent=n.parentId&&!used.has(n.parentId);result.push({...n,id:'exiting-'+n.id,parentId:n.parentId?mapping.get(n.parentId)??'exiting-'+n.parentId:null,opacity:n.opacity*(exitingParent?1:1-fade)});}
  return result;
 }
+/** How far a layer travels between two frames, center to center, when Smart animate pairs it. */
+export function smartLayerTravel(from:Page,fromId:string,to:Page,toId:string,nodeId:string){const a=normalizedNodes(from,fromId),b=normalizedNodes(to,toId),before=a.find(n=>n.id===nodeId);if(!before)return undefined;const key=pathKeys(a).get(nodeId),keys=pathKeys(b),after=b.find(n=>keys.get(n.id)===key);return after?{x:after.x+after.width/2-before.x-before.width/2,y:after.y+after.height/2-before.y-before.height/2}:undefined;}
 export function transitionProgress(t:PrototypeTransition,elapsed:number){return t.type==='instant'||t.duration===0?1:easingValue(t.easing,Math.max(0,Math.min(1,elapsed/t.duration)));}
 /** The time at which a transition reaches a progress, so a reversed animation can start from where the old one stopped. */
 export function prototypeElapsed(t:PrototypeTransition,progress:number){if(t.type==='instant'||t.duration===0||progress<=0)return 0;if(progress>=1)return t.duration;let low=0,high=t.duration;for(let i=0;i<32;i++){const mid=(low+high)/2;if(transitionProgress(t,mid)<progress)low=mid;else high=mid;}return high;}

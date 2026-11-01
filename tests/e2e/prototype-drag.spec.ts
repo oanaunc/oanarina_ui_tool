@@ -1,0 +1,38 @@
+import {test,expect} from '@playwright/test';
+import type {Page} from '@playwright/test';
+import {blankDocument,node} from '../../src/model';
+import type {DesignDocument} from '../../src/model';
+import {createReaction} from '../../src/prototype';
+const swipe=(target:string,type='push',direction='left',duration=400,action='navigate')=>{const r=createReaction('drag');r.actions=[{id:'go-'+target+direction,type:action as never,targetId:target,transition:{type,duration,easing:'linear',direction} as never}];return r;};
+function fixture(reactions=[swipe('two')]){const d=blankDocument();d.fonts=[];d.pages[0].nodes=[node('frame',{id:'one',name:'One',width:400,height:300,fill:'#ffffff',clip:true,reactions:reactions as never}),node('rectangle',{id:'card',name:'Card',parentId:'one',x:100,y:100,width:80,height:80,fill:'#8874c7'}),node('frame',{id:'two',name:'Two',x:500,width:400,height:300,fill:'#ffeedd',clip:true}),node('rectangle',{id:'card-b',name:'Card',parentId:'two',x:500,y:100,width:80,height:80,fill:'#8874c7'}),node('frame',{id:'three',name:'Three',x:1000,width:400,height:300,fill:'#ddffee',clip:true})];return d;}
+async function present(page:Page,d:DesignDocument){await page.addInitScript(doc=>localStorage.setItem('oui-active',JSON.stringify(doc)),d);await page.goto('/');await page.locator('[data-layer-id="one"]').click();await page.getByRole('button',{name:'Present prototype',exact:true}).click();const viewer=page.getByRole('dialog',{name:'Prototype presentation',exact:true});await expect(viewer).toBeVisible();await page.getByLabel('Presentation scale',{exact:true}).selectOption('actual');await page.waitForTimeout(50);return viewer;}
+const box=async(page:Page)=>(await page.locator('[data-prototype-frame="one"]').first().boundingBox())!;
+const shown=(page:Page)=>page.getByLabel('Presentation frame',{exact:true});
+const offset=(page:Page,id:string)=>page.evaluate(frame=>{const el=document.querySelector(`[data-prototype-frame="${frame}"]`) as SVGElement|null;if(!el)return null;const m=new DOMMatrix(getComputedStyle(el).transform);return m.m41;},id);
+test('a push follows the finger, holds still with it, and finishes when let go past halfway',async({page})=>{
+ await present(page,fixture());const b=await box(page),y=b.y+50;await page.mouse.move(b.x+350,y);await page.mouse.down();await page.mouse.move(b.x+300,y,{steps:3});await expect.poll(()=>offset(page,'two')).toBeCloseTo(350,0);await page.mouse.move(b.x+200,y,{steps:4});await expect.poll(()=>offset(page,'two')).toBeCloseTo(250,0);expect(await offset(page,'one')).toBeCloseTo(-150,0);await page.waitForTimeout(500);expect(await offset(page,'two')).toBeCloseTo(250,0);await page.mouse.move(b.x+120,y,{steps:4});await expect.poll(()=>offset(page,'two')).toBeCloseTo(170,0);await page.waitForTimeout(150);await page.mouse.up();await expect.poll(async()=>page.locator('[data-prototype-frame="one"]').count()).toBe(0);await expect(shown(page)).toHaveValue('two');expect(await offset(page,'two')).toBeCloseTo(0,0);
+});
+test('letting go short of halfway returns to where it was, history and all',async({page})=>{
+ await present(page,fixture());const b=await box(page),y=b.y+50;await page.mouse.move(b.x+350,y);await page.mouse.down();await page.mouse.move(b.x+250,y,{steps:4});await expect.poll(()=>offset(page,'two')).toBeCloseTo(300,0);await page.waitForTimeout(150);await page.mouse.up();await expect.poll(async()=>page.locator('[data-prototype-frame="two"]').count()).toBe(0);await expect(shown(page)).toHaveValue('one');await expect(page.getByRole('button',{name:'Back',exact:true})).toBeDisabled();
+});
+test('a quick flick finishes from a short distance',async({page})=>{
+ await present(page,fixture());const b=await box(page),y=b.y+50;await page.mouse.move(b.x+350,y);await page.mouse.down();await page.mouse.move(b.x+335,y);await Promise.all([265,225].map(x=>page.mouse.move(b.x+x,y)));await page.mouse.up();await expect.poll(async()=>page.locator('[data-prototype-frame="one"]').count()).toBe(0);await expect(shown(page)).toHaveValue('two');
+});
+test('dragging against a directional transition moves nothing and leaves the frame in place',async({page})=>{
+ await present(page,fixture());const b=await box(page),y=b.y+50;await page.mouse.move(b.x+50,y);await page.mouse.down();await page.mouse.move(b.x+250,y,{steps:4});await page.waitForTimeout(150);expect(await offset(page,'two')).toBeCloseTo(400,0);await page.mouse.up();await expect.poll(async()=>page.locator('[data-prototype-frame="two"]').count()).toBe(0);await expect(shown(page)).toHaveValue('one');
+});
+test('two swipes on one layer choose by direction',async({page})=>{
+ await present(page,fixture([swipe('two','push','left'),swipe('three','push','right')]));const b=await box(page),y=b.y+50;await page.mouse.move(b.x+50,y);await page.mouse.down();await page.mouse.move(b.x+300,y,{steps:4});await expect.poll(()=>offset(page,'three')).toBeCloseTo(-150,0);await page.mouse.up();await expect(shown(page)).toHaveValue('three');
+});
+test('a settling swipe can be caught and taken back',async({page})=>{
+ await present(page,fixture([swipe('two','push','left',2000)]));const b=await box(page),y=b.y+50;await page.mouse.move(b.x+350,y);await page.mouse.down();await page.mouse.move(b.x+120,y,{steps:4});await page.waitForTimeout(150);await page.mouse.up();await page.waitForTimeout(40);const caught=(await offset(page,'two'))!;expect(caught).toBeLessThan(170);expect(caught).toBeGreaterThan(0);await page.mouse.move(b.x+120,y);await page.mouse.down();await page.waitForTimeout(250);expect(Math.abs((await offset(page,'two'))!-caught)).toBeLessThan(40);await page.mouse.move(b.x+390,y,{steps:6});await page.waitForTimeout(150);await page.mouse.up();await expect.poll(async()=>page.locator('[data-prototype-frame="two"]').count()).toBe(0);await expect(shown(page)).toHaveValue('one');
+});
+test('Smart animate on a drag scrubs the matched layer with the finger',async({page})=>{
+ const d=fixture([swipe('two','smart-animate')]);d.pages[0].nodes[3].x=800;await present(page,d);const b=await box(page),y=b.y+140;await page.mouse.move(b.x+140,y);await page.mouse.down();await page.mouse.move(b.x+200,y,{steps:4});const art=page.locator('[data-prototype-transition="smart-animate"]');await expect(art).toBeVisible();const at=async()=>(await art.locator('[data-node-id="card-b"]').first().boundingBox())!.x-b.x;await expect.poll(at).toBeCloseTo(160,0);await page.mouse.move(b.x+260,y,{steps:4});await expect.poll(at).toBeCloseTo(220,0);await page.waitForTimeout(150);await page.mouse.up();await expect(shown(page)).toHaveValue('two');
+});
+test('an overlay is pulled in by the finger and returns when released early',async({page})=>{
+ const d=fixture([swipe('three','move-in','top',400,'open-overlay')]);await present(page,d);const b=await box(page),x=b.x+50;await page.mouse.move(x,b.y+280);await page.mouse.down();await page.mouse.move(x,b.y+250,{steps:3});const overlay=page.locator('[data-prototype-overlay="three"]');await expect(overlay).toBeAttached();const top=()=>overlay.evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).m42);await expect.poll(top).toBeCloseTo(270,0);await page.waitForTimeout(150);await page.mouse.up();await expect(overlay).toHaveCount(0);
+});
+test('pointer cancel returns a held drag, and a pinned transition without a duration still runs on release',async({page})=>{
+ await present(page,fixture([swipe('two','instant')]));const b=await box(page),y=b.y+50;await page.mouse.move(b.x+350,y);await page.mouse.down();await page.mouse.move(b.x+200,y,{steps:4});await expect(shown(page)).toHaveValue('one');await page.mouse.up();await expect(shown(page)).toHaveValue('two');
+});
