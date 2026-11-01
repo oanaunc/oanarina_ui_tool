@@ -2,7 +2,7 @@ import type {Page} from '@playwright/test';
 /** Opens the collapsed tools at the end of the Design tab. */
 export async function openMoreOptions(page:Page){const more=page.locator('.inspector-more-options');if(await more.count()&&!await more.evaluate(d=>(d as HTMLDetailsElement).open))await more.locator('>summary').click();}
 /** Opens a secondary section of the Design tab. One the layer already uses, or one left open, stays as it is. */
-export async function openSection(page:Page,name:string){await openMoreOptions(page);const summary=page.locator('.inspector-more details>summary').filter({hasText:new RegExp('^'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$')}).first();await summary.waitFor();if(!await summary.evaluate(s=>(s.parentElement as HTMLDetailsElement).open))await summary.click();}
+export async function openSection(page:Page,name:string){const summary=page.locator('.inspector-more details>summary').filter({hasText:new RegExp('^'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$')}).first();if(!await summary.isVisible())await openMoreOptions(page);await summary.waitFor();if(!await summary.evaluate(s=>(s.parentElement as HTMLDetailsElement).open))await summary.click();}
 /** Opens the advanced type settings behind the sliders icon in Typography. */
 export async function openTextOptions(page:Page){const button=page.getByRole('button',{name:'More text options',exact:true});await button.waitFor();if(await button.getAttribute('aria-expanded')!=='true')await button.click();}
 /** The panel shows export settings once a layer has one, so a layer without any gets its default first. */

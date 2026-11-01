@@ -10,6 +10,7 @@ export function MoreSection({name,scope,active=false,children}:{name:string;scop
  return <details className="inspector-disclosure more-section" open={open}><summary onClick={e=>{e.preventDefault();if(open)remembered.delete(name);else remembered.add(name);setOpen(!open);}} onKeyDown={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}} onKeyUp={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}}>{name}</summary><div className="more-body">{children}</div></details>;
 }
 let moreOpen=false;
+export const moreOptionsOpen=()=>moreOpen;
 /** Tools most layers never need. Opening it holds from layer to layer, as the sections inside do. */
 export function MoreOptions({children}:{children:React.ReactNode}){const [open,setOpen]=useState(moreOpen);return <details className="inspector-more-options" open={open}><summary onClick={e=>{e.preventDefault();moreOpen=!open;setOpen(!open);}} onKeyDown={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}} onKeyUp={e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();}}>More options</summary><div className="inspector-more">{children}</div></details>;}
 /** A native dropdown with a leading glyph, so the choice list stays the platform's. */
