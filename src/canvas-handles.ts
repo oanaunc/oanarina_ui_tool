@@ -2,7 +2,7 @@ import {shapePoints} from './geometry';
 import {gridGeometry} from './grid';
 import {paddingFor} from './layout';
 import {layoutPadding,layoutSpan} from './layout-settings';
-import {isLocked,reflow} from './model';
+import {descendants,isLocked,reflow} from './model';
 import type {DesignNode} from './model';
 import {inverseMatrix,point,worldMatrix} from './transforms';
 type Point={x:number;y:number};
@@ -69,6 +69,6 @@ export function canvasHandleDrag(handle:{key:string;value?:number},n:DesignNode,
  if(kind==='arc-start'){const sweep=hundredths(sweepTo(turn(arc.start+arc.sweep-angle),arc.sweep,memo));return {patch:{arcStart:hundredths(turn(arc.start+arc.sweep-sweep)),arcSweep:sweep},text:Math.round(sweep/3.6)+'%'};}
  throw Error('Unknown canvas handle.');
 }
-/** Layers are copied one level deep: reflow only writes their own geometry, and this runs on every pointer move. */
-export function handlePreview(nodes:DesignNode[],id:string,patch:Partial<DesignNode>){const out=nodes.map(n=>n.id===id?{...n,...patch}:{...n});reflow(out);return out;}
+/** Only the edited layer's top-level tree can change, so only that tree is copied and reflowed. Every other layer keeps its identity and nothing else redraws. */
+export function handlePreview(nodes:DesignNode[],id:string,patch:Partial<DesignNode>){const byId=new Map(nodes.map(n=>[n.id,n])),seen=new Set<string>();let root=byId.get(id);while(root?.parentId&&byId.has(root.parentId)&&!seen.has(root.id)){seen.add(root.id);root=byId.get(root.parentId);}if(!root)return nodes;const owned=new Set(descendants(nodes,[root.id])),out=nodes.map(n=>n.id===id?{...n,...patch}:owned.has(n.id)?{...n}:n);reflow(out.filter(n=>owned.has(n.id)));return out;}
 export const handleChanged=(n:DesignNode,patch:Partial<DesignNode>)=>Object.entries(patch).some(([key,value])=>JSON.stringify(n[key as keyof DesignNode])!==JSON.stringify(value));
