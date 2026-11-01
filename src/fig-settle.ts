@@ -16,7 +16,8 @@ const GEOMETRY=.5;
 const moved=(a:DesignNode,b:DesignNode)=>(['x','y','width','height'] as const).some(k=>Math.abs(a[k]-b[k])>GEOMETRY)||Math.abs(a.rotation-b.rotation)>.01||!!a.flipX!==!!b.flipX||!!a.flipY!==!!b.flipY;
 const look=(n:DesignNode)=>JSON.stringify([n.visible,n.opacity,n.text,n.fill,n.stroke,n.strokeWidth,n.radius,n.fontSize,n.fontFamily,n.fontWeight,n.fontStyle??'normal',n.lineHeight,n.letterSpacing,n.paints,n.strokes,n.effects,n.layout,n.gap],(key,v)=>key==='id'?undefined:key==='image'&&typeof v==='string'&&v.length>64?v.length+v.slice(-48):v);
 export interface FigSettleReport {detached:number;layouts:number;links:number;booleans:number;}
-export function settleFigDocument(input:DesignDocument):{document:DesignDocument;report:FigSettleReport}{
+/** `unplaced` names layers the file stored no position for, inside a resized instance. Their place comes from the pipeline's constraints and auto layout, so moving them is the point, not a failure. */
+export function settleFigDocument(input:DesignDocument,unplaced:ReadonlySet<string>=new Set()):{document:DesignDocument;report:FigSettleReport}{
  const report:FigSettleReport={detached:0,layouts:0,links:0,booleans:0};let doc=input;
  for(let round=0;round<6;round++){
   const draft=cloneDocumentValue(doc);let failure=false;try{pipeline(draft);}catch{failure=true;}
@@ -27,7 +28,7 @@ export function settleFigDocument(input:DesignDocument):{document:DesignDocument
   for(const n of after.values())if(!before.has(n.id)){const root=n.instanceRootId;if(root)roots.add(root);}
   for(const n of all){const next=after.get(n.id);if(!next){const root=rootOf(n);if(root)roots.add(root);continue;}
    if(n.booleanOp&&(moved(n,next)||!figSameArtwork(n.path,next.path,n.fillRule))){baked.add(n);continue;}
-   if(moved(n,next)){const owner=layoutOwner(n)??(n.layout!=='none'?n:undefined);if(owner)layouts.add(owner);else{const root=rootOf(n);if(root)roots.add(root);}}
+   if(moved(n,next)&&!unplaced.has(n.id)){const owner=layoutOwner(n)??(n.layout!=='none'?n:undefined);if(owner)layouts.add(owner);else{const root=rootOf(n);if(root)roots.add(root);}}
    else if(look(n)!==look(next)){if(n.styleIds||n.variableBindings)unlink.add(n);else{const root=rootOf(n);if(root)roots.add(root);}}}
   if(!layouts.size&&!roots.size&&!unlink.size&&!baked.size){for(const n of draft.pages.flatMap(p=>p.nodes))if(n.type==='text'&&n.textOutline){const was=before.get(n.id);if(was?.textOutline?.path===n.textOutline.path&&was.textOutline.signature===textOutlineSignature(was))n.textOutline.signature=textOutlineSignature(n);}for(const n of draft.pages.flatMap(p=>p.nodes))if(n.textSavedLayout){const was=before.get(n.id);if(was?.textSavedLayout&&was.text===n.text&&was.textSavedLayout.signature===textOutlineSignature(was))n.textSavedLayout.signature=textOutlineSignature(n);}return {document:draft,report};}
   for(const n of layouts){report.layouts++;n.layout='none';n.sizingX=undefined;n.sizingY=undefined;if(n.type==='instance'||n.instanceRootId)n.overrideKeys=[...new Set([...n.overrideKeys??[],'layout','sizingX','sizingY'])];}

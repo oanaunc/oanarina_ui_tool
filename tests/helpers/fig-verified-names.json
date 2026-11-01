@@ -359,6 +359,8 @@
   ],
   "horizontalConstraint": [
    "CENTER",
+   "FIXED_MAX",
+   "FIXED_MIN",
    "MAX",
    "MIN",
    "SCALE",
@@ -582,6 +584,8 @@
   ],
   "verticalConstraint": [
    "CENTER",
+   "FIXED_MAX",
+   "FIXED_MIN",
    "MAX",
    "MIN",
    "SCALE",

@@ -9,6 +9,7 @@ import {createPaint} from '../src/paints';
 import {figCanvas} from './helpers/fig-fixture';
 import {currentSavedLayout} from '../src/text-outline';
 import {textLines,updateTextMetrics} from '../src/text-layout';
+import {synchronizeComponents} from '../src/components-model';
 import {applyDesignSystems,detachEditedBindings} from '../src/design-systems';
 import {figProgressiveBlur} from '../src/fig-effects';
 import {progressiveAxis} from '../src/progressive-blur';
@@ -131,4 +132,16 @@ describe('arrowheads',()=>{
  it('reports heads on a second open path, which Forma cannot draw',()=>{expect(vector([1,1],{},2).issues.map(i=>i.code)).toContain('vector-arrow');});
  it('survives save and reopen',()=>{const back=parseDocument(JSON.stringify(vector([1,2]).document));expect(back.pages[0].nodes[0].arrowEnd).toBe('diamond');});
  it('keeps the head on a line with no stored outline',()=>{expect(layers(raw('LINE',3,2,{size:{x:100,y:0},strokePaints:[solid()],strokeWeight:2,strokeCap:'CIRCLE_FILLED'}))[0]).toMatchObject({type:'line',arrowStart:'circle',arrowEnd:'circle'});});
+});
+describe('resized instances',()=>{
+ const child=(n:number,name:string,x:number,w:number,h:string,fields:Record<string,unknown>={})=>raw('ROUNDED_RECTANGLE',n,10,{name,size:{x:w,y:20},transform:at(x,10),horizontalConstraint:h,verticalConstraint:'MIN',...fields});
+ const main=(fields:Record<string,unknown>={})=>[raw('CANVAS',9,1,{internalOnly:true}),raw('SYMBOL',10,9,{name:'Main',size:{x:100,y:40},...fields})];
+ const instance=(fields:Record<string,unknown>={})=>raw('INSTANCE',20,2,{name:'Copy',size:{x:200,y:40},transform:at(500,0),symbolData:{symbolID:id(10)},...fields});
+ const copies=(...records:Record<string,unknown>[])=>{const out=mapped(...records),list=out.document.pages[0].nodes,root=list.find(n=>n.name==='Copy')!;return {out,root,by:(name:string)=>list.find(n=>n.name===name&&n.instanceRootId===root.id)!};};
+ it('moves each layer by its constraint when no position is stored',()=>{const {out,root,by}=copies(...main(),child(11,'Left',10,20,'MIN'),child(12,'Right',70,20,'MAX'),child(13,'Middle',40,20,'CENTER'),child(14,'Wide',10,80,'STRETCH'),child(15,'Share',10,20,'SCALE'),child(16,'Fixed',70,20,'FIXED_MAX'),instance());expect(root.type).toBe('instance');expect(out.summary.detachedInstances).toBe(0);expect(by('Left').x-root.x).toBe(10);expect(by('Right').x-root.x).toBe(170);expect(by('Middle').x-root.x).toBe(90);expect(by('Wide')).toMatchObject({width:180});expect(by('Wide').x-root.x).toBe(10);expect(by('Share').x-root.x).toBe(20);expect(by('Share').width).toBe(40);expect(by('Fixed').x-root.x).toBe(170);});
+ it('follows through nested frames',()=>{const {by,root}=copies(...main(),raw('FRAME',11,10,{name:'Panel',size:{x:100,y:40},horizontalConstraint:'STRETCH'}),raw('ROUNDED_RECTANGLE',12,11,{name:'Pin',size:{x:10,y:10},transform:at(80,0),horizontalConstraint:'MAX'}),instance());expect(by('Panel').width).toBe(200);expect(by('Pin').x-root.x).toBe(180);});
+ it('keeps a stored position over the constraint',()=>{const {by,root}=copies(...main(),child(11,'Right',70,20,'MAX'),instance({derivedSymbolData:[{guidPath:{guids:[id(11)]},transform:at(33,10)}]}));expect(by('Right').x-root.x).toBe(33);expect(root.type).toBe('instance');});
+ it('leaves an instance at its main size alone',()=>{const {by,root,out}=copies(...main(),child(11,'Right',70,20,'MAX'),instance({size:{x:100,y:40}}));expect(by('Right').x-root.x).toBe(70);expect(out.summary.detachedInstances).toBe(0);});
+ it('lays out auto layout children when none are stored',()=>{const {root,by,out}=copies(...main({stackMode:'HORIZONTAL',stackPrimarySizing:'FIXED',stackCounterSizing:'FIXED',stackPrimaryAlignItems:'MAX'}),child(11,'End',80,20,'MIN',{transform:at(80,0)}),instance());expect(root.layout).toBe('horizontal');expect(by('End').x-root.x).toBe(180);expect(out.summary.reducedLayouts).toBe(0);});
+ it('stays stable through a second edit pass',()=>{const {out,root}=copies(...main(),child(12,'Right',70,20,'MAX'),instance()),again=structuredClone(out.document);applyDesignSystems(again);synchronizeComponents(again);const list=again.pages[0].nodes;expect(list.find(n=>n.name==='Right'&&n.instanceRootId===root.id)!.x-root.x).toBe(170);});
 });
