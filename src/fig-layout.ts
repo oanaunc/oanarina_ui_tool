@@ -2,7 +2,7 @@ import type {DesignNode} from './model';
 import {flag,number,optional,string} from './fig-values';
 import type {Raw} from './fig-values';
 /** Source auto layout and child-behavior fields inherited by instances that omit them. */
-export const FIG_LAYOUT_FIELDS=['stackMode','stackSpacing','stackCounterSpacing','stackHorizontalPadding','stackVerticalPadding','stackPaddingRight','stackPaddingBottom','stackPrimarySizing','stackCounterSizing','stackPrimaryAlignItems','stackCounterAlignItems','stackWrap','stackCounterAlignContent','stackReverseZIndex','bordersTakeSpace'];
+export const FIG_LAYOUT_FIELDS=['stackMode','stackSpacing','stackCounterSpacing','stackHorizontalPadding','stackVerticalPadding','stackPaddingRight','stackPaddingBottom','stackPrimarySizing','stackCounterSizing','stackPrimaryAlignItems','stackCounterAlignItems','stackWrap','stackCounterAlignContent','stackReverseZIndex','bordersTakeSpace'] as const;
 const hug=(v:unknown)=>v==='RESIZE_TO_FIT'||v==='RESIZE_TO_FIT_WITH_IMPLICIT_SIZE';
 /** An axis with no limit is stored as infinity, which means the same as no value here. */
 const limit=(v:unknown)=>typeof v==='number'&&Math.abs(v)<1e9?v:undefined;
