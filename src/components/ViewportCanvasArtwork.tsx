@@ -6,6 +6,7 @@ import {useEditor} from '../store';
 import {usePreferences} from '../preferences';
 import {useMaskView} from '../mask-view';
 import {CanvasDetailContext,detailZoom} from '../canvas-detail';
+import {shareUnchangedNodes} from '../share-nodes';
 import {cullViewportRoots,indexViewportRoots} from '../viewport-culling';
 import {progressiveBatches} from '../progressive-page';
 import {decodeImage,decodeOrder,runDecodeQueue} from '../image-decode-queue';
@@ -19,7 +20,7 @@ export default function ViewportCanvasArtwork({nodes,canvasRef,activeId,drafting
  const enabled=prefs.viewportCulling&&!s.motionOpen&&!s.outlines&&!masks.outlines&&!masks.preview&&s.mode==='design'&&!s.home&&!s.uiHidden;
  // A drag replaces the layers on every move, so it keeps what was left out when it began. Those layers aren't the ones moving.
  const index=useMemo(()=>enabled&&!drafting?indexViewportRoots(nodes):null,[nodes,enabled,drafting]),settled=useRef<{nodes:DesignNode[];omitted:ReadonlySet<string>}|null>(null);
- const result=useMemo(()=>{if(enabled&&drafting&&settled.current){const omitted=settled.current.omitted;return {nodes:nodes.filter(n=>!omitted.has(n.id)),omittedRoots:0,omittedNodes:omitted.size,retainedUncertain:0,fallback:''};}return index?cullViewportRoots(nodes,index,s,size,[...s.selection,...(s.vectorEditId?[s.vectorEditId]:[]),...(activeId?[activeId]:[])],enabled):{nodes,omittedRoots:0,omittedNodes:0,retainedUncertain:0,fallback:'Culling is disabled for this view.'};},[nodes,index,s.zoom,s.pan.x,s.pan.y,size,s.selection,s.vectorEditId,activeId,enabled,drafting]);
+ const result=useMemo(()=>{if(enabled&&drafting&&settled.current){const omitted=settled.current.omitted,shown=nodes.filter(n=>!omitted.has(n.id));shareUnchangedNodes([{id:'',nodes:settled.current.nodes}],[{id:'',nodes:shown}]);return {nodes:shown,omittedRoots:0,omittedNodes:omitted.size,retainedUncertain:0,fallback:''};}return index?cullViewportRoots(nodes,index,s,size,[...s.selection,...(s.vectorEditId?[s.vectorEditId]:[]),...(activeId?[activeId]:[])],enabled):{nodes,omittedRoots:0,omittedNodes:0,retainedUncertain:0,fallback:'Culling is disabled for this view.'};},[nodes,index,s.zoom,s.pan.x,s.pan.y,size,s.selection,s.vectorEditId,activeId,enabled,drafting]);
  if(!drafting&&index&&settled.current?.nodes!==result.nodes){const shown=new Set(result.nodes.map(n=>n.id));settled.current={nodes:result.nodes,omitted:new Set(nodes.flatMap(n=>shown.has(n.id)?[]:[n.id]))};}
  // Batches belong to one exact render list. Any camera or edit that replaces the list returns to the single-pass scene.
  const pageKey=s.doc.id+'\0'+s.pageId,opened=useRef(''),session=useRef<{source:DesignNode[];batches:DesignNode[][];shown:number}|null>(null),[,advance]=useReducer((n:number)=>n+1,0);
