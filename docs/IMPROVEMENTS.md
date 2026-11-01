@@ -2,7 +2,7 @@
 
 This lists what is missing, wrong or unfinished in Forma. It comes from every report sent by our tester, the 2,058 rows of the feature register, our validation records, Forma's source, and a code review against FigCraft, an MIT-licensed design app. Part 7 lists all 186 unfinished register rows.
 
-Sizes: **S** is under a day, **M** is a few days, **L** is a week or more. "Fixing now" means it's in the working copy for 1.0.2 and not yet validated or published.
+Sizes: **S** is under a day, **M** is a few days, **L** is a week or more. "Done in 1.0.2" means the fix shipped in that release.
 
 ## Why people are unhappy
 
@@ -19,18 +19,18 @@ These matter most, because they make a file look broken.
 
 | # | Problem | Size | Status |
 | --- | --- | --- | --- |
-| 1 | Auto line height was read as 1.0. 49 of 55 text layers in the real file use it, and text collapses on first edit | M | Fixing now |
-| 2 | Masks never imported, because Forma read a field that doesn't exist | S | Fixing now |
-| 3 | Every polygon became a hexagon and every star got 5 points | S | Fixing now |
-| 4 | Miter limits were ignored, and a one-sided stroke became a full box | S | Fixing now |
-| 5 | Variant swaps, drag and hover triggers, and overlay position and scrim imported wrongly | M | Fixing now |
-| 6 | Groups imported as clipping frames, cutting off shadows | S | Fixing now |
-| 7 | Auto layout frames stopped hugging on first edit, and space-around was lost | S | Fixing now |
-| 8 | One odd value, such as a frame with only a maximum width, could refuse the whole file | S | Fixing now |
-| 9 | Ordinary-size files were refused outright at 2 million values or 20,000 layers. Large files now import, keeping what fits | M | Fixing now |
-| 10 | Typing `+10` with several layers selected put them all at the same position | S | Fixing now |
-| 11 | Component properties were lost on variants | M | Fixing now |
-| 12 | Dark-mode frames using library colors could show the wrong mode | S | Fixing now |
+| 1 | Auto line height was read as 1.0. 49 of 55 text layers in the real file use it, and text collapses on first edit | M | Done in 1.0.2 |
+| 2 | Masks never imported, because Forma read a field that doesn't exist | S | Done in 1.0.2 |
+| 3 | Every polygon became a hexagon and every star got 5 points | S | Done in 1.0.2 |
+| 4 | Miter limits were ignored, and a one-sided stroke became a full box | S | Done in 1.0.2 |
+| 5 | Variant swaps, drag and hover triggers, and overlay position and scrim imported wrongly | M | Done in 1.0.2 |
+| 6 | Groups imported as clipping frames, cutting off shadows | S | Done in 1.0.2 |
+| 7 | Auto layout frames stopped hugging on first edit, and space-around was lost | S | Done in 1.0.2 |
+| 8 | One odd value, such as a frame with only a maximum width, could refuse the whole file | S | Done in 1.0.2 |
+| 9 | Ordinary-size files were refused outright at 2 million values or 20,000 layers. Large files now import, keeping what fits | M | Done in 1.0.2 |
+| 10 | Typing `+10` with several layers selected put them all at the same position | S | Done in 1.0.2 |
+| 11 | Component properties were lost on variants | M | Done in 1.0.2 |
+| 12 | Dark-mode frames using library colors could show the wrong mode | S | Done in 1.0.2 |
 | 13 | One image that won't decode still refuses the whole file, despite the promise of a placeholder | S | Open |
 | 14 | A repeated image counts every time toward the 48 MB limit, so image-heavy files are refused. Store each image once | M | Open |
 | 15 | Library colors and styles referenced by key aren't followed to the file's copy | M | Open |
@@ -98,7 +98,7 @@ Each of these could hide bugs like the ones above.
 | 55 | VoiceOver speech, printers and tablets | M | Open |
 | 56 | Quick Look, thumbnails and Spotlight weren't rerun for recent releases | S | Open |
 | 57 | Translated interface text hasn't been reviewed by a native speaker | M | Open |
-| 58 | Native checks depend on keyboard focus and fail when another app is in front, which hides real failures | S | Fixing now |
+| 58 | Native checks depend on keyboard focus and fail when another app is in front, which hides real failures | S | Done in 1.0.2 |
 
 ## 6. How we work
 

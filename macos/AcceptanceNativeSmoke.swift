@@ -672,8 +672,8 @@ extension Studio {
                 func send(_ type:NSEvent.EventType,_ count:Int){let at=imported.web.convert(NSPoint(x:CGFloat(point[0]),y:CGFloat(point[1])),to:nil);guard let event=NSEvent.mouseEvent(with:type,location:at,modifierFlags:[],timestamp:ProcessInfo.processInfo.systemUptime,windowNumber:imported.window.windowNumber,context:nil,eventNumber:1,clickCount:count,pressure:1) else{self.smokeFail("mouse event")};imported.window.sendEvent(event)}
                 func click(_ count:Int,_ then:@escaping()->Void){send(.leftMouseDown,count);self.later(0.06){send(.leftMouseUp,count);self.later(0.1){then()}}}
                 imported.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
-                click(1){click(2){}}
-                self.later(0.8){
+                self.later(0.4){click(1){click(2){}}}
+                self.later(1.4){
                     self.page(imported,"return {rows:document.querySelectorAll('[data-spec-row]').length};"){value in
                         let rows=(value as? [String:Any])?["rows"] as? Int ?? 0
                         self.check(rows>0,"a real double-click opens a real spec as blocks (\(rows) rows)")
