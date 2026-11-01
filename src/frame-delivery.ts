@@ -73,16 +73,18 @@ function box(n:DesignNode,m:Matrix,padding=0){
  if(!Number.isFinite(width)||!Number.isFinite(height))throw Error('Frame content exceeds finite inspection bounds.');return {x,y,width,height};
 }
 export interface FrameOverflowEntry {id:string;name:string;left:number;top:number;right:number;bottom:number;}
-/** Conservative painted rectangles; nested clips/masks may occlude a reported candidate. */
+/** Painted rectangles, cut down by every clip and mask between a layer and the frame, so a layer hidden by one of those is not reported. */
 export function inspectFrameOverflow(page:Page,id:string){
  const {frame,map,matrix,inverse}=geometry(page,id),owned=new Set([id]);let pending=[id],depth=0;
  const children=new Map<string,DesignNode[]>();for(const n of page.nodes)if(n.parentId){const list=children.get(n.parentId)??[];list.push(n);children.set(n.parentId,list);}
  while(pending.length){if(++depth>257)throw Error('Inspect a frame with at most 256 descendant levels.');const next:string[]=[];for(const parent of pending)for(const n of children.get(parent)??[]){if(owned.has(n.id))throw Error('Cyclic frame content cannot be inspected.');owned.add(n.id);next.push(n.id);}pending=next;}
  const entries:FrameOverflowEntry[]=[];
- for(const n of page.nodes){if(n.id===id||!owned.has(n.id)||!effectiveVisible(n,page.nodes)||n.type==='slice')continue;
+ for(const n of page.nodes){if(n.id===id||!owned.has(n.id)||!effectiveVisible(n,page.nodes)||n.type==='slice'||n.mask)continue;
   let parent=n.parentId?map.get(n.parentId):undefined,boolean=false;while(parent&&parent.id!==id){if(parent.booleanOp){boolean=true;break;}parent=parent.parentId?map.get(parent.parentId):undefined;}if(boolean)continue;
-  const stroke=Math.max(0,...strokesFor(n).filter(s=>s.visible&&s.paint.visible).map(s=>s.align==='inside'?0:effectiveStrokeWidth(s,n)*(s.align==='center'?.5:1))),padding=stroke+effectPadding(effectsFor(n)),b=box(n,multiply(inverse,matrix(n)),padding);
-  const values={left:Math.max(0,-b.x),top:Math.max(0,-b.y),right:Math.max(0,b.x+b.width-frame.width),bottom:Math.max(0,b.y+b.height-frame.height)};
+  const stroke=Math.max(0,...strokesFor(n).filter(s=>s.visible&&s.paint.visible).map(s=>s.align==='inside'?0:effectiveStrokeWidth(s,n)*(s.align==='center'?.5:1))),padding=stroke+effectPadding(effectsFor(n)),b=box(n,multiply(inverse,matrix(n)),padding);let x0=b.x,y0=b.y,x1=b.x+b.width,y1=b.y+b.height;
+  const crop=(a:DesignNode)=>{const c=box(a,multiply(inverse,matrix(a)));x0=Math.max(x0,c.x);y0=Math.max(y0,c.y);x1=Math.min(x1,c.x+c.width);y1=Math.min(y1,c.y+c.height);};
+  for(let at:DesignNode|undefined=n;at&&at.id!==id;at=at.parentId?map.get(at.parentId):undefined){if(at!==n&&at.clip)crop(at);const siblings=children.get(at.parentId??'')??[],source=siblings.slice(0,siblings.indexOf(at)).reverse().find(v=>v.mask);if(source)crop(source);}
+  if(x1<=x0||y1<=y0)continue;const values={left:Math.max(0,-x0),top:Math.max(0,-y0),right:Math.max(0,x1-frame.width),bottom:Math.max(0,y1-frame.height)};
   if(Object.values(values).some(v=>v>1e-6))entries.push({id:n.id,name:n.name,...values});
  }
  const selected=exportSelection(page.nodes,[id]);validatePassThroughExportSource(page.nodes,selected);const nodes=selected.map(n=>n.id===id?{...n,clip:false}:n),b=visualBounds(nodes);
