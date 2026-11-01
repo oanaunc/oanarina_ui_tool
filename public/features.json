@@ -2897,7 +2897,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Groups, and sections and frames that opt in to Keep fitted to contents, refit around their children in the editor and now in headless automation edits. Rotated, flipped, clipped, masked, painted, fill-sized or animated groups keep their saved bounds."
+    "notes": "Groups, and sections and frames that opt in to Keep fitted to contents, refit around their children, including rotated and flipped groups in their own axes. Clipped, masked, painted, fill-sized, animated and motion-scaled groups keep their saved bounds."
   },
   {
     "id": "UI-10-020",
@@ -3447,7 +3447,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "K Scale still saves a scale. Apply scale to values now also handles rich text runs, paragraph overrides, masks, vector networks and inner scales, and a nested instance carries the scale itself. It refuses main components, an instance as the scaled layer, Booleans, text on a path, layout guides, code layers, widgets and animated layers."
+    "notes": "K keeps proportions on every handle and writes real size, stroke, radius, type and effect values during the drag. Instances, animated layers, main components and mirrored scales keep a stored scale with a note, and Apply scale to values stays only for those."
   },
   {
     "id": "UI-12-015",
@@ -3457,7 +3457,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Apply scale to values turns an even scale into real corner radii, including independent corners, across the wider set of layers it now accepts. It refuses main components, an instance as the scaled layer, Booleans, text on a path, layout guides, code layers, widgets and animated layers."
+    "notes": "K writes real corner radii during the drag, including independent corners. Instances, animated layers, main components and mirrored scales keep a stored scale with a note."
   },
   {
     "id": "UI-12-016",
@@ -4444,10 +4444,10 @@
     "category": "Vector pen and editing",
     "name": "Vector cut tool",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Scissors now also cut at existing anchors, and the Knife follows a freehand path, with Shift for straight. A drawn line that stops inside a shape runs on through it. No cuts on general vector networks."
+    "notes": "Draw menu → Cut path cuts paths and vector networks at a point or edge, lets go a junction, and takes filled, dashed, gradient, aligned and arrowed paths. A cut leaves a 0.02 unit gap, because a network cannot hold two vertices at one point. tests/vector-network-cut.test.ts and tests/e2e/vector-network-tools.spec.ts."
   },
   {
     "id": "UI-14-043",
@@ -4457,17 +4457,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The Knife slices along a drawn path or closed loop into editable pieces in an identity-preserving group with one Undo. Gradient and image fills stay in place, strokes stay on each piece and effects stay on the group. Limits are 512 anchors and 32 pieces, independent edges and drawn stroke effects refuse, and vector networks are untested."
+    "notes": "The Knife slices paths and networks along a drawn path or loop into editable pieces, in one Undo, and independent edges become one even stroke. Drawn stroke effects refuse, and limits are 512 anchors and 32 pieces."
   },
   {
     "id": "UI-14-044",
     "category": "Vector pen and editing",
     "name": "Vector eraser tool",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The fill eraser cuts true arcs, closes the layer box on what is left, keeps gradient and image fills in place, and erasing everything removes the layer in one Undo. Open unstroked fills and layers with effects now work. Flipped layers keep their box, and networks stay unsupported."
+    "notes": "Draw menu → Erase path takes strokes and fills on paths and networks, and on flipped layers and open filled stroked paths. One Undo. tests/e2e/vector-network-tools.spec.ts."
   },
   {
     "id": "UI-14-045",
@@ -4914,10 +4914,10 @@
     "category": "Freehand and Figma Draw",
     "name": "Shape builder tool",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Sources may now have different colors: a merged region takes the color of the topmost shape over the first region picked, and what remains keeps its colors. Fill-only networks are sources. Opaque unstroked sources are still required, and the very-fast-drag note stands."
+    "notes": "Draw menu → Shape builder takes fills, strokes, open paths, lines, gradients, images, opacity, effects and networks. A region takes the look of the topmost shape over it. It refuses components, masks, clips, auto layout, forms, media and text, a line along a shape edge, and curved arrangements over 8 shapes or 64 regions. tests/shape-builder-strokes.test.ts."
   },
   {
     "id": "UI-16-022",
@@ -4937,7 +4937,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://www.figma.com/draw/",
-    "notes": "Multi-vector anchor drags snap to geometry outside the moving contours, though handles do not. Shared networks, cross-layer topology and anchor-fragment Cut remain absent."
+    "notes": "Multi-vector anchors and handles snap, and Cut works at selected anchors. Shared networks and cross-layer topology remain absent."
   },
   {
     "id": "UI-16-024",
@@ -5837,7 +5837,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The target can now keep other effects, its parent frame can sit at any depth, and a clipping frame lets text and overflow into the backdrop. One target per page, group parents, masks and presentation remain limits."
+    "notes": "The target can keep other effects, its parent frame can sit at any depth, and a clipping frame lets text and overflow into the backdrop. Imported background blur is kept on one independent rectangle or ellipse per page. One target per page, group parents, masks and presentation remain limits."
   },
   {
     "id": "UI-19-005",
@@ -7377,7 +7377,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Quotes now hang in left, right, center and justified paragraphs, including right-to-left and mixed text. Lists, ellipsis tails, tabs and explicit bidi controls keep ordinary placement."
+    "notes": "Quotes hang in left, right, center and justified paragraphs, including right-to-left and mixed text, and import from real files. Other punctuation does not hang. Lists, ellipsis tails, tabs and explicit bidi controls keep ordinary placement."
   },
   {
     "id": "UI-22-046",
@@ -10714,10 +10714,10 @@
     "category": "Prototype animation and overlays",
     "name": "Smart animate transition",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/14506587589399-Use-variables-in-prototypes",
-    "notes": "Rectangles, ellipses, polygons, stars and paths morph, including different contour counts and open against closed shapes. Outlines over 1,024 curves cross-fade. Strokes and effects interpolate when they pair and fade when they do not. Rich text with the same words animates size, spacing and color per run. Vector networks, text on a path, dynamic and calligraphic strokes and progressive blur still refuse Smart animate."
+    "notes": "Any Smart animate connection in Present. Networks, text on a path, dynamic and calligraphic strokes and progressive blur now morph; outlines over 1,024 curves cross-fade. tests/prototype-drag.test.ts and the prototype browser tests."
   },
   {
     "id": "UI-33-004",
@@ -12997,7 +12997,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Offline .fig import keeps live structure in one cancellable worker. Spec pages open as Spec layers you edit block by block, read from the real block format and verified on one real file of headings, paragraphs and bullet lists; other block kinds follow the file schema only. Tested only with generated files, so field names are unverified and full .fig compatibility is not claimed. Binary export is absent."
+    "notes": "Offline .fig import keeps live structure in one cancellable worker. Every field name read is checked against the schema real files embed (tests/fig-schema-names.test.ts). Behavior of images, lists, grids, library keys, blurs, crops, multi-color vectors, arrowheads and variable actions is tested only on files written here. Limits are in docs/FIG-IMPORT.md, full .fig compatibility is not claimed and binary export is absent."
   },
   {
     "id": "UI-39-032",
@@ -17477,7 +17477,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Measured benchmark added and dense pages mount in batches; 20,000 layers first frame ~1.4 s vs ~5.8 s single pass (dev server, Chromium, M3 Max). The whole document is still parsed and kept in memory. See docs/PERFORMANCE-BENCHMARK.md."
+    "notes": "Opening a measured 5,161-layer page in the real Mac app: longest freeze 428 ms, pan p95 102 ms. In WebKit, total stalling on open fell from 22.6 s to about 1.2 s. The whole document is still parsed and kept in memory. Synthetic file only; scripts/bench/open-lag.mjs and the native open-lag check."
   },
   {
     "id": "UI-53-002",
@@ -17487,7 +17487,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Pages with 3,000+ in-view layers mount root subtrees in ~800-layer batches with a progress indicator; pixels match the single-pass scene. Not applied to one dominant root, masks/blur fallbacks, drafts or non-Design views; later edits re-render in one pass."
+    "notes": "Pages with 3,000+ in-view layers mount in ~800-layer batches with a progress indicator. Not applied to one dominant root, masks or blur fallbacks, or non-Design views."
   },
   {
     "id": "UI-53-003",
@@ -17497,7 +17497,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Partial: bounded conservative whole-root-subtree culling on the Design/Whiteboard canvas, with opt-out, selected/editing retention, exact immutable source index and measured viewport. Real omitted DOM/defs plus on/off pixels, pan/zoom/resize/Undo/export checks. Uncertain text/effect/media/Boolean/complex-stroke roots stay rendered; root mask runs and unsupported scenes fall back fully. Shared Artwork/model/exports unchanged. See docs/CANVAS-VIEWPORT-CULLING.md."
+    "notes": "Culling now works per layer at any depth, reads text and shadow bounds, stops at clips and stays on during a drag. Masks, Booleans and live repeats keep their siblings, and background blur, pass-through and root-level masks fall back to the whole scene. tests/viewport-culling.test.ts and tests/e2e/viewport-culling.spec.ts."
   },
   {
     "id": "UI-53-004",
@@ -20564,10 +20564,10 @@
     "category": "Spec pages",
     "name": "Find and replace inside specs",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Find and replace reads text layers only, so words in a spec are not searched yet."
+    "notes": "Find and replace covers spec blocks and table cells, skips locked specs and refuses stale results, in one Undo. tests/spec.test.ts."
   },
   {
     "id": "UI-61-036",

@@ -31,60 +31,60 @@ These matter most, because they make a file look broken.
 | 10 | Typing `+10` with several layers selected put them all at the same position | S | Done in 1.0.2 |
 | 11 | Component properties were lost on variants | M | Done in 1.0.2 |
 | 12 | Dark-mode frames using library colors could show the wrong mode | S | Done in 1.0.2 |
-| 13 | One image that won't decode still refuses the whole file, despite the promise of a placeholder | S | Open |
-| 14 | A repeated image counts every time toward the 48 MB limit, so image-heavy files are refused. Store each image once | M | Open |
-| 15 | Library colors and styles referenced by key aren't followed to the file's copy | M | Open |
-| 16 | Saved line breaks are ignored in rich text, so it rewraps with local fonts | M | Open |
-| 17 | Rich text is forced to a fixed size and stops auto-resizing after import | M | Open |
-| 18 | Background blur, progressive blur and many variable bindings are dropped on import | M | Open |
-| 19 | Lists, text case, leading trim, hanging punctuation and skip ink are dropped from imported text | M | Open |
-| 20 | Grid auto layout imports as plain positioned layers | M | Open |
-| 21 | Multi-color flattened icons come in as one color, and per-point arrowheads vanish | M | Open |
-| 22 | Non-uniform and rotated image crops become a full stretch | M | Open |
-| 23 | Resized instances without stored positions don't follow constraints | M | Open |
-| 24 | Set-variable and conditional prototype actions are dropped, though Forma supports them | M | Open |
-| 25 | Files can't be saved back to the original format, which leaves people stuck in Forma | L | Open |
+| 13 | One image that won't decode still refuses the whole file, despite the promise of a placeholder | S | Done in 1.0.3 |
+| 14 | A repeated image counts every time toward the 48 MB limit, so image-heavy files are refused. Store each image once | M | Done in 1.0.3, with a 340 MB image limit |
+| 15 | Library colors and styles referenced by key aren't followed to the file's copy | M | Done in 1.0.3 |
+| 16 | Saved line breaks are ignored in rich text, so it rewraps with local fonts | M | Done in 1.0.3 |
+| 17 | Rich text is forced to a fixed size and stops auto-resizing after import | M | Done in 1.0.3 |
+| 18 | Background blur, progressive blur and many variable bindings are dropped on import | M | Partial: imported blur stays on one independent shape per page, and line height, border sides, effect fields, gradient stops and later fills stay plain values |
+| 19 | Lists, text case, leading trim, hanging punctuation and skip ink are dropped from imported text | M | Partial: text case stays literal characters, and checklists become bullets |
+| 20 | Grid auto layout imports as plain positioned layers | M | Done in 1.0.3 |
+| 21 | Multi-color flattened icons come in as one color, and per-point arrowheads vanish | M | Partial: multi-color vectors lose their anchors, and arrowheads work on one open path |
+| 22 | Non-uniform and rotated image crops become a full stretch | M | Done in 1.0.3 |
+| 23 | Resized instances without stored positions don't follow constraints | M | Partial: groups in such instances don't scale their contents |
+| 24 | Set-variable and conditional prototype actions are dropped, though Forma supports them | M | Done in 1.0.3 |
+| 25 | Files can't be saved back to the original format, which leaves people stuck in Forma | L | Not done: a writer can't be checked here without the original app, so it stays out |
 
 ## 2. Daily editing that feels wrong
 
 | # | What a designer notices | Size | Status |
 | --- | --- | --- | --- |
-| 26 | The font picker in the panel is a plain list of 7 fonts. It needs search, recents and live preview on the canvas | M | Open |
-| 27 | Padding and gaps can't be dragged on the canvas, only typed | M | Open |
-| 28 | Corner radius has no handle on the canvas, and star and arc handles are missing | M | Open |
-| 29 | Text has no real Auto line height, and lines don't round to whole pixels, so hug frames get values like 33.6 | M | Open |
-| 30 | Hugging text ignores max width and never wraps | S | Open |
-| 31 | Lines break only at spaces. They need hyphens, slashes and proper Chinese, Japanese and Korean rules | S | Open |
-| 32 | Arrow keys don't reorder children in auto layout, and dragging into a grid cell isn't supported | M | Open |
-| 33 | No smart spacing handles for a row or grid of loose layers, only one-shot Tidy | M | Open |
-| 34 | Thin lines are hard to grab, and on tiny layers the handles get in the way of moving them | S | Open |
-| 35 | The K Scale tool keeps old numbers in the panel, with a separate Apply button | M | Open |
-| 36 | Snapping rechecks every layer on each pointer move, and deep layers compete as targets, so it gets noisy and slow on big pages | M | Open |
-| 37 | Number fields don't take units or percentages | S | Open |
-| 38 | Automatic grid tracks shrink below their content | S | Open |
-| 39 | Rotated or flipped groups never refit around their children | S | Open |
-| 40 | No Paste over selection | S | Open |
-| 41 | The right panel ends in a long list of collapsed extras, which makes it look busy and hides what matters | M | Open |
-| 42 | Stroke colors can't use color styles, only fills | M | Open |
-| 43 | Color styles and the picker don't handle gradient styles in the panel | M | Open |
-| 44 | Find and replace doesn't look inside specs, and text selection can't cross blocks in a spec | M | Open |
-| 45 | OKLCH and CSS color names are missing from color fields | S | Open |
+| 26 | The font picker in the panel is a plain list of 7 fonts. It needs search, recents and live preview on the canvas | M | Done in 1.0.3 |
+| 27 | Padding and gaps can't be dragged on the canvas, only typed | M | Done in 1.0.3 |
+| 28 | Corner radius has no handle on the canvas, and star and arc handles are missing | M | Done in 1.0.3 |
+| 29 | Text has no real Auto line height, and lines don't round to whole pixels, so hug frames get values like 33.6 | M | Done in 1.0.3 |
+| 30 | Hugging text ignores max width and never wraps | S | Done in 1.0.3 |
+| 31 | Lines break only at spaces. They need hyphens, slashes and proper Chinese, Japanese and Korean rules | S | Done in 1.0.3 |
+| 32 | Arrow keys don't reorder children in auto layout, and dragging into a grid cell isn't supported | M | Partial: one layer at a time for grid cells |
+| 33 | No smart spacing handles for a row or grid of loose layers, only one-shot Tidy | M | Done in 1.0.3, for evenly spaced selections |
+| 34 | Thin lines are hard to grab, and on tiny layers the handles get in the way of moving them | S | Done in 1.0.3 |
+| 35 | The K Scale tool keeps old numbers in the panel, with a separate Apply button | M | Partial: instances, animated layers, main components and mirrored scales keep a stored scale |
+| 36 | Snapping rechecks every layer on each pointer move, and deep layers compete as targets, so it gets noisy and slow on big pages | M | Done in 1.0.3 |
+| 37 | Number fields don't take units or percentages | S | Done in 1.0.3 |
+| 38 | Automatic grid tracks shrink below their content | S | Done in 1.0.3 |
+| 39 | Rotated or flipped groups never refit around their children | S | Done in 1.0.3 |
+| 40 | No Paste over selection | S | Done in 1.0.3 |
+| 41 | The right panel ends in a long list of collapsed extras, which makes it look busy and hides what matters | M | Done in 1.0.3 |
+| 42 | Stroke colors can't use color styles, only fills | M | Done in 1.0.3 |
+| 43 | Color styles and the picker don't handle gradient styles in the panel | M | Done in 1.0.3, except styles with several paints, images or shaders |
+| 44 | Find and replace doesn't look inside specs, and text selection can't cross blocks in a spec | M | Done in 1.0.3: drag across blocks picks whole blocks |
+| 45 | OKLCH and CSS color names are missing from color fields | S | Done in 1.0.3 |
 
 ## 3. Drawing and vectors
 
 | # | What a designer notices | Size | Status |
 | --- | --- | --- | --- |
-| 46 | Cut, knife and eraser don't work on branching vector networks | L | Open |
-| 47 | Shape builder refuses strokes and open paths | M | Open |
-| 48 | Filled regions can't be selected and dragged in vector edit mode | M | Open |
-| 49 | Tablet pressure is unverified, and drawing has 14 partial features (part 7) | L | Open |
+| 46 | Cut, knife and eraser don't work on branching vector networks | L | Done in 1.0.3 |
+| 47 | Shape builder refuses strokes and open paths | M | Done in 1.0.3 |
+| 48 | Filled regions can't be selected and dragged in vector edit mode | M | Done in 1.0.3 |
+| 49 | Tablet pressure is unverified, and drawing has 14 partial features (part 7) | L | Partial: 13 drawing rows remain, and tablet pressure is unverified |
 
 ## 4. Prototypes
 
 | # | What a designer notices | Size | Status |
 | --- | --- | --- | --- |
-| 50 | Drag transitions play by time and don't follow the finger, so swipes feel fake | M | Open |
-| 51 | 13 prototype features are partial (part 7) | L | Open |
+| 50 | Drag transitions play by time and don't follow the finger, so swipes feel fake | M | Done in 1.0.3 |
+| 51 | 13 prototype features are partial (part 7) | L | Partial: see part 7 |
 
 ## 5. Things we have never proved
 
@@ -107,10 +107,10 @@ These prevent the next round of complaints, so they matter as much as any featur
 | # | Change | Size | Status |
 | --- | --- | --- | --- |
 | 59 | Build a set of 20 to 30 real files that cover masks, variants, overlays, libraries and big files. Test every release against them | M | Needs files from you |
-| 60 | Check each import field against the schema real files embed, automatically, so a wrong name can't pass again | S | Open |
+| 60 | Check each import field against the schema real files embed, automatically, so a wrong name can't pass again | S | Done in 1.0.3 |
 | 61 | Get three to five working designers to do a real task on screen. Watch where they stall | M | Needs people |
 | 62 | Compare common actions side by side with the tool people are moving from, on video | L | Needs people |
-| 63 | Add a Send feedback button with the app version, file size and a local report, sent only when the person chooses | S | Open |
+| 63 | Add a Send feedback button with the app version, file size and a local report, sent only when the person chooses | S | Done in 1.0.3: Help → Send feedback saves a local report |
 | 64 | Measure the register differently: add a "feels right" status that only a person can set | S | Open |
 
 ## 7. Every unfinished feature in the register
