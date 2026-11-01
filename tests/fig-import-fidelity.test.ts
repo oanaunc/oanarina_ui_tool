@@ -12,7 +12,7 @@ import {textLines,updateTextMetrics} from '../src/text-layout';
 import {applyDesignSystems,detachEditedBindings} from '../src/design-systems';
 import {figProgressiveBlur} from '../src/fig-effects';
 import {progressiveAxis} from '../src/progressive-blur';
-import {at,hashName,id,imagePaint,layers,mapped,png,raw,scene,solid,textRaw} from './helpers/fig-records';
+import {at,commands,hashName,id,imagePaint,layers,mapped,png,raw,scene,solid,textRaw} from './helpers/fig-records';
 /** Field and enum names here come from the schema a real file embeds. The files are written here, because the one real sample holds none of these features. */
 afterEach(()=>{vi.unstubAllGlobals();});
 describe('images that cannot be used',()=>{
@@ -106,4 +106,29 @@ describe('grid auto layout',()=>{
  it('leaves a grid with no tracks as positioned layers, and survives reopening',()=>{const out=mapped(raw('FRAME',3,2,{stackMode:'GRID'}));expect(out.document.pages[0].nodes[0].layout).toBe('none');expect(out.issues.map(i=>i.code)).toContain('layout-materialized');const back=parseDocument(JSON.stringify(mapped(grid(),cell(4,10,10,71,80)).document));expect(back.pages[0].nodes[0].layout).toBe('grid');});
  it('reports a track size Forma cannot state',()=>{const out=mapped(grid({gridColumnsSizing:{entries:[size(70,'FLEX',1,'FIXED',20)]}}));expect(out.issues.map(i=>i.code)).toContain('grid-track');});
  it('lets an instance inherit a grid from its main',()=>{const out=mapped(raw('CANVAS',9,1,{internalOnly:true}),raw('SYMBOL',10,9,{name:'Main',size:{x:120,y:60},stackMode:'GRID',gridColumns:{entries:[track(70,'a')]},gridRows:{entries:[track(80,'a')]},gridColumnsSizing:{entries:[size(70,'FIXED',120)]},gridRowsSizing:{entries:[size(80,'FIXED',60)]},stackPrimarySizing:'FIXED',stackCounterSizing:'FIXED'}),raw('INSTANCE',11,2,{name:'Copy',size:{x:120,y:60},symbolData:{symbolID:id(10)}}));expect(out.document.pages[0].nodes.find(n=>n.name==='Copy')).toMatchObject({layout:'grid',columns:1});});
+});
+describe('flattened vectors',()=>{
+ const square=(x:number)=>commands([[1,[x,0]],[2,[x+10,0]],[2,[x+10,10]],[2,[x,10]],[0,[]]]);
+ const icon=(fields:Record<string,unknown>={},n=3)=>raw('VECTOR',n,2,{name:'Icon',size:{x:40,y:10},fillPaints:[solid(0,0,0)],fillGeometry:[{commandsBlob:0,styleID:1},{commandsBlob:1,styleID:2},{commandsBlob:2,styleID:1}],vectorData:{styleOverrideTable:[{styleID:1,fillPaints:[solid(1,0,0)]},{styleID:2,fillPaints:[solid(0,0,1)]}]},...fields});
+ const blobs=[{bytes:square(0)},{bytes:square(15)},{bytes:square(30)}],open=(nodes:Record<string,unknown>[],extra=blobs)=>mapFigScene(scene(nodes,{},extra) as never,'File');
+ it('keeps each region\'s color, in stored order, as one layer per run',()=>{const out=open([icon()]),list=out.document.pages[0].nodes,frame=list.find(n=>n.name==='Icon'&&n.type==='frame')!,kids=list.filter(n=>n.parentId===frame.id);expect(frame).toMatchObject({type:'frame',clip:false,fill:'none',width:40,height:10});expect(kids.map(n=>n.fill)).toEqual(['#ff0000','#0000ff','#ff0000']);expect(kids.every(n=>n.type==='path'&&n.path)).toBe(true);expect(kids[1].path).toContain('M15 0');expect(out.issues.map(i=>i.code)).toContain('vector-regions');parseDocument(JSON.stringify(out.document));});
+ it('joins neighboring regions that share a fill',()=>{const list=open([icon({fillGeometry:[{commandsBlob:0,styleID:1},{commandsBlob:1,styleID:1},{commandsBlob:2,styleID:2}]})]).document.pages[0].nodes;expect(list.filter(n=>n.type==='path').map(n=>n.fill)).toEqual(['#ff0000','#0000ff']);});
+ it('uses one region fill in place of the layer fill',()=>{const n=open([icon({fillGeometry:[{commandsBlob:0,styleID:1}]})]).document.pages[0].nodes[0];expect(n).toMatchObject({type:'path',fill:'#ff0000'});});
+ it('leaves a plain vector alone',()=>{const n=open([icon({vectorData:{},fillGeometry:[{commandsBlob:0},{commandsBlob:1}]})]).document.pages[0].nodes[0];expect(n).toMatchObject({type:'path',fill:'#000000'});});
+ it('keeps the stroke on its own top layer',()=>{const list=open([icon({strokePaints:[solid(0,1,0)],strokeWeight:2})]).document.pages[0].nodes,top=list.at(-1)!;expect(top.name).toBe('Icon stroke');expect(top.strokes?.[0].paint.color).toBe('#00ff00');expect(top.paints).toEqual([]);expect(list.find(n=>n.type==='frame')?.strokes).toEqual([]);});
+ it('keeps a mask as one shape and reports it',()=>{const out=open([icon({mask:true})]);expect(out.document.pages[0].nodes[0].type).toBe('path');expect(out.issues.map(i=>i.code)).toContain('vector-region-fill');});
+ it('stays linked inside an instance',()=>{const out=open([raw('CANVAS',9,1,{internalOnly:true}),raw('SYMBOL',10,9,{name:'Main',size:{x:40,y:10}}),icon({parentIndex:{guid:id(10),position:'a'}},11),raw('INSTANCE',12,2,{name:'Copy',size:{x:40,y:10},symbolData:{symbolID:id(10)}})]);const copy=out.document.pages[0].nodes.find(n=>n.name==='Copy')!;expect(copy.type).toBe('instance');expect(out.summary.detachedInstances).toBe(0);expect(out.document.pages[0].nodes.filter(n=>n.instanceRootId===copy.id&&n.type==='path').map(n=>n.fill)).toEqual(['#ff0000','#0000ff','#ff0000']);});
+});
+describe('arrowheads',()=>{
+ /** Two vertices and one straight segment, in the stored network layout. */
+ const networkBlob=(styles:[number,number],count=1)=>{const parts:number[]=[count*2,count,0];const out=new DataView(new ArrayBuffer(12+count*2*12+count*28));let at=0;for(const v of parts){out.setUint32(at,v,true);at+=4;}for(let i=0;i<count;i++){out.setUint32(at,styles[0],true);out.setFloat32(at+4,0,true);out.setFloat32(at+8,i*5,true);at+=12;out.setUint32(at,styles[1],true);out.setFloat32(at+4,100,true);out.setFloat32(at+8,i*5,true);at+=12;}for(let i=0;i<count;i++){out.setUint32(at,0,true);out.setUint32(at+4,i*2,true);at+=16;out.setUint32(at,i*2+1,true);at+=12;}return new Uint8Array(out.buffer);};
+ const line=commands([[1,[0,0]],[2,[100,0]]]);
+ const vector=(styles:[number,number],fields:Record<string,unknown>={},count=1)=>mapFigScene(scene([raw('VECTOR',3,2,{name:'V',size:{x:100,y:0},strokePaints:[solid()],strokeWeight:2,strokeGeometry:[{commandsBlob:0}],vectorData:{vectorNetworkBlob:1,normalizedSize:{x:100,y:0},styleOverrideTable:[{styleID:1,strokeCap:'ARROW_LINES'},{styleID:2,strokeCap:'DIAMOND_FILLED'}]},...fields})],{},[{bytes:line},{bytes:networkBlob(styles,count)}]) as never);
+ it('reads a head set on each end point',()=>{const n=vector([1,2]).document.pages[0].nodes[0];expect(n).toMatchObject({type:'path',arrowStart:'open',arrowEnd:'diamond',arrowSize:6});expect(n.contours).toHaveLength(1);});
+ it('reads a head on one end only',()=>{const n=vector([0,2]).document.pages[0].nodes[0];expect(n.arrowStart).toBeUndefined();expect(n.arrowEnd).toBe('diamond');});
+ it('uses the layer cap on a vector that sets none per point',()=>{const n=vector([0,0],{strokeCap:'ARROW_EQUILATERAL'}).document.pages[0].nodes[0];expect(n).toMatchObject({arrowStart:'triangle',arrowEnd:'triangle'});});
+ it('adds no head for plain caps',()=>{const n=vector([0,0],{strokeCap:'ROUND'}).document.pages[0].nodes[0];expect(n.arrowStart).toBeUndefined();expect(n.arrowEnd).toBeUndefined();});
+ it('reports heads on a second open path, which Forma cannot draw',()=>{expect(vector([1,1],{},2).issues.map(i=>i.code)).toContain('vector-arrow');});
+ it('survives save and reopen',()=>{const back=parseDocument(JSON.stringify(vector([1,2]).document));expect(back.pages[0].nodes[0].arrowEnd).toBe('diamond');});
+ it('keeps the head on a line with no stored outline',()=>{expect(layers(raw('LINE',3,2,{size:{x:100,y:0},strokePaints:[solid()],strokeWeight:2,strokeCap:'CIRCLE_FILLED'}))[0]).toMatchObject({type:'line',arrowStart:'circle',arrowEnd:'circle'});});
 });
