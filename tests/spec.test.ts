@@ -1,9 +1,9 @@
 import {describe,expect,it} from 'vitest';
 import {blankDocument,node,parseDocument} from '../src/model';
-import {markdownBlocks,paragraph,specInlineMarks,specMarkdown,validateSpec} from '../src/spec';
+import {allBlocks,markdownBlocks,paragraph,specInlineMarks,specMarkdown,specRows,validateSpec} from '../src/spec';
 import type {SpecBlock} from '../src/spec';
 import {applyTextReplacements,findDocumentText} from '../src/text-search';
-import {backspaceBlock,deleteForward,indentBlock,insertBlock,markdownShortcut,matchCommands,moveBlockTo,removeBlock,slashQuery,splitBlock,toggleTodo,turnInto,wrapMark} from '../src/spec-editing';
+import {backspaceBlock,deleteForward,dropBlocks,dropPlace,duplicateBlock,indentBlock,insertAfter,insertBlock,markdownShortcut,matchCommands,moveBlockBeside,moveBlockStep,moveBlockTo,pickBlocks,removeBlock,slashQuery,splitBlock,toggleOpen,toggleTodo,turnInto,wrapMark} from '../src/spec-editing';
 import {flattenSpecs,layoutSpec,settleSpecs,specLookup} from '../src/spec-layers';
 const p=(text:string,id=text):SpecBlock=>({id,kind:'paragraph',text}),li=(text:string,indent?:number):SpecBlock=>({id:text,kind:'bullet',text,...(indent?{indent}:{})});
 const words=(blocks:SpecBlock[])=>blocks.map(b=>'text' in b?b.text:b.kind);
@@ -69,3 +69,79 @@ describe('find and replace in specs',()=>{
  it('replaces in place, leaves everything else, and refuses stale results',()=>{const d=doc(),found=findDocumentText(d,options(d)),plan=applyTextReplacements(d,found,'Get');expect(plan.replaced).toBe(4);const blocks=d.pages[0].nodes[0].spec!.blocks as any[];expect(blocks[0].text).toBe('Get now');expect(blocks[1].text).toBe('Get later');expect(blocks[2].rows).toEqual([['Get','x'],['y','Get']]);expect(blocks[3].kind).toBe('divider');expect(()=>applyTextReplacements(d,found,'Again')).toThrow(/Search again/);});
  it('skips a locked spec',()=>{const d=doc();d.pages[0].nodes[0].locked=true;const found=findDocumentText(d,options(d)),plan=applyTextReplacements(d,found,'Get');expect(plan.skipped).toBe(4);expect((d.pages[0].nodes[0].spec!.blocks[0] as any).text).toBe('Buy now');});
 });
+const toggle=(text:string,blocks:SpecBlock[],open=true,id=text):SpecBlock=>({id,kind:'toggle',text,blocks,...(open?{open:true}:{})});
+describe('toggle blocks',()=>{
+ it('validates nested blocks, ids across levels, depth and the open flag',()=>{
+  const d=blankDocument();d.pages[0].nodes=[node('spec',{spec:{version:1,blocks:[toggle('t',[p('a'),toggle('u',[p('b')],false)])]}})];expect(parseDocument(JSON.stringify(d)).pages[0].nodes[0].spec?.blocks[0]).toMatchObject({kind:'toggle',open:true});
+  const refuse=(blocks:unknown[],text:RegExp)=>expect(()=>validateSpec({version:1,blocks})).toThrow(text);
+  refuse([{id:'t',kind:'toggle',text:'',blocks:[]},{id:'t',kind:'paragraph',text:''}],/own id/);refuse([toggle('t',[p('t')])],/own id/);refuse([{id:'t',kind:'toggle',text:'',open:'yes',blocks:[]}],/open or closed/);refuse([{id:'t',kind:'toggle',text:''}],/block list/);refuse([{id:'t',kind:'toggle',text:'',blocks:[],extra:1}],/unknown block field/);refuse([{id:'t',kind:'toggle',blocks:[]}],/must be a string/);
+  refuse([toggle('t',[{id:'x',kind:'nope'} as never])],/unknown block kind/);let deep:SpecBlock=p('end');for(let i=0;i<9;i++)deep=toggle('t'+i,[deep]);refuse([deep],/nested too deeply/);refuse([toggle('t',Array.from({length:4001},(_,i)=>p('',String(i))))],/too many blocks/);
+  expect(()=>validateSpec({version:1,blocks:[toggle('empty',[])]})).not.toThrow();
+ });
+ it('round trips through Markdown as a details element, with its state and nesting',()=>{
+  const blocks=[toggle('Why & how <now>',[{id:'h',kind:'heading',level:2,text:'Inside'},{id:'b1',kind:'bullet',text:'one'},{id:'b2',kind:'bullet',text:'two',indent:1},{id:'c',kind:'code',text:'</details>\n<details>'},toggle('Deep',[p('words')],false)]),p('after')],markdown=specMarkdown(blocks);
+  expect(markdown).toContain('<details open>\n<summary>Why &amp; how &lt;now></summary>');expect(markdown).toContain('<details>\n<summary>Deep</summary>');
+  const back=markdownBlocks(markdown);expect(back).toHaveLength(2);expect(back[0]).toMatchObject({kind:'toggle',text:'Why & how <now>',open:true});const held=(back[0] as Extract<SpecBlock,{kind:'toggle'}>).blocks;expect(held.map(b=>b.kind)).toEqual(['heading','bullet','bullet','code','toggle']);expect(held[2]).toMatchObject({indent:1});expect(held[3]).toMatchObject({text:'</details>\n<details>'});expect(held[4]).not.toHaveProperty('open');expect(back[1]).toMatchObject({text:'after'});expect(specMarkdown(back)).toBe(markdown);validateSpec({version:1,blocks:back});
+ });
+ it('reads a title with a line break, one-line details, a missing close and no summary',()=>{
+  const line=markdownBlocks(specMarkdown([toggle('one\ntwo',[p('x')],false)]))[0];expect(line).toMatchObject({text:'one\ntwo'});
+  expect(markdownBlocks('<details><summary>Short</summary>body</details>')[0]).toMatchObject({kind:'toggle',text:'Short',blocks:[{kind:'paragraph',text:'body'}]});
+  expect(markdownBlocks('<details open>\n<summary>Open end</summary>\n\nrest')[0]).toMatchObject({kind:'toggle',open:true,blocks:[{text:'rest'}]});
+  expect(markdownBlocks('<details>\nplain\n</details>')[0]).toMatchObject({kind:'toggle',text:'',blocks:[{text:'plain'}]});
+  const empty=markdownBlocks('<details><summary>Nothing</summary></details>')[0] as Extract<SpecBlock,{kind:'toggle'}>;expect(empty.blocks).toHaveLength(1);expect(empty.blocks[0].kind).toBe('paragraph');
+  expect(markdownBlocks('</details>')[0]).toMatchObject({kind:'paragraph',text:'</details>'});
+  expect(()=>markdownBlocks('<details>\n'.repeat(12))).toThrow(/nested too deeply/);expect(()=>markdownBlocks(Array(4100).fill('line').join('\n'))).toThrow(/too many blocks/);
+ });
+ it('keeps images and frames a round trip refers to inside a toggle',()=>{const image:SpecBlock={id:'img',kind:'image',src:'data:image/png;base64,AA==',width:2,height:2},frame:SpecBlock={id:'f',kind:'frame',nodeId:'layer',name:'Screen'},blocks=[toggle('t',[image,frame])],back=markdownBlocks(specMarkdown(blocks),blocks)[0] as Extract<SpecBlock,{kind:'toggle'}>;expect(back.blocks[0]).toMatchObject({kind:'image',src:image.src});expect(back.blocks[1]).toMatchObject({kind:'frame',nodeId:'layer'});});
+ it('lists what a reader sees, and numbers each list on its own',()=>{const n=(id:string):SpecBlock=>({id,kind:'number',text:id}),blocks=[n('a'),toggle('t',[n('b'),n('c')]),n('d'),toggle('hide',[n('e')],false)];expect(specRows(blocks).map(r=>[r.block.id,r.depth,r.number])).toEqual([['a',0,1],['t',0,0],['b',1,1],['c',1,2],['d',0,1],['hide',0,0]]);expect(specRows(blocks).find(r=>r.block.id==='b')?.above?.id).toBe('t');expect(allBlocks(blocks).map(b=>b.id)).toContain('e');});
+ it('paints a closed toggle shorter, indents what it holds, and keeps frames inside live',()=>{
+  const page=(open:boolean)=>node('spec',{id:'s',width:600,height:100,spec:{version:1,blocks:[toggle('Title',[p('Hidden words'),{id:'f',kind:'frame',nodeId:'r'}],open,'tg')]}}),frame=node('frame',{id:'r',x:0,y:0,width:100,height:50}),find=specLookup([{id:'p',nodes:[frame]}],[frame]),open=layoutSpec(page(true),find),closed=layoutSpec(page(false),find);
+  expect(open.height).toBeGreaterThan(closed.height);expect(closed.frames).toHaveLength(0);expect(open.frames).toHaveLength(1);expect(open.frames[0].root.id).toBe('r');expect(closed.layers.map(l=>l.text)).not.toContain('Hidden words');
+  const held=open.layers.find(l=>l.text==='Hidden words')!,title=open.layers.find(l=>l.text==='Title')!,mark=open.layers.find(l=>l.type==='path')!;expect(held.x).toBe(72);expect(title.x).toBe(72);expect(mark).toMatchObject({x:48,width:16,height:16,fill:'#8f8f8f'});expect(mark.path).not.toBe(closed.layers.find(l=>l.type==='path')!.path);
+  const flat=flattenSpecs([node('spec',{...page(false),x:10,y:20})],[]);expect(flat.some(l=>l.text==='Title')).toBe(true);expect(flat.some(l=>l.text==='Hidden words')).toBe(false);
+ });
+ it('Enter on a title opens the first line inside, a closed toggle makes the next toggle, and an empty one steps out',()=>{
+  const open=splitBlock([toggle('Title',[p('','e')])],'Title',5);expect(open.caret).toEqual({id:'e',at:0});expect(open.blocks).toHaveLength(1);
+  const split=splitBlock([toggle('Title',[p('x')])],'Title',2),held=(split.blocks[0] as Extract<SpecBlock,{kind:'toggle'}>);expect(held.text).toBe('Ti');expect(words(held.blocks)).toEqual(['tle','x']);expect(split.caret?.id).toBe(held.blocks[0].id);
+  const closed=splitBlock([toggle('Title',[p('x')],false)],'Title',5);expect(closed.blocks.map(b=>b.kind)).toEqual(['toggle','toggle']);expect(closed.blocks[0]).toMatchObject({text:'Title'});expect(closed.caret?.id).toBe(closed.blocks[1].id);
+  expect(splitBlock([toggle('',[p('','e')])],'',0).blocks[0]).toMatchObject({kind:'paragraph',text:''});expect(splitBlock([toggle('',[p('words')])],'',0).blocks[0].kind).toBe('toggle');
+ });
+ it('every line edit works inside a toggle',()=>{
+  const list=[toggle('t',[p('one'),p('two')])],inner=(blocks:SpecBlock[])=>(blocks[0] as Extract<SpecBlock,{kind:'toggle'}>).blocks;
+  expect(words(inner(splitBlock(list,'one',1).blocks))).toEqual(['o','ne','two']);expect(words(inner(turnInto(list,'two','bullet').blocks)).length).toBe(2);expect(inner(turnInto(list,'two','bullet').blocks)[1].kind).toBe('bullet');expect(words(inner(backspaceBlock(list,'two').blocks))).toEqual(['onetwo']);expect(words(inner(deleteForward(list,'one').blocks))).toEqual(['onetwo']);expect(words(inner(removeBlock(list,'one').blocks))).toEqual(['two']);expect(inner(removeBlock([toggle('t',[p('only')])],'only').blocks)).toHaveLength(1);
+  expect(inner(toggleTodo([toggle('t',[{id:'d',kind:'todo',text:'',checked:false}])],'d'))[0]).toMatchObject({checked:true});
+  expect(words(inner(insertBlock(list,'one',{id:'r',kind:'divider'}).blocks))).toEqual(['one','divider','two']);
+  expect(words(inner(moveBlockTo(list,'two',0)))).toEqual(['two','one']);
+ });
+ it('Backspace unwraps a toggle and keeps what it holds, and the first line joins the title',()=>{
+  expect(words(backspaceBlock([toggle('t',[p('a'),p('b')])],'t').blocks)).toEqual(['t','a','b']);expect(backspaceBlock([toggle('t',[p('a')])],'t').blocks[0].kind).toBe('paragraph');
+  const joined=backspaceBlock([toggle('t',[p('a')])],'a');expect(joined.blocks[0]).toMatchObject({kind:'toggle',text:'ta'});expect(joined.caret).toEqual({id:'t',at:1});expect((joined.blocks[0] as Extract<SpecBlock,{kind:'toggle'}>).blocks).toHaveLength(1);
+  const below=backspaceBlock([toggle('t',[p('a')]),p('b')],'b');expect((below.blocks[0] as Extract<SpecBlock,{kind:'toggle'}>).blocks[0]).toMatchObject({text:'ab'});expect(below.blocks).toHaveLength(1);
+  const closed=backspaceBlock([toggle('t',[p('a')],false),p('b')],'b');expect(closed.blocks[0]).toMatchObject({text:'tb'});
+  const forward=deleteForward([p('x'),toggle('t',[p('a')],false)],'x');expect(words(forward.blocks)).toEqual(['xt','a']);
+ });
+ it('Tab goes into a toggle and Shift-Tab comes back out, after list indent is used up',()=>{
+  const blocks=[toggle('t',[p('','e')],false),p('line')],moved=indentBlock(blocks,'line',1);expect(moved).toHaveLength(1);expect(moved[0]).toMatchObject({open:true,blocks:[{text:'line'}]});expect(words(indentBlock(moved,'line',-1))).toEqual(['t','line']);
+  const items=[toggle('t',[li('a'),li('b')])],deep=indentBlock(items,'b',1);expect((deep[0] as Extract<SpecBlock,{kind:'toggle'}>).blocks[1]).toMatchObject({indent:1});expect((indentBlock(deep,'b',-1)[0] as Extract<SpecBlock,{kind:'toggle'}>).blocks).toHaveLength(2);expect(indentBlock(indentBlock(deep,'b',-1),'b',-1)).toHaveLength(2);
+ });
+ it('moves through toggles by keyboard and by drop, and never into itself',()=>{
+  const blocks=[p('a'),toggle('t',[p('in')]),p('b')];expect(moveBlockStep(blocks,'a',false)[0].id).toBe('t');expect((moveBlockStep(blocks,'a',false)[0] as Extract<SpecBlock,{kind:'toggle'}>).blocks.map(b=>b.id)).toEqual(['a','in']);expect(moveBlockStep(blocks,'in',true).map(b=>b.id)).toEqual(['a','in','t','b']);expect(moveBlockStep(blocks,'in',false).map(b=>b.id)).toEqual(['a','t','in','b']);expect(moveBlockStep(blocks,'b',true)[1]).toMatchObject({blocks:[{id:'in'},{id:'b'}]});
+  expect(moveBlockBeside(blocks,'t','in','after')).toBe(blocks);expect(moveBlockBeside(blocks,'t','t','after')).toBe(blocks);
+  expect(dropPlace(blocks,0,0)).toEqual({anchor:'a',where:'before'});expect(dropPlace(blocks,2,0)).toEqual({anchor:'t',where:'first'});expect(dropPlace(blocks,3,1)).toEqual({anchor:'in',where:'after'});expect(dropPlace(blocks,3,0)).toEqual({anchor:'b',where:'before'});expect(dropPlace(blocks,4,0)).toEqual({anchor:'b',where:'after'});
+  const closed=[toggle('t',[p('in')],false),p('b')],into=moveBlockBeside(closed,'b','t','last')[0] as Extract<SpecBlock,{kind:'toggle'}>;expect(into.open).toBe(true);expect(words(into.blocks)).toEqual(['in','b']);
+ });
+ it('selects, copies, removes and duplicates a toggle with what it holds',()=>{
+  const blocks=[toggle('t',[p('a')]),p('b')];expect(specMarkdown(pickBlocks(blocks,new Set(['t','a'])))).not.toContain('\n\na\n\n<details>');expect(pickBlocks(blocks,new Set(['t','a']))).toHaveLength(1);expect(pickBlocks(blocks,new Set(['a']))[0].id).toBe('a');expect(dropBlocks(blocks,new Set(['t'])).map(b=>b.id)).toEqual(['b']);
+  const copy=duplicateBlock(blocks,'t').blocks;expect(copy).toHaveLength(3);validateSpec({version:1,blocks:copy});expect((copy[1] as Extract<SpecBlock,{kind:'toggle'}>).blocks[0].id).not.toBe('a');
+  expect(insertAfter(blocks,'t',p('new'))[0]).toMatchObject({blocks:[{text:'new'},{text:'a'}]});expect(insertAfter([toggle('t',[p('a')],false)],'t',p('new')).map(b=>'text' in b&&b.text)).toEqual(['t','new']);
+  expect(toggleOpen(blocks,'t')[0]).not.toHaveProperty('open');expect(toggleOpen(toggleOpen(blocks,'t'),'t')[0]).toMatchObject({open:true});
+ });
+ it('turns a line into a toggle and back, and stops at the limits instead of breaking the file',()=>{
+  const made=turnInto([p('Words','w')],'w','toggle').blocks[0];expect(made).toMatchObject({kind:'toggle',text:'Words',open:true});expect((made as Extract<SpecBlock,{kind:'toggle'}>).blocks).toHaveLength(1);
+  expect(matchCommands('toggle')[0].kind).toBe('toggle');expect(matchCommands('details').map(c=>c.id)).toContain('toggle');
+  let deep:SpecBlock=p('end');for(let i=0;i<7;i++)deep=toggle('t'+i,[deep]);const list=[deep];expect(turnInto(list,'end','toggle').blocks).toEqual(expect.anything());let deeper:SpecBlock=p('end');for(let i=0;i<8;i++)deeper=toggle('t'+i,[deeper]);expect(turnInto([deeper],'end','toggle').blocks).toEqual([deeper]);
+  const full=[toggle('t',Array.from({length:3999},(_,i)=>p('',String(i))))];expect(splitBlock(full,'0',0).blocks).toBe(full);
+ });
+ it('finds and replaces words inside a toggle, closed or open',()=>{const d=blankDocument();d.pages[0].nodes=[node('spec',{id:'s',spec:{version:1,blocks:[toggle('Plan',[p('hidden plan')],false)]}})];const options=(d:ReturnType<typeof blankDocument>)=>({query:'plan',scope:'document' as const,pageId:d.pages[0].id,selection:[],caseSensitive:false,wholeWord:false} as never),found=findDocumentText(d,options(d));expect(found.matches.length).toBe(2);applyTextReplacements(d,found,'Goal');const held=d.pages[0].nodes[0].spec!.blocks[0] as Extract<SpecBlock,{kind:'toggle'}>;expect(held.text).toBe('Goal');expect(held.blocks[0]).toMatchObject({text:'hidden Goal'});});
+});
+
