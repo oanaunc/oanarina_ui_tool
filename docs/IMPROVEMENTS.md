@@ -96,7 +96,7 @@ Each of these could hide bugs like the ones above.
 | 53 | Spec tables, code, images and embeds on real files. The file we have holds only headings, paragraphs and lists | M | Open |
 | 54 | Slower Macs, Intel Macs and older macOS | M | Open |
 | 55 | VoiceOver speech, printers and tablets | M | Open |
-| 56 | Quick Look, thumbnails and Spotlight weren't rerun for recent releases | S | Open |
+| 56 | Quick Look, thumbnails and Spotlight weren't rerun for recent releases | S | Rerun for 1.0.3 on a synthetic project: each part passed, not all in one run |
 | 57 | Translated interface text hasn't been reviewed by a native speaker | M | Open |
 | 58 | Native checks depend on keyboard focus and fail when another app is in front, which hides real failures | S | Done in 1.0.2 |
 
