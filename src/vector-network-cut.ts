@@ -3,7 +3,7 @@ import type {DesignNode} from './model';
 import {fillsFor,strokesFor} from './paints';
 import type {Paint} from './paints';
 import {deriveNetworkFaces,networkCycleRank,networkFacePath} from './vector-network-faces';
-import {planarizeNetworkGraph} from './vector-network-planarize';
+import {paperGraph,planarizeNetworkGraph} from './vector-network-planarize';
 import {networkRegionPath,refreshNetworkRegion,withNetworkFaces} from './vector-network-region';
 import {networkChainPath,networkControls,validateNetworkGeometry} from './vector-network-geometry';
 import type {NetworkEdge,NetworkVertex,VectorNetwork} from './vector-network-geometry';
@@ -38,10 +38,8 @@ interface PaintedFace {item:paper.PathItem;paints:Paint[];}
 const visiblePaint=(paints:Paint[]|undefined)=>!!paints?.some(p=>p.visible&&p.opacity>0);
 function faceItem(path:string){const item=scope.PathItem.create(path);item.remove();item.fillRule='evenodd';return item;}
 function paintedFaces(n:DesignNode):PaintedFace[]{const g=n.vectorNetwork!;if(g.version===2)return visiblePaint(fillsFor(n))?[{item:faceItem(networkRegionPath(g)),paints:fillsFor(n)}]:[];if(g.version===3)return g.regions.filter(r=>visiblePaint(r.paints)).map(r=>({item:faceItem(networkFacePath(g,r.loops)),paints:r.paints!}));return [];}
-/** The closed outline of a cut, as edges a graph can take in. */
-function bladeGraph(cutter:paper.PathItem,id:()=>string):Graph{const paths=cutter.children?.length?cutter.children as paper.Path[]:[cutter as paper.Path],vertices:NetworkVertex[]=[],edges:NetworkEdge[]=[];for(const path of paths){const ids=path.segments.map(s=>{const v={id:id(),x:s.point.x,y:s.point.y};vertices.push(v);return v.id;});path.segments.forEach((s,i)=>{const next=path.segments[(i+1)%path.segments.length],bent=s.handleOut.length>1e-9||next.handleIn.length>1e-9;edges.push({id:id(),from:ids[i],to:ids[(i+1)%ids.length],...(bent?{fromHandle:{x:s.handleOut.x,y:s.handleOut.y},toHandle:{x:next.handleIn.x,y:next.handleIn.y}}:{})});});}return {vertices,edges};}
 /** Sorts a graph into what lies inside a closed cutter and what lies out. The blade itself stays only across filled faces, where it closes the new edge of each side. */
-function divide(n:DesignNode,cutter:paper.PathItem,id:()=>string){scope.activate();const g=n.vectorNetwork!,painted=paintedFaces(n),origin=new Map<string,string>(),blade=bladeGraph(cutter,id),own=new Set(blade.edges.map(e=>e.id));let planar:Graph;try{planar=planarizeNetworkGraph({vertices:[...g.vertices,...blade.vertices],edges:[...g.edges,...blade.edges]},id,origin);}catch(error){if(error instanceof Error&&error.message.includes('overlapping'))fail('this cut runs along an existing edge. Move it off the edge first.');throw error;}
+function divide(n:DesignNode,cutter:paper.PathItem,id:()=>string){scope.activate();const g=n.vectorNetwork!,painted=paintedFaces(n),origin=new Map<string,string>(),blade=paperGraph(cutter,id),own=new Set(blade.edges.map(e=>e.id));let planar:Graph;try{planar=planarizeNetworkGraph({vertices:[...g.vertices,...blade.vertices],edges:[...g.edges,...blade.edges]},id,origin);}catch(error){if(error instanceof Error&&error.message.includes('overlapping'))fail('this cut runs along an existing edge. Move it off the edge first.');throw error;}
  const lookup=new Map(planar.vertices.map(v=>[v.id,v])),middle=(e:NetworkEdge)=>{const a=lookup.get(e.from)!,b=lookup.get(e.to)!,p=at([a,{x:a.x+(e.fromHandle?.x??0),y:a.y+(e.fromHandle?.y??0)},{x:b.x+(e.toHandle?.x??0),y:b.y+(e.toHandle?.y??0)},b],.5);return new scope.Point(p.x,p.y);},inside:NetworkEdge[]=[],outside:NetworkEdge[]=[],lining:NetworkEdge[]=[];
  for(const e of planar.edges){const p=middle(e);if(own.has(origin.get(e.id)??e.id)){if(painted.some(f=>f.item.contains(p)))lining.push(e);}else (cutter.contains(p)?inside:outside).push(e);}return {planar,painted,inside,outside,lining};}
 /** Every face takes its paint from the source face its interior lies in. A face on the wrong side of the cutter is only the hole the cut left. */

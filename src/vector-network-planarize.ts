@@ -6,6 +6,8 @@ type P={x:number;y:number};
 const scope=new paper.PaperScope();scope.setup(new scope.Size(1,1));
 const EPS=1e-6,END=1e-7,lerp=(a:P,b:P,t:number)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
 function fail(text:string):never{throw Error('Vector network: '+text);}
+/** The curves of a Paper path as edges, with one unwelded vertex per segment. */
+export function paperGraph(item:paper.PathItem,id:()=>string):Graph{const paths=item.children?.length?item.children as paper.Path[]:[item as paper.Path],vertices:NetworkVertex[]=[],edges:NetworkEdge[]=[];for(const path of paths){const ids=new Map(path.segments.map(s=>{const v={id:id(),x:s.point.x,y:s.point.y};vertices.push(v);return [s,v.id];}));for(const c of path.curves){const bent=c.handle1.length>1e-9||c.handle2.length>1e-9;edges.push({id:id(),from:ids.get(c.segment1)!,to:ids.get(c.segment2)!,...(bent?{fromHandle:{x:c.handle1.x,y:c.handle1.y},toHandle:{x:c.handle2.x,y:c.handle2.y}}:{})});}}return {vertices,edges};}
 /**
  * Welds coincident vertices and places an explicit junction at every crossing, so a drawn crossing becomes shared
  * topology. Existing edge identities stay on the first part of a split edge; overlapping edges have no single junction and refuse.
