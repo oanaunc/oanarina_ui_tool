@@ -1,0 +1,18 @@
+import {describe,expect,it} from 'vitest';
+import {gridContentFloor,gridGeometry} from '../src/grid';
+import {reflow} from '../src/layout';
+import {node} from '../src/model';
+import {updateTextMetrics} from '../src/text-layout';
+const grid=(extra:object={})=>node('frame',{layout:'grid',columns:2,width:300,height:200,padding:0,gap:0,sizingX:'fixed',sizingY:'fixed',...extra} as never);
+const run=(...nodes:ReturnType<typeof node>[])=>{updateTextMetrics(nodes);reflow(nodes);return nodes;};
+describe('automatic grid tracks keep their content',()=>{
+ it('an automatic column grows to a fixed child and the other takes what is left',()=>{const p=grid(),wide=node('rectangle',{parentId:p.id,width:220,height:40}),small=node('rectangle',{parentId:p.id,width:20,height:40});run(p,wide,small);const g=gridGeometry(p,[wide,small]);expect(g.columns).toEqual([220,80]);expect(small.x).toBe(p.x+220);});
+ it('splits evenly while content fits',()=>{const p=grid(),a=node('rectangle',{parentId:p.id,width:50,height:40}),b=node('rectangle',{parentId:p.id,width:50,height:40});run(p,a,b);expect(gridGeometry(p,[a,b]).columns).toEqual([150,150]);});
+ it('overflows a fixed grid rather than cutting a child',()=>{const p=grid(),a=node('rectangle',{parentId:p.id,width:250,height:40}),b=node('rectangle',{parentId:p.id,width:250,height:40});run(p,a,b);expect(gridGeometry(p,[a,b]).columns).toEqual([250,250]);});
+ it('respects a track maximum over its content',()=>{const p=grid({gridColumns:[{sizing:'fr',value:1,max:100},{sizing:'fr',value:1}]}),a=node('rectangle',{parentId:p.id,width:250,height:40});run(p,a);expect(gridGeometry(p,[a]).columns[0]).toBe(100);});
+ it('a hug row keeps a fill child text at its wrapped height',()=>{const p=grid({columns:1,sizingY:'hug'}),text=node('text',{parentId:p.id,text:'Several words that wrap onto more than one line',fontSize:20,lineHeight:1.5,width:100,height:10,sizingX:'fill',sizingY:'fill',textResize:'auto-height',textLineBox:true,textLayoutVersion:2} as never);p.width=150;run(p,text);expect(text.width).toBe(150);expect(text.height).toBeGreaterThan(30);expect(p.height).toBe(text.height);});
+ it('a column keeps a fill child text at its longest word',()=>{const p=grid({width:100}),text=node('text',{parentId:p.id,text:'Internationalization',fontSize:20,width:10,height:10,sizingX:'fill',textResize:'auto-height',textLayoutVersion:2} as never),other=node('rectangle',{parentId:p.id,width:10,height:10});run(p,text,other);const g=gridGeometry(p,[text,other],undefined,undefined,gridContentFloor([p,text,other]));expect(g.columns[0]).toBe(220);expect(text.width).toBe(220);});
+ it('a hug row and column keep a fill auto layout child at what its children need',()=>{const p=grid({columns:1,sizingX:'hug',sizingY:'hug'}),card=node('frame',{parentId:p.id,layout:'vertical',padding:10,gap:4,width:10,height:10,sizingX:'fill',sizingY:'fill'}),a=node('rectangle',{parentId:card.id,width:80,height:20}),b=node('rectangle',{parentId:card.id,width:40,height:30});run(p,card,a,b);expect(p.width).toBe(100);expect(p.height).toBe(74);expect(card.height).toBe(74);});
+ it('a child in a nested grid counts too',()=>{const p=grid({columns:1,sizingY:'hug'}),inner=node('frame',{parentId:p.id,layout:'grid',columns:1,padding:0,gap:0,width:10,height:10,sizingX:'fill',sizingY:'fill'}),leaf=node('rectangle',{parentId:inner.id,width:20,height:60});run(p,inner,leaf);expect(p.height).toBe(60);});
+ it('a fill child with no content keeps its own minimum only',()=>{const p=grid({columns:1,sizingY:'hug'}),a=node('rectangle',{parentId:p.id,width:10,height:90,sizingY:'fill',minHeight:12});run(p,a);expect(p.height).toBe(12);});
+});

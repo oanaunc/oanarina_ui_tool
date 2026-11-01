@@ -1,6 +1,6 @@
 import {resolveGuideBindings,validateLayoutGuideBindings} from './responsive-guides';
 import type {DesignNode} from './model';
-import {gridGeometry,gridCell,validateGridNode} from './grid';
+import {gridContentFloor,gridGeometry,gridCell,validateGridNode} from './grid';
 import {textLines,updateTextMetrics} from './text-layout';
 import {layoutChildOutset,layoutFillBounds,layoutFillSize,layoutPadding,layoutSpan as span,validateLayoutSettings} from './layout-settings';
 export type Sizing='fixed'|'hug'|'fill';
@@ -22,7 +22,7 @@ export function reflow(nodes:DesignNode[]):void{
  nodes.forEach(n=>{validateLayoutGuideBindings(n.layoutGuideBindings);validateGridNode(n);validateLayoutSettings(n);});
  let bindingWork=0;
  const children=tree(nodes),layoutParents=new Set(nodes.filter(n=>n.layout!=='none').map(n=>n.id)),ratios=new Map<string,number>();for(const n of nodes)if(n.aspectLocked){const ratio=n.layoutAspectRatio??(n.width>0&&n.height>0?n.width/n.height:undefined);if(ratio!==undefined&&Number.isFinite(ratio)&&ratio>0){ratios.set(n.id,ratio);if(n.layout!=='none'||layoutParents.has(n.parentId??'')||n.layoutAspectRatio!==undefined)n.layoutAspectRatio=ratio;}}
- const items=(p:DesignNode)=>(children.get(p.id)??[]).filter(n=>n.visible&&!n.ignoreLayout);
+ const items=(p:DesignNode)=>(children.get(p.id)??[]).filter(n=>n.visible&&!n.ignoreLayout),floor=gridContentFloor(nodes);
  const move=(n:DesignNode,x:number,y:number)=>{const dx=x-n.x,dy=y-n.y;const visit=(a:DesignNode)=>{a.x+=dx;a.y+=dy;for(const c of children.get(a.id)??[])visit(c);};visit(n);};
  const size=(n:DesignNode,width:number,height:number,drive:'width'|'height'|'fit'|'contain'='fit')=>{const ratio=ratios.get(n.id);if(!n.aspectLocked||!ratio){setSize(n,width,height);return;}const low=Math.max(n.minWidth??0,(n.minHeight??0)*ratio),high=Math.min(n.maxWidth??1e6,(n.maxHeight??1e6)*ratio);if(low>high){setSize(n,width,height);return;}let w=drive==='width'?width:drive==='height'?height*ratio:drive==='contain'?Math.max(width,height*ratio):Math.min(width,height*ratio);w=Math.max(low,Math.min(high,w));setSize(n,w,w/ratio);};
  // The first line's start point, measured from the top of the child's bounding box in the parent's axes.
@@ -33,12 +33,12 @@ export function reflow(nodes:DesignNode[]):void{
  const measure=(n:DesignNode)=>{for(const c of children.get(n.id)??[])measure(c);setSize(n,n.width,n.height);if(n.layout==='none')return;const kids=items(n),[t,r,b,l]=layoutPadding(n),gx=n.gapX??n.gap,gy=n.gapY??n.gap;let w=0,h=0;
   if(n.layout==='horizontal'){w=kids.reduce((a,c)=>a+span(c,'width',layoutChildOutset(n,c)),0)+Math.max(0,kids.length-1)*gx;h=lineCross(n,kids,true);}
   else if(n.layout==='vertical'){w=lineCross(n,kids,false);h=kids.reduce((a,c)=>a+span(c,'height',layoutChildOutset(n,c)),0)+Math.max(0,kids.length-1)*gy;}
-  else {const geometry=gridGeometry(n,kids);w=geometry.width-l-r;h=geometry.height-t-b;}
+  else {const geometry=gridGeometry(n,kids,undefined,undefined,floor);w=geometry.width-l-r;h=geometry.height-t-b;}
   const hugW=n.sizingX==='hug'&&(n.layout==='grid'||!kids.some(c=>c.sizingX==='fill'))&&!n.wrap,hugH=n.sizingY==='hug'&&(n.layout==='grid'||!kids.some(c=>c.sizingY==='fill'))&&!n.wrap;
   if(hugW||hugH)size(n,hugW?w+l+r:n.width,hugH?h+t+b:n.height,hugW&&hugH?'contain':hugW?'width':'height');
  };
  const arrange=(p:DesignNode)=>{const kids=items(p),[t,r,b,l]=layoutPadding(p),w=Math.max(0,p.width-l-r),h=Math.max(0,p.height-t-b),gx=p.gapX??p.gap,gy=p.gapY??p.gap;
-  if(p.layout==='grid'){const geometry=gridGeometry(p,kids),byId=new Map(kids.map(n=>[n.id,n]));for(const placement of geometry.placements){const n=byId.get(placement.id)!,cell=gridCell(geometry,placement,gx,gy),o=layoutChildOutset(p,n),alignX=n.gridAlignX??'start',alignY=n.gridAlignY??'start',fillX=n.sizingX==='fill'||alignX==='stretch',fillY=n.sizingY==='fill'||alignY==='stretch';if(fillX||fillY){const fit=layoutFillSize(n,fillX?Math.max(0,cell.width-2*o):undefined,fillY?Math.max(0,cell.height-2*o):undefined,o);size(n,fit.width,fit.height,fillX&&fillY?'fit':fillX?'width':'height');}if(n.type==='text')updateTextMetrics([n]);const outerX=span(n,'width',o),outerY=span(n,'height',o),dx=alignX==='center'?(cell.width-outerX)/2:alignX==='end'?cell.width-outerX:0,dy=alignY==='center'?(cell.height-outerY)/2:alignY==='end'?cell.height-outerY:0;move(n,p.x+cell.x+(outerX-n.width)/2+dx,p.y+cell.y+(outerY-n.height)/2+dy);}}
+  if(p.layout==='grid'){const geometry=gridGeometry(p,kids,undefined,undefined,floor),byId=new Map(kids.map(n=>[n.id,n]));for(const placement of geometry.placements){const n=byId.get(placement.id)!,cell=gridCell(geometry,placement,gx,gy),o=layoutChildOutset(p,n),alignX=n.gridAlignX??'start',alignY=n.gridAlignY??'start',fillX=n.sizingX==='fill'||alignX==='stretch',fillY=n.sizingY==='fill'||alignY==='stretch';if(fillX||fillY){const fit=layoutFillSize(n,fillX?Math.max(0,cell.width-2*o):undefined,fillY?Math.max(0,cell.height-2*o):undefined,o);size(n,fit.width,fit.height,fillX&&fillY?'fit':fillX?'width':'height');}if(n.type==='text')updateTextMetrics([n]);const outerX=span(n,'width',o),outerY=span(n,'height',o),dx=alignX==='center'?(cell.width-outerX)/2:alignX==='end'?cell.width-outerX:0,dy=alignY==='center'?(cell.height-outerY)/2:alignY==='end'?cell.height-outerY:0;move(n,p.x+cell.x+(outerX-n.width)/2+dx,p.y+cell.y+(outerY-n.height)/2+dy);}}
   else if(p.layout!=='none'){
    const horizontal=p.layout==='horizontal',main=horizontal?'width':'height',cross=horizontal?'height':'width',available=horizontal?w:h,crossAvailable=horizontal?h:w,gap=horizontal?gx:gy,crossGap=horizontal?gy:gx,lines:DesignNode[][]=[[]];let occupied=0;
    for(const n of kids){const o=layoutChildOutset(p,n),extent=(horizontal?n.sizingX:n.sizingY)==='fill'?((horizontal?n.minWidth:n.minHeight)??0)+2*o:span(n,main,o);if(p.wrap&&lines.at(-1)!.length&&occupied+gap+extent>available){lines.push([]);occupied=0;}lines.at(-1)!.push(n);occupied+=(lines.at(-1)!.length>1?gap:0)+extent;}
