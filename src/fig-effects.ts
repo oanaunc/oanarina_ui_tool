@@ -1,4 +1,4 @@
-import {backgroundBlurPlan,BACKGROUND_BLUR_LIMITS} from './background-blur';
+import {backgroundBlurPlans,BACKGROUND_BLUR_LIMITS} from './background-blur';
 import {createEffect} from './effects';
 import type {Effect} from './effects';
 import type {DesignDocument,DesignNode} from './model';
@@ -14,14 +14,12 @@ export function figProgressiveBlur(e:Raw,width:number,height:number):Effect|unde
 }
 export const figBackgroundBlur=(radius:number):Effect=>({...createEffect('background-blur'),radius:Math.max(0,Math.min(MAX_RADIUS,radius))});
 const uniform=(e:Effect):Effect=>{const {progressive:_,...rest}=e;return {...rest,type:'layer-blur'};};
-/** Forma draws one background blur per page, on an independent leaf shape over a known backdrop, and never in a playing prototype.
- * The first layer on a page that meets those rules keeps its blur. Progressive blurs have their own budgets and fall back to a uniform blur. */
+/** Background blurs stay wherever the source has them, up to the file's limit and the size one filter can hold. Progressive blurs have their own budgets and fall back to a uniform blur. */
 export function settleFigBlurs(doc:DesignDocument,issue:(code:string,message:string)=>void){
- let entries=0,pixels=0,progressive=0;const omitted=()=>issue('background-blur','Forma keeps one background blur per page, on an independent rectangle or ellipse, on pages without a prototype. Others were omitted.'),drop=(n:DesignNode)=>{n.effects=n.effects?.filter(e=>e.type!=='background-blur');};
+ let entries=0,pixels=0,progressive=0;const omitted=()=>issue('background-blur','A background blur on text or a group, past the file limit of 64, or over artwork too large for one filter was omitted.'),drop=(n:DesignNode)=>{n.effects=n.effects?.filter(e=>e.type!=='background-blur');};
  for(const page of doc.pages){
-  const targets=page.nodes.filter(n=>n.effects?.some(e=>e.type==='background-blur')),byId=new Map(page.nodes.map(n=>[n.id,n])),interactive=!!page.flows?.length||page.nodes.some(n=>n.reactions?.length),held=new Map(targets.map(n=>[n,n.effects!]));targets.forEach(drop);let kept=false;
-  const live=(n:DesignNode)=>{for(let at:DesignNode|undefined=n,hops=0;at&&hops<256;at=byId.get(at.parentId??''),hops++)if(at.type==='component'||at.type==='instance'||at.instanceRootId)return true;return false;};
-  for(const n of targets){if(kept||interactive||live(n)||entries>=BACKGROUND_BLUR_LIMITS.entries||held.get(n)!.filter(e=>e.type==='background-blur').length!==1){omitted();continue;}n.effects=held.get(n);try{const plan=backgroundBlurPlan(page.nodes)!;if(pixels+plan.region.width*plan.region.height>BACKGROUND_BLUR_LIMITS.pixels)throw Error('budget');pixels+=plan.region.width*plan.region.height;kept=true;entries++;}catch{drop(n);omitted();}}
+  const targets=page.nodes.filter(n=>n.effects?.some(e=>e.type==='background-blur')),held=new Map(targets.map(n=>[n,n.effects!]));targets.forEach(drop);
+  for(const n of targets){if(entries>=BACKGROUND_BLUR_LIMITS.entries||held.get(n)!.filter(e=>e.type==='background-blur').length!==1){omitted();continue;}n.effects=held.get(n);try{backgroundBlurPlans(page.nodes);entries++;}catch{drop(n);omitted();}}
   for(const n of page.nodes)if(n.effects?.some(e=>e.type==='progressive-blur')){const own=n.effects.filter(e=>e.type==='progressive-blur').length;let fits=own<=PROGRESSIVE_BLUR_LIMITS.perStack&&progressive+own<=PROGRESSIVE_BLUR_LIMITS.count;if(fits)try{const region=progressiveEffectRegion(n,page.nodes),cost=region.width*region.height*own;fits=pixels+cost<=PROGRESSIVE_BLUR_LIMITS.totalPixels;if(fits)pixels+=cost;}catch{fits=false;}if(fits)progressive+=own;else{n.effects=n.effects.map(e=>e.type==='progressive-blur'?uniform(e):e);issue('effect-progressive','A progressive blur beyond what Forma can draw uses a uniform blur.');}}
  }
  for(const style of doc.styles??[]){const list=style.value.effects;if(!list?.length)continue;if(list.filter(e=>e.type==='progressive-blur').length>PROGRESSIVE_BLUR_LIMITS.perStack||list.some(e=>e.type==='progressive-blur')&&++progressive>PROGRESSIVE_BLUR_LIMITS.count)style.value.effects=list.map(e=>e.type==='progressive-blur'?uniform(e):e);if(list.some(e=>e.type==='background-blur')&&(++entries>BACKGROUND_BLUR_LIMITS.entries||list.filter(e=>e.type==='background-blur').length>1))style.value.effects=style.value.effects?.filter(e=>e.type!=='background-blur');}

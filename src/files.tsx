@@ -1,12 +1,10 @@
 import {announceError} from './error-announcements';
 import {parseProjectInWorker,parseSvgInWorker} from './import-parse';
 import {t} from './i18n';
-import {validatePassThroughExportSource} from './pass-through';
 import {shaderExportWarnings} from './shader-export';
 import {openSketchProjectFile,getSketchReview,cancelSketchReview} from './sketch-import';
 import {openPdfProjectFile,getPdfImportReview,cancelPdfImportReview} from './pdf-import';
 import {validateDocumentNetworks} from './vector-network';
-import {validateBackgroundBlurExportSource} from './background-blur';
 import {currentTextOutline} from './text-outline';
 import {svgOutlinedTextPlan} from './svg-text-outlines';
 import {DESIGN_JSON_LIMITS} from './design-json-import';
@@ -109,7 +107,7 @@ export function prepareSvgTextOutlines(nodes:DesignNode[]){const s=useEditor.get
 registerSampleExporter((nodes,viewport,dimensions)=>exportSvg(nodes,viewport,false,{dimensions}));
 export function exportSvg(nodes:DesignNode[],viewport?:{x:number;y:number;width:number;height:number},includeGuides=false,options?:{transform?:Matrix;scale?:number;dimensions?:{width:number;height:number};svg?:SvgExportSettings}){validateSvgExportSettings(options?.svg);validateDocumentNetworks({pages:[{nodes}]});validateExportHierarchy(nodes);validateDocumentTextPaths({pages:[{nodes}]});nodes=visibleExportNodes(nodes);const outlined=options?.svg?.textMode==='outline'?(includeGuides?(()=>{throw Error('SVG text outlines do not support generated layout-guide labels. Turn guides off.');})():prepareSvgTextOutlines(nodes)):undefined;if(outlined)nodes=outlined.nodes;const b=viewport??outlined?.bounds??visualBounds(nodes);nodes=svgStrokeOutlineNodes(nodes,options?.svg?.outlineStrokes);const simplified=options?.svg?.simplifyStrokes?svgSimplifiedStrokePlan(nodes):new Map();const rasterScale=options?.dimensions?options.dimensions.width/Math.max(1e-6,b.width):options?.scale??1,art=<><Artwork nodes={svgTextNodes(nodes,options?.svg)} hyperlinks rasterScale={rasterScale}/>{includeGuides&&<LayoutGuideOverlay nodes={nodes}/>}</>,fontCss=(options?.svg?.textMode==='outline'?'':fontCssForUsage(textFontUsage(nodes),useEditor.getState().doc.fonts)).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');return formatExportSvg(simplifySvgStrokeMarkup(`<svg xmlns="http://www.w3.org/2000/svg" width="${options?.dimensions?.width??Math.ceil(b.width*(options?.scale??1))}" height="${options?.dimensions?.height??Math.ceil(b.height*(options?.scale??1))}" viewBox="${b.x} ${b.y} ${b.width} ${b.height}">${[...(nodes.some(n=>n.prototypeInput)?['Prototype form simulation is omitted; this SVG contains saved base artwork only.']:[]),...mediaExportWarnings(nodes),...textPathExportWarnings(nodes),...shaderExportWarnings(nodes,useEditor.getState().doc)].map(w=>`<desc>${w}</desc>`).join('')}<style>${fontCss}</style>${renderToStaticMarkup(<svg>{options?.transform?<g transform={`matrix(${options.transform.join(' ')})`}>{art}</g>:art}</svg>).slice('<svg>'.length,-'</svg>'.length)}</svg>`,simplified),options?.svg);}
 
-export function exportNodes(){const s=useEditor.getState(),page=currentPage(),ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;const result=exportSelection(ns,s.selection);validateBackgroundBlurExportSource(ns,result);validatePassThroughExportSource(ns,result);return result;}
+export function exportNodes(){const s=useEditor.getState(),page=currentPage(),ns=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes;const result=exportSelection(ns,s.selection);return result;}
 export async function exportArtwork(format:'svg'|'png'|'jpg',scale=1,includeGuides=false){try{return await exportCombinedArtwork(format,scale,includeGuides);}catch(e){notifyError(e);return false;}}
 /** Snapshot the frame, settings, geometry and embedded-font SVG before any asynchronous image or save operation. */
 export async function exportFrameArtwork(id:string,setting:FrameExportSetting){const n=currentPage().nodes.find(n=>n.id===id);if(!n||n.type!=='frame')throw Error('Select one existing frame.');return exportLayerArtwork(id,setting);}

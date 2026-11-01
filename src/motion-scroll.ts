@@ -1,5 +1,3 @@
-import {refuseBackgroundBlurPlayback} from './background-blur';
-import {refusePassThroughPlayback} from './pass-through';
 import {validateDocumentProgressiveBlur} from './progressive-blur';
 import type {DesignNode} from './model';
 import {effectPadding,effectsFor} from './effects';
@@ -16,7 +14,7 @@ const finite=(v:number)=>Number.isFinite(v)&&Math.abs(v)<=1e9;
 const corners=(n:DesignNode,m:Matrix,x=0,y=0,w=n.width,h=n.height)=>[point(m,x,y),point(m,x+w,y),point(m,x+w,y+h),point(m,x,y+h)];
 function box(points:ScrollPoint[]){return {x:Math.min(...points.map(p=>p.x)),y:Math.min(...points.map(p=>p.y)),right:Math.max(...points.map(p=>p.x)),bottom:Math.max(...points.map(p=>p.y))};}
 /** Read-only, frame-local scroll layout. The sampled root affine is deliberately excluded. */
-export function motionScrollScene(nodes:DesignNode[],id:string):MotionScrollScene {refuseBackgroundBlurPlayback(nodes);refusePassThroughPlayback(nodes);
+export function motionScrollScene(nodes:DesignNode[],id:string):MotionScrollScene {
  if(nodes.length>20000)throw Error('Motion scrolling supports pages up to 20,000 layers.');
  const map=new Map(nodes.map(n=>[n.id,n])),children=new Map<string,DesignNode[]>();
  for(const n of nodes)if(n.parentId){const list=children.get(n.parentId)??[];list.push(n);children.set(n.parentId,list);}
