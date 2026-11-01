@@ -12,7 +12,9 @@
         "Headings, paragraphs, lists, to-dos, quotes, code, dividers, tables and images are all blocks. Drag one to move it, or click its handle for more options.",
         "Embed a live frame with /frame. Change the frame and the spec shows the change.",
         "Copy any spec as Markdown, paste Markdown in as blocks, and let a local agent read or write a spec through Forma’s MCP server.",
-        "Save a fill as a named color style from the color panel. Find it again in the new Styles tab, apply it to other layers, and change it once to update them all."
+        "Save a fill as a named color style from the color panel. Find it again in the new Styles tab, apply it to other layers, and change it once to update them all.",
+        "Design file import reads real files far more faithfully: Auto line height, masks, polygons and stars, one-sided strokes, overlays, variant actions, groups and hugging auto layout now come through correctly, and large files import instead of being refused.",
+        "Several selected layers with different values now show Mixed. Typing +10, or pressing an arrow key, changes each layer from its own value."
       ],
       "limits": [
         "Spec import is verified on one real file holding headings, paragraphs and bullet lists. Other block kinds, including embedded canvases, follow the file format and have not been seen in a real file.",

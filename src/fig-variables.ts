@@ -16,10 +16,10 @@ export function figLiteral(data:Raw,type:VariableType):string|number|boolean|und
  if(type==='string'&&value.textValue!==undefined)return string(value.textValue).slice(0,100000);
  if(type==='boolean'&&value.boolValue!==undefined)return flag(value.boolValue,false);
 }
-/** The chosen mode, then the set default, then the first entry for files whose collection is absent. */
+/** The chosen mode, then the set default. With no way to tell the mode, only a single value is certain, and the layer keeps the color the file stored. */
 export function figVariableEntry(variable:Raw,modes:FigModes,table:Pick<FigVariableTable,'defaultMode'>){
  const entries=figVariableEntries(variable),set=reference(variable.variableSetID),wanted=set?modes.get(set)??table.defaultMode.get(set):undefined;
- return entries.find(e=>entryMode(e)===wanted)??entries.find(e=>set!==undefined&&entryMode(e)===table.defaultMode.get(set))??entries[0];
+ return entries.find(e=>entryMode(e)===wanted)??entries.find(e=>set!==undefined&&entryMode(e)===table.defaultMode.get(set))??(entries.length===1?entries[0]:undefined);
 }
 export function figVariableTable(records:readonly Raw[],byId:ReadonlyMap<string,Raw>,issue:(code:string,message:string,raw?:Raw)=>void):FigVariableTable{
  const table:FigVariableTable={collections:[],variables:[],variableId:new Map(),collectionId:new Map(),modeId:new Map(),setOf:new Map(),defaultMode:new Map(),modeCount:0},live=(r:Raw)=>r.phase!=='REMOVED'&&r.isSoftDeleted!==true;

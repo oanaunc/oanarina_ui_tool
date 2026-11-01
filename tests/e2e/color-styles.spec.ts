@@ -41,3 +41,7 @@ test('several selected layers take a style together, and styles live in the save
 test('Styles and colors lists saved styles, and a change there reaches their layers',async({page})=>{
  await init(page,[rect('a','#675d42',100,{styleIds:{paint:'olive'}})],[olive]);await page.getByRole('button',{name:'Styles & colors'}).click();const color=page.getByLabel('Olive color style');await expect(color).toHaveValue('#675d42');await color.fill('#123456');await expect.poll(async()=>(await state(page)).nodes[0].fill).toBe('#123456');
 });
+test('layers with different positions show Mixed, and relative edits and arrows apply to each one',async({page})=>{
+ await init(page,[rect('a','#111111',100),rect('b','#222222',300)]);await pick(page,'a');await page.locator('[data-layer-id="b"]').click({modifiers:['Shift']});const x=page.getByRole('spinbutton',{name:'X',exact:true});await expect(x).toHaveAttribute('placeholder','Mixed');await expect(x).toHaveValue('');const before=(await state(page)).past;
+ await x.fill('+10');await x.press('Enter');let s=await state(page);expect(s.nodes.map((n:any)=>n.x)).toEqual([110,310]);expect(s.past).toBe(before+1);await x.press('ArrowUp');s=await state(page);expect(s.nodes.map((n:any)=>n.x)).toEqual([111,311]);await x.fill('50');await x.press('Enter');s=await state(page);expect(s.nodes.map((n:any)=>n.x)).toEqual([50,50]);await expect(x).toHaveValue('50');
+});

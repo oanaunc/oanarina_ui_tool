@@ -22,7 +22,7 @@ extension Studio {
     func smokeTerminate(){let timer=Timer(timeInterval:0,repeats:false){_ in NSApp.terminate(nil)};RunLoop.main.add(timer,forMode:.common);RunLoop.main.add(timer,forMode:.modalPanel)}
     func smokeFail(_ message:String)->Never {fputs("Native smoke failed: \(message)\n",stderr);exit(1)}
     func check(_ condition:Bool,_ name:String){if !condition{smokeFail(name)};smokeChecks.append(name)}
-    func smokeJS(_ document:DocumentWindow,_ source:String,_ completion:@escaping(Any)->Void){document.web.callAsyncJavaScript(source,arguments:[:],in:nil,in:.page){result in switch result{case .success(let value):completion(value);case .failure(let error):self.smokeFail(error.localizedDescription)}}}
+    func smokeJS(_ document:DocumentWindow,_ source:String,_ completion:@escaping(Any)->Void){document.web.callAsyncJavaScript(source,arguments:[:],in:nil,in:.page){result in switch result{case .success(let value):completion(value);case .failure(let error):self.smokeFail(((error as NSError).userInfo["WKJavaScriptExceptionMessage"] as? String ?? error.localizedDescription)+" in "+source.prefix(160))}}}
     func runSmoke(_ document:DocumentWindow){
         if let complete=smokeReadyOverride{smokeReadyOverride=nil;complete(document);return}
         if CommandLine.arguments.contains("--acceptance-smoke-test"){runAcceptanceSmoke(document);return}

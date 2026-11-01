@@ -91,11 +91,11 @@ describe('bounded interpreted Kiwi schema', () => {
     expect(()=>decodeKiwiSchema(new Uint8Array([...encodeSchema(),0]))).toThrow(/Trailing/);
     expect((globalThis as any).hacked).toBeUndefined();
   });
-  it('rejects unknown/repeated fields, invalid enums, overflow integers, invalid UTF-8 and non-finite floats', () => {
+  it('rejects unknown/repeated fields, invalid enums, overflow integers, invalid UTF-8 and NaN, and keeps the infinity that marks an open maximum', () => {
     const s=decodeKiwiSchema(encodeSchema());
     for (const data of [new Uint8Array([99,0]),new Uint8Array([1,0,1,0,0]),new Uint8Array([1,1,2,99,0,0]),new Uint8Array([0xff,0xff,0xff,0xff,0x10])]) expect(()=>decodeKiwiMessage(s,data)).toThrow();
     expect(()=>decodeKiwiMessage(s,new Uint8Array([1,1,3,0xff,0,0,0]))).toThrow();
-    expect(()=>decodeKiwiMessage(s,encodeMessage({nodeChanges:[{opacity:Infinity}]}))).toThrow(/Non-finite/);
+    expect(()=>decodeKiwiMessage(s,encodeMessage({nodeChanges:[{opacity:NaN}]}))).toThrow(/Non-finite/);expect((decodeKiwiMessage(s,encodeMessage({nodeChanges:[{opacity:Infinity}]})).nodeChanges as {opacity:number}[])[0].opacity).toBe(Infinity);
     expect(()=>decodeKiwiMessage(s,new Uint8Array([...encodeMessage(fixtureMessage()),0]))).toThrow(/Trailing/);
   });
   it('refuses huge node/array lengths, byte vector lengths and recursive message depth before allocating', () => {

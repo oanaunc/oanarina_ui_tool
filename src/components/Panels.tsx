@@ -152,7 +152,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
 
  <>{sel.length===1&&<ImageAssetStatus nodeId={n.id}/>}{sel.length===1&&<ScaledLayerNote key={'scale-'+n.id} n={n}/>}<InspectorHeader n={n} sel={sel}/>
  <PositionSection n={n} sel={sel} nodes={page.nodes} parent={parent} origin={origin} patch={patch} patchLayout={patchLayout} layoutLocked={Boolean(layoutLocked)}/>
- <LayoutSection n={n} parent={parent} patch={patch} patchLayout={patchLayout} layoutLocked={Boolean(layoutLocked)}/>
+ <LayoutSection n={n} sel={sel} parent={parent} patch={patch} patchLayout={patchLayout} layoutLocked={Boolean(layoutLocked)}/>
  <BlendControl n={n} radius={<NumberField label="Radius" glyph={<CornerGlyph/>} value={n.radius} min={0} onChange={radius=>patch({radius})}/>}/>
  {n.type==='text'&&<TypographySection n={n} patch={patch}/>}{n.type==='spec'&&sel.length===1&&<SpecPanel key={n.id} n={n}/>}
  {sel.length>1&&<section className="inspector-section" data-testid="mixed-fill-style"><DesignSystemInspector n={n} only="fill"/></section>}{sel.length>1?<MixedFillEditor key={JSON.stringify([page.id,s.selection])}/>:n.media?<VideoInspector key={n.id} n={n}/>:n.type==='code'?<CodeLayerPanel key={n.id} n={n}/>:<section className="inspector-section" data-testid="fill-section"><FillEditor n={n} patch={patch} styles={<DesignSystemInspector n={n} only="fill"/>}/></section>}

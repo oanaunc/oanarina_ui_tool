@@ -11,12 +11,12 @@ export const KIWI_LIMITS = Object.freeze({
   fields: 40000,
   fieldsPerDefinition: 2048,
   depth: 64,
-  values: 2_000_000,
+  values: 64_000_000,
   arrayLength: 1_000_000,
   byteVectors: 64 * 1024 * 1024,
   stringBytes: 16 * 1024 * 1024,
   stringLength: 1024 * 1024,
-  nodeChanges: 20000,
+  nodeChanges: 400_000,
 });
 
 const forbidden = new Set(['__proto__', 'prototype', 'constructor']);
@@ -63,7 +63,7 @@ class Reader {
     const out = new DataView(new ArrayBuffer(4));
     out.setUint32(0, (bits << 23) | (bits >>> 9), true);
     const result = out.getFloat32(0, true);
-    if (!Number.isFinite(result)) throw new Error('Non-finite Kiwi float');
+    if (Number.isNaN(result)) throw new Error('Non-finite Kiwi float'); // Infinity is real: it marks an axis with no maximum.
     return result;
   }
   string(maxLength = KIWI_LIMITS.stringLength): string {

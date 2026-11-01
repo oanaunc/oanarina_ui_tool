@@ -20,7 +20,7 @@ extension Studio {
         do{try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:true)}catch{smokeFail(error.localizedDescription)}
         initial.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
         let chosen=acceptanceSteps(initial,directory).filter{acceptanceFilter?.contains($0.0) ?? true}
-        runSteps(chosen.map{step in {next in fputs("acceptance group: "+step.0+"\n",stderr);step.1(next)}}){
+        runSteps(chosen.map{step in {next in fputs("acceptance group: "+step.0+"\n",stderr);initial.window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true);self.later(0.2){step.1(next)}}}){
             self.smokeFinishing=true;for document in Array(self.documents){document.closeApproved()};try? FileManager.default.removeItem(at:directory)
             print(self.json(["nativeAcceptance":true,"count":self.smokeChecks.count,"checks":self.smokeChecks]));fflush(stdout);exit(0)
         }

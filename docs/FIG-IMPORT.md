@@ -50,3 +50,11 @@ If any block's history cannot be proven, for example a range that falls outside 
 **What was checked.** The format comes from the schema embedded in a real file, whose four pages of 54 blocks imported with their words matching the stored previews. That file holds headings, paragraphs and bullet lists only. Tables, code, quotes, rules, to-do items, images, embeds and embedded canvases follow the schema's field names and are tested with fixtures written here, not real files. The tests in this repository use only self-authored files.
 
 Other unknown layers, and spec blocks without `specBlockType`, are read by shape: real child layers, then `textData`, then structured blocks under any field name, then a strict Yjs update, then printable sentences in byte fields. Those routes are guesses tested only with fixtures written here. A layer with no readable text keeps its preview as a flat image, and one with no text and no preview is omitted and reported.
+
+## Names checked against a real file
+
+Field and enum names were corrected against the schema a real file embeds, after a comparison with FigCraft's importer (MIT or Apache-2.0) pointed at them: `mask`, `count`, `miterLimit`, `resizeToFit`, `SWAP_STATE`, `MOUSE_IN`, `MOUSE_OUT`, `DRAG`, `GENTLE_SPRING`, and the overlay fields, which sit on the frame that opens. No code was copied. These names are confirmed to exist in the format, but most of them aren't used in the one real file tested, so how they behave comes from `tests/fig-real-format.test.ts`, whose fixtures are written here.
+
+`{100, PERCENT}` means Auto line height. 49 of 55 text layers in the real file use it, and Forma takes the height from the lines the file already laid out, or 1.2 when there are none. A frame with no `stackPrimarySizing` hugs its primary axis. Infinity means no maximum.
+
+Files past Forma's limits of 20,000 layers on a page or 60,000 in a file now import up to the limit and report what was left out. A repeated node ID keeps the last copy, and a layer with a missing parent is left out and reported.

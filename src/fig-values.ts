@@ -4,7 +4,7 @@ export type Raw=Record<string,unknown>;
 export const object=(v:unknown):Raw=>{if(!v||typeof v!=='object'||Array.isArray(v)||v instanceof Uint8Array)throw Error('Invalid design file object.');return v as Raw;};
 export const optional=(v:unknown)=>v===undefined?{}:object(v);
 export const list=(v:unknown,max=20000):unknown[]=>{if(v===undefined)return [];if(!Array.isArray(v)||v.length>max)throw Error('Invalid or oversized design file list.');return v;};
-export const number=(v:unknown,fallback?:number)=>{if(v===undefined&&fallback!==undefined)return fallback;if(typeof v!=='number'||!Number.isFinite(v)||Math.abs(v)>1e6)throw Error('Invalid design file numeric value.');return v;};
+export const number=(v:unknown,fallback?:number)=>{if(fallback!==undefined&&(v===undefined||v===Infinity||v===-Infinity))return fallback;if(typeof v!=='number'||!Number.isFinite(v)||Math.abs(v)>1e6)throw Error('Invalid design file numeric value.');return v;};
 export const flag=(v:unknown,fallback:boolean)=>{if(v===undefined)return fallback;if(typeof v!=='boolean')throw Error('Invalid design file flag.');return v;};
 export const string=(v:unknown,fallback='')=>{if(v===undefined)return fallback;if(typeof v!=='string'||v.length>1_000_000)throw Error('Invalid or oversized design file string.');return v;};
 export const guid=(v:unknown)=>{const o=object(v),part=(n:unknown)=>{if(typeof n==='number'&&Number.isSafeInteger(n)&&n>=0)return String(n);if(typeof n==='string'&&n.length>0&&n.length<=20&&!/[^0-9]/.test(n))return n;throw Error('Invalid design file node identity.');};return part(o.sessionID)+':'+part(o.localID);};
