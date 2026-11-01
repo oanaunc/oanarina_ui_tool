@@ -7,7 +7,7 @@ import {validateVersionAuthor} from './local-profile';
 import type {VersionAuthor} from './local-profile';
 
 export type BranchLifecycle='active'|'merged'|'archived';
-export interface BranchReview {at:string;revision:string;author?:VersionAuthor;}
+export interface BranchReview {at:string;revision:string;author?:VersionAuthor;note?:string;}
 export interface BranchRecord {id:string;name:string;createdAt:string;baseAt:string;status:BranchLifecycle;author?:VersionAuthor;review?:BranchReview;mergedAt?:string;archivedAt?:string;}
 export interface BranchFile {mainId:string;protected:boolean;branches:BranchRecord[];}
 export interface BranchRegistry {version:1;files:BranchFile[];}
@@ -24,7 +24,7 @@ export function validateBranchRegistry(value:unknown):BranchRegistry{
  if(!data||typeof data!=='object'||data.version!==1||!Array.isArray(data.files)||data.files.length>BRANCH_LIMITS.files)throw invalid();
  const mains=new Set<string>(),branches=new Set<string>();
  for(const file of data.files){if(!file||!validId(file.mainId)||mains.has(file.mainId)||typeof file.protected!=='boolean'||!Array.isArray(file.branches)||file.branches.length>BRANCH_LIMITS.perFile)throw invalid();mains.add(file.mainId);
-  for(const b of file.branches){if(!b||!validId(b.id)||branches.has(b.id)||b.id===file.mainId||typeof b.name!=='string'||!b.name||b.name.length>BRANCH_LIMITS.name||/[\u0000-\u001f]/.test(b.name)||!validDate(b.createdAt)||!validDate(b.baseAt)||!['active','merged','archived'].includes(b.status)||b.mergedAt!==undefined&&!validDate(b.mergedAt)||b.archivedAt!==undefined&&!validDate(b.archivedAt))throw invalid();branches.add(b.id);validateVersionAuthor(b.author);if(b.review!==undefined){if(!b.review||!validDate(b.review.at)||!validDate(b.review.revision))throw invalid();validateVersionAuthor(b.review.author);}}}
+  for(const b of file.branches){if(!b||!validId(b.id)||branches.has(b.id)||b.id===file.mainId||typeof b.name!=='string'||!b.name||b.name.length>BRANCH_LIMITS.name||/[\u0000-\u001f]/.test(b.name)||!validDate(b.createdAt)||!validDate(b.baseAt)||!['active','merged','archived'].includes(b.status)||b.mergedAt!==undefined&&!validDate(b.mergedAt)||b.archivedAt!==undefined&&!validDate(b.archivedAt)||b.review?.note!==undefined&&(typeof b.review.note!=='string'||b.review.note.length>2000))throw invalid();branches.add(b.id);validateVersionAuthor(b.author);if(b.review!==undefined){if(!b.review||!validDate(b.review.at)||!validDate(b.review.revision))throw invalid();validateVersionAuthor(b.review.author);}}}
  for(const id of branches)if(mains.has(id))throw invalid();
  return structuredClone(data);
 }

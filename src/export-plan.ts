@@ -31,7 +31,7 @@ export function layerExportGeometry(page:Page,id:string,bounds:FrameExportSettin
   if(n.width<=0||n.height<=0)throw Error('Layer bounds require positive width and height. Use artwork bounds for a stroked line.');
   return {nodes:n.type==='slice'||n.type==='frame'&&includeOverlaps?withoutSliceSubtrees(page.nodes):exportSelection(page.nodes,[id]),viewport:{x:0,y:0,width:n.width,height:n.height},transform:inverseMatrix(matrix)};
  }
- const nodes=exportSelection(page.nodes,[id]),viewport=visualBounds(nodes);if(![viewport.x,viewport.y,viewport.width,viewport.height].every(Number.isFinite)||viewport.width<=0||viewport.height<=0)throw Error('The artwork bounds are not finite and positive.');return {nodes,viewport,transform:undefined};
+ const nodes=exportSelection(page.nodes,[id]),viewport=visualBounds(nodes,{glyphs:true});if(![viewport.x,viewport.y,viewport.width,viewport.height].every(Number.isFinite)||viewport.width<=0||viewport.height<=0)throw Error('The artwork bounds are not finite and positive.');return {nodes,viewport,transform:undefined};
 }
 export function exportDimensions(width:number,height:number,setting:FrameExportSetting){
  validateFrameExportSettings([setting]);if(![width,height].every(v=>Number.isFinite(v)&&v>0))throw Error('Export bounds must be finite and positive.');
