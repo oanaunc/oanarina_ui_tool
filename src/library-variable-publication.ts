@@ -1,4 +1,8 @@
 import type {DesignDocument,DesignNode} from './model';
+/** Leaf names starting with a dot or underscore stay out of a publication, the way designers already mark working parts. */
+export function hiddenByName(name:string){const leaf=name.split('/').at(-1)?.trim()??'';return leaf.startsWith('.')||leaf.startsWith('_');}
+/** Keys this file chose not to publish, separate from the name convention above. */
+export function excludedAssetKeys(d:Pick<DesignDocument,'libraryPublication'>){return new Set(d.libraryPublication?.excludedAssets??[]);}
 /** Collections the source chose not to publish. Everything else keeps the existing publish-all behavior. */
 export function excludedCollectionIds(d:Pick<DesignDocument,'libraryPublication'|'variableCollections'>){const known=new Set((d.variableCollections??[]).map(c=>c.id));return new Set((d.libraryPublication?.excludedCollections??[]).filter(id=>known.has(id)));}
 function actionVariables(actions:NonNullable<DesignNode['reactions']>[number]['actions'],depth=0):(string|undefined)[]{if(depth>16)return [];return actions.flatMap(a=>[a.variableId,...(a.branches??[]).flatMap(b=>actionVariables(b.actions,depth+1))]);}
