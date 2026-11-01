@@ -8,7 +8,7 @@ Select one frame in Design, then expand **Inspect frame overflow**. The inspecto
 
 The list identifies **potential** overflow using descendant rectangular geometry with stroke/effect padding, projected into the frame's axes. Hidden descendants are excluded. Selecting a candidate reveals that layer; **Select potential overflowing layers** selects the complete candidate set, while the list displays at most 100 rows.
 
-This behavior remains partial. Rectangular bounds are conservative: nested clips, masks, rounded paths, empty containers and occlusion may conceal a listed candidate. The list is not a pixel visibility proof or an automatic clipping repair. The preview can show the supported rendered result, but does not reproduce every Figma render behavior. Collapsed transforms, nonfinite geometry and hierarchies beyond 256 levels are refused with a message. Inspection, previewing and selection do not create document Undo entries or dirty the file.
+This behavior remains partial. Bounds stop at every nested clip and mask between a layer and the frame, so what those hide is not listed. Curved shapes still count by their rectangle, a rotated nested clip by the box around it, and layers on top are not considered. The list is not a pixel visibility proof or an automatic clipping repair. The preview can show the supported rendered result, but does not reproduce every Figma render behavior. Collapsed transforms, nonfinite geometry and hierarchies beyond 256 levels are refused with a message. Inspection, previewing and selection do not create document Undo entries or dirty the file.
 
 ## Set a selected frame's prototype start
 

@@ -16,6 +16,8 @@ Watch dimensions are logical interface pixels (184 × 224, 198 × 242, 205 × 25
 
 **Painted bounds** is a third fit choice. It measures visible layers that actually paint, with outside strokes and effect padding, skips unpainted containers and hidden layers, and stops at nested clips because they hide their overflow. It uses the same refusals as All descendants, plus an empty result when nothing paints.
 
+All descendants and Painted bounds treat a live Boolean as its result, a mask source as the edge of what it crops, and slices as nothing. A frame that is itself a mask, or sits inside a Boolean or under a mask source, fits to Direct children only, because its box sets that shape.
+
 Fit remains **partial**: it supports ordinary free-layout frames, not auto-layout frames (use Hug contents), managed instances/main component subtrees, motion-controlled hierarchies, or generated slide/sticky/table frames. All-descendant fitting additionally refuses mask sources, live booleans and slices anywhere in the fitted subtree or its ancestor chain; direct-child mode retains its existing behavior. Collapsed transforms, nested scales whose composed world geometry overflows, incompatible size limits, and any downstream layout/component change that would alter child artwork are refused atomically. This is an intentional appearance-preservation limit, not a claim of full Figma fit behavior or reference verification.
 
 ## Verification
