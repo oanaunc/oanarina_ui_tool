@@ -4,7 +4,7 @@ Dragging translates selected roots in world coordinates through their complete a
 
 Frame resize previews derive constraints and layout for display, while the history transaction commits the raw mutation. This prevents derived instance positions from becoming authored overrides. Resized component instances retain their derived placement on subsequent edits; see the validation report for regression evidence.
 
-Group resizing and the Scale tool scale the rendered subtree through existing transform fields. Text, strokes, effects and corners therefore participate visually. Intrinsic dimensions remain in the inspector. Scale gestures can author scale tracks when the motion timeline is open, preserving the static scale as the initial keyframe. Multi-selection scales around its world bounding box.
+The Scale tool always scales proportionally and writes real values: size, position, stroke, radius, type and effects change, and the panel's fields follow the drag as it happens. There is nothing to apply afterwards. While K is active, a Scale section in the panel shows the size and factor, and typing there scales from the chosen anchor in one Undo. A layer that cannot hold real values keeps a stored scale and the panel says why: instances, animated layers, main components, and mirrored scales. With the motion timeline open, scale gestures author scale tracks, preserving the static scale as the initial keyframe. Multi-selection scales around its world bounding box.
 
 Selection, individual multi-selection and hover outlines use transformed layer corners. They describe layer bounds, not the exact contour of every visible glyph, stroke or mask. Marquee inclusion tests full world bounds. Locked ancestors prevent dragging, point edits and resize handles.
 

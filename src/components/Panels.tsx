@@ -72,6 +72,8 @@ import {sampleMotion} from '../motion';
 import {DesignSystemInspector} from './DesignSystemsEditor';
 import ScaledLayerNote from './ScaledLayerNote';
 import {layerScale,typeGroupSize} from '../group-size-field';
+import {useScaleDrag} from '../scale-tool';
+import ScaleToolPanel from './ScaleToolPanel';
 import {ComponentInspector} from './ComponentEditor';
 import {useEffect,useLayoutEffect,useId,useMemo,useRef,useState} from 'react';
 import {layerClickSelection} from '../selection';
@@ -140,7 +142,7 @@ export function LeftPanel(){const s=useEditor(),page=s.doc.pages.find(p=>p.id===
  </aside>;
 }
 
-export function RightPanel(){const motionView=useMotionView(),exportPreferences=usePreferences(),s=useEditor(),page=s.doc.pages.find(p=>p.id===s.pageId)!,displayNodes=s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,sel=displayNodes.filter(n=>s.selection.includes(n.id)),n=sel[0],[format,setFormat]=useState<'svg'|'png'|'jpg'>(exportPreferences.defaultExportFormat),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false),[exportOpen,setExportOpen]=useState(false);
+export function RightPanel(){const motionView=useMotionView(),exportPreferences=usePreferences(),s=useEditor(),page=s.doc.pages.find(p=>p.id===s.pageId)!,scaling=useScaleDrag(v=>v.nodes),displayNodes=scaling??(s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes),sel=displayNodes.filter(n=>s.selection.includes(n.id)),n=sel[0],[format,setFormat]=useState<'svg'|'png'|'jpg'>(exportPreferences.defaultExportFormat),[scale,setScale]=useState(1),[includeGuides,setIncludeGuides]=useState(false),[exportOpen,setExportOpen]=useState(false);
  useEffect(()=>setFormat(exportPreferences.defaultExportFormat),[exportPreferences.defaultExportFormat]);
  const patch=(p:Partial<DesignNode>)=>{try{if('radius'in p&&sel.some(n=>n.type==='polygon'||n.type==='star')&&(s.motionOpen||sel.some(n=>isLocked(n,page.nodes)||n.instanceRootId)))throw Error('Unlock and detach the shape, and close Motion before editing its corners.');if(sel.length===1&&sel[0].type==='group'&&!s.motionOpen&&!sel[0].booleanOp&&!layerScale(sel[0])&&('width'in p||'height'in p)){typeGroupSize(s,sel[0],p);return;}s.patch(s.selection,p);}catch(error){notifyError(error);}};
  const origin=sel.length===1&&n?positionOrigin(n,displayNodes):{x:0,y:0},parent=n?page.nodes.find(p=>p.id===n.parentId):undefined,scope=s.selection.join('|'),frameList=s.tool==='frame'&&framePresetInsertionAvailable(s),designList=!(motionView.inspector&&s.motionOpen)&&s.mode==='design'&&!!n&&!frameList,componentLayer=sel.length===1&&!!n&&(n.type==='component'||n.type==='instance'||!!n.instanceRootId);
@@ -150,7 +152,7 @@ export function RightPanel(){const motionView=useMotionView(),exportPreferences=
  {frameList?<FrameToolPanel/>:motionView.inspector&&s.motionOpen&&s.mode==='design'?<MotionInspector/>:s.mode==='prototype'?<PrototypeEditor n={n}/>:s.mode==='inspect'?<>{sel.length===1&&<ImageAssetStatus nodeId={n.id}/>}<HandoffPanel key={'handoff-'+page.id}/><AnnotationPanel key={JSON.stringify([page.id,s.selection.length===1?s.selection[0]:null])}/><InspectPanel key={page.id}/></>:!n?<><Section name="Page"><PageBackground key={page.id} page={page}/></Section><Section name="Start creating"><div className="frame-presets">{[['Desktop',1440,1024],['Phone',393,852],['Tablet',834,1194]].map(([name,w,h])=><button key={name} onClick={()=>insertPreset(String(name),Number(w),Number(h))}><Frame size={17}/><span>{name}</span><small>{w} × {h}</small></button>)}</div></Section><details className="inspector-disclosure"><summary>Guides & snapping</summary><GuideSettings/></details><Section name="Document colors"><div className="color-swatches">{s.doc.colors.map(c=><button key={c.name} title={c.name+' '+c.value} style={{background:c.value}} onClick={()=>s.set({modal:'colors'})}/>)}</div><button className="text-button" onClick={()=>s.set({modal:'colors'})}>Manage styles <ArrowRight size={12}/></button></Section><Section name="Move work in"><button className="outline-button" onClick={()=>s.set({modal:'interchange'})}>Import and export <ExternalLink size={12}/></button></Section></>:
 
 
- <>{sel.length===1&&<ImageAssetStatus nodeId={n.id}/>}{sel.length===1&&<ScaledLayerNote key={'scale-'+n.id} n={n}/>}<InspectorHeader n={n} sel={sel}/>
+ <>{sel.length===1&&<ImageAssetStatus nodeId={n.id}/>}{sel.length===1&&<ScaledLayerNote key={'scale-'+n.id} n={n}/>}<InspectorHeader n={n} sel={sel}/>{s.tool==='scale'&&<ScaleToolPanel nodes={displayNodes}/>}
  <PositionSection n={n} sel={sel} nodes={page.nodes} parent={parent} origin={origin} patch={patch} patchLayout={patchLayout} layoutLocked={Boolean(layoutLocked)}/>
  <LayoutSection n={n} sel={sel} parent={parent} patch={patch} patchLayout={patchLayout} layoutLocked={Boolean(layoutLocked)}/>
  <BlendControl n={n} radius={<NumberField label="Radius" glyph={<CornerGlyph/>} value={n.radius} min={0} onChange={radius=>patch({radius})}/>}/>
