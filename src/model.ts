@@ -1,3 +1,4 @@
+import {IMAGE_SHARING,shareImages,unpackImages} from './image-sharing';
 import {validateDocumentationLink} from './documentation-link';
 import type {LayerAnnotationSet} from './layer-annotations';
 import type {DevelopmentStatus} from './development-status';
@@ -58,7 +59,7 @@ export interface DesignNode {autoFit?:{padding:number};liveRepeat?:import('./liv
   fill:string; paints?:Paint[]; strokes?:StrokeStyle[]; blendMode?:string; effects?:Effect[]; isolate?:boolean; stroke:string; strokeWidth:number; opacity:number; radius:number;
   aspectLocked?:boolean;layoutAspectRatio?:number;mask?:LayerMask;exportGhost?:boolean;motionScaleX?:number;motionScaleY?:number;visible:boolean; locked:boolean; text:string; fontSize:number; fontFamily:string; fontFallbacks?:string[]; fontWeight:number;
   slotOverrides?:string[];slotInstance?:import('./component-slots').SlotInstance;annotations?:LayerAnnotationSet;developmentStatus?:DevelopmentStatus;accessibilityLabel?:string;textDescription?:string;hangingQuotes?:boolean;textLineBox?:true;textVerticalTrim?:import('./text-vertical-trim').TextVerticalTrim;textWrap?:import('./text-wrap').TextWrap;textDirection?:import('./text-direction').TextDirection;textBackground?:string;exportSettings?:FrameExportSetting[];readyForDevelopment?:boolean;devResources?:import('./developer-resources').DeveloperResource[];media?:EmbeddedVideo;prototypeAudio?:import('./prototype-audio').PrototypeAudio;
-  textPath?:import('./text-path').TextPathSettings;smallCaps?:boolean;textPosition?:'normal'|'superscript'|'subscript';paragraphStyles?:import('./paragraphs').ParagraphOverride[];listIndent?:number;markerGap?:number;listItemSpacing?:number;listHanging?:boolean;textOutline?:TextOutline;textRuns?:TextRun[];fontAxes?:Record<string,number>;fontFeatures?:Record<string,number>;underline?:UnderlineStyle;
+  textPath?:import('./text-path').TextPathSettings;textSavedLayout?:import('./text-outline').SavedTextLayout;smallCaps?:boolean;textPosition?:'normal'|'superscript'|'subscript';paragraphStyles?:import('./paragraphs').ParagraphOverride[];listIndent?:number;markerGap?:number;listItemSpacing?:number;listHanging?:boolean;textOutline?:TextOutline;textRuns?:TextRun[];fontAxes?:Record<string,number>;fontFeatures?:Record<string,number>;underline?:UnderlineStyle;
   textAlign:'left'|'center'|'right'|'justify'; fontStyle?:'normal'|'italic';decorations?:('underline'|'line-through')[];textResize?:'auto-width'|'auto-height'|'fixed';verticalAlign?:'top'|'middle'|'bottom';paragraphSpacing?:number;paragraphIndent?:number;maxLines?:number;textOverflow?:'visible'|'ellipsis';listStyle?:'none'|'bullet'|'number';hyperlink?:string; lineHeight:number;lineHeightPx?:number; letterSpacing:number;
   arrowStart?:ArrowheadStyle;arrowEnd?:ArrowheadStyle;arrowSize?:number;fillRule?:'nonzero'|'evenodd';path:string; points:VectorPoint[]; contours?:VectorContour[]; closed?:boolean; pathWidth?:number;pathHeight?:number;booleanOp?:'union'|'subtract'|'intersect'|'exclude';pointCount?:number;innerRadius?:number;arcStart?:number;arcSweep?:number;arcInner?:number;corners?:[number,number,number,number];flipX?:boolean;flipY?:boolean; image:string; shadow:boolean; blur:number;
   layout:'none'|'horizontal'|'vertical'|'grid'; gap:number; padding:number; columns:number;
@@ -97,9 +98,10 @@ export function effectiveVisible(n:DesignNode,nodes:DesignNode[]):boolean {
 }
 export function isLocked(n:DesignNode,nodes:DesignNode[]):boolean {let current:DesignNode|undefined=n;const seen=new Set<string>();while(current){if(current.locked||seen.has(current.id))return true;seen.add(current.id);current=nodes.find(a=>a.id===current!.parentId);}return false;}
 export function parseDocument(raw:string):DesignDocument {
-  if(raw.length>50_000_000)throw Error('This file exceeds the 50 MB project limit.');
+  if(raw.length>IMAGE_SHARING.expandedChars)throw Error('This file exceeds the 50 MB project limit.');
   const d=JSON.parse(raw);
-  if(d.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file.');
+  if(d?.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file.');
+  if(raw.length-shareImages(d)>50_000_000)throw Error('This file exceeds the 50 MB project limit.');unpackImages(d);
   if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
   validateDocumentMetadata(d);validateColorProfile(d.colorProfile);validateDocumentShaders(d);
   validateDocumentSurfaces(d);

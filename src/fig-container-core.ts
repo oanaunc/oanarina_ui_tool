@@ -79,8 +79,8 @@ function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
     const nameBytes = bytes.subarray(at + 46, at + 46 + nameSize), name = utf8.decode(nameBytes);
     if (names.has(name)) throw new Error('Duplicate ZIP entry');
     names.add(name);
-    const limit = entryLimit(name);
-    if (size > limit || compressed > FIG_LIMITS.inputBytes || (method === 0 && compressed !== size)) throw new Error('.fig archive entry exceeds size limit');
+    const limit = entryLimit(name), image = name.startsWith('images/') && name !== 'images/';
+    if ((size > limit && !image) || compressed > FIG_LIMITS.inputBytes || (method === 0 && compressed !== size)) throw new Error('.fig archive entry exceeds size limit');
     total += size;
     if (total > FIG_LIMITS.archiveBytes) throw new Error('.fig expanded archive exceeds size limit');
     extras(bytes.subarray(at + 46 + nameSize, at + 46 + nameSize + extraSize));
@@ -111,8 +111,17 @@ function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
   const result = new Map<string, Uint8Array>();
   for (const entry of entries) {
     const compressed = bytes.subarray(entry.start, entry.start + entry.compressed);
-    const out = entry.method === 0 ? compressed.slice() : inflateBounded(compressed, entry.size);
-    if (out.length !== entry.size || figCrc32(out) !== entry.crc) throw new Error('ZIP size or CRC checksum mismatch');
+    // One unreadable image stays a placeholder. Everything else in the archive still has to be exact.
+    const image = entry.name.startsWith('images/');
+    if (image && entry.size > FIG_LIMITS.imageBytes) continue;
+    let out: Uint8Array;
+    try {
+      out = entry.method === 0 ? compressed.slice() : inflateBounded(compressed, entry.size);
+      if (out.length !== entry.size || figCrc32(out) !== entry.crc) throw new Error('ZIP size or CRC checksum mismatch');
+    } catch (error) {
+      if (image) continue;
+      throw error;
+    }
     result.set(entry.name, out);
   }
   return result;

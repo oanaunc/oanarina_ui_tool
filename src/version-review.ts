@@ -1,10 +1,11 @@
 import {validateVersionAuthor} from './local-profile';
 import type {DesignDocument,DesignNode} from './model';
+import {packedProject} from './image-sharing';
 import {parseDocument} from './model';
 import type {Snapshot} from './repository';
 import {cloneLocalDocument} from './file-browser';
 export const VERSION_REVIEW_LIMITS={bytes:50_000_000,layers:100_000,visits:2_000_000,rows:200} as const;
-export function validatedVersionDocument(value:DesignDocument){const raw=JSON.stringify(value);if(new TextEncoder().encode(raw).length>VERSION_REVIEW_LIMITS.bytes)throw Error('Version review supports projects up to 50 MB. Export a backup to inspect larger projects.');return parseDocument(raw);}
+export function validatedVersionDocument(value:DesignDocument){const raw=packedProject(value);if(new TextEncoder().encode(raw).length>VERSION_REVIEW_LIMITS.bytes)throw Error('Version review supports projects up to 50 MB. Export a backup to inspect larger projects.');return parseDocument(raw);}
 export type SnapshotHeader=Pick<Snapshot,'id'|'documentId'|'name'|'date'|'author'>;
 export function validatedSnapshotHeader(value:SnapshotHeader,documentId:string):SnapshotHeader{if(!value||typeof value.id!=='string'||!value.id||value.id.length>500||value.documentId!==documentId||typeof value.name!=='string'||value.name.length>1000||/[\u0000-\u001f\u007f-\u009f]/.test(value.name)||typeof value.date!=='string'||value.date.length>64||!Number.isFinite(Date.parse(value.date)))throw Error('This local version has invalid metadata. The current file has not changed.');const author=validateVersionAuthor(value.author);return {id:value.id,documentId:value.documentId,name:value.name,date:value.date,...(author?{author}:{})};}
 export function validatedSnapshot(value:Snapshot,documentId:string){const header=validatedSnapshotHeader(value,documentId);const doc=validatedVersionDocument(value.doc);if(doc.id!==documentId)throw Error('This version belongs to a different file.');return {...header,doc};}

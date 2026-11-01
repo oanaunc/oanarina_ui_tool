@@ -1,4 +1,5 @@
 import {reconcileRemovedDocumentCover} from './document-cover';
+import {packedProject} from './image-sharing';
 import {parseDocument} from './model';
 import type {DesignDocument,Page} from './model';
 import {allNodes,hydrateLegacyInstances} from './components-model';
@@ -9,7 +10,7 @@ import type {PrototypeAction,PrototypeReaction} from './prototype';
 const fresh=()=>crypto.randomUUID();
 const clone=<T,>(value:T):T=>structuredClone(value);
 function validated(doc:DesignDocument){
- const raw=JSON.stringify(doc);
+ const raw=packedProject(doc);
  if(new TextEncoder().encode(raw).length>50_000_000)throw Error('This change would exceed the 50 MB project limit. Use a smaller project.');
  return parseDocument(raw);
 }

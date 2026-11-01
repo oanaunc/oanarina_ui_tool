@@ -328,5 +328,6 @@ const trustedImportDiagnostics=new Set<string>([
  "Design file references exceed the bounded resolution limit.",
  "Design file world artwork exceeds the one-million-unit coordinate limit.",
  "Imported design file exceeds the 50 MB saved-project limit.",
+ "Imported design file repeats its images past the 340 MB working limit.",
 ]);
 export function trustedImportDiagnostic(message:string){return trustedImportDiagnostics.has(message)?message:undefined;}

@@ -1,4 +1,5 @@
 import type {DesignDocument, DesignNode} from './model';
+import {packedProject} from './image-sharing';
 import {parseDocument} from './model';
 import {detachEditedBindings} from './design-systems';
 import {richTextNodeKey,textStyleFields,validateTextRuns} from './rich-text';
@@ -107,5 +108,5 @@ export function applyTextReplacements(doc:DesignDocument, result:TextSearchResul
 export function validateTextReplacement(doc:DesignDocument, plan:TextReplacementPlan){
   const pending=new Set(plan.expected.keys());for(const p of doc.pages)for(const n of p.nodes){const expected=plan.expected.get(richTextNodeKey(p.id,n.id));if(!expected)continue;pending.delete(richTextNodeKey(p.id,n.id));if(n.text!==expected.text||JSON.stringify(n.textRuns??[])!==JSON.stringify(expected.textRuns))throw Error('A managed text value would overwrite this replacement. Edit its component property or workspace control instead.');}
   if(pending.size)throw Error('A replaced text layer disappeared during layout.');
-  const raw=JSON.stringify(doc,null,2);if(new TextEncoder().encode(raw).byteLength>=50000000)throw Error('The replaced project exceeds the 50 MB saved-file limit.');parseDocument(raw);
+  const raw=packedProject(doc,2);if(new TextEncoder().encode(raw).byteLength>=50000000)throw Error('The replaced project exceeds the 50 MB saved-file limit.');parseDocument(raw);
 }
