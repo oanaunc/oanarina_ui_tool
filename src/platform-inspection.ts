@@ -5,6 +5,7 @@ import {effectiveStrokeWidth} from './edge-strokes';
 import {layoutPadding} from './layout-settings';
 import {hasVariableWidth} from './variable-width';
 import {effectsFor} from './effects';
+import {textLinePx} from './text-layout';
 import type {DocumentColorProfile} from './color-profile';
 
 export type InspectPlatform = 'ios' | 'android';
@@ -72,7 +73,7 @@ export function inspectPlatform(n: DesignNode, platform: InspectPlatform, unitsP
     add('Font family', short(n.fontFamily), 'Saved family name only; confirm target-platform availability and licensing.');
     add('Font size', length(n.fontSize, true)); add('Font weight', String(n.fontWeight), 'Saved numeric weight; native family/face matching remains a developer decision.');
     add('Font style', n.fontStyle ?? 'normal');
-    add('Line height', length(n.lineHeightPx ?? n.fontSize * n.lineHeight, true), 'Authored line-box target; native text metrics and shaping can differ.');
+    add('Line height', length(textLinePx(n), true), 'Authored line-box target; native text metrics and shaping can differ.');
     add('Letter spacing', platform === 'android' && n.fontSize > 0 ? round(n.letterSpacing / n.fontSize) + ' em' : length(n.letterSpacing));
     add('Text alignment', n.textAlign); add('Text direction', n.textDirection ?? 'auto');
     {const size = n.fontSize / unitsPerLogical, [style, value] = nearest(platform === 'ios' ? iosTypeRamp : androidTypeRamp, size);

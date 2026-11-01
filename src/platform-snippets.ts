@@ -4,6 +4,7 @@ import {effectsFor} from './effects';
 import {layoutPadding} from './layout-settings';
 import type {DesignNode} from './model';
 import {fillsFor,strokesFor} from './paints';
+import {textLinePx} from './text-layout';
 import type {InspectPlatform} from './platform-inspection';
 export interface PlatformSnippet {label:string;language:string;code:string;}
 /** One layer's own appearance. Children, vector geometry and images are named in a comment rather than guessed. */
@@ -22,7 +23,7 @@ const comment=(s:string)=>s.replace(/\*\//g,'* /').replace(/-->/g,'-- >').replac
 const swiftWeight=(w:number)=>w>=900?'.black':w>=800?'.heavy':w>=700?'.bold':w>=600?'.semibold':w>=500?'.medium':w>=400?'.regular':w>=300?'.light':w>=200?'.thin':'.ultraLight';
 const swiftAlign=(a:string)=>a==='center'?'.center':a==='right'?'.trailing':'.leading';
 const composeAlign=(a:string)=>a==='center'?'TextAlign.Center':a==='right'?'TextAlign.End':a==='justify'?'TextAlign.Justify':'TextAlign.Start';
-const lineHeight=(n:DesignNode)=>n.lineHeightPx??n.fontSize*n.lineHeight;
+const lineHeight=(n:DesignNode)=>textLinePx(n);
 const generated=(n:DesignNode)=>n.type!=='text'&&!['rectangle','frame','section','group','ellipse','component','instance'].includes(n.type);
 function swiftUI(n:DesignNode,px:(v:number)=>string,color:(hex:string,alpha:number)=>string){
  const lines:string[]=[],fill=solid(n),stroke=border(n),glow=shadow(n);

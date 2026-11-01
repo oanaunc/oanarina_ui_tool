@@ -1,4 +1,4 @@
-.app .canvas-text-editor{background:transparent;border:0;outline:1px solid var(--selection);outline-offset:0;overflow:hidden;resize:none;padding:0;margin:0;caret-color:currentColor}
+.app .canvas-text-editor{min-height:0;background:transparent;border:0;outline:1px solid var(--selection);outline-offset:0;overflow:hidden;resize:none;padding:0;margin:0;caret-color:currentColor}
 .app .canvas-text-editor:focus-visible{outline:1px solid var(--selection)}
 .app .canvas-text-surface{resize:none;overflow:hidden;cursor:text;tab-size:8}
 .app .canvas-text-surface ::selection{background:var(--selection-soft)}

@@ -18,7 +18,7 @@ const hit=await page.evaluate(()=>{const el=[...document.querySelectorAll('#form
 await page.mouse.move(hit.x,hit.y);
 await measure('click frame',async()=>{await page.mouse.down();await page.mouse.up();});
 await measure('click empty canvas',async()=>{const [x,y]=at(60,40);await page.mouse.move(x,y);await page.mouse.down();await page.mouse.up();});
-await page.mouse.move(hit.x,hit.y);await page.mouse.down();await page.mouse.up();
+await page.mouse.move(hit.x,hit.y);await page.mouse.down();await page.mouse.up();await page.keyboard.press('Shift+Enter');
 await measure('drag frame 40 steps',async()=>{await page.mouse.move(hit.x,hit.y);await page.mouse.down();for(let i=1;i<=40;i++)await page.mouse.move(hit.x+i*2,hit.y+i);await page.mouse.up();});
 await measure('arrow nudge',async()=>{await page.keyboard.press('ArrowRight');});
 await measure('undo',async()=>{await page.keyboard.press('Meta+z');});

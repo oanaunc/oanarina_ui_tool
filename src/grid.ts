@@ -1,6 +1,10 @@
 import {layoutPadding,layoutChildOutset,layoutSpan} from './layout-settings';
 import type {DesignDocument,DesignNode} from './model';
+import {textBodyHeight,textLines,textMinContentWidth} from './text-layout';
 
+type Axis='width'|'height';
+/** What a child that fills its cell still needs. Without one, only its own minimum counts. */
+export type GridContentFloor=(n:DesignNode,axis:Axis)=>number;
 export interface GridTrack {sizing:'fixed'|'fr'|'hug';value:number;min?:number;max?:number;}
 export type GridAlignment='start'|'center'|'end'|'stretch';
 export interface GridPlacement {id:string;column:number;row:number;columnSpan:number;rowSpan:number;}
@@ -22,28 +26,30 @@ export function placeGrid(parent:DesignNode,kids:DesignNode[]):{placements:GridP
  if(rowCount*columnCount>MAX_CELLS)throw Error('Grid exceeds the 1,000,000 cell layout limit.');
  const order=new Map(kids.map((n,i)=>[n.id,i]));placements.sort((a,b)=>order.get(a.id)!-order.get(b.id)!);return {placements,columnCount,rowCount};
 }
-function resolveTracks(tracks:GridTrack[],placements:GridPlacement[],byId:Map<string,DesignNode>,axis:'width'|'height',gap:number,available:number,hug:boolean){
+function resolveTracks(tracks:GridTrack[],placements:GridPlacement[],byId:Map<string,DesignNode>,axis:'width'|'height',gap:number,available:number,hug:boolean,floor?:GridContentFloor){
  const sizes=tracks.map(t=>bounded(t.sizing==='fixed'?t.value:0,t)),start=axis==='width'?'column':'row',span=axis==='width'?'columnSpan':'rowSpan';
  // Small spans establish intrinsic sizes before larger spans distribute their unmet minimums.
- for(const placement of [...placements].sort((a,b)=>a[span]-b[span])){const n=byId.get(placement.id)!,from=placement[start],length=placement[span],fill=(axis==='width'?n.sizingX:n.sizingY)==='fill',needed=fill?(axis==='width'?n.minWidth:n.minHeight)??0:n[axis];let deficit=needed-(sum(sizes.slice(from,from+length))+(length-1)*gap),pending=Array.from({length},(_,i)=>from+i).filter(i=>tracks[i].sizing!=='fixed');
+ for(const placement of [...placements].sort((a,b)=>a[span]-b[span])){const n=byId.get(placement.id)!,from=placement[start],length=placement[span],fill=(axis==='width'?n.sizingX:n.sizingY)==='fill',own=(axis==='width'?n.minWidth:n.minHeight)??0,needed=fill?Math.max(own,floor?.(n,axis)??0):n[axis];let deficit=needed-(sum(sizes.slice(from,from+length))+(length-1)*gap),pending=Array.from({length},(_,i)=>from+i).filter(i=>tracks[i].sizing!=='fixed');
   while(deficit>1e-7&&pending.length){const share=deficit/pending.length;let gained=0;for(const i of pending){const next=bounded(sizes[i]+share,tracks[i]);gained+=next-sizes[i];sizes[i]=next;}deficit-=gained;pending=pending.filter(i=>sizes[i]<(tracks[i].max??1e6)-1e-7);if(gained<1e-7)break;}
  }
  if(!hug){const flexible=tracks.flatMap((t,i)=>t.sizing==='fr'?[i]:[]),availableForFlex=Math.max(0,available-Math.max(0,tracks.length-1)*gap)-sum(sizes.filter((_,i)=>tracks[i].sizing!=='fr'));
-  // Solve sum(clamp(weight * unit)) = available, including simultaneous minimum/maximum limits.
-  let low=0,high=Math.max(1,...flexible.map(i=>(tracks[i].max??Math.max(0,availableForFlex)+(tracks[i].min??0))/tracks[i].value));
-  for(let pass=0;pass<70;pass++){const unit=(low+high)/2,total=sum(flexible.map(i=>bounded(unit*tracks[i].value,tracks[i])));if(total>availableForFlex)high=unit;else low=unit;}
-  for(const i of flexible)sizes[i]=Math.round(bounded((low+high)/2*tracks[i].value,tracks[i])*1e9)/1e9;
+  // Solve sum(clamp(weight * unit)) = available, including simultaneous minimum/maximum limits. A flexible track never goes below its content.
+  const flexed=(i:number,unit:number)=>Math.max(sizes[i],bounded(unit*tracks[i].value,tracks[i]));let low=0,high=Math.max(1,...flexible.map(i=>(tracks[i].max??Math.max(0,availableForFlex)+(tracks[i].min??0))/tracks[i].value));
+  for(let pass=0;pass<70;pass++){const unit=(low+high)/2,total=sum(flexible.map(i=>flexed(i,unit)));if(total>availableForFlex)high=unit;else low=unit;}
+  const settled=(low+high)/2;for(const i of flexible)sizes[i]=Math.round(flexed(i,settled)*1e9)/1e9;
  }
 
  return sizes;
 }
 /** Frame-local cell geometry, shared by layout, inspectors and canvas overlays. */
-export function gridGeometry(parent:DesignNode,kids:DesignNode[],width=parent.width,height=parent.height):GridGeometry{
+export function gridGeometry(parent:DesignNode,kids:DesignNode[],width=parent.width,height=parent.height,floor?:GridContentFloor):GridGeometry{
  const {placements,columnCount,rowCount}=placeGrid(parent,kids),byId=new Map(kids.map(n=>{const o=layoutChildOutset(parent,n),width=layoutSpan(n,'width',o),height=layoutSpan(n,'height',o);return [n.id,o||width!==n.width||height!==n.height?{...n,width,height,minWidth:(n.minWidth??0)+2*o,minHeight:(n.minHeight??0)+2*o}:n];})),[top,right,bottom,left]=layoutPadding(parent),gx=parent.gapX??parent.gap,gy=parent.gapY??parent.gap;
- const columns=resolveTracks(Array.from({length:columnCount},(_,i)=>parent.gridColumns?.[i]??{sizing:'fr',value:1}),placements,byId,'width',gx,Math.max(0,width-left-right),parent.sizingX==='hug'),rows=resolveTracks(Array.from({length:rowCount},(_,i)=>parent.gridRowTracks?.[i]??{sizing:'hug',value:0}),placements,byId,'height',gy,Math.max(0,height-top-bottom),parent.sizingY==='hug');
+ const outset=floor&&((n:DesignNode,axis:Axis)=>floor(n,axis)+2*layoutChildOutset(parent,n)),columns=resolveTracks(Array.from({length:columnCount},(_,i)=>parent.gridColumns?.[i]??{sizing:'fr',value:1}),placements,byId,'width',gx,Math.max(0,width-left-right),parent.sizingX==='hug',outset),rows=resolveTracks(Array.from({length:rowCount},(_,i)=>parent.gridRowTracks?.[i]??{sizing:'hug',value:0}),placements,byId,'height',gy,Math.max(0,height-top-bottom),parent.sizingY==='hug',outset);
  const offsets=(sizes:number[],gap:number,padding:number)=>{let pos=padding;return sizes.map(size=>{const value=pos;pos+=size+gap;return value;});};
  return {columns,rows,columnOffsets:offsets(columns,gx,left),rowOffsets:offsets(rows,gy,top),placements,width:Math.max(0,sum(columns)+Math.max(0,columnCount-1)*gx+left+right),height:Math.max(0,sum(rows)+Math.max(0,rowCount-1)*gy+top+bottom)};
 }
+/** The content a child that fills its cell keeps: text its longest word and wrapped height, auto layout what its own children need. Shared by layout and overlays so both see the same tracks. */
+export function gridContentFloor(nodes:DesignNode[]):GridContentFloor{let children:Map<string,DesignNode[]>|undefined;const kidsOf=(id:string)=>{if(!children){children=new Map();for(const n of nodes)if(n.parentId&&n.visible&&!n.ignoreLayout){const list=children.get(n.parentId)??[];list.push(n);children.set(n.parentId,list);}}return children.get(id)??[];},floor=(n:DesignNode,axis:Axis,depth=0):number=>{const own=(axis==='width'?n.minWidth:n.minHeight)??0;if(n.type==='text')return Math.max(own,axis==='width'?textMinContentWidth(n):textBodyHeight(textLines(n,false)));if(n.layout==='none'||depth>64)return own;const kids=kidsOf(n.id),[top,right,bottom,left]=layoutPadding(n),padding=axis==='width'?left+right:top+bottom,need=(c:DesignNode,side:Axis=axis)=>{const o=layoutChildOutset(n,c);return ((side==='width'?c.sizingX:c.sizingY)==='fill'?floor(c,side,depth+1)+2*o:layoutSpan(c,side,o));};if(n.layout==='grid'){const hugging={...n,sizingX:'hug' as const,sizingY:'hug' as const},geometry=gridGeometry(hugging,kids,undefined,undefined,(c,side)=>floor(c,side,depth+1));return Math.max(own,axis==='width'?geometry.width:geometry.height);}const along=(n.layout==='horizontal')===(axis==='width')&&!n.wrap,gap=axis==='width'?n.gapX??n.gap:n.gapY??n.gap,sizes=kids.map(c=>need(c));return Math.max(own,padding+(along?sizes.reduce((a,b)=>a+b,0)+Math.max(0,kids.length-1)*gap:Math.max(0,...sizes)));};return floor;}
 export function gridCell(geometry:GridGeometry,p:GridPlacement,gapX:number,gapY:number){return {x:geometry.columnOffsets[p.column],y:geometry.rowOffsets[p.row],width:Math.max(0,sum(geometry.columns.slice(p.column,p.column+p.columnSpan))+(p.columnSpan-1)*gapX),height:Math.max(0,sum(geometry.rows.slice(p.row,p.row+p.rowSpan))+(p.rowSpan-1)*gapY)};}
 export function validateGridNode(n:DesignNode){
  for(const key of ['gridRows','gridColumn','gridRow','gridColumnSpan','gridRowSpan'] as const){const v=n[key];if(v!==undefined&&(!Number.isInteger(v)||v<(key==='gridRows'?0:1)||v>(key==='gridColumnSpan'||key==='gridRowSpan'?256:MAX_TRACKS)))throw Error('Invalid grid count or placement.');}

@@ -73,6 +73,7 @@
   "filterColorAdjust",
   "firstCharacter",
   "floatValue",
+  "fontLineHeight",
   "fontMetaData",
   "fontName",
   "fontSize",

@@ -4,7 +4,7 @@ import type {DesignNode,NodeKind} from './model';
 /** User preferences are local to this app/browser origin and never serialized in .oui. */
 export interface EditorPreferences {
  uiScale:number;fontPreview:boolean;autosaveIntervalMs:number;recentFileLimit:number;
- exportHiddenLayers:boolean;defaultExportFormat:'svg'|'png'|'jpg';colorPickerFormat:'HEX'|'RGB'|'HSL'|'HSB';duplicateNaming:'preserve'|'copy'|'increment';keyboardZoomSelection:boolean;controlClickContextMenu:boolean;numberKeyOpacity:boolean;smartTextSubstitution:boolean;
+ exportHiddenLayers:boolean;defaultExportFormat:'svg'|'png'|'jpg';colorPickerFormat:'HEX'|'RGB'|'HSL'|'HSB'|'OKLCH';duplicateNaming:'preserve'|'copy'|'increment';keyboardZoomSelection:boolean;controlClickContextMenu:boolean;numberKeyOpacity:boolean;smartTextSubstitution:boolean;
  pixelSnapping:'document'|'none'|'pixel'|'half'|'device';objectSnapping:'document'|'on'|'off';vectorGeometrySnapping:'document'|'on'|'off';
  smallNudge:number;largeNudge:number;rotationSnapIncrement:number;
  showFrameNames:boolean;showNestedFrameNames:boolean;showSectionNames:boolean;showCanvasScrollbars:boolean;showOverviewMinimap:boolean;showSlices:boolean;
@@ -40,7 +40,7 @@ export function validatePreferences(value:unknown):EditorPreferences {
   else if(key==='pixelSnapping'){if(!['document','none','pixel','half','device'].includes(v as string))throw Error('Choose document, off, pixels, half pixels or device pixels for local pixel snapping.');}
   else if(key==='objectSnapping'||key==='vectorGeometrySnapping'){if(!['document','on','off'].includes(v as string))throw Error('Choose document, on or off for local snapping.');}
   else if(key==='defaultExportFormat'){if(!['svg','png','jpg'].includes(v as string))throw Error('Choose SVG, PNG or JPG as the default export format.');}
-  else if(key==='colorPickerFormat'){if(!['HEX','RGB','HSL','HSB'].includes(v as string))throw Error('Choose HEX, RGB, HSL or HSB as the color picker format.');}
+  else if(key==='colorPickerFormat'){if(!['HEX','RGB','HSL','HSB','OKLCH'].includes(v as string))throw Error('Choose HEX, RGB, HSL, HSB or OKLCH as the color picker format.');}
   else if(key==='duplicateNaming'){if(!['preserve','copy','increment'].includes(v as string))throw Error('Choose a valid duplicate naming style.');}
   else if(colors.has(key)){if(typeof v!=='string'||(!/^#[\da-f]{6}$/i.test(v)&&!(['defaultFrameFill','defaultShapeFill'].includes(key)&&v==='none')))throw Error('Choose a valid preference color.');v=v.toLowerCase();}
   else if(key==='defaultFontFamily'){if(typeof v!=='string'||!v.trim()||v.length>512||/[\u0000-\u001f<>]/.test(v))throw Error('Choose a valid default font family.');v=v.trim();}
@@ -72,7 +72,7 @@ export function updatePreferences(patch:Partial<EditorPreferences>):Readonly<Edi
 export function resetPreferences():Readonly<EditorPreferences>{try{if(typeof localStorage==='undefined')throw Error();localStorage.removeItem(PREFERENCES_KEY);}catch{throw Error('Preferences could not be reset. Allow local storage or free some storage space.');}lastRaw=null;cached=defaultPreferences;emit();return defaultPreferences;}
 /** Creation defaults for caller-owned insertion paths; never changes existing document nodes. */
 export function drawingDefaults(type:NodeKind,prefs:Readonly<EditorPreferences>=getPreferences()):Partial<DesignNode>{
- if(type==='text')return {fill:prefs.defaultTextFill,fontFamily:prefs.defaultFontFamily,fontSize:prefs.defaultFontSize,fontWeight:prefs.defaultFontWeight,fontStyle:prefs.defaultFontStyle,lineHeight:prefs.defaultLineHeight,stroke:'',strokeWidth:prefs.defaultStrokeWidth,textLineBox:true};
+ if(type==='text')return {fill:prefs.defaultTextFill,fontFamily:prefs.defaultFontFamily,fontSize:prefs.defaultFontSize,fontWeight:prefs.defaultFontWeight,fontStyle:prefs.defaultFontStyle,...(prefs.defaultLineHeight===defaultPreferences.defaultLineHeight?{lineHeight:1.2,lineHeightAuto:true as const}:{lineHeight:prefs.defaultLineHeight}),stroke:'',strokeWidth:prefs.defaultStrokeWidth,textLineBox:true,textLayoutVersion:2};
  if(type==='code'||type==='spec')return {stroke:'',strokeWidth:0};
  const line=['path','line','arrow'].includes(type),fill=['frame','component','section'].includes(type)?prefs.defaultFrameFill:line?'none':prefs.defaultShapeFill;
  return {fill,stroke:line||prefs.defaultShapeStrokeEnabled?prefs.defaultStrokeColor:'',strokeWidth:prefs.defaultStrokeWidth};
