@@ -1,6 +1,6 @@
 import type {DesignNode} from './model';
 const visualFields=['fill','paints','gradient','stroke','strokes','strokeWidth','effects','shadow','blur','opacity','blendMode','isolate','radius','corners','cornerSmoothing'] as const;
-const textFields=['fontFamily','fontFallbacks','fontWeight','fontStyle','fontSize','lineHeight','lineHeightPx','letterSpacing','textAlign'] as const;
+const textFields=['fontFamily','fontFallbacks','fontWeight','fontStyle','fontSize','lineHeight','lineHeightPx','lineHeightAuto','letterSpacing','textAlign'] as const;
 export interface CopiedProperties {source:string;values:Partial<DesignNode>;styleIds?:DesignNode['styleIds'];variableBindings?:DesignNode['variableBindings'];text?:Partial<DesignNode>;}
 let held:CopiedProperties|null=null;
 const pick=(n:DesignNode,fields:readonly (keyof DesignNode)[])=>Object.fromEntries(fields.filter(key=>n[key]!==undefined).map(key=>[key,structuredClone(n[key])])) as Partial<DesignNode>;
