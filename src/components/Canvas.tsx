@@ -1,5 +1,6 @@
 import {validateDocumentPassThrough} from '../pass-through';
 import {publishScaleDrag} from '../scale-tool';
+import {useFontPreviewNodes} from '../font-preview';
 import {bindTrackpadPinch} from '../trackpad-pinch';
 import {useLayerHover} from '../layer-hover';
 import {liveCamera,moveCamera,settleCamera,wheelGlides,wheelZoomFactor} from '../canvas-camera';
@@ -124,7 +125,7 @@ export default function Canvas(){
  useEffect(()=>{const cancel=()=>{drag.current=null;setPreview(null);setBox(null);setSnapLines([]);setPen([]);setContinuation(null);};const builder=useShapeBuilder.subscribe(v=>{if(v.context){const d=drag.current;cancel();if(d?.pointerId!==undefined&&svg.current?.hasPointerCapture(d.pointerId))svg.current.releasePointerCapture(d.pointerId);}}),net=useNetworkView.subscribe(v=>{if(v.context)cancel();}),w=useWidthView.subscribe(v=>{if(v.context)cancel();}),m=useMultiVector.subscribe(v=>{if(v.context)cancel();}),a=useVectorEraser.subscribe(v=>{if(v.context)cancel();}),b=useVectorLasso.subscribe(v=>{if(v.context)cancel();});return()=>{builder();net();w();m();a();b();};},[]);
  const displayNodes=useMemo(()=>s.motionOpen?sampleMotion(page.nodes,page.motion,s.motionTime):page.nodes,[page.nodes,page.motion,s.motionOpen,s.motionTime]);
  const repeat=useRepeatView(),repeatNodes=repeat.context&&sameRepeatContext(repeat.context)?repeat.plan?.nodes:undefined;
- const ns=repeatNodes??preview??displayNodes;
+ const fontPreview=useFontPreviewNodes(displayNodes),ns=repeatNodes??preview??fontPreview;
  const selectionIndex=useMemo(()=>boxSelectionIndex(displayNodes),[displayNodes]);
  const selected=canvasSelectionRoots(ns,s.selection),b=canvasSelectionBounds(ns,s.selection),selectionLocked=selected.some(n=>isLocked(n,ns));
  const world=(e:{clientX:number;clientY:number})=>{const r=svg.current!.getBoundingClientRect();return {x:(e.clientX-r.left-s.pan.x)/s.zoom,y:(e.clientY-r.top-s.pan.y)/s.zoom};};

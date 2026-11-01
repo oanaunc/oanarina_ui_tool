@@ -12,6 +12,12 @@ Each bundled family includes its full original OFL license in `public/fonts/*-OF
 
 The native installed-font tab obtains family names through NSFontManager, and the Font style select asks for the selected family's named faces. The OpenType inspector can ask for one face's layout and naming tables, which stay in memory and never include outlines. It does not copy or redistribute installed font binaries or expose their paths. Commercial fonts can be used when separately installed/licensed; they are not bundled with this app. Installed-family detection is native Mac functionality; the browser library offers font-file import instead.
 
+## Font picker
+
+Clicking the font name in Typography opens the picker: a search field, up to eight recent fonts for this device, and every catalog, installed and imported family from A to Z. Arrow keys, Page Up and Page Down move through the list, and Enter or a click applies the font in one Undo. Escape, a click elsewhere or a selection change closes it and leaves the file untouched.
+
+Hovering or arrowing tries the font on the selected text. The preview lives beside the document, so it adds no history and is never saved. A row shows its own typeface once the family is on this device: installed, bundled, cached or imported. Browsing downloads nothing. A catalog family that is not on this device yet shows a download mark, has no canvas preview, and downloads only when applied.
+
 ## Local font files and missing fonts
 
 Individual **TTF and OTF** files can be imported, previewed, applied and retained in the local font cache. Import reads the OpenType `name`, `OS/2` and optional `fvar` tables to identify family, weight range, italic style, license text and embedding permissions. Files are validated before registration; one file is limited to 20 MB, and an import to 100 files/100 MB. Font collections and compressed WOFF/WOFF2 local imports are not supported. Imported files that permit embedding can be exported with their original bytes.

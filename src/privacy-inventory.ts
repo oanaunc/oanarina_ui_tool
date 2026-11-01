@@ -22,6 +22,7 @@ export const localStorageCatalog:readonly StoredEntry[]=[
  {key:'forma-command-usage-v1',label:'Command usage',holds:'Run counts per command ID, only while learning is on. No document data.',projectContent:false,clearable:true},
  {key:'oui-recent-colors',label:'Recent colors',holds:'Up to 24 colors you picked.',projectContent:false,clearable:true},
  {key:'oui-font-favorites',label:'Font favorites',holds:'Font family names you starred.',projectContent:false},
+ {key:'oui-recent-fonts',label:'Recent fonts',holds:'The last font family names you applied.',projectContent:false},
  {key:'forma-local-profile',label:'Local profile',holds:'The name and avatar you entered for local comments.',projectContent:false},
  {key:'forma-brush-library-v1',label:'Brush library',holds:'Your custom brush presets.',projectContent:false},
  {key:'forma-brush-settings-v1',label:'Brush settings',holds:'The active brush settings.',projectContent:false},

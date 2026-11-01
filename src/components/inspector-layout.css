@@ -170,3 +170,4 @@
 .app .scale-anchor button:hover::after{background:var(--text)}
 .app .scale-anchor button[aria-pressed=true]::after{width:7px;height:7px;background:var(--selection)}
 .app .scale-anchor button:focus-visible{outline:2px solid var(--selection);outline-offset:-1px}
+.scale-tool-fields{display:grid;gap:6px;min-width:0}
