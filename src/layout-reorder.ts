@@ -1,4 +1,5 @@
 import {canvasSelectionRoots} from './canvas-geometry';
+import {gridCellStep} from './grid-ordering';
 import {isLocked} from './model';
 import type {DesignNode} from './model';
 import {inverseMatrix,point,worldMatrix} from './transforms';
@@ -24,3 +25,16 @@ export function layoutDropTarget(nodes:DesignNode[],ids:readonly string[],pointe
 }
 /** Sibling array order is layout order. Positions are left to the shared reflow. */
 export function applyLayoutDrop(nodes:DesignNode[],drop?:LayoutDrop){if(!drop?.changed)return nodes;const moved=new Set(drop.ids),kept=nodes.filter(n=>!moved.has(n.id)),block=nodes.filter(n=>moved.has(n.id));if(block.length!==drop.ids.length)return nodes;let at=drop.beforeId===null?-1:kept.findIndex(n=>n.id===drop.beforeId);if(at<0){at=kept.reduce((last,n,i)=>n.parentId===drop.parentId?i+1:last,-1);if(at<0)return nodes;}return [...kept.slice(0,at),...block,...kept.slice(at)];}
+export type NudgeDirection='left'|'right'|'up'|'down';
+/** Layout owns these positions, so an arrow key moves through the order instead of nudging. Returns the same array at the edge of a row, undefined when the selection is free to nudge. */
+export function layoutNudgeOrder(nodes:DesignNode[],ids:readonly string[],direction:NudgeDirection):DesignNode[]|undefined{
+ const roots=canvasSelectionRoots(nodes,[...ids]);if(!roots.length)return undefined;const parent=nodes.find(n=>n.id===roots[0].parentId);if(!parent||parent.layout==='none'||roots.some(n=>n.parentId!==parent.id||n.ignoreLayout))return undefined;if(parent.instanceRootId||parent.type==='instance'||roots.some(n=>n.instanceRootId||isLocked(n,nodes)))return nodes;
+ const across=direction==='left'||direction==='right',forward=direction==='right'||direction==='down';
+ if(parent.layout==='grid')return roots.length===1?gridCellStep(nodes,roots[0].id,across?(forward?1:-1):0,across?0:forward?1:-1):nodes;
+ const horizontal=parent.layout==='horizontal',moved=new Set(roots.map(n=>n.id)),flow=nodes.filter(n=>n.parentId===parent.id&&n.visible&&!n.ignoreLayout),block=flow.filter(n=>moved.has(n.id)).map(n=>n.id);if(!block.length)return nodes;
+ const drop=(beforeId:string|null)=>applyLayoutDrop(nodes,{parentId:parent.id,ids:block,beforeId,changed:true,line:{x1:0,y1:0,x2:0,y2:0}});
+ if(across===horizontal){const first=flow.findIndex(n=>moved.has(n.id)),last=flow.map(n=>moved.has(n.id)).lastIndexOf(true);if(forward){if(last+1>=flow.length)return nodes;const after=flow.slice(last+2).find(n=>!moved.has(n.id));return drop(after?.id??null);}if(first===0)return nodes;return drop(flow[first-1].id);}
+ if(!parent.wrap)return nodes;
+ const slots=flow.map(n=>slot(n,parent,horizontal)),lines=rows(slots).sort((a,b)=>a.start-b.start),at=lines.findIndex(l=>l.items.some(i=>moved.has(i.id))),line=lines[at+(forward?1:-1)];if(!line)return nodes;
+ const inBlock=slots.filter(s=>moved.has(s.id)),middle=(Math.min(...inBlock.map(s=>s.start))+Math.max(...inBlock.map(s=>s.end)))/2,next=line.items.find(i=>forward?middle<(i.start+i.end)/2:middle<=(i.start+i.end)/2),beforeId=next?.id??flow[flow.findIndex(n=>n.id===line.items.at(-1)!.id)+1]?.id??null;return drop(beforeId&&moved.has(beforeId)?flow.slice(flow.findIndex(n=>n.id===beforeId)).find(n=>!moved.has(n.id))?.id??null:beforeId);
+}
