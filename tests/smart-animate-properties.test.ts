@@ -4,6 +4,7 @@ import type {DesignNode} from '../src/model';
 import {createEffect} from '../src/effects';
 import {createPaint,createStroke} from '../src/paints';
 import {smartAnimate} from '../src/prototype';
+import type {VectorNetwork} from '../src/vector-network-geometry';
 
 function run(a:Partial<DesignNode>,b:Partial<DesignNode>,type:DesignNode['type']='rectangle',progress=.5){const p=blankDocument().pages[0];p.nodes=[node('frame',{id:'one',width:100,height:100}),node(type,{id:'x',name:'Layer',parentId:'one',width:50,height:50,...a}),node('frame',{id:'two',x:200,width:100,height:100}),node(type,{id:'y',name:'Layer',parentId:'two',x:200,width:50,height:50,...b})];return smartAnimate(p,'one',p,'two',progress);}
 const matched=(nodes:DesignNode[])=>nodes.find(n=>n.id==='y')!;
@@ -23,4 +24,12 @@ describe('smart animate matched properties',()=>{
  it('crossfades the same words when a font cannot interpolate',()=>{const nodes=run({text:'Same',textRuns:[{start:0,end:4,fontWeight:400}]},{text:'Same',textRuns:[{start:0,end:4,fontWeight:700}]},'text',.5);expect(nodes.some(n=>n.id==='exiting-text-y')).toBe(true);});
  it('crossfades different words in place, with stable parents and a complete end state',()=>{const nodes=run({text:'Before',y:0},{text:'After',y:40},'text',.25),n=matched(nodes),old=nodes.find(a=>a.id==='exiting-text-y')!;expect(n.text).toBe('After');expect(n.opacity).toBeCloseTo(.25,6);expect(old).toMatchObject({text:'Before',parentId:'two',y:n.y,x:n.x});expect(old.opacity).toBeCloseTo(.75,6);const end=run({text:'Before'},{text:'After'},'text',1);expect(matched(end).opacity).toBe(1);expect(end.find(a=>a.id==='exiting-text-y')?.opacity).toBe(0);});
  it('leaves unstroked layers without invented stacks',()=>{const n=matched(run({},{}));expect(n.effects).toBeUndefined();});
+});
+
+describe('layers Smart animate cannot interpolate',()=>{
+ const twoFrames=(a:Partial<DesignNode>,b:Partial<DesignNode>)=>{const d=blankDocument();d.pages[0].nodes=[node('frame',{id:'f',width:400,height:300}),node('path',{id:'a',name:'Art',parentId:'f',x:10,y:20,width:100,height:100,opacity:1,...a}),node('frame',{id:'g',x:500,width:400,height:300}),node('path',{id:'b',name:'Art',parentId:'g',x:600,y:120,width:100,height:100,opacity:1,...b})];return d.pages[0];};
+ const network=(extra=0):VectorNetwork=>({version:1,vertices:[{id:'v1',x:0,y:0},{id:'v2',x:100+extra,y:100}],edges:[{id:'e1',from:'v1',to:'v2'}]});
+ it('carries matching art along without changing it',()=>{const page=twoFrames({vectorNetwork:network()},{vectorNetwork:network()}),nodes=smartAnimate(page,'f',page,'g',.5),out=nodes.find(n=>n.id==='b')!;expect(out.x).toBeCloseTo(55,6);expect(out.y).toBeCloseTo(70,6);expect(out.width).toBe(100);expect(out.opacity).toBe(1);expect(nodes.some(n=>n.id.startsWith('exiting-held'))).toBe(false);});
+ it('cross-fades art that changed, with both at the moving position',()=>{const page=twoFrames({vectorNetwork:network()},{vectorNetwork:network(5)}),nodes=smartAnimate(page,'f',page,'g',.25),out=nodes.find(n=>n.id==='b')!,ghost=nodes.find(n=>n.id==='exiting-held-b')!;expect(out.opacity).toBeCloseTo(.25,6);expect(ghost.opacity).toBeCloseTo(.75,6);expect(ghost.vectorNetwork).toEqual(network());expect(ghost.x).toBeCloseTo(out.x,6);});
+ it('finishes exactly on the destination',()=>{const page=twoFrames({vectorNetwork:network()},{vectorNetwork:network(5)}),nodes=smartAnimate(page,'f',page,'g',1),out=nodes.find(n=>n.id==='b')!;expect(out.opacity).toBe(1);expect(out.vectorNetwork).toEqual(network(5));});
 });
