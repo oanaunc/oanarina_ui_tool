@@ -8,6 +8,14 @@ import {textLines,textMinContentWidth,textOffsetAt} from '../src/text-layout';
 import {textOutlineSignature} from '../src/text-outline';
 import {checklistMarker,formatParagraphs,replaceParagraphs} from '../src/paragraphs';
 import {cssFor} from '../src/files';
+import {platformSnippets} from '../src/platform-snippets';
+import {strFromU8,unzipSync} from 'fflate';
+import {addSlideElement,createSlideDocument,deckFor} from '../src/slides';
+import {writePptx} from '../src/pptx-writer';
+import {readPptx} from '../src/pptx-reader';
+import {createSiteDocument} from '../src/site';
+import {buildSite} from '../src/site-export';
+import {parseEditableSvg} from '../src/svg-import';
 describe('letter case',()=>{
  it('shows each mode and leaves the source alone',()=>{const n=node('text',{text:'hello wORLD',textCase:'upper'});expect(shownText(n)).toBe('HELLO WORLD');expect(n.text).toBe('hello wORLD');expect(shownText({...n,textCase:'lower'})).toBe('hello world');expect(shownText({...n,textCase:'title'})).toBe('Hello WORLD');expect(shownText({...n,textCase:'original'})).toBe('hello wORLD');expect(shownText({...n,textCase:undefined})).toBe('hello wORLD');});
  it('treats words as CSS capitalize does',()=>{expect(shownCase("don't 3d x-ray 'quoted' naïve",'title')).toBe("Don't 3d X-Ray 'Quoted' Naïve");expect(shownCase('lo world','title','hel')).toBe('lo World');expect(shownCase('lo','title','hel ')).toBe('Lo');expect(shownCase('t','title',"don'")).toBe('t');});
@@ -23,6 +31,12 @@ describe('letter case',()=>{
  it('travels with a text style and clears with it',()=>{const d=blankDocument(),a=node('text',{text:'a',textCase:'upper'}),b=node('text',{text:'b'});d.pages[0].nodes=[a,b];const id=createStyle(d,a,'text','Label');expect(d.styles![0].value.textCase).toBe('upper');b.styleIds={text:id};applyDesignSystems(d);expect(b.textCase).toBe('upper');delete d.styles![0].value.textCase;applyDesignSystems(d);expect(b.textCase).toBeUndefined();});
  it('an instance can override it and follows the main until it does',()=>{const d=blankDocument(),main=node('component'),n=node('text',{parentId:main.id,text:'abc',textCase:'upper'});d.pages[0].nodes=[main,n];const id=insertInstance(d,d.pages[0].id,main.id);synchronizeComponents(d);const copy=()=>d.pages[0].nodes.find(v=>v.instanceRootId===id&&v.sourceId===n.id)!;expect(copy().textCase).toBe('upper');n.textCase='lower';synchronizeComponents(d);expect(copy().textCase).toBe('lower');});
  it('writes CSS on every exported rule and reads it back',()=>{for(const [mode,css] of [['upper','uppercase'],['lower','lowercase'],['title','capitalize']] as const){expect(cssTextTransform(mode)).toBe(css);expect(textCaseFromCss(css)).toBe(mode);expect(cssFor(node('text',{text:'a',textCase:mode}))).toContain('text-transform: '+css);}expect(cssFor(node('text',{text:'a'}))).not.toContain('text-transform');expect(richFragmentHtml(copyRichFragment(node('text',{text:'ab',textCase:'upper'}),0,2))).toContain('text-transform:uppercase');});
+});
+describe('letter case through other formats',()=>{
+ it('a PowerPoint round trip keeps all caps a setting and writes the rest as shown',async()=>{const d=createSlideDocument(),id=deckFor(d).slides[0].id;addSlideElement(d,id,'text',{name:'Loud',text:'quiet words',textCase:'upper',smallCaps:false});addSlideElement(d,id,'text',{name:'Titled',text:'quiet words',textCase:'title'});const {bytes}=await writePptx(d),xml=strFromU8(unzipSync(bytes)['ppt/slides/slide1.xml']);expect(xml).toContain('cap="all"');expect(xml).toContain('<a:t>quiet words</a:t>');expect(xml).toContain('<a:t>Quiet Words</a:t>');expect(readPptx(bytes).slides[0].layers.some(l=>l.textCase==='upper'&&l.text==='quiet words')).toBe(true);});
+ it('a site export writes text-transform and keeps the typed words',()=>{const d=createSiteDocument(),root=d.pages[0].nodes[0],text=node('text',{parentId:root.id,name:'Label',text:'typed words',textCase:'upper',textRuns:[{start:6,end:11,textCase:'original'}]});d.pages[0].nodes.push(text);const build=buildSite(d,'export'),all=build.files.map(f=>f.text??'').join('\n');expect(all).toContain('typed ');expect(all).toContain('text-transform:uppercase');expect(all).toContain('text-transform:none');});
+ it('an SVG text-transform stays live',()=>{const n=parseEditableSvg('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="40"><text x="0" y="20" font-size="16" style="text-transform:uppercase" fill="#000">hi there</text></svg>').nodes.find(a=>a.type==='text')!;expect(n.text).toBe('hi there');expect(shownText(n)).toBe('HI THERE');});
+ it('native snippets and code write the shown characters',()=>{const n=node('text',{text:'hello',textCase:'upper'});expect(platformSnippets(n,'ios').map(s=>s.code).join('\n')).toContain('"HELLO"');});
 });
 describe('checklists',()=>{
  const list=()=>node('text',{text:'one\ntwo',width:400,fontSize:20,paragraphStyles:[{start:0,listStyle:'bullet',listChecked:true,listHanging:true},{start:4,listStyle:'bullet',listChecked:false,listHanging:true}]});
