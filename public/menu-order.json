@@ -49,6 +49,7 @@
    "cut",
    "copy",
    "paste",
+   "paste-over",
    "duplicate",
    "delete"
   ],
