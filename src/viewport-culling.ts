@@ -6,7 +6,7 @@ import type {Matrix} from './transforms';
 import {pathControlBounds} from './path-control-bounds';
 import {strokesFor} from './paints';
 import {effectiveStrokeWidth} from './edge-strokes';
-import {arrowStyle} from './arrowheads';
+import {hasArrowheads} from './arrowheads';
 import {effectPadding,effectsFor} from './effects';
 
 export interface CullRect {x:number;y:number;width:number;height:number;}
@@ -42,7 +42,7 @@ export function indexViewportRoots(nodes:readonly DesignNode[]):ViewportCullInde
   const effects=effectsFor(n).filter(e=>e.visible),strokes=strokesFor(n);strokeCount+=strokes.length;if(strokeCount>VIEWPORT_CULL_LIMITS.strokes)return fail('The culling stroke-work budget was exceeded.');
   const contours=n.type==='path'?n.contours:n.type==='line'&&n.points.length?[{points:n.points,closed:false}]:undefined;
   if(contours)for(const c of contours){pointCount+=c.points.length;if(pointCount>VIEWPORT_CULL_LIMITS.points)return fail('The culling point-work budget was exceeded.');}
-  if(n.liveRepeat||n.textPath||n.media||n.mask||effects.some(e=>e.type==='shader'||e.type==='progressive-blur')||n.type==='path'&&!n.contours||strokes.some(s=>s.variableWidth||s.dynamic||s.calligraphic)||arrowStyle(n,'start')!=='none'||arrowStyle(n,'end')!=='none'){entry.uncertain=true;continue;}
+  if(n.liveRepeat||n.textPath||n.media||n.mask||effects.some(e=>e.type==='shader'||e.type==='progressive-blur')||n.type==='path'&&!n.contours||strokes.some(s=>s.variableWidth||s.dynamic||s.calligraphic)||hasArrowheads(n)){entry.uncertain=true;continue;}
   if(![n.x,n.y,n.width,n.height,n.rotation,...r.matrix].every(Number.isFinite)||n.width<0||n.height<0){entry.uncertain=true;continue;}
   let local:CullRect=n.type==='text'?textReach(n):{x:0,y:0,width:n.width,height:n.height};
   if(contours)try{const hull=pathControlBounds(n.type==='path'?n:{...n,type:'path',contours});if(hull)local=union(local,hull);}catch{entry.uncertain=true;continue;}

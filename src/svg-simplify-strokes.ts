@@ -1,12 +1,12 @@
 import {DOMParser,XMLSerializer} from '@xmldom/xmldom';
 import type {DesignNode} from './model';
 import {strokesFor,validateStrokeStack} from './paints';
-import {arrowStyle} from './arrowheads';
+import {hasArrowheads} from './arrowheads';
 import {validateSvgStrokeOutlineSource} from './svg-stroke-outlines';
 export const SVG_SIMPLIFY_STROKE_LIMITS={layers:20_000,targets:128} as const;
 const visible=(n:DesignNode)=>strokesFor(n).filter(s=>s.visible&&s.paint.visible&&s.paint.opacity>0&&(s.width>0||s.edgeWidths?.some(v=>v>0)));
 /** Lines and marker strokes render centered regardless of their saved alignment. */
-export function svgAlignedStrokeTargets(nodes:DesignNode[]){return nodes.filter(n=>!n.exportGhost&&n.visible&&n.opacity>0&&!['line','arrow'].includes(n.type)&&arrowStyle(n,'start')==='none'&&arrowStyle(n,'end')==='none'&&visible(n).some(s=>s.align!=='center'));}
+export function svgAlignedStrokeTargets(nodes:DesignNode[]){return nodes.filter(n=>!n.exportGhost&&n.visible&&n.opacity>0&&!['line','arrow'].includes(n.type)&&!hasArrowheads(n)&&visible(n).some(s=>s.align!=='center'));}
 export interface SimplifiedSvgStroke {path:string;width:number;alignment:'inside'|'outside';}
 /** Exact centerline substitution for square rectangles and complete circles only. */
 export function svgSimplifiedStrokePlan(nodes:DesignNode[]){

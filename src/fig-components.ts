@@ -1,7 +1,7 @@
 import type {DesignDocument,DesignNode} from './model';
 import {detachInstance,overrideFields} from './components-model';
 import type {ComponentProperty,ComponentSet} from './components-model';
-import {bindingTypes} from './design-systems';
+import {bindingTypes,splitBinding} from './design-systems';
 import type {BindingField} from './design-systems';
 import {guid,list,object,optional,string} from './fig-values';
 import type {Raw} from './fig-values';
@@ -20,8 +20,14 @@ function comparable(n:DesignNode,key:string,bound:ReadonlySet<BindingField>):unk
  if(key==='stroke'&&bound.has('stroke'))return null;if(key==='strokes'&&bound.has('stroke')&&n.strokes?.length)return n.strokes.map((s,i)=>i?s:{...s,paint:{...s.paint,color:null}});
  if(Object.hasOwn(bindingTypes,key)&&bound.has(key as BindingField))return null;return (n as unknown as Record<string,unknown>)[key];
 }
+/** A copy keeps its main's entry identities, so a binding made by entry id still finds its paint once the copy syncs from the main. */
+function shareEntryIds(n:DesignNode,source:DesignNode){
+ const renamed=new Map<string,string>(),adopt=<T extends {id:string}>(mine:T[]|undefined,theirs:T[]|undefined,each?:(a:T,b:T)=>void)=>{if(!mine||mine.length!==theirs?.length)return;mine.forEach((item,i)=>{renamed.set(item.id,theirs[i].id);each?.(item,theirs[i]);item.id=theirs[i].id;});};
+ adopt(n.paints,source.paints,(a,b)=>{if(a.stops.length===b.stops.length)adopt(a.stops,b.stops);});adopt(n.strokes,source.strokes,(a,b)=>{if(a.paint.stops.length===b.paint.stops.length)adopt(a.paint.stops,b.paint.stops);});adopt(n.effects,source.effects);
+ if(n.variableBindings)n.variableBindings=Object.fromEntries(Object.entries(n.variableBindings).map(([field,id])=>{const {base,entry}=splitBinding(field);return [entry===undefined?field:base+'@'+entry.split('/').map(part=>renamed.get(part)??part).join('/'),id];}));
+}
 export function figOverrideKeys(n:DesignNode,source:DesignNode,base:DesignNode,main:DesignNode){
- const keys:string[]=[],mine=n.variableBindings??{},theirs=source.variableBindings??{},bound=new Set(Object.keys(mine).filter(k=>mine[k as BindingField]===theirs[k as BindingField]) as BindingField[]);
+ shareEntryIds(n,source);const keys:string[]=[],mine=n.variableBindings??{},theirs=source.variableBindings??{},bound=new Set(Object.keys(mine).filter(k=>mine[k as BindingField]===theirs[k as BindingField]) as BindingField[]);
  for(const key of overrideFields){if(key==='propertyValues'||n===base&&(key==='x'||key==='y'||key==='componentId'))continue;if(key==='x'||key==='y'){if(Math.abs(n[key]-base[key]-(source[key]-main[key]))>1e-6)keys.push(key);continue;}if(canonical(comparable(n,key,bound))!==canonical(comparable(source,key,bound)))keys.push(key);}
  return keys;
 }

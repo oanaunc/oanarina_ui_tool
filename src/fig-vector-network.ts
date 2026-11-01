@@ -55,14 +55,25 @@ export function figSameArtwork(baked:string,rebuilt:string,fillRule?:'nonzero'|'
 const arrowheads:Record<string,ArrowheadStyle>={ARROW_LINES:'open',ARROW_EQUILATERAL:'triangle',TRIANGLE_FILLED:'triangle',DIAMOND_FILLED:'diamond',CIRCLE_FILLED:'circle'};
 /** A stroke end as a Forma arrowhead. Anything else, including the plain caps, draws no head. */
 export const figArrowhead=(cap:string):ArrowheadStyle|undefined=>arrowheads[cap];
+/** A stroke end's stored size: pixels as they are, the other units against the stroke weight. Nothing usable leaves the estimate to the caller. */
+export function figCapSize(value:unknown,strokeWidth:number):number|undefined{const size=optional(value);if(size.value===undefined)return;const v=number(size.value,0),px=size.units==='PIXELS'?v:size.units==='PERCENT'?strokeWidth*v/100:strokeWidth*v;return px>=1&&px<=1000?px:undefined;}
 /** How many layers a flattened vector needs to keep each region's own fill. Runs stay in stored order so regions keep their stacking. */
 export const FIG_REGION_LIMIT=256;
 export interface FigRegions {paints?:unknown;parts?:Raw[];}
+export interface FigRun {first:number;styles:number[];total:number;shared:boolean;}
+/** Which regions each fill layer of a split vector drew. Held beside the part, because the part is a record this importer wrote, not one the file holds. */
+export const figPartRuns=new WeakMap<Raw,FigRun>();
+/** The part of a network one run of fills came from. Fills line up with regions by position when both agree, and otherwise by style when each style belongs to one run. Anything else stays the baked outline. */
+export function figRunNetwork(g:FigNetwork,run:FigRun):FigNetwork|undefined{
+ const lined=run.total===g.regions.length?g.regions.slice(run.first,run.first+run.styles.length):[],regions=lined.length&&lined.every((r,i)=>r.style===run.styles[i])?lined:run.shared?[]:g.regions.filter(r=>run.styles.includes(r.style));if(!regions.length)return;
+ const kept=[...new Set(regions.flatMap(r=>r.loops.flat()))].sort((a,b)=>a-b),at=new Map(kept.map((s,i)=>[s,i]));
+ return {vertices:g.vertices,segments:kept.map(i=>g.segments[i]),regions:regions.map(r=>({style:r.style,loops:r.loops.map(loop=>loop.map(i=>at.get(i)!))}))};
+}
 export function figVectorRegions(raw:Raw,own:(style:Raw)=>unknown):FigRegions|undefined{
  const data=optional(raw.vectorData),fills=list(raw.fillGeometry,1000).map(object),table=new Map(list(data.styleOverrideTable,10000).map(object).map(s=>[number(s.styleID,0),s])),paintsOf=(id:number)=>{const style=table.get(id);return id&&style?.fillPaints!==undefined?own(style):raw.fillPaints;},runs:{paints:unknown;fills:Raw[]}[]=[];
  for(const fill of fills){const paints=paintsOf(number(fill.styleID,0)),last=runs[runs.length-1];if(last&&JSON.stringify(last.paints)===JSON.stringify(paints))last.fills.push(fill);else runs.push({paints,fills:[fill]});}
  if(!runs.length||runs.length===1&&JSON.stringify(runs[0].paints)===JSON.stringify(raw.fillPaints))return;if(runs.length===1)return {paints:runs[0].paints};if(runs.length>FIG_REGION_LIMIT)return;
  const owner=object(raw.guid),piece=(i:number,fields:Raw):Raw=>({guid:{sessionID:'9'+String(owner.sessionID),localID:String(owner.localID)+String(i).padStart(3,'0')},type:'VECTOR',name:string(raw.name,'Vector'),size:raw.size,visible:true,fillGeometry:[],...fields}),plain=(fill:Raw)=>({...fill,styleID:0}),strokes=list(raw.strokePaints,100).length?[piece(runs.length,{name:string(raw.name,'Vector')+' stroke',fillGeometry:fills.map(plain),fillPaints:[],strokePaints:raw.strokePaints,styleIdForStrokeFill:raw.styleIdForStrokeFill,strokeGeometry:raw.strokeGeometry,strokeWeight:raw.strokeWeight,strokeAlign:raw.strokeAlign,strokeCap:raw.strokeCap,strokeJoin:raw.strokeJoin,miterLimit:raw.miterLimit,dashPattern:raw.dashPattern,vectorData:{...data,styleOverrideTable:list(data.styleOverrideTable,10000).map(object).map(s=>{const {fillPaints:_,...rest}=s;return rest;})}})]:[];
- return {parts:[...runs.map((run,i)=>piece(i,{fillGeometry:run.fills.map(plain),fillPaints:run.paints})),...strokes]};
+ const owners=new Map<number,number>();runs.forEach((run,i)=>{for(const fill of run.fills){const style=number(fill.styleID,0);owners.set(style,owners.has(style)&&owners.get(style)!==i?-1:i);}});let seen=0;return {parts:[...runs.map((run,i)=>{const styles=run.fills.map(f=>number(f.styleID,0)),part=piece(i,{fillGeometry:run.fills.map(plain),fillPaints:run.paints,vectorData:{...data,styleOverrideTable:list(data.styleOverrideTable,10000).map(object).map(s=>{const {fillPaints:_,...rest}=s;return rest;})}});figPartRuns.set(part,{first:seen,styles,total:fills.length,shared:styles.some(s=>owners.get(s)===-1)});seen+=styles.length;return part;}),...strokes]};
 }
 export const figContourPath=(contours:VectorContour[])=>contours.map(c=>contourPath(c.points,c.closed)).join(' ');

@@ -75,11 +75,11 @@ export function inspectPlatform(n: DesignNode, platform: InspectPlatform, unitsP
     add('Font style', n.fontStyle ?? 'normal');
     add('Line height', length(textLinePx(n), true), 'Authored line-box target; native text metrics and shaping can differ.');
     add('Letter spacing', platform === 'android' && n.fontSize > 0 ? round(n.letterSpacing / n.fontSize) + ' em' : length(n.letterSpacing));
-    add('Text alignment', n.textAlign); add('Text direction', n.textDirection ?? 'auto');
+    add('Text alignment', n.textAlign); add('Text direction', n.textDirection ?? 'auto'); if (n.textCase && n.textCase !== 'original') add('Letter case', n.textCase);
     {const size = n.fontSize / unitsPerLogical, [style, value] = nearest(platform === 'ios' ? iosTypeRamp : androidTypeRamp, size);
      add(platform === 'ios' ? 'Nearest Dynamic Type style' : 'Nearest Material type style', style + ' (' + round(value) + (platform === 'ios' ? ' pt' : ' sp') + ')' + (Math.abs(value - size) < .01 ? ' · exact size' : ''), 'Closest default-size style by font size alone. The design does not say whether this text should scale.');}
     if (n.textRuns?.length || n.paragraphStyles?.length || n.listStyle && n.listStyle !== 'none') warnings.push('Rich text ranges, lists and paragraph overrides are not represented by these base text properties.');
-    if (n.textVerticalTrim || n.hangingQuotes || n.textWrap && n.textWrap !== 'normal') warnings.push('Text trim, hanging quotes and specialized wrapping need separate native typography implementation.');
+    if (n.textVerticalTrim || n.hangingQuotes || n.hangingPunctuation || n.textWrap && n.textWrap !== 'normal') warnings.push('Text trim, hanging quotes and specialized wrapping need separate native typography implementation.');
   }
   if (n.layout !== 'none') {
     add('Authored layout', n.layout + (n.wrap ? ' · wrap' : ''));

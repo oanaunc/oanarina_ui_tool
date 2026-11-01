@@ -1,6 +1,6 @@
 import type {DesignDocument,DesignNode} from './model';
 import {layerLocks} from './layer-locks';
-import {bindingTypeOf,createStyle,splitBinding,styleFields} from './design-systems';
+import {bindingTypeOf,createStyle,entryBindingTarget,splitBinding,styleFields} from './design-systems';
 import {strokesFor} from './paints';
 import type {BindingField,StyleKind} from './design-systems';
 type AssignmentMaps=Pick<DesignNode,'variableBindings'|'variableModes'|'styleIds'>;
@@ -20,7 +20,7 @@ export function assignStrokePaintStyle(d:DesignDocument,pageId:string,ids:readon
 }
 export function bindSelectedVariable(d:DesignDocument,pageId:string,ids:readonly string[],field:BindingField,id:string){
  const type=bindingTypeOf(field),{base,entry}=splitBinding(field);if(!type)throw Error('Choose a supported variable property.');const variable=d.variables?.find(v=>v.id===id);if(id&&(!variable||variable.type!==type||variable.scopes.length&&!variable.scopes.includes(base as never)))throw Error('Choose a compatible scoped variable.');
- return assignment(d,pageId,ids,n=>{const bindings={...n.variableBindings};if(id)bindings[field]=id;else delete bindings[field];let changed=setMap(n,'variableBindings',bindings);if(id){const styles={...n.styleIds};for(const kind of ['paint','text','effect','stroke']as const)if(styleFields[kind].includes(base as keyof DesignNode))delete styles[kind];if(base==='stroke')delete styles.strokePaint;changed=setMap(n,'styleIds',styles)||changed;}return changed;},n=>field!=='text'&&(entry===undefined||strokesFor(n).some(s=>s.id===entry))||n.type==='text');
+ return assignment(d,pageId,ids,n=>{const bindings={...n.variableBindings};if(id)bindings[field]=id;else delete bindings[field];let changed=setMap(n,'variableBindings',bindings);if(id){const styles={...n.styleIds};for(const kind of ['paint','text','effect','stroke']as const)if(styleFields[kind].includes(base as keyof DesignNode))delete styles[kind];if(base==='stroke')delete styles.strokePaint;changed=setMap(n,'styleIds',styles)||changed;}return changed;},n=>field!=='text'&&(entry===undefined||entryBindingTarget(n,entry))||n.type==='text');
 }
 export function setSelectedVariableMode(d:DesignDocument,pageId:string,ids:readonly string[],collectionId:string,modeId:string){
  const c=d.variableCollections?.find(c=>c.id===collectionId);if(!c||modeId&&!c.modes.some(m=>m.id===modeId))throw Error('Choose an existing collection mode.');

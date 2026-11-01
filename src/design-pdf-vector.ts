@@ -1,4 +1,4 @@
-import {arrowStyle} from './arrowheads';
+import {hasArrowheads} from './arrowheads';
 import {linearGradientPoints} from './linear-gradient';
 import {effectiveStrokeWidth} from './edge-strokes';
 import {effectsFor} from './effects';
@@ -38,7 +38,7 @@ const overlaps=(a:Box,b:Box)=>a.x<b.x+b.width&&b.x<a.x+a.width&&a.y<b.y+b.height
 const union=(a:Box,b:Box):Box=>{const x=Math.min(a.x,b.x),y=Math.min(a.y,b.y);return {x,y,width:Math.max(a.x+a.width,b.x+b.width)-x,height:Math.max(a.y+a.height,b.y+b.height)-y};};
 const quadBox=(quad:{x:number;y:number}[]):Box=>{const x=Math.min(...quad.map(p=>p.x)),y=Math.min(...quad.map(p=>p.y));return {x,y,width:Math.max(...quad.map(p=>p.x))-x,height:Math.max(...quad.map(p=>p.y))-y};};
 const quadOf=(m:Matrix,n:DesignNode)=>[[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(m,x,y));
-function selfContained(n:DesignNode){return !n.liveRepeat&&!n.code&&!n.widget&&!n.media&&!n.textPath&&!n.image&&!n.vectorNetwork&&!n.booleanOp&&!n.mask&&!n.derivedLayers&&!n.linkCard&&!n.slidePoll&&!n.slidePrototypeEmbed&&!n.shadow&&!n.blur&&!effectsFor(n).some(e=>e.visible)&&(!n.blendMode||n.blendMode==='normal')&&!n.isolate&&arrowStyle(n,'start')==='none'&&arrowStyle(n,'end')==='none';}
+function selfContained(n:DesignNode){return !n.liveRepeat&&!n.code&&!n.widget&&!n.media&&!n.textPath&&!n.image&&!n.vectorNetwork&&!n.booleanOp&&!n.mask&&!n.derivedLayers&&!n.linkCard&&!n.slidePoll&&!n.slidePrototypeEmbed&&!n.shadow&&!n.blur&&!effectsFor(n).some(e=>e.visible)&&(!n.blendMode||n.blendMode==='normal')&&!n.isolate&&!hasArrowheads(n);}
 const solid=(paint:{type:string;visible:boolean;opacity:number;color?:unknown})=>paint.type==='solid'&&typeof paint.color==='string'&&hex.test(paint.color);
 /** An image paint that maps to one placed picture: original PNG or JPEG bytes, untiled and unadjusted. */
 const imagePaintable=(p:Paint)=>{if(p.type!=='image'||!p.image||p.surface||imageHasAdjustments(p)||p.scaleMode==='tile')return false;try{return ['image/png','image/jpeg'].includes(embeddedImageInfo(p.image).mime);}catch{return false;}};

@@ -3,6 +3,8 @@ import {createStroke,fillsFor,createPaint,strokesFor,validatePaint,validateStrok
 import type {Paint,StrokeStyle} from './paints';
 import {linearGradientPoints} from './linear-gradient';
 import {detachEditedBindings} from './design-systems';
+import {entryBindingValue,splitBinding} from './design-systems';
+import type {BindingField} from './design-systems';
 
 export const MIXED_FILL_LIMITS={nodes:20000,selected:512,paints:4096,bytes:16_000_000,depth:256} as const;
 export type MixedFillOperation={kind:'opacity';slot:number;value:number}|{kind:'visible';slot:number;value:boolean}|{kind:'solid';slot:number;color:string}|{kind:'remove';slot:number}|{kind:'move';slot:number;direction:-1|1}|{kind:'append';color:string}|{kind:'replace';sourceId:string}|{kind:'clear'}|{kind:'paint';slot:number;patch:Partial<Paint>}|{kind:'width';slot:number;value:number}|{kind:'align';slot:number;value:StrokeStyle['align']};
@@ -59,7 +61,7 @@ export function planMixedFills(doc:DesignDocument,pageId:string,ids:readonly str
   const nextStrokes=styles.map((s,i)=>({...s,paint:next[i]}));if(role==='stroke'?strokeAppearanceKey(strokes)===strokeAppearanceKey(nextStrokes):fillAppearanceKey(before)===fillAppearanceKey(next))continue;
   if(op.kind==='replace')next=next.map(p=>({...p,id:crypto.randomUUID(),stops:p.stops.map(s=>({...s,id:crypto.randomUUID()}))}));
   if(role==='stroke'){const stack=op.kind==='replace'?styles.map((s,i)=>({...s,id:crypto.randomUUID(),paint:next[i]})):nextStrokes;validateStrokeStack(stack);const color=stack[0]?.paint.color??'',width=stack[0]?.width??1;changes.set(n.id,{strokes:stack,...(color!==n.stroke?{stroke:color}:{}),...(width!==n.strokeWidth?{strokeWidth:width}:{})});continue;}
-  const variableBindings=n.variableBindings?{...n.variableBindings}:undefined;if(variableBindings&&(before[0]?.id!==next[0]?.id||before[0]?.type!==next[0]?.type||before[0]?.color!==next[0]?.color))delete variableBindings.fill;
+  const variableBindings=n.variableBindings?{...n.variableBindings}:undefined;if(variableBindings&&(before[0]?.id!==next[0]?.id||before[0]?.type!==next[0]?.type||before[0]?.color!==next[0]?.color))delete variableBindings.fill;if(variableBindings)for(const field of Object.keys(variableBindings) as BindingField[]){const {base,entry}=splitBinding(field);if(entry!==undefined&&entryBindingValue(n,base,entry)!==entryBindingValue({...n,paints:next},base,entry))delete variableBindings[field];}
   const patch:Partial<DesignNode>={...(variableBindings?{variableBindings}:{}),paints:next,fill:next.find(p=>p.visible)?.color??'none',gradient:false,...(n.type==='image'?{image:next.find(p=>p.type==='image')?.image??''}:{})};changes.set(n.id,patch);
  }
  return {pageId,changes};
