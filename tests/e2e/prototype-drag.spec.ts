@@ -36,3 +36,8 @@ test('an overlay is pulled in by the finger and returns when released early',asy
 test('pointer cancel returns a held drag, and a pinned transition without a duration still runs on release',async({page})=>{
  await present(page,fixture([swipe('two','instant')]));const b=await box(page),y=b.y+50;await page.mouse.move(b.x+350,y);await page.mouse.down();await page.mouse.move(b.x+200,y,{steps:4});await expect(shown(page)).toHaveValue('one');await page.mouse.up();await expect(shown(page)).toHaveValue('two');
 });
+
+test.describe('with a finger',()=>{
+ test.use({hasTouch:true});
+ for(const scale of ['fit','actual'] as const)test('a swipe follows a real touch at '+scale+' scale, with no browser pan taking it away',async({page})=>{await present(page,fixture());await page.getByLabel('Presentation scale',{exact:true}).selectOption(scale);await page.waitForTimeout(100);const cdp=await page.context().newCDPSession(page),touch=(_:Page,type:'touchStart'|'touchMove'|'touchEnd',x?:number,y?:number)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:x===undefined?[]:[{x,y:y!}]}),b=await box(page),y=b.y+b.height/2,factor=b.width/400;await touch(page,'touchStart',b.x+b.width-20,y);for(const part of [.1,.2,.3,.4,.5,.6,.7])await touch(page,'touchMove',b.x+b.width-20-b.width*part,y);await expect.poll(()=>offset(page,'two')).toBeCloseTo((400-(b.width*.7)/factor),0);await page.waitForTimeout(150);await touch(page,'touchEnd');await expect(shown(page)).toHaveValue('two');});
+});

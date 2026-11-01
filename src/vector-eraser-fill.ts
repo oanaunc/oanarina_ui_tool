@@ -1,7 +1,7 @@
 import paper from 'paper/dist/paper-core.js';
 import type {DesignNode,VectorContour} from './model';
 import {contourPath} from './geometry';
-import {fillsFor,strokesFor} from './paints';
+import {fillsFor} from './paints';
 import {outlinedPaint} from './stroke-outline-paint';
 import type {PaintBox} from './paint-box';
 import {refuseVariableWidthConversion} from './variable-width';
@@ -14,7 +14,7 @@ const scope=new paper.PaperScope();scope.setup(new scope.Size(1,1));
 type P={x:number;y:number};
 export const FILL_ERASER_LIMITS={minimumChange:1e-6} as const;
 export const hasVisibleFill=(n:DesignNode)=>fillsFor(n).some(p=>p.visible&&p.opacity>0);
-export function validateFilledEraserSource(n:DesignNode){refuseVariableWidthConversion(n);if(n.type!=='path'||!Array.isArray(n.contours)||n.booleanOp||n.mask||n.media||n.componentKey||n.componentMetadata)throw Error('Erasing a fill needs a contour path without a mask, live boolean or component definition. Enter point editing first.');if(n.layout!=='none')throw Error('Remove automatic layout before erasing this fill.');if(![n.width,n.height,n.pathWidth??n.width,n.pathHeight??n.height].every(v=>Number.isFinite(v)&&v>0&&v<=1e6))throw Error('Erasing needs a finite nonzero path coordinate box.');const stroked=strokesFor(n).some(s=>s.visible&&s.width>0&&s.paint.visible&&s.paint.opacity>0);if(!n.contours.length||n.contours.some(c=>c.points.length<2||!c.closed&&stroked))throw Error('Erasing a fill on an open stroked path needs a closed contour. Close the path, or hide its fill to erase the stroke instead.');if(n.contours.length>ERASER_LIMITS.resultContours||n.contours.reduce((sum,c)=>sum+c.points.length,0)>ERASER_LIMITS.resultPoints)throw Error('Fill erasing supports up to 128 contours and 2,048 anchors.');}
+export function validateFilledEraserSource(n:DesignNode){refuseVariableWidthConversion(n);if(n.type!=='path'||!Array.isArray(n.contours)||n.booleanOp||n.mask||n.media||n.componentKey||n.componentMetadata)throw Error('Erasing a fill needs a contour path without a mask, live boolean or component definition. Enter point editing first.');if(n.layout!=='none')throw Error('Remove automatic layout before erasing this fill.');if(![n.width,n.height,n.pathWidth??n.width,n.pathHeight??n.height].every(v=>Number.isFinite(v)&&v>0&&v<=1e6))throw Error('Erasing needs a finite nonzero path coordinate box.');if(!n.contours.length||n.contours.some(c=>c.points.length<2))throw Error('Erasing a fill needs contours of two or more anchors.');if(n.contours.length>ERASER_LIMITS.resultContours||n.contours.reduce((sum,c)=>sum+c.points.length,0)>ERASER_LIMITS.resultPoints)throw Error('Fill erasing supports up to 128 contours and 2,048 anchors.');}
 /** Filled shapes lose area; strokes keep their exact interval method. */
 export function validateVectorEraserTarget(n:DesignNode){if(hasVisibleFill(n))validateFilledEraserSource(n);else validateVectorEraserSource(n);}
 /** The swept brush for one step of the stroke, in canvas space. Round ends are true arcs, so an erased edge stays a smooth curve. */
