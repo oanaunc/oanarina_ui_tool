@@ -1,7 +1,31 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-11-01",
+  "asOf": "2026-11-02",
   "releases": [
+    {
+      "version": "1.0.3",
+      "channel": "preview",
+      "title": "Forma 1.0.3",
+      "notes": [
+        "Big files open and move far more smoothly. Off-screen layers are skipped one by one, even during a drag, and tiny text and shadows draw simply when you zoom far out.",
+        "The block menu in a spec has a solid background again, so its commands are readable.",
+        "Specs work the way designers expect: press D to make one, drop a Markdown file on the canvas, paste a copied layer as a live embed, and drag across blocks to select them. Find and replace now looks inside specs.",
+        "Drag padding, gaps and corner radius right on the canvas. Star and arc handles, and spacing handles for rows and grids of loose layers, are there too.",
+        "Arrow keys reorder layers in auto layout, and you can drag a layer into a grid cell. Thin lines are easy to grab, and snapping stays fast on large pages.",
+        "A real font picker, with search, recents, the whole catalog and a live preview on the canvas.",
+        "Text has real Auto line height, whole-pixel lines, line heights under 100%, and wrapping at hyphens, slashes and for Chinese, Japanese and Korean. Hugging text wraps at its max width.",
+        "Number fields take units and percentages, and color fields take OKLCH and CSS color names.",
+        "Strokes can use color styles, and gradients can be saved as styles. Paste over selection is in the Edit menu, K scaling writes real values with no Apply step, and the right panel keeps the common sections first.",
+        "Cut, erase and shape builder work on branching vectors and strokes, filled regions can be dragged, and prototype drags now follow the finger.",
+        "Imported files come through better: images that fail become placeholders, repeated images are stored once, and library styles, grids, image crops, text lists and variable actions now import.",
+        "Help → Send feedback saves a local report for you to send. Forma sends nothing by itself."
+      ],
+      "limits": [
+        "Files using color style links on strokes, or the new text settings, need 1.0.3 or later.",
+        "Imported images, lists, grids, library links, blurs, crops, arrowheads and variable actions were tested on files written here, because the real sample file holds none of them. Limits are in the import guide.",
+        "Physical trackpads, tablets, Intel Macs and older macOS were not tried. The new drags have not been tried by hand."
+      ]
+    },
     {
       "version": "1.0.2",
       "channel": "preview",
