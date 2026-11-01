@@ -3,6 +3,8 @@ import {parseDocument} from './model';
 import {detachEditedBindings} from './design-systems';
 import {richTextNodeKey,textStyleFields,validateTextRuns} from './rich-text';
 import type {TextRun} from './rich-text';
+import {setSpecText,specTexts} from './spec';
+import type {SpecTextSpot} from './spec';
 
 export const TEXT_SEARCH_LIMIT = 10000;
 export interface TextSearchOptions {
@@ -12,6 +14,8 @@ export interface TextSearchOptions {
 export interface TextMatch {
   pageId:string; nodeId:string; pageName:string; nodeName:string;
   start:number; end:number; sourceText:string; locked:boolean; hidden:boolean;
+  /** Set when the match is in a spec block, whose writing lives in the block and not in the layer. */
+  spot?:SpecTextSpot;
 }
 export interface TextSearchResult {documentId:string; matches:TextMatch[]; limited:boolean;}
 const word = /[\p{L}\p{N}\p{M}\p{Pc}]/u;
@@ -42,13 +46,15 @@ export function findDocumentText(doc:DesignDocument, options:TextSearchOptions):
     if(options.scope!=='document'&&page.id!==options.pageId)continue;
     const flags=hierarchy(page.nodes),selected=options.scope==='selection'?selectionTree(page.nodes,options.selectionIds):undefined;
     for(const n of page.nodes){
-      if(n.type!=='text'||selected&&!selected.has(n.id))continue;
-      const state=flags(n);if(state.hidden&&!options.includeHidden)continue;pattern.lastIndex=0;
-      for(let m=pattern.exec(n.text);m;m=pattern.exec(n.text)){
-        const start=m.index,end=start+m[0].length;
-        if(options.wholeWord&&(word.test(before(n.text,start))||word.test(after(n.text,end))))continue;
-        if(matches.length===TEXT_SEARCH_LIMIT){result.limited=true;return result;}
-        matches.push({pageId:page.id,nodeId:n.id,pageName:page.name,nodeName:n.name,start,end,sourceText:n.text,...state});
+      if(n.type!=='text'&&n.type!=='spec'||selected&&!selected.has(n.id))continue;
+      const state=flags(n);if(state.hidden&&!options.includeHidden)continue;
+      for(const {text,...spot} of n.type==='spec'?specTexts(n.spec?.blocks??[]):[{text:n.text,block:undefined}]){pattern.lastIndex=0;
+        for(let m=pattern.exec(text);m;m=pattern.exec(text)){
+          const start=m.index,end=start+m[0].length;
+          if(options.wholeWord&&(word.test(before(text,start))||word.test(after(text,end))))continue;
+          if(matches.length===TEXT_SEARCH_LIMIT){result.limited=true;return result;}
+          matches.push({pageId:page.id,nodeId:n.id,pageName:page.name,nodeName:n.name,start,end,sourceText:text,...state,...(spot.block?{spot:spot as SpecTextSpot}:{})});
+        }
       }
     }
   }
@@ -73,6 +79,12 @@ export function replaceTextMatches(n:DesignNode, ranges:Pick<TextMatch,'start'|'
   for(const r of runs){const last=merged.at(-1);if(last&&last.end===r.start&&JSON.stringify(textStyleFields.map(k=>last[k]))===JSON.stringify(textStyleFields.map(k=>r[k])))last.end=r.end;else merged.push(r);}
   validateTextRuns(text,merged);return {text,textRuns:merged};
 }
+/** A spec holds plain marked-up text, so each block or cell is one string with no runs to carry. */
+function replaceInSpec(n:DesignNode,matches:TextMatch[],replacement:string){
+  let blocks=n.spec?.blocks??[];const spots=new Map<string,TextMatch[]>();for(const m of matches){const key=JSON.stringify(m.spot),list=spots.get(key)??[];list.push(m);spots.set(key,list);}
+  const shown=specTexts(blocks);for(const list of spots.values()){const spot=list[0].spot,now=shown.find(v=>spot&&v.block===spot.block&&v.row===spot.row&&v.column===spot.column);if(!spot||!now||list.some(m=>m.sourceText!==now.text))throw Error('Search results changed. Search again.');blocks=setSpecText(blocks,spot,replaceTextMatches({text:now.text} as DesignNode,list,replacement).text);}
+  if(n.spec)n.spec={...n.spec,blocks};return matches.length;
+}
 export interface TextReplacementPlan {expected:Map<string,{text:string;textRuns:TextRun[]}>;replaced:number;skipped:number;}
 /** Called only on an uncommitted editor candidate. Locked matches are explicitly skipped. */
 export function applyTextReplacements(doc:DesignDocument, result:TextSearchResult, replacement:string):TextReplacementPlan {
@@ -81,6 +93,7 @@ export function applyTextReplacements(doc:DesignDocument, result:TextSearchResul
   const grouped=new Map<string,TextMatch[]>();for(const match of result.matches){const list=grouped.get(richTextNodeKey(match.pageId,match.nodeId))??[];list.push(match);grouped.set(richTextNodeKey(match.pageId,match.nodeId),list);}
   const expected:TextReplacementPlan['expected']=new Map();let replaced=0,skipped=0;
   for(const page of doc.pages){const flags=hierarchy(page.nodes);for(const n of page.nodes){const matches=grouped.get(richTextNodeKey(page.id,n.id));if(!matches)continue;
+    if(n.type==='spec'){grouped.delete(richTextNodeKey(page.id,n.id));if(flags(n).locked){skipped+=matches.length;continue;}replaced+=replaceInSpec(n,matches,replacement);continue;}
     if(n.type!=='text'||matches.some(m=>m.pageId!==page.id||m.sourceText!==n.text||m.locked!==flags(n).locked))throw Error('Search results changed. Search again.');
     grouped.delete(richTextNodeKey(page.id,n.id));if(flags(n).locked){skipped+=matches.length;continue;}
     const patch=replaceTextMatches(n,matches,replacement);if(patch.text===n.text)continue;

@@ -1,6 +1,7 @@
 .spec-editor{position:absolute;box-sizing:border-box;transform-origin:0 0;z-index:6;font-size:16px;line-height:1.65;cursor:text;outline:none;box-shadow:0 0 0 1px var(--selection,#0d99ff);-webkit-user-select:text;user-select:text;overflow:visible}
 .spec-editor.picked .spec-row{background:color-mix(in srgb,var(--selection,#0d99ff) 14%,transparent)}
 .spec-row{position:relative}
+.spec-row.in-range{background:color-mix(in srgb,var(--selection,#0d99ff) 14%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--selection,#0d99ff) 14%,transparent);border-radius:2px}
 .spec-row.drop::before,.spec-row.drop-after::after{content:'';position:absolute;left:0;right:0;height:2px;background:var(--selection,#0d99ff);border-radius:1px}
 .spec-row.drop::before{top:-5px}.spec-row.drop-after::after{bottom:-5px}
 .spec-field{outline:none;white-space:pre-wrap;overflow-wrap:break-word;min-height:1.65em;caret-color:currentColor}

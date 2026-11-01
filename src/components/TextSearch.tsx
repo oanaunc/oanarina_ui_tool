@@ -21,7 +21,7 @@ export default function TextSearch(){
   const replace=(all:boolean)=>{try{
     const current=useEditor.getState();if(!report||current.doc!==s.doc)throw Error('The document changed. Search again.');if(current.motionOpen)throw Error('Close the motion timeline before replacing base text.');
     const chosen=all?report:{...report,matches:selected?[selected]:[],limited:false};let plan:TextReplacementPlan|undefined;
-    current.edit(d=>{plan=applyTextReplacements(d,chosen,replacement);},d=>validateTextReplacement(d,plan!),{explicitTextRuns:chosen.matches.filter(m=>!m.locked).map(m=>({pageId:m.pageId,nodeId:m.nodeId}))});
+    current.edit(d=>{plan=applyTextReplacements(d,chosen,replacement);},d=>validateTextReplacement(d,plan!),{explicitTextRuns:chosen.matches.filter(m=>!m.locked&&!m.spot).map(m=>({pageId:m.pageId,nodeId:m.nodeId}))});
     setError('');setMessage(`${plan!.replaced} matches replaced; ${plan!.skipped} locked matches skipped.`);setIndex(0);
   }catch(e){setError(e instanceof Error?e.message:'The replacement failed.');}};
   const offset=Math.floor(Math.min(index,Math.max(0,matches.length-1))/100)*100,rows=matches.slice(offset,offset+100);

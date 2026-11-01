@@ -33,10 +33,14 @@ export async function copyEditorSelectionAsPng(){
  }finally{document.removeEventListener('focusin',onFocus,true);}
 }
 /** Invoked only by an explicit Copy/Cut command. A failed system write never cuts. */
+/** The layers last copied here and the words that copy put on the clipboard. Pasting those same words into a spec embeds the layers. */
+let copiedLayers:{documentId:string;pageId:string;ids:string[];text:string}|undefined;
+export const lastCopiedLayers=(documentId:string,words:string)=>copiedLayers&&copiedLayers.documentId===documentId&&(!words||copiedLayers.text===words)?copiedLayers:undefined;
 export async function copyEditorSelection(cut=false,onCut?:()=>void){
  pngGeneration++;
  const before=useEditor.getState(),doc=before.doc,pageId=before.pageId,selection=before.selection.join('\0');
  if(!before.selection.length)return false;
+ copiedLayers={documentId:doc.id,pageId,ids:[...before.selection],text:doc.pages.find(p=>p.id===pageId)!.nodes.filter(n=>before.selection.includes(n.id)&&n.type==='text').map(n=>n.text).join('\n')};
  if(typeof window==='undefined'||!window.desktop?.clipboardWrite){before.copy();if(cut)(onCut??before.remove)();return true;}
  if(cut)assertClipboardCutSafe(doc,pageId,before.selection);
  const payload=makeDesignClipboard(doc,pageId,before.selection);payload.project.fonts=assetsForUsage(projectFontUsage(payload.project),payload.project.fonts);

@@ -1,6 +1,9 @@
 import {importImages,openSelectedProject} from './files';
 import {ImportInputError} from './import-task';
 import {useEditor} from './store';
+import {node} from './model';
+import {markdownBlocks,validateSpec} from './spec';
+import {SPEC_PAGE} from './spec-layers';
 
 /** Finder drops on the canvas. One document opens through the same path as File > Open, so a project that
  * replaces the window keeps its review and guarded retention. Images import where they land. */
@@ -23,8 +26,18 @@ export async function dropToPng(file:File){
 }
 /** World point under the pointer, for placing dropped images. */
 export function dropPoint(clientX:number,clientY:number,canvas:Element|null){const s=useEditor.getState(),box=canvas?.getBoundingClientRect();if(!box||!s.zoom)return undefined;return {x:(clientX-box.left-s.pan.x)/s.zoom,y:(clientY-box.top-s.pan.y)/s.zoom};}
+const MARKDOWN=/\.(md|markdown)$/i;
+/** A Markdown file dropped on the canvas becomes a spec, one per file, side by side. */
+export async function importMarkdownFiles(files:File[],at?:{x:number;y:number}){
+ if(files.some(file=>file.size>DROP_LIMITS.bytes))throw new ImportInputError('Choose a Markdown file smaller than 20 MB.');
+ const texts=await Promise.all(files.map(async file=>({name:file.name.replace(MARKDOWN,''),blocks:markdownBlocks(await file.text())}))),s=useEditor.getState(),start=at??{x:(200-s.pan.x)/s.zoom,y:(120-s.pan.y)/s.zoom};
+ for(const text of texts){if(!text.blocks.length)throw new ImportInputError(text.name+' is empty.');validateSpec({version:1,blocks:text.blocks});}
+ const made=texts.map((text,i)=>node('spec',{name:text.name.slice(0,120)||'Spec',x:start.x+i*(SPEC_PAGE.defaultWidth+40),y:start.y,width:SPEC_PAGE.defaultWidth,height:SPEC_PAGE.defaultHeight,fill:'#ffffff',stroke:'',text:'',spec:{version:1,blocks:text.blocks}}));
+ s.edit(d=>{d.pages.find(p=>p.id===s.pageId)!.nodes.push(...made);});useEditor.getState().set({selection:made.map(n=>n.id),tool:'move'});
+}
 export async function dropFiles(files:File[],at?:{x:number;y:number}){
  if(!files.length)return;
+ if(files.every(file=>MARKDOWN.test(file.name)))return importMarkdownFiles(files,at);
  if(droppedDocument(files))return openSelectedProject(files[0]);
  return importImages(await Promise.all(files.map(file=>dropConvertsImage(file)?dropToPng(file):file)),at);
 }

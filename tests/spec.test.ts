@@ -2,6 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {blankDocument,node,parseDocument} from '../src/model';
 import {markdownBlocks,paragraph,specInlineMarks,specMarkdown,validateSpec} from '../src/spec';
 import type {SpecBlock} from '../src/spec';
+import {applyTextReplacements,findDocumentText} from '../src/text-search';
 import {backspaceBlock,deleteForward,indentBlock,insertBlock,markdownShortcut,matchCommands,moveBlockTo,removeBlock,slashQuery,splitBlock,toggleTodo,turnInto,wrapMark} from '../src/spec-editing';
 import {flattenSpecs,layoutSpec,settleSpecs,specLookup} from '../src/spec-layers';
 const p=(text:string,id=text):SpecBlock=>({id,kind:'paragraph',text}),li=(text:string,indent?:number):SpecBlock=>({id:text,kind:'bullet',text,...(indent?{indent}:{})});
@@ -61,4 +62,10 @@ describe('page layout',()=>{
  });
  it('becomes real layers for outputs that walk layers',()=>{const s=page([p('one')]),flat=flattenSpecs([s],[]);expect(flat[0]).toMatchObject({id:'s',type:'frame'});expect(flat[0]).not.toHaveProperty('spec');expect(flat[1]).toMatchObject({type:'text',text:'one',parentId:'s',x:58,y:68});expect(flattenSpecs([node('rectangle')],[])[0].type).toBe('rectangle');});
  it('opens with a blank line ready',()=>{expect(paragraph().kind).toBe('paragraph');});
+});
+describe('find and replace in specs',()=>{
+ const doc=()=>{const d=blankDocument(),blocks:SpecBlock[]=[{id:'a',kind:'paragraph',text:'Buy now'},{id:'b',kind:'heading',level:2,text:'Buy later'},{id:'t',kind:'table',rows:[['Buy','x'],['y','buy']]},{id:'c',kind:'divider'}];d.pages[0].nodes=[node('spec',{id:'s',spec:{version:1,blocks}} as never)];return d;},options=(d:ReturnType<typeof blankDocument>)=>({query:'buy',scope:'document' as const,pageId:d.pages[0].id,selectionIds:[],caseSensitive:false,wholeWord:false,includeHidden:false});
+ it('finds text in blocks and table cells',()=>{const d=doc(),found=findDocumentText(d,options(d));expect(found.matches.map(m=>m.spot)).toEqual([{block:'a'},{block:'b'},{block:'t',row:0,column:0},{block:'t',row:1,column:1}]);expect(found.matches[0].nodeId).toBe('s');});
+ it('replaces in place, leaves everything else, and refuses stale results',()=>{const d=doc(),found=findDocumentText(d,options(d)),plan=applyTextReplacements(d,found,'Get');expect(plan.replaced).toBe(4);const blocks=d.pages[0].nodes[0].spec!.blocks as any[];expect(blocks[0].text).toBe('Get now');expect(blocks[1].text).toBe('Get later');expect(blocks[2].rows).toEqual([['Get','x'],['y','Get']]);expect(blocks[3].kind).toBe('divider');expect(()=>applyTextReplacements(d,found,'Again')).toThrow(/Search again/);});
+ it('skips a locked spec',()=>{const d=doc();d.pages[0].nodes[0].locked=true;const found=findDocumentText(d,options(d)),plan=applyTextReplacements(d,found,'Get');expect(plan.skipped).toBe(4);expect((d.pages[0].nodes[0].spec!.blocks[0] as any).text).toBe('Buy now');});
 });

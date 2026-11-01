@@ -12,6 +12,10 @@ export const paragraph=(text=''):SpecBlock=>({id:specId(),kind:'paragraph',text}
 export const blankSpec=():SpecDocument=>({version:1,blocks:[{id:specId(),kind:'heading',level:1,text:''},paragraph()]});
 export const isTextBlock=(block:SpecBlock):block is SpecTextBlock=>'text' in block;
 export const isListBlock=(block:SpecBlock):block is SpecListBlock=>block.kind==='bullet'||block.kind==='number'||block.kind==='todo';
+/** Where a piece of writing sits in a spec. A table cell has a row and column. */
+export interface SpecTextSpot {block:string;row?:number;column?:number;}
+export function specTexts(blocks:SpecBlock[]):(SpecTextSpot&{text:string})[]{return blocks.flatMap(b=>isTextBlock(b)?[{block:b.id,text:b.text}]:b.kind==='table'?b.rows.flatMap((cells,row)=>cells.map((text,column)=>({block:b.id,row,column,text}))):[]);}
+export function setSpecText(blocks:SpecBlock[],spot:SpecTextSpot,text:string):SpecBlock[]{return blocks.map(b=>b.id!==spot.block?b:b.kind==='table'?{...b,rows:b.rows.map((cells,y)=>y!==spot.row?cells:cells.map((cell,x)=>x===spot.column?text:cell))}:isTextBlock(b)?{...b,text}:b);}
 const IMAGE=/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]*$/;
 const fail=(detail:string):never=>{throw Error('Invalid spec: '+detail+'.');};
 const keys=(block:Record<string,unknown>,allowed:string[])=>{for(const key of Object.keys(block))if(!allowed.includes(key))fail('unknown block field '+key.slice(0,40));};
