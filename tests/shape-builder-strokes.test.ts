@@ -2,6 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {blankDocument,node,parseDocument} from '../src/model';
 import type {DesignNode} from '../src/model';
 import {createPaint,createStroke} from '../src/paints';
+import {createEffect} from '../src/effects';
 import {applyShapeBuilder,prepareShapeBuilder,shapeBuilderOutput} from '../src/shape-builder';
 import {builderRegionAt,builderRegionsAlong} from '../src/shape-builder-geometry';
 import {geometricArea} from '../src/geometry';
@@ -40,6 +41,11 @@ describe('paints in Shape builder',()=>{
  it('takes translucent sources, keeping their opacity on the output',()=>{const d=lensAndLobes({opacity:.5}),out=applied(d,'extract',p=>[p.arrangement.regions.find(r=>r.sources.length===2)!.id]);expect(out.at(-1)!.opacity).toBe(.5);expect(out[0].opacity).toBe(1);});
  it('holds a gradient where it was on the canvas',()=>{const gradient=createPaint('#ff0000','linear'),d=doc(circle('a',0,0,100,{paints:[gradient],fill:'#ff0000'}),circle('b',60,0,100)),out=applied(d,'extract',p=>[p.arrangement.regions.find(r=>r.sources.length===1&&r.sources[0]==='a')!.id]),paint=out.at(-1)!.paints![0];expect(paint.type).toBe('linear');expect(paint.linearStart).toBeDefined();});
  it('saves and reopens stroked output',()=>{const d=lensAndLobes({strokes:[stroke()],stroke:'#aa0000',strokeWidth:4});applied(d,'merge',p=>p.arrangement.regions.map(r=>r.id));const back=parseDocument(JSON.stringify(d));expect(back.pages[0].nodes.map(n=>n.strokes?.length)).toEqual(d.pages[0].nodes.map(n=>n.strokes?.length));});
+});
+
+describe('other source styles in Shape builder',()=>{
+ it('keeps effects and blending from the shape that gives a region its fill',()=>{const shadow=createEffect('drop-shadow'),d=lensAndLobes({effects:[shadow],blendMode:'multiply'}),out=applied(d,'extract',p=>[p.arrangement.regions.find(r=>r.sources.length===2)!.id]),picked=out.at(-1)!;expect(picked.effects?.[0].type).toBe('drop-shadow');expect(picked.effects?.[0].id).not.toBe(shadow.id);expect(picked.blendMode).toBe('multiply');expect(out[0].effects).toEqual([]);expect(out[0].blendMode).toBeUndefined();});
+ it('takes a network with two paints as two sources',()=>{const source=node('path',{id:'n',x:0,y:0,width:200,height:100,pathWidth:200,pathHeight:100,fill:'#ff0000',paints:[createPaint('#ff0000')],strokes:[],stroke:'',strokeWidth:0,points:[],path:'',contours:[{closed:true,points:[{x:0,y:0},{x:90,y:0},{x:90,y:100},{x:0,y:100}]},{closed:true,points:[{x:110,y:0},{x:200,y:0},{x:200,y:100},{x:110,y:100}]}]}),patch=networkNodePatch(source,contoursToNetwork(source)),g=patch.vectorNetwork!;if(g.version!==3)throw Error('needs faces');const painted={...g,regions:g.regions.map((r,i)=>({...r,paints:[createPaint(i?'#00ff00':'#ff0000')]}))},n={...source,...patch,...networkNodePatch({...source,...patch} as DesignNode,painted)} as DesignNode,d=doc(n,square('a',50,20,100)),p=plan(d);expect(p.sourceIds).toEqual(['n','a']);expect(p.styleIds).toHaveLength(3);const colors=p.arrangement.regions.filter(r=>!r.sources.includes('a')).map(r=>r.sources[0]);expect(new Set(colors).size).toBe(2);const out=applied(d,'merge',q=>[q.arrangement.regions.find(r=>r.sources.length===2)!.id]);expect(new Set(out.flatMap(o=>o.paints?.map(v=>v.color))).size).toBeGreaterThan(1);expect(d.pages[0].nodes.some(v=>v.id==='n')).toBe(false);});
 });
 
 describe('picking along a very fast drag',()=>{

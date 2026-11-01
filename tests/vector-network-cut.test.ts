@@ -8,6 +8,7 @@ import type {VectorNetwork} from '../src/vector-network-geometry';
 import {cutNetworkEdge,cutNetworkVertex,eraseNetwork,regionVertices,tightenedNetwork} from '../src/vector-network-cut';
 import {sliceVectorPath,sliceVectorPathAlong} from '../src/vector-knife';
 import {contourRegionAt} from '../src/vector-contour-region';
+import {nodeMatrix,point} from '../src/transforms';
 import {deriveNetworkFaces} from '../src/vector-network-faces';
 const identity=[1,0,0,1,0,0] as const;
 const stroke=()=>({...createStroke('#112233'),width:2,cap:'round' as const,join:'round' as const});
@@ -38,6 +39,7 @@ describe('Eraser on a branching network',()=>{
  it('reports when nothing would be left',()=>{const n=tree();expect(eraseNetwork(n,[...identity],brush([{x:100,y:50},{x:100,y:100}],500))).toBeNull();});
  it('works through a scaled and moved layer, in canvas coordinates',()=>{const n=tree(),next=eraseNetwork(n,[2,0,0,2,100,100],brush([{x:180,y:260},{x:180,y:340}],40))!;const xs=next.vertices.map(v=>v.x).sort((a,b)=>a-b);expect(xs[1]).toBeCloseTo(30,3);expect(xs[2]).toBeCloseTo(50,3);});
  it('closes the layer box on what is left without moving the art',()=>{const n=tree(),next=eraseNetwork(n,[...identity],brush([{x:30,y:-20},{x:30,y:220}],60))!;const patch=tightenedNetwork(n,next);expect(patch.width).toBeLessThan(n.width);expect(patch.pathWidth).toBe(patch.width);const left=patch.vectorNetwork!.vertices.reduce((m,v)=>Math.min(m,v.x),Infinity);expect(left).toBeCloseTo(0,5);expect(patch.x).toBeCloseTo(n.x+next.vertices.reduce((m,v)=>Math.min(m,v.x),Infinity),5);});
+ it('closes the box of a mirrored layer too',()=>{const n={...tree(),flipX:true,rotation:15},next=eraseNetwork(n,[...identity],brush([{x:30,y:-20},{x:30,y:220}],60))!,after={...n,...tightenedNetwork(n,next)} as DesignNode,stem=next.vertices.find(v=>v.x===100&&v.y===0)!,moved=after.vectorNetwork!.vertices.find(v=>v.id===stem.id)!,was=point(nodeMatrix(n),stem.x,stem.y),now=point(nodeMatrix(after),moved.x,moved.y);expect(now.x).toBeCloseTo(was.x,5);expect(now.y).toBeCloseTo(was.y,5);});
  it('refuses bad brushes before touching the graph',()=>{const n=tree(),before=JSON.stringify(n);expect(()=>eraseNetwork(n,[...identity],brush([],20))).toThrow('finite canvas samples');expect(()=>eraseNetwork(n,[...identity],brush([{x:NaN,y:0}],20))).toThrow('finite canvas samples');expect(JSON.stringify(n)).toBe(before);});
 });
 
