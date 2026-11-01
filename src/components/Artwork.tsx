@@ -59,7 +59,7 @@ function bidiLine(line:ReturnType<typeof textLines>[number],available:number,bod
 const TextPathNamespace=createContext('');
 const strokeSide=(n:DesignNode,side:'inside'|'outside')=>!['line','arrow'].includes(n.type)&&arrowStyle(n,'start')==='none'&&arrowStyle(n,'end')==='none'&&strokesFor(n).some(s=>s.align===side&&!s.edgeWidths&&!s.calligraphic&&!s.dynamic&&!s.variableWidth);
 /** These are the only layers that reference their clip: a clip made for every layer was a third of a page's elements. */
-const needsClip=(n:DesignNode,content:boolean)=>n.clip||content||strokeSide(n,'inside');
+const needsClip=(n:DesignNode,content:boolean)=>n.clip||content||strokeSide(n,'inside')||fillsFor(n).some(p=>p.type==='shader');
 const needsOutsideMask=(n:DesignNode)=>strokeSide(n,'outside');
 const usesDefinitions=(n:DesignNode,content:boolean,detail:number|undefined)=>n.type==='text'&&!!n.textPath||needsClip(n,content)||needsOutsideMask(n)||shownEffects(n,detail).length>0||!!n.vectorNetwork||fillsFor(n).some(p=>p.type!=='solid')||strokesFor(n).some(s=>s.paint.type!=='solid');
 const Flip=({n,children}:{n:DesignNode;children:React.ReactNode})=>n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined?<g transform={`translate(${n.width/2} ${n.height/2}) scale(${(n.flipX?-1:1)*(n.motionScaleX??1)} ${(n.flipY?-1:1)*(n.motionScaleY??1)}) translate(${-n.width/2} ${-n.height/2})`}>{children}</g>:<>{children}</>;
