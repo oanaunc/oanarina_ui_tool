@@ -7,9 +7,9 @@ export const scene=(nodes:unknown[],blobs:unknown[]=[],images:Record<string,Uint
 const u32=(v:number)=>[v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255];
 const f32=(v:number)=>{const b=new ArrayBuffer(4);new DataView(b).setFloat32(0,v,true);return [...new Uint8Array(b)];};
 export function commands(ops:[number,number[]][]){const out:number[]=[];for(const [op,values] of ops){out.push(op);for(const value of values)out.push(...f32(value));}return Uint8Array.from(out);}
-export function network(vertices:[number,number][],segments:[number,number,number,number,number,number,number?][],regions:number[][][]=[]){
+export function network(vertices:[number,number,number?][],segments:[number,number,number,number,number,number,number?][],regions:number[][][]=[]){
  const out=[...u32(vertices.length),...u32(segments.length),...u32(regions.length)];
- for(const [x,y] of vertices)out.push(...u32(0),...f32(x),...f32(y));
+ for(const [x,y,style=0] of vertices)out.push(...u32(style),...f32(x),...f32(y));
  for(const [start,sx,sy,end,ex,ey,style=0] of segments)out.push(...u32(style),...u32(start),...f32(sx),...f32(sy),...u32(end),...f32(ex),...f32(ey));
  for(const loops of regions){out.push(...u32(1),...u32(loops.length));for(const loop of loops){out.push(...u32(loop.length));for(const s of loop)out.push(...u32(s));}}
  return Uint8Array.from(out);
