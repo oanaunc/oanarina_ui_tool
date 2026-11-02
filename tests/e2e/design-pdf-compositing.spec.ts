@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {PDFDocument} from 'pdf-lib';
+import {PDFDict,PDFDocument,PDFName} from 'pdf-lib';
 import {blankDocument,node} from '../../src/model';
 import type {DesignDocument} from '../../src/model';
 async function load(page:Page,d:DesignDocument){d.fonts=[];await page.addInitScript(d=>localStorage.setItem('oui-active',JSON.stringify(d)),d);await page.goto('/');await expect(page.locator('.layer-row')).toHaveCount(d.pages[0].nodes.length);}
@@ -38,3 +38,5 @@ test('transparent stops and angular and diamond paints are shadings that match t
  expect(near(shown[0],[5,5,5],14),String(shown[0])).toBe(true);expect(near(shown[1],[128,128,128],14),String(shown[1])).toBe(true);expect(near(shown[2],[248,248,248],14),String(shown[2])).toBe(true);
  expect(shown[3][0],String(shown[3])).toBeGreaterThan(220);expect(shown[4][1],String(shown[4])).toBeGreaterThan(220);expect(near(shown[5],[128,128,0],36),String(shown[5])).toBe(true);
  expect(near(shown[6],[255,255,255],14),String(shown[6])).toBe(true);expect(near(shown[7],[120,120,120],24),String(shown[7])).toBe(true);});
+test('a Display P3 file keeps its vectors, with colors converted to sRGB',async({page})=>{const d=base();d.colorProfile='display-p3';d.pages[0].nodes.push(node('rectangle',{id:'p3',parentId:'a',x:0,y:0,width:100,height:100,fill:'#cc4444',stroke:''}));const pdf=await compare(page,d,[[50,50]],[[217,59,58]]);const forms=pdf.getPages()[0].node.Resources()!.lookupMaybe(PDFName.of('XObject'),PDFDict);expect(forms?forms.values().length:0).toBe(0);});
+
