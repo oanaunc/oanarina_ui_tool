@@ -16,7 +16,7 @@ export const documentDigest=(doc:DesignDocument)=>contentDigest(JSON.stringify(d
 function fieldPatch(from:Bag,to:Bag,skip:ReadonlySet<string>){const set:Bag={},del:string[]=[];for(const key of Object.keys(to))if(!skip.has(key)&&JSON.stringify(from[key])!==JSON.stringify(to[key]))set[key]=to[key];for(const key of Object.keys(from))if(!skip.has(key)&&to[key]===undefined&&from[key]!==undefined)del.push(key);return {...(Object.keys(set).length?{set}:{}),...(del.length?{del}:{})};}
 function nodeRuns(from:readonly DesignNode[],to:readonly DesignNode[]):NodeRun[]|undefined{
  const index=new Map(from.map((n,i)=>[n.id,i])),runs:NodeRun[]=[];let last:[number,number]|undefined,same=from.length===to.length;
- for(let i=0;i<to.length;i++){const n=to[i],at=index.get(n.id);if(at!==undefined&&JSON.stringify(from[at])===JSON.stringify(n)){if(at!==i)same=false;if(last&&last[0]+last[1]===at)last[1]++;else{last=[at,1];runs.push(last);}}else{same=false;runs.push(n);last=undefined;}}
+ for(let i=0;i<to.length;i++){const n=to[i],at=index.get(n.id);if(at!==undefined&&(from[at]===n||JSON.stringify(from[at])===JSON.stringify(n))){if(at!==i)same=false;if(last&&last[0]+last[1]===at)last[1]++;else{last=[at,1];runs.push(last);}}else{same=false;runs.push(n);last=undefined;}}
  return same?undefined:runs;
 }
 const PAGE_SKIP=new Set(['nodes','id']),DOCUMENT_SKIP=new Set(['pages','id','format','version']);

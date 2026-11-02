@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest';
-import {glideCamera,moveCamera,settleCamera,wheelGlides,wheelZoomFactor} from '../src/canvas-camera';
+import {cameraBox,glideCamera,moveCamera,settleCamera,wheelGlides,wheelZoomFactor} from '../src/canvas-camera';
 import {useEditor} from '../src/store';
 const at=(timeStamp:number,deltaY:number,wheelDeltaY?:number)=>({timeStamp,deltaY,wheelDeltaY});
 it('a whole mouse notch is one fixed step, capped when the wheel is flung',()=>{expect(wheelZoomFactor(at(1000,-40,120),1,false)).toBeCloseTo(1.2);expect(wheelZoomFactor(at(1010,40,-120),1,false)).toBeCloseTo(1/1.2);expect(wheelZoomFactor(at(1020,-400,1200),1,false)).toBeCloseTo(1.2**4);});
@@ -9,3 +9,5 @@ it('a glide holds the zoom point still at every step and arrives exactly',()=>{c
 it('a glide with no zoom change is a straight pan',()=>{expect(glideCamera({zoom:2,pan:{x:0,y:0}},{zoom:2,pan:{x:10,y:-20}},.5)).toEqual({zoom:2,pan:{x:5,y:-10}});});
 it('separate wheel steps glide, and a dense stream follows at once',()=>{expect(wheelGlides(at(20000,-4,12))).toBe(true);expect(wheelGlides(at(20016,-4,12))).toBe(false);expect(wheelGlides(at(20032,-40,120))).toBe(true);expect(wheelGlides(at(20200,-4,12))).toBe(true);});
 it('a camera the app set during a glide stays on screen and in the store, and a finished glide lands on its target',()=>{Object.assign(globalThis,{requestAnimationFrame:()=>1,cancelAnimationFrame:()=>{}});const painted:string[]=[],group={setAttribute:(_:string,value:string)=>painted.push(value)},canvas={style:{},querySelector:(q:string)=>q==='[data-camera]'?group:null} as unknown as SVGElement;useEditor.getState().set({zoom:1,pan:{x:0,y:0}});moveCamera(canvas,{zoom:2,pan:{x:5,y:5}},true);useEditor.getState().set({zoom:.7,pan:{x:12,y:16}});settleCamera();expect(useEditor.getState().zoom).toBe(.7);expect(painted.at(-1)).toBe('translate(12 16) scale(0.7)');moveCamera(canvas,{zoom:2,pan:{x:5,y:5}},true);settleCamera();expect(useEditor.getState().zoom).toBe(2);expect(painted.at(-1)).toBe('translate(5 5) scale(2)');});
+
+it('measures from the stage, because the canvas element itself moves during a gesture',()=>{const stage={getBoundingClientRect:()=>({left:10,top:20})},canvas={parentElement:stage,getBoundingClientRect:()=>({left:-500,top:90})};expect(cameraBox(canvas as unknown as Element)).toEqual({left:10,top:20});expect(cameraBox({getBoundingClientRect:()=>({left:1,top:2})} as unknown as Element)).toEqual({left:1,top:2});});

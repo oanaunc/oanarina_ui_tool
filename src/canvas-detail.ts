@@ -6,6 +6,10 @@ export const CanvasDetailContext=createContext<number|undefined>(undefined);
 const TINY_TEXT_PX=3.5,TINY_EFFECT_PX=2,FULL_DETAIL_ZOOM=.7;
 /** Half-octave steps, rounded up, so a small zoom change never rebuilds the page and nothing goes coarse sooner than it should. */
 export const detailZoom=(zoom:number)=>!(zoom>0)||zoom>=FULL_DETAIL_ZOOM?undefined:2**(Math.ceil(Math.log2(zoom)*2)/2);
+/** A zoom out reveals far more layers than a frame can draw in full, so it draws as if an octave further away and refines when it stops. */
+export const gestureDetail=(zoom:number,settled:number)=>zoom<settled*.9?zoom/2:zoom;
+/** Whether one detail level draws less than another. */
+export const coarser=(a:number|undefined,b:number|undefined)=>a!==undefined&&(b===undefined||a<b);
 export const tinyText=(n:Pick<DesignNode,'fontSize'|'textRuns'>,zoom:number|undefined)=>zoom!==undefined&&Math.max(n.fontSize,...(n.textRuns??[]).map(r=>r.fontSize??0))*zoom<TINY_TEXT_PX;
 /** A shadow or blur that spans under two screen pixels can't be told from none, and filters are the slowest thing on the canvas. */
 export function shownEffects(n:DesignNode,zoom:number|undefined){const effects=effectsFor(n).filter(e=>e.visible&&e.type!=='background-blur');if(zoom===undefined||!effects.length||effects.some(e=>e.type!=='drop-shadow'&&e.type!=='inner-shadow'&&e.type!=='layer-blur'))return effects;return Math.max(...effects.map(e=>e.radius+Math.abs(e.x)+Math.abs(e.y)+Math.abs(e.spread)))*zoom<TINY_EFFECT_PX?[]:effects;}
