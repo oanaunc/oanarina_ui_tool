@@ -38,18 +38,18 @@ const layerOf=(g:Element,byId:ReadonlyMap<string,DesignNode>)=>{const id=g.getAt
 const proxyIn=(g:Element)=>{const first=g.firstElementChild;return first?.hasAttribute(PROXY)?first as SVGImageElement:null;};
 function placeProxy(g:Element,recipe:ShadowRecipe,id:string,url:string){const image=document.createElementNS(SVG_NS,'image');image.setAttribute(PROXY,id);image.setAttribute('href',url);image.setAttribute('x',String(recipe.x));image.setAttribute('y',String(recipe.y));image.setAttribute('width',String(recipe.width));image.setAttribute('height',String(recipe.height));image.setAttribute('preserveAspectRatio','none');image.setAttribute('pointer-events','none');image.setAttribute('decoding','sync');image.setAttribute('aria-hidden','true');image.style.display='none';g.insertBefore(image,g.firstChild);return image;}
 export interface ShadowContext {nodes:readonly DesignNode[];zoom:number;density:number;profile?:DocumentColorProfile;}
-/** Run when the canvas is idle: makes the bitmaps this view lacks and places each one, hidden, under its layer. The image is decoded by then, so showing it later is immediate. */
-export function prepareShadows(canvas:Element,{nodes,zoom,density,profile}:ShadowContext){
+/** Places each bitmap, hidden, under its layer, so it has loaded by the time it shows. With build set, which is for an idle canvas, it also makes the bitmaps this view lacks. A layer mounted during a gesture borrows whatever bitmap its shadow has. */
+export function prepareShadows(canvas:Element,{nodes,zoom,density,profile}:ShadowContext,build=true){
  const byId=new Map(nodes.map(n=>[n.id,n])),parents=new Set(nodes.map(n=>n.parentId));let builds=0,wanting=false;
- for(const g of canvas.querySelectorAll('[data-node-id][filter]')){const n=layerOf(g,byId);if(!n)continue;const recipe=shadowRecipe(n,profile,parents.has(n.id));if(!recipe)continue;const scale=shadowScale(recipe,zoom,density),id=scale+'|'+recipe.key,bitmap=bitmaps.get(id);
-  if(bitmap===undefined){if(builds<SHADOW_LIMITS.buildsPerPass){builds++;void makeBitmap(recipe,scale,id);}wanting=true;continue;}if(bitmap==='pending'){wanting=true;continue;}if(bitmap==='failed')continue;
-  const old=proxyIn(g);if(old?.getAttribute(PROXY)===id)continue;old?.remove();placeProxy(g,recipe,id,bitmap.url);}
+ for(const g of canvas.querySelectorAll('[data-node-id][filter]')){const n=layerOf(g,byId);if(!n)continue;const recipe=shadowRecipe(n,profile,parents.has(n.id));if(!recipe)continue;const scale=shadowScale(recipe,zoom,density),id=scale+'|'+recipe.key,exact=bitmaps.get(id);
+  if(exact==='failed')continue;if(build&&typeof exact!=='object'){wanting=true;if(exact===undefined&&builds<SHADOW_LIMITS.buildsPerPass){builds++;void makeBitmap(recipe,scale,id);}}
+  const old=proxyIn(g),use=typeof exact==='object'?id:old?undefined:latest.get(recipe.key),bitmap=use===undefined?undefined:bitmaps.get(use);if(typeof bitmap!=='object'||old?.getAttribute(PROXY)===use)continue;old?.remove();placeProxy(g,recipe,use!,bitmap.url);}
  return wanting;
 }
-/** Swaps every shadow with a bitmap for it, in the same frame as the camera move that would have run the filters again. Any bitmap of the right shadow will do for these few frames, whatever zoom it was made at. A layer that changed since keeps its filter. */
+/** Swaps every placed shadow for its bitmap, in the same frame as the camera move that would have run the filters again. A layer that changed since keeps its filter. */
 export function holdShadows(canvas:Element,{nodes,profile}:Pick<ShadowContext,'nodes'|'profile'>){
  const byId=new Map(nodes.map(n=>[n.id,n])),parents=new Set(nodes.map(n=>n.parentId));
- for(const g of canvas.querySelectorAll<SVGGraphicsElement>('[data-node-id][filter]')){const n=layerOf(g,byId),recipe=n?shadowRecipe(n,profile,parents.has(n.id)):null;let image=proxyIn(g);if(image&&(!recipe||!image.getAttribute(PROXY)!.endsWith('|'+recipe.key))){image.remove();image=null;}if(!recipe)continue;if(!image){const id=latest.get(recipe.key),bitmap=id===undefined?undefined:bitmaps.get(id);if(typeof bitmap!=='object')continue;image=placeProxy(g,recipe,id!,bitmap.url);}g.style.filter='none';image.style.display='';held.add(g);}
+ for(const image of canvas.querySelectorAll<SVGImageElement>(`[${PROXY}]`)){const g=image.parentElement as unknown as SVGGraphicsElement|null,n=g&&layerOf(g,byId),recipe=n?shadowRecipe(n,profile,parents.has(n.id)):null;if(!g||!recipe||!image.getAttribute(PROXY)!.endsWith('|'+recipe.key)||!g.hasAttribute('filter')){image.remove();continue;}g.style.filter='none';image.style.display='';held.add(g);}
 }
 /** Gives a few layers their real filter back. The caller repeats this each frame until it returns false. */
 export function releaseShadows(count:number=SHADOW_LIMITS.restoredPerFrame){let left=count;for(const g of held){held.delete(g);if(!g.isConnected)continue;g.style.removeProperty('filter');const image=proxyIn(g);if(image)image.style.display='none';if(--left<=0)break;}return held.size>0;}

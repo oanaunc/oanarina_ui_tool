@@ -43,7 +43,7 @@ export default function ViewportCanvasArtwork({nodes,canvasRef,activeId,drafting
  else if(step.left&&step.pulse!==pulse.current){const next=stepBatches(target,step.batches,opening.current?undefined:needed);drawn.current={...step,...next,pulse:pulse.current};}
  const {batches,left}=drawn.current,total=opening.current?target.length:0,shown=opening.current?total-left:0,loading=left>0&&total>0;
  useEffect(()=>{if(!left)return;const frame=requestAnimationFrame(()=>{pulse.current++;advance();});return()=>cancelAnimationFrame(frame);});
- useEffect(()=>{if(!left&&!drafting&&canvasRef.current)readyShadows(canvasRef.current);},[batches,left,drafting,canvasRef]);
+ useEffect(()=>{if(!drafting&&canvasRef.current)readyShadows(canvasRef.current);},[batches,drafting,canvasRef]);
  const handler=useRef(onNode);handler.current=onNode;const pressed=useCallback((e:React.PointerEvent,id:string)=>handler.current(e,id),[]);
  // One pass per opened page: the first view decides the order, and later edits reuse images already decoded.
  const [decoding,setDecoding]=useState('');
