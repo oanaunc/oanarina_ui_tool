@@ -55,6 +55,15 @@ test('dragging a frame on a page of batches commits, undoes and redoes',async({p
 });
 test('zooming out on a big page shows every screen and comes back to full detail',async({page})=>{
  test.setTimeout(120000);await load(page,.5);await idle(page);await page.evaluate(async()=>{const el=document.querySelector('#forma-design-canvas')!,box=el.getBoundingClientRect();for(let i=0;i<40;i++){el.dispatchEvent(new WheelEvent('wheel',{ctrlKey:true,deltaY:5,clientX:box.x+300,clientY:box.y+300,bubbles:true,cancelable:true}));await new Promise(r=>requestAnimationFrame(r));}});
- await idle(page);const zoomed=await camera(page);expect(zoomed.zoom).toBeLessThan(.3);await expect(page.locator('[data-node-id^="screen-"]:not([data-node-id*="-"][data-node-id$="t"])').first()).toBeVisible();
+ await expect.poll(async()=>(await camera(page)).zoom,{timeout:5000}).toBeLessThan(.3);await idle(page);await expect(page.locator('[data-node-id^="screen-"]:not([data-node-id*="-"][data-node-id$="t"])').first()).toBeVisible();
  await page.evaluate(async()=>{const {useEditor}=await import('/src/store.ts');useEditor.getState().set({zoom:.8,pan:{x:0,y:0}});});await idle(page);await expect(page.locator('[data-node-id="screen-0-0-t"] text').first()).toBeVisible();await expect(page.locator('[data-node-id="screen-0-0-t"] [data-text-bars]')).toHaveCount(0);await expect(page.locator('[data-node-id="screen-0-0"]')).toHaveAttribute('filter','url(#fxscreen-0-0)');
+});
+test('a zoom holds the point under the cursor while the canvas is off its box',async({page})=>{
+ test.setTimeout(90000);await load(page);await idle(page);const before=await camera(page);
+ const point=await page.evaluate(async()=>{const el=document.querySelector('#forma-design-canvas')!,box=el.getBoundingClientRect(),x=box.x+400,y=box.y+300;for(let i=0;i<8;i++){el.dispatchEvent(new WheelEvent('wheel',{deltaX:40,deltaY:0,clientX:x,clientY:y,bubbles:true,cancelable:true}));await new Promise(r=>requestAnimationFrame(r));}for(let i=0;i<12;i++){el.dispatchEvent(new WheelEvent('wheel',{ctrlKey:true,deltaY:-3,clientX:x,clientY:y,bubbles:true,cancelable:true}));await new Promise(r=>requestAnimationFrame(r));}return {x:400,y:300};});
+ await idle(page);const after=await camera(page),px=before.pan.x-320,py=before.pan.y;expect(after.zoom).toBeGreaterThan(before.zoom);expect((point.x-after.pan.x)/after.zoom).toBeCloseTo((point.x-px)/before.zoom,3);expect((point.y-after.pan.y)/after.zoom).toBeCloseTo((point.y-py)/before.zoom,3);
+});
+test('the wheel keeps working where the moved canvas has left the stage bare',async({page})=>{
+ test.setTimeout(90000);await load(page);await idle(page);const landed=await page.evaluate(async()=>{const el=document.querySelector('#forma-design-canvas')!,stage=el.parentElement!,box=stage.getBoundingClientRect(),raf=()=>new Promise(r=>requestAnimationFrame(r));for(let i=0;i<4;i++){el.dispatchEvent(new WheelEvent('wheel',{deltaX:-100,deltaY:-100,clientX:box.x+500,clientY:box.y+400,bubbles:true,cancelable:true}));await raf();}const gap=new WheelEvent('wheel',{deltaX:0,deltaY:-30,clientX:box.x+4,clientY:box.y+4,bubbles:true,cancelable:true});stage.dispatchEvent(gap);await raf();return gap.defaultPrevented;});
+ expect(landed).toBe(true);await idle(page);const after=await camera(page);expect(after.pan).toEqual({x:12+400,y:16+430});
 });
