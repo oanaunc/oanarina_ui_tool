@@ -1,9 +1,12 @@
-import {shapePoints} from './geometry';
+import {contourPath,shapePoints} from './geometry';
+import {hasVariableWidth} from './variable-width';
+import {cornerAngle,fittedCornerRadii,hasLiveCorners} from './vector-corner-rounding';
+import {setVectorCornerRadius} from './vector-operations';
 import {gridGeometry} from './grid';
 import {paddingFor} from './layout';
 import {layoutPadding,layoutSpan} from './layout-settings';
 import {descendants,isLocked,reflow} from './model';
-import type {DesignNode} from './model';
+import type {DesignNode,VectorContour} from './model';
 import {inverseMatrix,point,worldMatrix} from './transforms';
 type Point={x:number;y:number};
 export interface SpacingHandle {key:string;group?:string;id:string;axis:'x'|'y';value:number;zone:Point[];from:Point;to:Point;}
@@ -49,16 +52,29 @@ export function shapeHandles(n:DesignNode,nodes:DesignNode[],zoom:number):ShapeH
  if(n.type==='ellipse'){if(side*zoom<MIN_ARC)return [];const {start,sweep,inner}=arcOf(n),rx=n.width/2,ry=n.height/2,on=(degrees:number,r:number)=>{const a=degrees*Math.PI/180;return [rx+Math.cos(a)*rx*r,ry+Math.sin(a)*ry*r] as const;},full=Math.abs(sweep)>=359.999,out=[mark('arc-end',...on(start+sweep,1),'Arc sweep'),mark('arc-ratio',...on(start+sweep/2,inner),'Arc ratio')];if(!full)out.unshift(mark('arc-start',...on(start,1),'Arc start'));return out;}
  return [];
 }
+const MAX_VERTEX_HANDLES=64;
+/** Corners read in layer units, the units a radius is stored and drawn in. */
+function layerContour(n:DesignNode,c:VectorContour):VectorContour{const sx=n.width/(n.pathWidth||n.width||1),sy=n.height/(n.pathHeight||n.height||1),map=(p:Point)=>({x:p.x*sx,y:p.y*sy});return {...c,points:c.points.map(p=>({...p,...map(p),...(p.in?{in:map(p.in)}:{}),...(p.out?{out:map(p.out)}:{})}))};}
+const inward=(corner:{toward:Point;away:Point})=>{const x=corner.toward.x+corner.away.x,y=corner.toward.y+corner.away.y,length=Math.hypot(x,y);return {x:x/length,y:y/length};};
+/** As on a rectangle, the dot sits at the center of the corner's circle and travels along the line that bisects the corner. */
+export function vertexRadiusHandles(n:DesignNode,nodes:DesignNode[],zoom:number,keys:readonly string[]):ShapeHandle[]{
+ if(n.type!=='path'||!n.contours||n.booleanOp||n.vectorNetwork||n.instanceRootId||hasVariableWidth(n)||isLocked(n,nodes))return [];const m=worldMatrix(n,nodes),out:ShapeHandle[]=[];
+ for(const key of keys.slice(0,MAX_VERTEX_HANDLES)){const [ci,pi]=key.split(':').map(Number),source=n.contours[ci];if(!source?.points[pi])continue;const c=layerContour(n,source),corner=cornerAngle(c,pi);if(!corner)continue;const u=inward(corner),reach=Math.max((fittedCornerRadii(c).get(pi)??0)/Math.sin(corner.theta/2),14/zoom),p=c.points[pi];out.push({key:`vertex-radius:${ci}:${pi}`,id:n.id,...point(m,p.x+u.x*reach,p.y+u.y*reach),label:'Corner radius'});}
+ return out;
+}
+/** The stored anchors, drawn behind the rounded artwork so a live corner's point still reads as the corner it rounds. */
+export function vectorSkeletonPath(n:DesignNode,nodes:DesignNode[]){if(!n.contours||!hasLiveCorners(n))return '';const m=worldMatrix(n,nodes),sx=n.width/(n.pathWidth||n.width||1),sy=n.height/(n.pathHeight||n.height||1),at=(p:Point)=>point(m,p.x*sx,p.y*sy),off=(p:Point,h:Point)=>{const a=at(p),b=at({x:p.x+h.x,y:p.y+h.y});return {x:b.x-a.x,y:b.y-a.y};};return n.contours.map(c=>contourPath(c.points.map(p=>({...at(p),...(p.in?{in:off(p,p.in)}:{}),...(p.out?{out:off(p,p.out)}:{})})),c.closed)).join(' ');}
 const paddingPatch=(n:DesignNode,sides:number[],value:number):Partial<DesignNode>=>{const next=[...paddingFor(n)] as [number,number,number,number];for(const side of sides)next[side]=value;return next.every(v=>v===next[0])?{padding:next[0],paddings:undefined}:{padding:n.padding,paddings:next};};
 /** Gaps of a single line keep the shared field. Wrapped and grid layouts hold each axis apart. A spread layout has no fixed gap, so dragging one gives it a fixed value. */
 function gapPatch(n:DesignNode,axis:'x'|'y',value:number):Partial<DesignNode>{const patch:Partial<DesignNode>=n.layout==='grid'||n.wrap?{gap:n.gap,gapX:axis==='x'?value:n.gapX??n.gap,gapY:axis==='y'?value:n.gapY??n.gap}:{gap:value,[axis==='x'?'gapX':'gapY']:undefined};if(n.layout!=='grid'){const main=n.layout==='horizontal'?'x':'y';if(axis===main&&SPREAD.includes(n.justifyContent??''))patch.justifyContent='start';if(axis!==main&&SPREAD.includes(n.wrapAlign??''))patch.wrapAlign='start';}return patch;}
 function sweepTo(next:number,start:number,memo:HandleMemo){const known=memo.sweep??(Math.abs(start)>=359.999?undefined:start);let sweep=next;if(known!==undefined&&Math.abs(sweep-known)>270)sweep=known>180?360:0;memo.sweep=sweep;return sweep;}
 /** `n` and `nodes` are the layer as the gesture started, so a frame that grows under the pointer cannot feed back into the drag. */
-export function canvasHandleDrag(handle:{key:string;value?:number},n:DesignNode,nodes:DesignNode[],start:Point,pointer:Point,mods:HandleModifiers,memo:HandleMemo):HandleDrag{
+export function canvasHandleDrag(handle:{key:string;value?:number;points?:readonly string[]},n:DesignNode,nodes:DesignNode[],start:Point,pointer:Point,mods:HandleModifiers,memo:HandleMemo):HandleDrag{
  const inverse=inverseMatrix(worldMatrix(n,nodes)),a=point(inverse,start.x,start.y),b=point(inverse,pointer.x,pointer.y),dx=b.x-a.x,dy=b.y-a.y,[kind,part]=handle.key.split(':');
  if(kind==='padding'){const side=Number(part),inward=[dy,-dx,-dy,dx][side],value=Math.max(0,Math.min(1e6,Math.round((handle.value??0)+inward))),sides=mods.shift?[0,1,2,3]:mods.alt?[side,(side+2)%4]:[side];return {patch:paddingPatch(n,sides,value),text:String(value)};}
  if(kind==='gap'){const axis=part as 'x'|'y',from=handle.value??0,value=Math.max(Math.min(0,from),Math.min(1e6,Math.round(from+(axis==='x'?dx:dy))));return {patch:gapPatch(n,axis,value),text:String(value)};}
  if(kind==='radius'){const i=Number(part),[sx,sy]=CORNER_SIGN[i],radii=cornerRadii(n),value=clamp(Math.round(radii[i]+(dx*sx+dy*sy)/2),0,Math.floor(Math.min(n.width,n.height)/2));if(!mods.alt)return {patch:{radius:value,corners:undefined},text:String(value)};const corners=[...(n.corners??[n.radius,n.radius,n.radius,n.radius])] as [number,number,number,number];corners[i]=value;return {patch:{radius:n.radius,corners},text:String(value)};}
+ if(kind==='vertex-radius'){const [ci,pi]=handle.key.split(':').slice(1).map(Number),source=n.contours?.[ci];if(!source)throw Error('This vector point is no longer available.');const c=layerContour(n,source),corner=cornerAngle(c,pi);if(!corner)throw Error('This vector point has no corner to round.');const u=inward(corner),keys=[...new Set([...(handle.points??[]),ci+':'+pi])],start=fittedCornerRadii(c).get(pi)??0,wanted=clamp(Math.round(start+(dx*u.x+dy*u.y)*Math.sin(corner.theta/2)),0,1e6),fitted=(patch:Partial<DesignNode>)=>fittedCornerRadii(layerContour(n,patch.contours![ci])).get(pi)??0;let patch=setVectorCornerRadius(n,keys,wanted),value=wanted;if(fitted(patch)<wanted-1e-6){value=Math.floor(fitted(patch));patch=setVectorCornerRadius(n,keys,value);}return {patch,text:String(value)};}
  if(kind==='shape-radius'){const value=clamp(Math.round(Math.min(n.radius,Math.min(n.width,n.height)/2)+dy),0,Math.floor(Math.min(n.width,n.height)/2));return {patch:{radius:value},text:String(value)};}
  const rx=n.width/2||1,ry=n.height/2||1,nx=(b.x-rx)/rx,ny=(b.y-ry)/ry;
  if(kind==='star-ratio'){const a=-Math.PI/2+Math.PI/Math.max(3,Math.min(100,Math.round(n.pointCount??5))),value=hundredths(clamp(nx*Math.cos(a)+ny*Math.sin(a),.01,.99));return {patch:{innerRadius:value},text:Math.round(value*100)+'%'};}
