@@ -4,7 +4,7 @@ export const PLUGIN_LIMITS={packageBytes:200000,codeBytes:100000,installed:8,ins
 export const PLUGIN_PERMISSIONS=['selection:read','page:read','document:write','ui:show','fonts:read','image:read','image:write','export:read','storage:local','network:fetch','codegen:run','assets:read','comments:read'] as const;
 export type PluginPermission=typeof PLUGIN_PERMISSIONS[number];
 /** Closed set shared with the guardian's independent method check. */
-export const PLUGIN_METHODS=['selection','page','propose','commit','log','parameters','ui.show','ui.post','ui.resize','assets','comments','fonts.list','fonts.load','images.create','images.read','export','export.batch','storage.get','storage.set','storage.delete','storage.keys','fetch','codegen.input','codegen.result'] as const;
+export const PLUGIN_METHODS=['selection','page','propose','commit','log','parameters','ui.show','ui.post','ui.resize','assets','comments','fonts.list','fonts.load','images.create','images.read','export','export.batch','storage.get','storage.set','storage.delete','storage.keys','fetch','codegen.input','codegen.result','suggest.result'] as const;
 export interface PluginUi {html:string;width:number;height:number;}
 export interface PluginNetwork {allowedOrigins:string[];}
 export interface PluginCodegen {languages:{id:string;label:string}[];}

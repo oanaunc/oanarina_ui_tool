@@ -7,7 +7,7 @@ export const PLUGIN_PARAMETER_SOURCES=['pages','layers','components','styles','v
 export type PluginParameterSource=typeof PLUGIN_PARAMETER_SOURCES[number];
 export type PluginSourceOptions=Record<string,{id:string;name:string}[]>;
 type Base={key:string;label:string;description?:string;showWhen?:PluginParameterCondition};
-export type PluginParameter=Base&({type:'text';default:string;maxLength:number}|{type:'number';default:number;min:number;max:number}|{type:'boolean';default:boolean}|{type:'choice';default:string;options:string[]}|{type:'source';default:'';source:PluginParameterSource});
+export type PluginParameter=Base&({type:'text';default:string;maxLength:number;suggest?:boolean}|{type:'number';default:number;min:number;max:number}|{type:'boolean';default:boolean}|{type:'choice';default:string;options:string[]}|{type:'source';default:'';source:PluginParameterSource});
 export type PluginParameterValues=Record<string,string|number|boolean>;
 const text=(v:unknown,max:number)=>typeof v==='string'&&v.length<=max&&!/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/.test(v);
 const singleLine=(v:unknown,max:number)=>text(v,max)&&!/[\r\n]/.test(v as string);
@@ -18,7 +18,7 @@ export function validatePluginParameters(value:unknown):asserts value is PluginP
  if(!Array.isArray(value)||value.length>12)fail();const keys=new Set<string>();
  for(const raw of value){const p=pluginObject(raw);if(typeof p.key!=='string'||!/^[a-z][a-zA-Z0-9_]{0,39}$/.test(p.key)||['constructor','prototype','__proto__'].includes(p.key)||keys.has(p.key)||!text(p.label,80)||!(p.label as string).trim()||p.description!==undefined&&!text(p.description,240))fail();keys.add(p.key);
   const fields=['key','label','description','showWhen','type','default'];if(p.showWhen!==undefined){const when=pluginObject(p.showWhen);pluginKeys(when,['key','equals']);if(typeof when.key!=='string'||!keys.has(when.key)||when.key===p.key||!['string','boolean'].includes(typeof when.equals)||typeof when.equals==='string'&&!text(when.equals,1000))fail();}
-  if(p.type==='text'){pluginKeys(p,[...fields,'maxLength']);if(!Number.isInteger(p.maxLength)||(p.maxLength as number)<1||(p.maxLength as number)>1000||!singleLine(p.default,p.maxLength as number))fail();}
+  if(p.type==='text'){pluginKeys(p,[...fields,'maxLength','suggest']);if(!Number.isInteger(p.maxLength)||(p.maxLength as number)<1||(p.maxLength as number)>1000||!singleLine(p.default,p.maxLength as number)||p.suggest!==undefined&&typeof p.suggest!=='boolean')fail();}
   else if(p.type==='number'){pluginKeys(p,[...fields,'min','max']);if(![p.default,p.min,p.max].every(n=>typeof n==='number'&&Number.isFinite(n)&&Math.abs(n)<=1000000)||(p.min as number)>(p.max as number)||(p.default as number)<(p.min as number)||(p.default as number)>(p.max as number))fail();}
   else if(p.type==='boolean'){pluginKeys(p,fields);if(typeof p.default!=='boolean')fail();}
   else if(p.type==='source'){pluginKeys(p,[...fields,'source']);if(p.default!==''||!PLUGIN_PARAMETER_SOURCES.includes(p.source as PluginParameterSource))fail();}
@@ -29,6 +29,9 @@ export function validatePluginParameters(value:unknown):asserts value is PluginP
 }
 /** Options for source fields, read by the host when the form opens. Names stay in the trusted form: a run receives only the ID that was chosen. */
 export function pluginParameterSources(doc:DesignDocument,pageId:string,definitions:readonly PluginParameter[]|undefined):PluginSourceOptions{const page=doc.pages.find(p=>p.id===pageId),row=(v:{id:string;name:string})=>({id:v.id,name:v.name.slice(0,200)}),out:PluginSourceOptions={};for(const p of definitions??[])if(p.type==='source')out[p.key]=(p.source==='pages'?doc.pages.map(row):p.source==='layers'?(page?.nodes??[]).filter(n=>!n.instanceRootId).map(row):p.source==='components'?doc.pages.flatMap(v=>v.nodes).filter(n=>n.type==='component'&&!n.instanceRootId).map(row):p.source==='styles'?(doc.styles??[]).map(row):(doc.variables??[]).map(row)).slice(0,500);return out;}
+export interface PluginSuggestion {label:string;value:string;}
+/** A package's answer is data for host rows: a string, or a label beside the value it fills in. Anything else, or a value the field could not hold, refuses the whole answer. */
+export function pluginSuggestions(rows:unknown,maxLength:number,limit:number,labelLength:number):PluginSuggestion[]{if(!Array.isArray(rows))throw Error('Suggestions are a list.');const out=new Map<string,PluginSuggestion>();for(const raw of rows.slice(0,limit)){const row=typeof raw==='string'?{value:raw}:pluginObject(raw);pluginKeys(row,['label','value']);const value=row.value,label=row.label??value;if(!singleLine(value,maxLength)||!singleLine(label,labelLength)||!(label as string).trim())throw Error('A suggestion needs a single line that fits this field.');if(!out.has(value as string))out.set(value as string,{label:label as string,value:value as string});}return [...out.values()];}
 export const parameterVisible=(p:PluginParameter,values:Record<string,string|boolean|number>)=>!p.showWhen||values[p.showWhen.key]===p.showWhen.equals;
 /** Mint an owned scalar snapshot. Absent input uses defaults; submitted maps must be complete. */
 export function pluginParameterValues(definitions:readonly PluginParameter[]|undefined,input?:unknown,sources?:PluginSourceOptions):PluginParameterValues{
