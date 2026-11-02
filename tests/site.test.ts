@@ -4,11 +4,13 @@ import {describe,expect,it} from 'vitest';
 import {blankDocument,node,parseDocument,reflow} from '../src/model';
 import {addSiteCollection,addSiteEmbed,addSiteField,addSiteForm,addSiteFormField,addSiteGrid,addSiteItem,addSiteNavigation,addSitePage,addSiteStack,createSiteDocument,duplicateSiteItem,duplicateSitePageRecords,indentSitePage,moveSiteItem,moveSitePage,outdentSitePage,parseSiteValue,publishedItems,removeSiteCollection,removeSiteField,removeSiteItem,removeSitePage,safeUrl,setSiteBreakpoint,setSiteHome,setSiteItemDraft,setSiteItemSlug,setSiteItemValue,setSiteLayer,setSiteOverride,setSitePageParent,setSitePageSlug,siteFilePath,siteOf,sitePageSegments,sitePageTree,slugify,stackOnMobile,updateSite,updateSiteEmbed,updateSiteField,updateSiteForm,updateSiteFormField,updateSitePage,updateSiteSettings,validSiteImage,validateSite} from '../src/site';
 import type {SiteDocument,SiteLayer} from '../src/site';
-import {buildSite,escapeHtml,siteArchiveName,zipSite} from '../src/site-export';
+import {buildSite,escapeHtml,radialCssShape,siteArchiveName,zipSite} from '../src/site-export';
 import {embedDocument,embedSandbox,sanitizeEmbedHtml} from '../src/site-embed';
 import {SITE_RUNTIME} from '../src/site-runtime';
 import {duplicateDocumentPage} from '../src/pages';
+import {createPaint} from '../src/paints';
 
+describe('radial paints in site CSS',()=>{it('writes an upright ellipse and keeps a circle otherwise',()=>{const paint={...createPaint('#ff0000','radial'),radius:.5};expect(radialCssShape(paint)).toBe('circle');expect(radialCssShape({...paint,radialShape:[1,0,0,.4]})).toBe('ellipse 50% 20%');expect(radialCssShape({...paint,radialShape:[.7,.7,-.3,.3]})).toBe('circle');});});
 const png='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jfuoAAAAASUVORK5CYII=';
 const roundTrip=(d:SiteDocument)=>parseDocument(JSON.stringify(d)) as SiteDocument;
 const html=(d:SiteDocument,path='index.html',mode:'export'|'preview'='export')=>buildSite(d,mode).files.find(f=>f.path===path)!.text!;
