@@ -1,7 +1,7 @@
 import {node,parseDocument,isLocked} from './model';
 import type {DesignDocument,Page} from './model';
 import {canInstantiate,insertInstance,synchronizeComponents} from './components-model';
-import {defaultPlaygroundConfig,deriveComponentPlayground,playgroundSourceIndex} from './component-playground';
+import {defaultPlaygroundConfig,playgroundClosureCheck,playgroundSourceIndex} from './component-playground';
 import {prototypeDocument} from './prototype';
 import {visualBounds} from './transforms';
 import {libraryDigest} from './library-digest';
@@ -43,7 +43,7 @@ export function prepareComponentDocumentation(source:DesignDocument,mainId:strin
  const closure=new Set<string>(),mains=new Set<string>();let estimate=0;
  for(const id of mainIds){const n=index.byId.get(id);if(n?.type!=='component'||n.instanceRootId)throw Error('A selected variant main is missing.');if(isLocked(n,[...index.byId.values()]))throw Error('Unlock every selected variant and its ancestors first.');canInstantiate(source,id,null);
   // Existing cycle/slot/ancestor-aware component derivation preflights the complete closure.
-  let result:ReturnType<typeof deriveComponentPlayground>;try{result=deriveComponentPlayground(source,defaultPlaygroundConfig(id));}catch(e){throw Error(message(e));}
+  let result:ReturnType<typeof playgroundClosureCheck>;try{result=playgroundClosureCheck(source,defaultPlaygroundConfig(id));}catch(e){throw Error(message(e));}
   estimate+=result.page.nodes.length;if(estimate>4000)throw Error('Documentation examples exceed 4,000 layers.');
   for(const p of result.document.pages)if(p.id!==result.page.id)for(const n of p.nodes){closure.add(n.id);if(n.type==='component'&&!n.instanceRootId)mains.add(n.id);}
   if(closure.size>1500||mains.size>32)throw Error('The combined documentation closure exceeds 1,500 layers or 32 mains.');

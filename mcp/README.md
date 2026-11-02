@@ -53,7 +53,8 @@ Version-one `.oui` projects can be read and migrate to version two when written.
 | `read_document` | Complete JSON, optionally including assets; maximum response 5 MB |
 | `read_design_system` | Typed variables, collections/modes, local styles and component sets |
 | `read_library_context` | Source-only metadata index of local reusable definitions, installed libraries/publication, versions/status and bounded dependency IDs; revision-bound pagination |
-| `apply_operations` | Atomic batches of up to 500 node/page/design-system edits |
+| `read_code_connect` | Source-only: mappings from components to code components with current target names, filtered by language or text; revision-bound pagination |
+| `apply_operations` | Atomic batches of up to 500 node/page/design-system/mapping edits |
 | `replace_document` | Validated complete document replacement for advanced model features |
 | `undo_transaction` | Restore the previous successful MCP transaction; last 20 survive restarts |
 | `read_undo_history` | Source-only: retained Undo count, size and availability, never content |
@@ -75,6 +76,8 @@ Source `read_library_context` omits node bodies, library baselines, scalar varia
 Default asset-omitted document reads also omit opaque local-library edit-baseline strings: those can contain copies of embedded image/font data. Request `includeAssets: true` for a complete saved document, subject to the response limit. Asset-omitted views are for inspection and must not be submitted to `replace_document`.
 
 Source `import_image_asset` takes `revision`, `pageId`, `dataUrl` (`data:image/png;base64,…`) and optional `name`, `x`, `y`, `displayWidth`. It preserves aspect ratio and returns natural/display dimensions, bytes, node ID and new revision without echoing the asset. Supports bounded noninterlaced 8-bit RGB/RGBA static PNG; other raster formats, indexed/grayscale/16-bit/interlaced PNG, animation and compressed metadata are refused. No asset paths or network URLs are accepted. See [PNG import](../docs/MCP-PNG-IMPORT.md) for validation and limits. The frozen standalone download does not include this new source tool yet.
+
+`apply_operations` also takes `set_code_connect` with a `mapping` (`targetId`, `language`, `component`, `source`, `props`, optional `template`), which updates the mapping that target already has in that language, and `remove_code_connect` with `ids`. The server stores source paths as text and never opens them. See [Code Connect](../docs/CODE-CONNECT.md). The frozen standalone download does not include these until it is rebuilt.
 
 `apply_operations` supports `rename_document`, `create_page`, `rename_page`, `duplicate_page`, `reorder_page`, `delete_page`, `create_node`, `update_node`, `update_spec`, `delete_node` and `set_design_system`. `update_spec` replaces a spec's blocks from Markdown and keeps the frames and images its `forma://` references name. Nodes can specify an optional unique `id` when created, so children can reference parents created earlier in the same atomic batch. Node `properties` use the shared `.oui` node fields; changing `id` or `type` through an update is rejected. Deleting a frame also deletes its descendants; deleting an owned instance child records a visibility override. Moving a container moves its descendants.
 
