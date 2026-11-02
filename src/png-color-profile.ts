@@ -1,7 +1,7 @@
 import {zlibSync} from 'fflate';
 import {displayP3IccProfile} from './display-p3-icc';
 export type PngColorProfile='srgb'|'none'|'display-p3'|`icc:${string}`;
-export function validatePngColorProfile(value:unknown):asserts value is PngColorProfile|undefined{if(value!==undefined&&value!=='srgb'&&value!=='none'&&value!=='display-p3'&&!(typeof value==='string'&&/^icc:[\w-]{1,64}$/.test(value)))throw Error('PNG color profile must be sRGB, Display P3, a stored ICC profile or untagged.');}
+export function validatePngColorProfile(value:unknown):asserts value is PngColorProfile|undefined{if(value!==undefined&&value!=='srgb'&&value!=='none'&&value!=='display-p3'&&!(typeof value==='string'&&/^icc:[\w-]{1,64}$/.test(value)))throw Error('PNG color profile must be sRGB, Display P3 or untagged.');}
 const signature=[137,80,78,71,13,10,26,10],colorChunks=new Set(['sRGB','gAMA','cHRM','iCCP','cICP','mDCV','cLLI']),limit=100_000_000;
 const crcTable=Uint32Array.from({length:256},(_,i)=>{for(let bit=0;bit<8;bit++)i=i&1?0xedb88320^(i>>>1):i>>>1;return i>>>0;});
 function crc(bytes:Uint8Array,start:number,end:number){let value=0xffffffff;for(let i=start;i<end;i++)value=crcTable[(value^bytes[i])&255]^(value>>>8);return (value^0xffffffff)>>>0;}
