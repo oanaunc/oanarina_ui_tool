@@ -3,6 +3,31 @@
   "asOf": "2026-11-02",
   "releases": [
     {
+      "version": "1.0.4",
+      "channel": "preview",
+      "title": "Forma 1.0.4",
+      "notes": [
+        "Panning and zooming big files is smoother again. Panning moves an already painted canvas, a zoom shows a scaled copy until it stops, and shadows stay light while the view moves. The canvas no longer goes blank during a fast move.",
+        "Clicking and nudging on big files are faster, because only the layers that changed are touched.",
+        "Background blur works anywhere: several on a page, on any shape or frame, inside groups and under masks, in prototypes, Motion and exports, and imported files keep them.",
+        "PDFs keep far more as real objects: blends, group opacity, all mask modes, every gradient, rich text, and Greek, Cyrillic and CJK text.",
+        "A PDF exported right after opening a file no longer turns text into a picture while fonts are still loading.",
+        "Library updates can be previewed with a changed-values table and a visual compare, and a Merge both button keeps your edits and theirs. You can choose which assets to publish, and renamed variables now update inside prototype expressions.",
+        "Specs have collapsible toggle blocks with /toggle, and lines no longer shift when you open a spec.",
+        "Letter case is a live setting on text and ranges, and the Text menu commands turn it on and off instead of rewriting your words. Checklists and hanging punctuation are in too.",
+        "K scaling writes real values on instances, main components, Booleans and animated layers. A block of layers can move inside a grid, and arrow keys step it.",
+        "Color styles can hold several paints, images and shaders, with a Paints list in the edit panel.",
+        "Imports keep variable bindings on line height, borders, effects and gradient stops, keep multi-color vectors editable, and keep arrowheads on every open path.",
+        "PNG exports can embed your own RGB ICC profile, and Site exports reach the right copy in a repeated list."
+      ],
+      "limits": [
+        "Files with several background blurs on a page, or specs with toggle blocks, need 1.0.4 or later.",
+        "The Text menu’s letter case commands now toggle a setting instead of changing your text. Hanging quotes now also apply in lists, and constraints now scale the contents of groups, so some existing layouts can shift.",
+        "Imported bindings, checklists and arrowheads were tested on files written here, because the real sample file holds none of them. PDFs were checked with Poppler, not Preview or Acrobat.",
+        "Physical trackpads, tablets, Intel Macs and older macOS were not tried. The new camera and shadow work was measured on a synthetic file."
+      ]
+    },
+    {
       "version": "1.0.3",
       "channel": "preview",
       "title": "Forma 1.0.3",

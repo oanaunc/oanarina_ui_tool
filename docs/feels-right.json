@@ -1,0 +1,4 @@
+{
+  "about": "Whether a feature feels right to someone who used it. Add one entry per feature: \"UI-00-000\": {\"verdict\": \"right\" or \"off\", \"by\": \"who\", \"on\": \"YYYY-MM-DD\", \"note\": \"optional\"}. Only people edit this file, and no script or agent may set a verdict.",
+  "verdicts": {}
+}

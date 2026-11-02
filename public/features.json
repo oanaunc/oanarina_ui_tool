@@ -1174,10 +1174,10 @@
     "category": "Navigation and editor shell",
     "name": "Inline error messages",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Recovery write failures have a persistent inline alert with Retry recovery and Save .oui file. Failures that go through the shared error path now stay on screen until dismissed. Refusals that post a plain message still fade after four seconds."
+    "notes": "Failures stay on screen until dismissed, including refusals posted as plain messages. Recovery write failures keep their inline alert with Retry recovery and Save .oui file."
   },
   {
     "id": "UI-04-028",
@@ -1467,7 +1467,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "The canvas uses Display P3, and PNG, JPG and SVG keep it. PDF is converted to sRGB, and GIF, video, clipboard and slides use the same default without a color test. In WebKit, pattern and image filter paints clip to sRGB. Panel swatches stay sRGB because they are native color controls."
+    "notes": "The canvas uses Display P3, and PNG, JPG and SVG keep it. PDF keeps vectors with colors converted to sRGB. GIF, video, clipboard and slides use the same default without a color test. In WebKit, pattern and image filter paints clip to sRGB. Panel swatches stay sRGB because they are native color controls."
   },
   {
     "id": "UI-05-027",
@@ -1757,7 +1757,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "View and Actions toggles cover eligible nested frame and main component names. Names on one row now stop short of the next name and step aside when no letter fits. Foreground artwork can still cover a name, and clipped, masked, managed, slice and Boolean owners stay suppressed."
+    "notes": "View and Actions toggles cover eligible nested frame and main component names. Names draw above all artwork, stop short of the next name on a row, and step aside when no letter fits. Clipped, masked, managed, slice and Boolean owners stay suppressed."
   },
   {
     "id": "UI-06-026",
@@ -1767,7 +1767,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "View and Actions toggles cover eligible nested section names. Names on one row now stop short of the next name and step aside when no letter fits. Foreground artwork can still cover a name, and clipped, masked, managed, slice and Boolean owners stay suppressed."
+    "notes": "View and Actions toggles cover eligible nested section names. Names draw above all artwork, stop short of the next name on a row, and step aside when no letter fits. Clipped, masked, managed, slice and Boolean owners stay suppressed."
   },
   {
     "id": "UI-06-027",
@@ -2607,7 +2607,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The selected frame inspector shows an isolated image with the frame clip off, plus painted descendant bounds and candidate selection. Nested clips, masks and occlusion may conceal candidates, so exact pixel overflow is not proven."
+    "notes": "The selected frame inspector shows an isolated image with the frame clip off, plus painted descendant bounds and candidate selection. Overflow stops at nested clips and masks. Curved shapes count by their box and occlusion is not considered, so exact pixel overflow is not proven."
   },
   {
     "id": "UI-09-021",
@@ -2654,10 +2654,10 @@
     "category": "Frames",
     "name": "Resize frame to fit content",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Fit offers children, descendants and painted bounds, and Keep fitted to contents follows direct children in the same Undo. Mask, Boolean and slice roles still refuse the wider fits, and occlusion is not considered."
+    "notes": "Frame actions → Fit bounds offers direct children, all descendants and painted bounds, and Keep fitted to contents follows in the same Undo. A Boolean counts as its result, a mask as its source and a slice as nothing. A frame that is itself a mask or Boolean operand fits to direct children only. tests/e2e/frame-fit-descendants.spec.ts."
   },
   {
     "id": "UI-09-026",
@@ -2884,10 +2884,10 @@
     "category": "Sections groups and slices",
     "name": "Group blend mode",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Blend modes and isolation are usable on groups, and pass-through has its own bounded path under UI-19-018. Not retested in this batch."
+    "notes": "Inspector → Blend mode on a group, with isolation. Pass-through has its own bounded path under UI-19-018. tests/e2e/section-workflows.spec.ts."
   },
   {
     "id": "UI-10-019",
@@ -3447,7 +3447,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "K keeps proportions on every handle and writes real size, stroke, radius, type and effect values during the drag. Instances, animated layers, main components and mirrored scales keep a stored scale with a note, and Apply scale to values stays only for those."
+    "notes": "K keeps proportions on every handle and writes real values during the drag for layers, instances as overrides, layers inside instances, main components, Booleans, text on a path, layout guides and animated layers. A drag past the opposite edge mirrors only with Flip objects while resizing on, and multi-selection does not mirror. Code layers and widgets, layers with animated width or height, square layout grids under uneven scale, text on a path past 256 pt and zero scale keep a stored scale, and the panel says why."
   },
   {
     "id": "UI-12-015",
@@ -3457,7 +3457,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "K writes real corner radii during the drag, including independent corners. Instances, animated layers, main components and mirrored scales keep a stored scale with a note."
+    "notes": "K writes real corner radii during the drag, including independent corners, instances and main components. The same cases as UI-12-014 keep a stored scale."
   },
   {
     "id": "UI-12-016",
@@ -5707,7 +5707,7 @@
     "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unreleased source: Canvas-space affine line geometry, independent head styles/size, inherited solid/gradient/image paint and alpha, transformed export/mask bounds, parametric polygon/star corner radii. Reverse pointer direction and cancellation tested. Heads on compound paths use the first open contour Evidence and limits: docs/LINE-AND-ARROW-WORKFLOWS.md; tests/line-shapes.test.ts; tests/e2e/line-shapes.spec.ts. Exact Figma reference verification remains pending."
+    "notes": "Canvas-space affine line geometry, independent head styles and sizes, per-path sizes on layers with several open paths, inherited solid, gradient and image paint with alpha, transformed export and mask bounds. Heads on later paths are kept only through the shared normalize path, and PowerPoint ignores them."
   },
   {
     "id": "UI-18-023",
@@ -5757,17 +5757,17 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Same as UI-14-034: stacks, arrowheads, unlike fills, SVG export and paints held in place. Radial and image frames on flipped or unevenly scaled layers stay close rather than exact, and visible effects still refuse."
+    "notes": "Same as UI-14-034: stacks, arrowheads, unlike fills, SVG export and paints held in place, and drop shadows and layer blurs survive. Radial and image frames on flipped or unevenly scaled layers stay close rather than exact. Inner shadows, background blurs and shader effects refuse."
   },
   {
     "id": "UI-18-028",
     "category": "Strokes",
     "name": "Stroke scale behavior",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Fixed-width compensation also covers point-width profiles, keeping anchor ratios. Managed, locked, Boolean and Motion paths refuse, and direct scripted transforms keep literal semantics."
+    "notes": "K or resize with Keep stroke width compensates strokes, including point-width profiles, instance layers and Booleans. Locked layers and Motion paths refuse by design, and direct scripted transforms keep literal semantics. tests/e2e/stroke-scaling.spec.ts."
   },
   {
     "id": "UI-18-029",
@@ -5834,10 +5834,10 @@
     "category": "Effects and compositing",
     "name": "Background blur",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The target can keep other effects, its parent frame can sit at any depth, and a clipping frame lets text and overflow into the backdrop. Imported background blur is kept on one independent rectangle or ellipse per page. One target per page, group parents, masks and presentation remain limits."
+    "notes": "Several background blurs per page, up to 64 in a file, on any shape or frame, inside groups and under masks, with no authored underlay. They work in Motion, prototypes, Smart animate, scrolling and exports of a selection, and imports keep them. A layer with opacity, blend, effect or mask seals the backdrop. Text and groups refuse. In the Mac web view a blur over nothing opaque fades at its region edge. Forma 1.0.3 and earlier refuse pages with several. tests/background-blur.test.ts and tests/e2e/background-blur.spec.ts."
   },
   {
     "id": "UI-19-005",
@@ -5977,7 +5977,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Explicit pass-through controls on eligible unpainted containers with real nonisolated child blending and Undo. Motion, presentation, components, reduced group opacity and broader masking remain unsupported, and the Bridge is mock-tested only."
+    "notes": "Explicit pass-through controls on eligible unpainted containers with real nonisolated child blending and Undo, through Motion, presentation, components, masks, paint and selected exports. Reduced opacity is handed to each child, so overlapping children differ slightly from a sealed group. Clip or effects on the container refuse. The Bridge claim is mock-tested only."
   },
   {
     "id": "UI-19-019",
@@ -6154,10 +6154,10 @@
     "category": "Effects and compositing",
     "name": "Backdrop filter clipping",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "The same target clip applies to nested targets in frame-local coordinates at any depth. General backdrop roots remain unsupported."
+    "notes": "The target clip applies at any depth, in frame-local coordinates, through Motion, prototypes and selected exports."
   },
   {
     "id": "UI-19-037",
@@ -6977,7 +6977,7 @@
     "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
+    "notes": "Text menu → Uppercase or Inspector → Letter case sets a live letter case on layers, ranges and text styles. The typed characters stay, and the command toggles off. It reaches canvas, editor, SVG, PDF, raster, CSS, site export and imports."
   },
   {
     "id": "UI-22-006",
@@ -6997,7 +6997,7 @@
     "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "v0.2 development: inspector/command, .oui persistence and undo; core tests and browser workflows documented in docs/VALIDATION-v0.2-development.md."
+    "notes": "Text menu → Title case or Inspector → Letter case sets a live letter case. It capitalizes words and leaves the other letters alone. The typed characters stay."
   },
   {
     "id": "UI-22-008",
@@ -7377,7 +7377,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Quotes hang in left, right, center and justified paragraphs, including right-to-left and mixed text, and import from real files. Other punctuation does not hang. Lists, ellipsis tails, tabs and explicit bidi controls keep ordinary placement."
+    "notes": "Inspector → text options → Hang punctuation. Quotes hang at paragraph ends and other punctuation at every line edge, including lists, tabs, ellipsis tails and right-to-left text, and real files import. A line with an explicit bidi control, and any line after it in that paragraph, keeps ordinary placement."
   },
   {
     "id": "UI-22-046",
@@ -8067,7 +8067,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma",
-    "notes": "Stroke inclusion covers linear, grid, gap, padding, fill and wrap, transformed children, arrowheads, and now miter tips on polygons, stars, paths and lines up to the miter limit. Tips add one even outset on all sides, vector networks are not measured, and shadows are excluded."
+    "notes": "Stroke inclusion covers linear, grid, gap, padding, fill and wrap, transformed children, arrowheads, miter tips and vector networks including branching vertices. Tips add one even outset on all sides. Shadows are excluded."
   },
   {
     "id": "UI-24-030",
@@ -9407,7 +9407,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slots can list up to 32 preferred components and can require them, which applies through the slot controls but not to pasted content. Slot-bearing mains stay outside other components and instances, and nested template inheritance remains absent."
+    "notes": "Slots can list up to 32 preferred components and can require them, which also refuses instances arriving by paste or drag. Slot-bearing mains stay outside other components and instances, and nested template inheritance remains absent."
   },
   {
     "id": "UI-28-032",
@@ -9484,10 +9484,10 @@
     "category": "Libraries and design systems",
     "name": "Publish library",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Adds collection choice and a changes-since-last-cached-version list by fingerprint. No hosted or team publishing."
+    "notes": "Assets → Libraries → Publish current file, with a per-asset choice. Names starting with a dot or underscore stay hidden, and a hidden asset that a published one needs still ships but cannot be inserted. Publishing goes to libraries on this device; hosted and team publishing are out of scope."
   },
   {
     "id": "UI-29-007",
@@ -9557,7 +9557,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Set previews now show any variant. The 256-layer, geometry and SVG budgets and font-metric limits remain."
+    "notes": "Set previews show any variant, within layer, content and size budgets raised in 1.0.4. Font-metric limits remain."
   },
   {
     "id": "UI-29-014",
@@ -9574,30 +9574,30 @@
     "category": "Libraries and design systems",
     "name": "Review library updates",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Adds named variable and mode review with up to 200 changed values, 24 shown, and in-use removed or retyped variables can be mapped from the review. No unrestricted visual diff or merge."
+    "notes": "Review → Preview an asset shows a changed-values table (layer, field, in this file, incoming) and Compare versions with Difference and Fade. Named variable and mode review stays, and in-use removed or retyped variables can be mapped from it."
   },
   {
     "id": "UI-29-016",
     "category": "Libraries and design systems",
     "name": "Accept all library updates",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Removed or retyped variables in use can be mapped to an incoming variable of the same type, which retargets layers, aliases, form inputs and prototype actions, or detached with their values kept. All apply in one Undo. Prototype expressions that name a variable in text are not rewritten."
+    "notes": "Review updates → Accept all, in one Undo. Removed or retyped variables in use can be mapped to an incoming variable of the same type or detached with their values kept, and expression text in actions and conditions is rewritten too. Nothing is hosted."
   },
   {
     "id": "UI-29-017",
     "category": "Libraries and design systems",
     "name": "Accept selected library updates",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Same variable decisions apply to selected updates, with the dependency closure, and component conflicts can be replaced explicitly. Prototype expressions that name a variable in text are not rewritten. Nothing is hosted."
+    "notes": "Same decisions on selected updates, with the dependency closure, including expression text. Component conflicts can be replaced explicitly. Nothing is hosted."
   },
   {
     "id": "UI-29-018",
@@ -9624,20 +9624,20 @@
     "category": "Libraries and design systems",
     "name": "Library analytics",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "An explicit scan counts current references in the local project library plus the open file: files, versions, instances, layers and unused assets, up to 2,000 files. It cannot see other people or devices, .oui files never opened here, history or trends, Trash or branch copies, and the panel says so."
+    "notes": "Library analytics scans the local project library plus the open file, up to 2,000 files, with history on this device (counts only), a change column and an Include files in Trash option. It cannot see other people or devices, and the panel says so."
   },
   {
     "id": "UI-29-021",
     "category": "Libraries and design systems",
     "name": "Library usage counts",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Now also counted across device files and for styles, variables and guides, on top of current-file instance counts. No organization, cloud or longitudinal data."
+    "notes": "Current-file instance counts, plus counts across this device for components, styles, variables and guides. No organization or cloud data."
   },
   {
     "id": "UI-29-022",
@@ -9774,10 +9774,10 @@
     "category": "Libraries and design systems",
     "name": "Style conflict resolution",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Style, guide, collection and component conflicts now all offer explicit Replace with library version or Keep my version as local. Keeping a component refuses while another installed group nests it. No merge. Folder navigation limit unchanged."
+    "notes": "Style, guide, collection and component conflicts offer Replace, Keep my version as local and Merge both. Merge both is a three-way merge from the saved baseline in one Undo. Where both sides changed a value, your edit stays, and the next update still sees your edits."
   },
   {
     "id": "UI-29-036",
@@ -12597,7 +12597,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Conflicts plus structural base→branch and base→main summaries with previews; \"Mark as reviewed\" stamps the exact branch revision with the local profile label. Single-user: no other reviewers, comments on the review or pixel diff."
+    "notes": "Conflicts plus structural base→branch and base→main summaries with previews, a pixel diff, review notes, and Mark as reviewed, which stamps the exact branch revision with the local profile label. Single-user: other reviewers are out of scope."
   },
   {
     "id": "UI-38-028",
@@ -12997,7 +12997,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Offline .fig import keeps live structure in one cancellable worker. Every field name read is checked against the schema real files embed (tests/fig-schema-names.test.ts). Behavior of images, lists, grids, library keys, blurs, crops, multi-color vectors, arrowheads and variable actions is tested only on files written here. Limits are in docs/FIG-IMPORT.md, full .fig compatibility is not claimed and binary export is absent."
+    "notes": "Offline .fig import keeps live structure in one cancellable worker. Every field name read is checked against the schema real files embed (tests/fig-schema-names.test.ts). Variable bindings now stay on line height, border sides, effects, gradient stops, paint opacity, fills and strokes. Behavior of those bindings, images, lists, checklists, grids, library keys, blurs, crops, multi-color vectors, arrowheads and variable actions is tested only on files written here, because the real sample file holds none of them. Font style and variation bindings stay plain and are not reported."
   },
   {
     "id": "UI-39-032",
@@ -13157,7 +13157,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Keep shapes as vectors now writes opaque linear and radial fills as PDF shadings, and Print and Share use the same vector plan instead of flattening. Rich text, non-Latin text, transparent gradient stops, angular and diamond gradients, effects, blends and masks stay raster."
+    "notes": "Keep shapes as vectors writes real PDF objects: blends, group opacity, all mask modes, transparent stops, angular and diamond gradients, rich text, Greek, Cyrillic and CJK, and Booleans, with Print and Share on the same plan. Effects stay raster because PDF has no such filter, and a page-level blur flattens that page. Checked with Poppler, not Preview or Acrobat."
   },
   {
     "id": "UI-40-008",
@@ -13327,7 +13327,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Outlines now cover Latin letters with accents, common punctuation and currency signs, as well as composite glyphs and wrapped lines. Combining marks, other scripts, run colors and variable, CFF, color or WOFF2 fonts still refuse."
+    "notes": "Outlines cover Latin, simple scripts, composed marks, composite glyphs, wrapped lines and run colors. CFF, variable and WOFF2 faces are not done, and color fonts refuse."
   },
   {
     "id": "UI-40-025",
@@ -13347,7 +13347,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unchanged. Opt-in simplification covers supported miter rectangles and circles and refuses unsupported geometry before download. Arbitrary vector networks and ellipse approximations remain out of scope."
+    "notes": "Opt-in simplification covers miter and rounded rectangles and circles and refuses unsupported geometry before download. Ellipse approximations and arbitrary vector networks remain out of scope."
   },
   {
     "id": "UI-40-027",
@@ -13357,7 +13357,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unchanged. Opt-in outlines cover supported solid strokes with refusal before download. Effects, text, paint stacks, masks and markers remain unsupported."
+    "notes": "Opt-in outlines cover supported solid strokes, including under clips, ancestor effects and masks, with refusal before download. Text and frame strokes refuse."
   },
   {
     "id": "UI-40-028",
@@ -13384,10 +13384,10 @@
     "category": "Export and delivery",
     "name": "PNG color profile",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unchanged. sRGB, untagged and Display P3 PNG output work, verified through real decoders. Custom ICC profiles are absent, and PNG has no CMYK form."
+    "notes": "Export → PNG color profile offers sRGB, untagged, Display P3 and Add ICC profile…, which stores an RGB matrix-shaper profile in the file, converts the pixels and embeds the profile. Table-based profiles refuse, and PNG has no CMYK form."
   },
   {
     "id": "UI-40-031",
@@ -13444,10 +13444,10 @@
     "category": "Export and delivery",
     "name": "Export bounds warning",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Unchanged. Export reports hidden targets, collapsed transforms, excessive raster sizes and broken images. Mask and rotated clip intersections and text glyph overflow remain conservative."
+    "notes": "Export reports hidden targets, collapsed transforms, excessive raster sizes and broken images. Rotated clips and masks trim exactly, and measured glyph ink counts. Headless exports skip the ink measurement because they have no browser to ask."
   },
   {
     "id": "UI-40-037",
@@ -13487,7 +13487,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Batch delivery gives one ZIP with assets and a checksum manifest. Writing into a folder is absent, because it would need a new native permission, and earlier exports are not kept in sync."
+    "notes": "Batch delivery gives one ZIP with assets and a checksum manifest, and can take only the assets changed since the last export. Writing into a folder is absent, because it would need a new native permission."
   },
   {
     "id": "UI-41-001",
@@ -14254,10 +14254,10 @@
     "category": "Plugins widgets and extensions",
     "name": "Plugin document read API",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Reads add fills, radius, typography, child IDs, a parentId filter, image and export reads, and with assets:read this file's styles, variables, collections and components plus each layer's assignments. Comments, annotations, code source and style values stay excluded."
+    "notes": "Reads cover fills, radius, typography, child IDs, a parentId filter, image and export reads. With assets:read: this file’s styles with their values, variables, collections, components and each layer’s assignments. With comments:read: forma.readComments. Code source stays excluded by design."
   },
   {
     "id": "UI-43-012",
@@ -14267,7 +14267,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Up to 20 reviewed forma.commit proposals per run, each one Undo step, plus a final propose. Adds delete, reparent and effects, with subtree ownership checks shown in review. Component properties, variants, slots, shader effects and geometry updates on rich or controlled layers stay out of reach."
+    "notes": "Up to 20 reviewed forma.commit proposals per run, each one Undo step, plus a final propose. Adds delete, reparent, effects and {op:'instance'} for property values and swapping mains, with subtree ownership checks shown in review. Variants as such, slots, shader effects and geometry updates on rich or controlled layers stay out of reach."
   },
   {
     "id": "UI-43-013",
@@ -14277,7 +14277,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Creates rectangle, ellipse, text, image, frame, group, section, component, instance, vector, line, polygon and star, nested with parent-relative coordinates, and masks at creation. Instances take name, position, visibility and opacity only. No slots or code layers."
+    "notes": "Creates rectangle, ellipse, text, image, frame, group, section, component, instance, vector, line, polygon and star, nested with parent-relative coordinates, and masks at creation. Instances take property values and swapped mains. No slots or code layers."
   },
   {
     "id": "UI-43-014",
@@ -14864,10 +14864,10 @@
     "category": "Preferences and document settings",
     "name": "UI scale preference",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Scale reaches 150%, with presets at 135% and 150%. Menu bar, top bar, toolbar, sidebars, menus and root dialogs were checked at 1440×900, 1280×720 and 1024×640, with exact drawing and sidebar drag. Main menus cap to the window. A real click selects the layer under it at 125% and 150% in the shipped shell. Not every specialized dialog was opened at 150%."
+    "notes": "Scale reaches 150%, with presets at 135% and 150%. Chrome and the listed specialized dialogs stay inside the window at 150% in 1280×720 and 1024×640, with exact drawing and sidebar drag, and a real click selects the layer under it. Dialogs that need document state, such as brand and import reviews, were not opened in that check."
   },
   {
     "id": "UI-45-005",
@@ -15187,7 +15187,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Toggle also appears in Preferences, and substitution also applies to inline canvas text. Text on path, paste and composition keep their source; rules remain English only."
+    "notes": "Toggle also appears in Preferences, and substitution applies to inline canvas text and typing on a path. Paste and composition keep their source. Rules remain English only."
   },
   {
     "id": "UI-45-037",
@@ -16577,7 +16577,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Embeds run every trigger including gamepad, plus Smart animate, Motion timelines and form controls, in a snapshot with no live link. Overlays open centered with no overlay transition, nested scroll regions and sound actions do not run in an embed, and interruption is not handled."
+    "notes": "Embeds run every trigger including gamepad, Smart animate, Motion timelines, form controls, sound and nested scrolling, in a snapshot with no live link. Overlays keep their placement, scrim, close-outside and enter and leave transitions, and an undone transition runs back. Other interruptions restart the transition."
   },
   {
     "id": "UI-49-022",
@@ -16637,7 +16637,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Slide PDFs now use the design PDF pipeline: shapes are real paths, images are image objects, links are live, and text uses embedded font subsets where it can. Text and effects that cannot be PDF objects stay as raster areas in place with a searchable layer, and Display P3 decks flatten. Checked in Chromium and WebKit, not in the native app."
+    "notes": "Slide PDFs use the design PDF pipeline: shapes are real paths, images are image objects, links are live, text uses embedded font subsets where it can, and Display P3 decks keep vectors with colors converted to sRGB. Effects stay raster in place with a searchable layer."
   },
   {
     "id": "UI-49-028",
@@ -16657,7 +16657,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Linear and radial gradients, one outer and one inner shadow, dashes, caps, joins and embedded video work both ways. Angular gradients, spread shadows and text effects flatten, and charts and SmartArt are omitted with notices. Not opened in PowerPoint or Keynote."
+    "notes": "Linear and radial gradients, one outer and one inner shadow including outer spread, dashes, caps, joins and embedded video work both ways. Angular gradients and text effects flatten, and charts and SmartArt are omitted with notices. Not opened in PowerPoint or Keynote."
   },
   {
     "id": "UI-49-030",
@@ -16774,10 +16774,10 @@
     "category": "Figma Sites publishing",
     "name": "Site interactions",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Each layer can run up to 8 ordered click steps: toggle, show, hide, scroll to, move focus or copy text. Any step can wait on whether another layer is showing, with keyboard support. A step aimed at a layer inside a repeated list has no effect, and no visitor code runs."
+    "notes": "Each layer can run up to 8 ordered click steps: toggle, show, hide, scroll to, move focus or copy text, each able to wait on whether another layer is showing, with keyboard support. A step reaches the copy in its own repeated item, and from outside a list it reaches the first copy. No visitor code runs."
   },
   {
     "id": "UI-50-012",
@@ -17487,7 +17487,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Pages with 3,000+ in-view layers mount in ~800-layer batches with a progress indicator. Not applied to one dominant root, masks or blur fallbacks, or non-Design views."
+    "notes": "Pages with 1,500+ layers keep layers 30% of a viewport past the view and add batches one per frame. Pages of 3,000+ stay in memoized batches of whole roots, so a click leaves the artwork alone and a nudge touches only that frame."
   },
   {
     "id": "UI-53-003",
@@ -17497,7 +17497,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Culling now works per layer at any depth, reads text and shadow bounds, stops at clips and stays on during a drag. Masks, Booleans and live repeats keep their siblings, and background blur, pass-through and root-level masks fall back to the whole scene. tests/viewport-culling.test.ts and tests/e2e/viewport-culling.spec.ts."
+    "notes": "Culling works per layer at any depth, reads text and shadow bounds, stops at clips and stays on during a drag. Masks, Booleans and live repeats keep their siblings. A pan moves a painted layer without repainting the scene on slow artwork, a zoom shows a scaled copy until it stops, and qualifying shadows show as a shared bitmap while the camera moves."
   },
   {
     "id": "UI-53-004",
@@ -20574,9 +20574,9 @@
     "category": "Spec pages",
     "name": "Collapsible toggle blocks",
     "priority": "must",
-    "status": "planned",
+    "status": "implemented",
     "verification": "reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Absent. The real block format has no toggle kind, so a file could not carry one."
+    "notes": "Spec page → /toggle makes a block with its own lines, which opens with its arrow or Command-Return. Every line edit works inside it, Markdown round-trips as details and summary, and Find and replace reaches closed toggles. The arrow on the canvas is paint only, so open the page to toggle it. Forma 1.0.3 and earlier refuse a spec holding a toggle. tests/e2e/spec-layer.spec.ts."
   }
 ]
