@@ -11,7 +11,8 @@ import {flatPdfOps,planPageExtras,planVectorPage} from './design-pdf-vector';
 import type {PdfOp,PdfPageExtras,PdfRasterOp,PdfVectorResolvers} from './design-pdf-vector';
 import {pdfTextPlan} from './design-pdf-text';
 import type {PdfFace,PdfTextContext} from './design-pdf-text';
-import {activeRegisteredFontAssetsForFamilies} from './fonts';
+import {activeRegisteredFontAssetsForFamilies,loadFont} from './fonts';
+import {cssFontFamily} from './font-data';
 import {exportSelection} from './transforms';
 import {convertDocumentColors} from './color-profile-convert';
 import type {DesignDocument,DesignNode} from './model';
@@ -24,6 +25,10 @@ function rasterAreaNodes(nodes:DesignNode[],ids:string[]){const own=new Set(ids)
 function sRgbNodes(doc:DesignDocument,nodes:DesignNode[]){if(doc.colorProfile!=='display-p3')return nodes;try{const copy=structuredClone({...doc,fonts:[],styles:[],variables:[],variableCollections:[],componentLibraries:undefined,pages:[{id:'pdf',name:'PDF',nodes,comments:[]}]});convertDocumentColors(copy,'srgb');return copy.pages[0].nodes;}catch{return undefined;}}
 function vectorPageJobs(nodes:DesignNode[],viewport:{x:number;y:number;width:number;height:number},transform:import('./transforms').Matrix|undefined,scale:number,resolvers:PdfVectorResolvers,painted:DesignNode[]|undefined){if(!painted)return undefined;const liveText=new Set<string>(),text=resolvers.text,planned=planVectorPage(painted,transform,{...resolvers,text:text?n=>{const plan=text(n);if(plan)liveText.add(n.id);return plan;}:undefined});if(!planned)return undefined;const areas:DesignPdfVectorPage['areas']=[];for(const op of flatPdfOps(planned.ops)){if(op.kind!=='raster')continue;const x=Math.floor(Math.max(op.box.x,viewport.x)),y=Math.floor(Math.max(op.box.y,viewport.y)),right=Math.ceil(Math.min(op.box.x+op.box.width,viewport.x+viewport.width)),bottom=Math.ceil(Math.min(op.box.y+op.box.height,viewport.y+viewport.height));if(right<=x||bottom<=y)continue;const box={x,y,width:right-x,height:bottom-y},selection=rasterAreaNodes(nodes,op.ids),dimensions={width:Math.ceil(box.width*scale),height:Math.ceil(box.height*scale)};if(dimensions.width>16384||dimensions.height>16384)return undefined;areas.push({op,box,job:{...dimensions,scale,images:exportImageSources(selection),format:'png',name:'area.png',svg:exportSvg(selection,box,false,{transform,dimensions})}});}return {ops:planned.ops,areas,liveText};}
 function check(signal?:AbortSignal){if(signal?.aborted)throw Error('PDF export cancelled.');}
+const FONT_LOAD_LIMIT=256;
+/** A family still registering, or a face the browser has not fetched, would leave its text as a picture, so a snapshot waits for each one used. */
+export async function fontsSettled(nodes:DesignNode[]){if(typeof document==='undefined')return;const wanted=new Map<string,Set<string>>();for(const n of nodes){if(n.type!=='text')continue;for(const v of [n,...(n.textRuns??[]).map(run=>({...n,...run}))]){const font=`${v.fontStyle??'normal'} ${v.fontWeight} ${v.fontSize}px ${cssFontFamily(v.fontFamily)}`,chars=wanted.get(font)??new Set<string>();for(const ch of n.text)chars.add(ch);wanted.set(font,chars);}}await Promise.all([...new Set(nodes.flatMap(n=>n.type==='text'?[n.fontFamily,...(n.textRuns??[]).flatMap(run=>run.fontFamily??[])]:[]))].slice(0,FONT_LOAD_LIMIT).map(family=>loadFont(family).catch(()=>undefined)));await Promise.all([...wanted].slice(0,FONT_LOAD_LIMIT).map(([font,chars])=>document.fonts.load(font,[...chars].slice(0,4096).join('')).catch(()=>undefined)));while(document.fonts.status==='loading')await document.fonts.ready;}
+export const pageFontsSettled=()=>{const s=useEditor.getState();return fontsSettled(s.doc.pages.find(p=>p.id===s.pageId)?.nodes??[]);};
 /** Entire source/font/image snapshot is prepared before the first await. */
 export function prepareDesignPdf(options:DesignPdfOptions):DesignPdfSnapshot{
  const s=useEditor.getState(),page=s.doc.pages.find(p=>p.id===s.pageId);if(!page)throw Error('The PDF page is missing.');if(s.doc.workspace==='slides')throw Error('Use Slides PDF export for a slide deck.');
