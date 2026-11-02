@@ -7,9 +7,8 @@ import {point} from './transforms';
 import type {DesignNode,VectorContour,VectorPoint} from './model';
 import {fillsFor,strokesFor,validateStrokeStack,validatePaint} from './paints';
 import type {Paint} from './paints';
-import {networkFallbackPath,networkContours,validateNetworkGeometry,validateNetworkShape} from './vector-network-geometry';
-import {contourPath} from './geometry';
-import {liveCornerContours} from './vector-corner-rounding';
+import {hasNetworkRadii,networkChainContours,networkDegrees,networkFallbackPath,networkContours,validateNetworkGeometry,validateNetworkShape,vertexPoint} from './vector-network-geometry';
+import {contourPath,liveContoursPath} from './geometry';
 import type {VectorNetwork,NetworkEdge,NetworkGeometryBudget,NetworkRegionBoundary} from './vector-network-geometry';
 const scope=new paper.PaperScope();scope.setup(new scope.Size(1,1));
 const REGION_PAINTS:Paint['type'][]=['solid','linear','radial','angular','diamond'];
@@ -37,14 +36,14 @@ export function validateDocumentNetworks(d:{pages?:unknown;styles?:unknown;works
  }
 }
 export function contoursToNetwork(n:DesignNode,id:()=>string=()=>crypto.randomUUID()):VectorNetwork {
- if(n.vectorNetwork)throw Error('This layer is already a vector network.');const contours=liveCornerContours(n)??n.contours;
+ if(n.vectorNetwork)throw Error('This layer is already a vector network.');const contours=n.contours;
  if(!contours?.length||contours.length>128||contours.some(c=>c.points.length<(c.closed?3:2)))throw Error('Convert a path with at least one contour of two or more anchors.');
  let count=0;for(const c of contours)if((count+=c.points.length)>256)throw Error('Vector networks support at most 256 source anchors.');
  const vertices:VectorNetwork['vertices']=[],edges:NetworkEdge[]=[];
- for(const c of contours){const ids=c.points.map(p=>{const vertex={id:id(),x:p.x,y:p.y};vertices.push(vertex);return vertex.id;});for(let i=1;i<c.points.length+(c.closed?1:0);i++){const index=i%c.points.length,from=c.points[i-1].out,to=c.points[index].in;edges.push({id:id(),from:ids[i-1],to:ids[index],...(from?{fromHandle:{...from}}:{}),...(to?{toHandle:{...to}}:{})});}}
+ for(const c of contours){const ids=c.points.map(p=>{const vertex={id:id(),x:p.x,y:p.y,...(p.radius?{radius:p.radius}:{})};vertices.push(vertex);return vertex.id;});for(let i=1;i<c.points.length+(c.closed?1:0);i++){const index=i%c.points.length,from=c.points[i-1].out,to=c.points[index].in;edges.push({id:id(),from:ids[i-1],to:ids[index],...(from?{fromHandle:{...from}}:{}),...(to?{toHandle:{...to}}:{})});}}
  const base=planarizeNetworkGraph({vertices,edges},id),regionId=id(),forest:VectorNetwork={version:1,vertices:[],edges:[]},graph=refreshNetworkRegion(forest,base,regionId);
  const paints=fillsFor(n),visible=paintsVisible(paints);let result=graph;
- if(graph.version!==1&&visible){const filled=filledFaces({...n,contours},base),plain=paints.length===1&&paints[0].type==='solid';if(graph.version===2&&(!plain||!filled[0])||graph.version===3){const faces=withNetworkFaces(forest,base);result={...faces,regions:faces.regions.map((r,i)=>filled[i]?{...r,paints:structuredClone(paints)}:r)};}}
+ if(graph.version!==1&&visible){const filled=filledFaces(n,base),plain=paints.length===1&&paints[0].type==='solid';if(graph.version===2&&(!plain||!filled[0])||graph.version===3){const faces=withNetworkFaces(forest,base);result={...faces,regions:faces.regions.map((r,i)=>filled[i]?{...r,paints:structuredClone(paints)}:r)};}}
  validateNetworkGeometry(result);return result;
 }
 /** Which faces the closed source contours actually fill under the source winding rule. */
@@ -54,18 +53,22 @@ export function networkNodePatch(n:DesignNode,graph:VectorNetwork):Partial<Desig
  const old=n.vectorNetwork,fills=fillsFor(n),paint:Partial<DesignNode>={};let next=graph;
  if(graph.version===3&&old?.version!==3&&(old?.version===2||fills.length)){if(old?.version===2&&fills.some(p=>p.visible&&p.opacity>0))next=inheritRegionPaints(old,fills,graph);Object.assign(paint,{fill:'none',gradient:false,paints:[]});}
  else if(graph.version===1&&old?.version===2&&fills.some(p=>p.visible))Object.assign(paint,{fill:'none',gradient:false,paints:fills.map(p=>({...p,visible:false}))});
- const patch={...paint,cornerSmoothing:undefined,vectorNetwork:next,points:[],contours:undefined,path:networkFallbackPath(next),closed:undefined};validateNetworkNode({...n,...patch});return patch;
+ const patch={...paint,vectorNetwork:next,points:[],contours:undefined,path:networkFallbackPath(next),closed:undefined};validateNetworkNode({...n,...patch});return patch;
 }
-function loopContour(g:VectorNetwork,loop:NetworkRegionBoundary[]):VectorContour{const vertices=new Map(g.vertices.map(v=>[v.id,v])),edges=new Map(g.edges.map(e=>[e.id,e])),handles=(b:NetworkRegionBoundary)=>{const e=edges.get(b.edgeId)!;return {start:b.reverse?e.to:e.from,out:b.reverse?e.toHandle:e.fromHandle,in:b.reverse?e.fromHandle:e.toHandle};};return {closed:true,points:loop.map((b,i)=>{const h=handles(b),before=handles(loop[(i+loop.length-1)%loop.length]),v=vertices.get(h.start)!,p:VectorPoint={x:v.x,y:v.y};if(before.in)p.in={...before.in};if(h.out)p.out={...h.out};return p;})};}
+function loopContour(g:VectorNetwork,loop:NetworkRegionBoundary[]):VectorContour{const vertices=new Map(g.vertices.map(v=>[v.id,v])),degrees=networkDegrees(g),edges=new Map(g.edges.map(e=>[e.id,e])),handles=(b:NetworkRegionBoundary)=>{const e=edges.get(b.edgeId)!;return {start:b.reverse?e.to:e.from,out:b.reverse?e.toHandle:e.fromHandle,in:b.reverse?e.fromHandle:e.toHandle};};return {closed:true,points:loop.map((b,i)=>{const h=handles(b),before=handles(loop[(i+loop.length-1)%loop.length]),v=vertices.get(h.start)!,p:VectorPoint=vertexPoint(v,degrees.get(v.id)??0);if(before.in)p.in={...before.in};if(h.out)p.out={...h.out};return p;})};}
+/** A rounded fill loop, or the plain writer's path when nothing on it is rounded. */
+export function networkFillPath(n:DesignNode,loops:NetworkRegionBoundary[][],plain:string){const g=n.vectorNetwork!;return hasNetworkRadii(g)?liveContoursPath(n,loops.map(l=>loopContour(g,l))):plain;}
+/** Corners stay live through flatten, which needs chains rather than single edges wherever a vertex carries a radius. */
+const openContours=(g:VectorNetwork)=>hasNetworkRadii(g)?networkChainContours(g):networkContours(g);
 /** Closed filled loops plus every remaining edge as an open contour. The whole result strokes in one operation, so shared edges never double. */
-function filledContours(g:VectorNetwork,loops:NetworkRegionBoundary[][]):VectorContour[]{const closed=new Set(loops.flat().map(b=>b.edgeId)),open=networkContours(g).filter((_,i)=>!closed.has(g.edges[i].id));return [...loops.map(l=>loopContour(g,l)),...open];}
+function filledContours(g:VectorNetwork,loops:NetworkRegionBoundary[][]):VectorContour[]{const closed=new Set(loops.flat().map(b=>b.edgeId));if(hasNetworkRadii(g)){const rest=g.edges.filter(e=>!closed.has(e.id));return [...loops.map(l=>loopContour(g,l)),...rest.length?networkChainContours({version:1,vertices:g.vertices.filter(v=>rest.some(e=>e.from===v.id||e.to===v.id)),edges:rest}):[]];}const open=networkContours(g).filter((_,i)=>!closed.has(g.edges[i].id));return [...loops.map(l=>loopContour(g,l)),...open];}
 const paintKey=(paints:Paint[])=>JSON.stringify(paints.map(({id:_,stops,...p})=>({...p,stops:stops.map(({id:__,...s})=>s)})));
 /** Regions of one paint stack flatten together; each further stack needs its own layer because an ordinary path has a single fill. */
 export function flattenNetworkLayers(n:DesignNode):{patch:Partial<DesignNode>;layers:{name:string;paints:Paint[];contours:VectorContour[]}[]}{
  if(!n.vectorNetwork)throw Error('Select one vector network.');validateNetworkNode(n);const g=n.vectorNetwork,base={vectorNetwork:undefined,points:[],path:'',closed:undefined};
  if(g.version===2&&fillsFor(n).some(p=>p.visible&&p.opacity>0))return {patch:{...base,contours:filledContours(g,[g.regions[0].boundary]),fillRule:'evenodd'},layers:[]};
  const groups=new Map<string,{paints:Paint[];loops:NetworkRegionBoundary[][]}>();if(g.version===3)for(const r of g.regions)if(paintsVisible(r.paints)){const key=paintKey(r.paints!),group=groups.get(key);if(group)group.loops.push(...r.loops);else groups.set(key,{paints:r.paints!,loops:[...r.loops]});}
- const [first,...others]=[...groups.values()];if(!first)return {patch:{...base,contours:networkContours(g)},layers:[]};
+ const [first,...others]=[...groups.values()];if(!first)return {patch:{...base,contours:openContours(g)},layers:[]};
  return {patch:{...base,contours:filledContours(g,first.loops),fillRule:'evenodd',paints:first.paints,fill:first.paints.find(p=>p.visible)?.color??'none',gradient:false},layers:others.map((group,i)=>({name:`${n.name} · region fill ${i+2}`,paints:group.paints,contours:group.loops.map(l=>loopContour(g,l))}))};
 }
 export function flattenNetworkPatch(n:DesignNode):Partial<DesignNode>{const {patch,layers}=flattenNetworkLayers(n);if(layers.length)throw Error('Flatten this network from the inspector so each region paint keeps its own layer.');return patch;}

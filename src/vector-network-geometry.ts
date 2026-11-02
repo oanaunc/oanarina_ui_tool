@@ -2,9 +2,10 @@ import paper from 'paper/dist/paper-core.js';
 import {deriveNetworkRegionBoundary,networkRegionPath,networkRegionFallback,refreshNetworkRegion} from './vector-network-region';
 import {deriveNetworkFaces} from './vector-network-faces';
 import {planarizeNetworkGraph} from './vector-network-planarize';
-import type {VectorContour} from './model';
+import type {VectorContour,VectorPoint} from './model';
+import {cornerAngle,validateCornerRadius} from './vector-corner-rounding';
 import type {Paint} from './paints';
-export interface NetworkVertex {id:string;x:number;y:number;}
+export interface NetworkVertex {id:string;x:number;y:number;radius?:number;}
 export interface NetworkEdge {id:string;from:string;to:string;fromHandle?:{x:number;y:number};toHandle?:{x:number;y:number};}
 export interface NetworkRegionBoundary {edgeId:string;reverse:boolean;}
 export interface NetworkRegion {id:string;boundary:NetworkRegionBoundary[];}
@@ -21,7 +22,7 @@ export function validateNetworkShape(value:unknown):asserts value is VectorNetwo
  object(value,['version','vertices','edges','regions']);const g=value as VectorNetwork;
  if(![1,2,3].includes(g.version)||!Array.isArray(g.vertices)||g.vertices.length<2||g.vertices.length>256||!Array.isArray(g.edges)||!g.edges.length||g.edges.length>256)fail('use 2–256 vertices and 1–256 edges.');
  const vertices=new Map<string,NetworkVertex>(),degree=new Map<string,number>(),parents=new Map<string,string>();
- for(const v of g.vertices){object(v,['id','x','y']);identity(v.id);coordinate(v.x);coordinate(v.y);if(vertices.has(v.id))fail('vertex identities must be unique within their path.');vertices.set(v.id,v);parents.set(v.id,v.id);}
+ for(const v of g.vertices){object(v,['id','x','y','radius']);identity(v.id);coordinate(v.x);coordinate(v.y);try{validateCornerRadius(v.radius);}catch(error){fail((error as Error).message);}if(vertices.has(v.id))fail('vertex identities must be unique within their path.');vertices.set(v.id,v);parents.set(v.id,v.id);}
  let cycles=0;const root=(id:string)=>{let p=id;while(parents.get(p)!==p)p=parents.get(p)!;while(parents.get(id)!==id){const next=parents.get(id)!;parents.set(id,p);id=next;}return p;},ids=new Set<string>();
  for(const e of g.edges){object(e,['id','from','to','fromHandle','toHandle']);identity(e.id);identity(e.from);identity(e.to);if(ids.has(e.id)||!vertices.has(e.from)||!vertices.has(e.to)||e.from===e.to)fail('edges need unique identities and two existing distinct vertices.');ids.add(e.id);const a=root(e.from),b=root(e.to);if(a===b){if(g.version===1)fail('only acyclic stroke forests are supported; create a region explicitly to close a cycle.');if(++cycles>1&&g.version===2)fail('only one cycle region is supported in a version 2 graph.');}else parents.set(a,b);
   for(const id of [e.from,e.to]){const next=(degree.get(id)??0)+1;if(next>16)fail('a junction supports at most 16 incident edges.');degree.set(id,next);}
@@ -53,6 +54,21 @@ export function networkChainPath(g:VectorNetwork){
  const chain=(start:string,first:NetworkEdge)=>{let d='M'+at(lookup.get(start)!),vertex=start,edge:NetworkEdge|undefined=first;while(edge){used.add(edge.id);const reverse=edge.to===vertex;d+=segment(edge,reverse);vertex=reverse?edge.from:edge.to;const list:NetworkEdge[]=incident.get(vertex)!;if(vertex===start&&list.length===2)return d+'Z';edge=list.length===2?list.find(e=>!used.has(e.id)):undefined;}return d;};
  const parts:string[]=[];for(const v of g.vertices){const list=incident.get(v.id)!;if(list.length!==2)for(const e of list)if(!used.has(e.id))parts.push(chain(v.id,e));}for(const e of g.edges)if(!used.has(e.id))parts.push(chain(e.from,e));return parts.join(' ');
 }
+export const hasNetworkRadii=(g:VectorNetwork)=>g.vertices.some(v=>v.radius);
+/** Where edges meet two at a time the path runs straight through, so only those vertices have a corner to round. */
+export function networkDegrees(g:{edges:NetworkEdge[]}){const degree=new Map<string,number>();for(const e of g.edges)for(const id of [e.from,e.to])degree.set(id,(degree.get(id)??0)+1);return degree;}
+export const vertexPoint=(v:NetworkVertex,degree:number):VectorPoint=>({x:v.x,y:v.y,...(v.radius&&degree===2?{radius:v.radius}:{})});
+/** The same chains as networkChainPath, as contours that can carry a corner radius on each vertex they run through. */
+export function networkChainContours(g:VectorNetwork):VectorContour[]{
+ const lookup=new Map(g.vertices.map(v=>[v.id,v])),incident=new Map(g.vertices.map(v=>[v.id,[] as NetworkEdge[]]));for(const e of g.edges){incident.get(e.from)!.push(e);incident.get(e.to)!.push(e);}
+ const used=new Set<string>(),at=(id:string)=>vertexPoint(lookup.get(id)!,incident.get(id)!.length);
+ const chain=(start:string,first:NetworkEdge):VectorContour=>{const points=[at(start)];let vertex=start,edge:NetworkEdge|undefined=first;while(edge){used.add(edge.id);const reverse=edge.to===vertex,out=reverse?edge.toHandle:edge.fromHandle,into=reverse?edge.fromHandle:edge.toHandle;if(out)points.at(-1)!.out={...out};vertex=reverse?edge.from:edge.to;const list:NetworkEdge[]=incident.get(vertex)!;if(vertex===start&&list.length===2){if(into)points[0].in={...into};return {closed:true,points};}const point=at(vertex);if(into)point.in={...into};points.push(point);edge=list.length===2?list.find(e=>!used.has(e.id)):undefined;}return {closed:false,points};};
+ const parts:VectorContour[]=[];for(const v of g.vertices){const list=incident.get(v.id)!;if(list.length!==2)for(const e of list)if(!used.has(e.id))parts.push(chain(v.id,e));}for(const e of g.edges)if(!used.has(e.id))parts.push(chain(e.from,e));return parts;
+}
+/** The corner at a two-edge vertex, read as the contour that passes through it. */
+export function networkCorner(g:VectorNetwork,id:string){const v=g.vertices.find(v=>v.id===id),edges=g.edges.filter(e=>e.from===id||e.to===id);if(!v||edges.length!==2)return undefined;const end=(e:NetworkEdge)=>e.from===id?{near:e.fromHandle,far:e.toHandle,other:e.to}:{near:e.toHandle,far:e.fromHandle,other:e.from},a=end(edges[0]),b=end(edges[1]),other=(key:string)=>g.vertices.find(v=>v.id===key)!;return cornerAngle({closed:false,points:[{...other(a.other),...(a.far?{out:a.far}:{})},{x:v.x,y:v.y,...(a.near?{in:a.near}:{}),...(b.near?{out:b.near}:{})},{...other(b.other),...(b.far?{in:b.far}:{})}]},1);}
+/** Radii belong to the vertex, so a move, a cut or a new edge leaves them in place. Junctions and open ends have no corner, and zero clears a radius. */
+export function setNetworkVertexRadii(g:VectorNetwork,ids:readonly string[]|undefined,radius:number):VectorNetwork{validateCornerRadius(radius);const wanted=ids&&new Set(ids);let matched=0;const vertices=g.vertices.map(v=>{if(wanted&&!wanted.has(v.id))return v;if(radius>0&&!networkCorner(g,v.id))return v;matched++;const {radius:_,...plain}=v;return radius>0?{...plain,radius}:plain;});if(!matched)throw Error('Choose a vertex where two edges meet at an angle.');return {...g,vertices} as VectorNetwork;}
 export interface NetworkGeometryBudget {pairs:number;}
 /** No inferred junctions: non-shared crossings/touches and interior re-crossings refuse. */
 export function validateNetworkGeometry(g:VectorNetwork,budget:NetworkGeometryBudget={pairs:0}){

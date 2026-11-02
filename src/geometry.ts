@@ -1,4 +1,4 @@
-import {networkChainPath,networkPath} from './vector-network-geometry';
+import {hasNetworkRadii,networkChainContours,networkChainPath,networkPath} from './vector-network-geometry';
 import {smoothedBoxPath} from './corner-smoothing';
 import {hasLiveCorners,liveCornerContours} from './vector-corner-rounding';
 import {refuseVariableWidthConversion} from './variable-width';
@@ -32,7 +32,10 @@ export interface PathCurve {c1:{x:number;y:number};c2:{x:number;y:number};to:{x:
 export interface PathContour {start:{x:number;y:number};curves:PathCurve[];closed:boolean;}
 /** Plain cubic contours for writers that have no SVG path parser. Arcs and shorthands arrive already converted. */
 export function cubicContours(d:string):PathContour[]{if(!d)return [];scope.activate();const item=scope.PathItem.create(d);item.remove();const paths=(item as paper.CompoundPath).children?[...(item as paper.CompoundPath).children] as paper.Path[]:[item as paper.Path];const out=paths.filter(p=>p.segments.length).map(p=>({start:{x:p.firstSegment.point.x,y:p.firstSegment.point.y},closed:p.closed,curves:p.curves.map(c=>({c1:{x:c.point1.x+c.handle1.x,y:c.point1.y+c.handle1.y},c2:{x:c.point2.x+c.handle2.x,y:c.point2.y+c.handle2.y},to:{x:c.point2.x,y:c.point2.y}}))}));return out;}
+/** Network loops and chains round through the same contour path as every other vector. */
+export function liveContoursPath(n:DesignNode,contours:VectorContour[]){return (liveCornerContours({...n,vectorNetwork:undefined,booleanOp:undefined,contours,points:[]})??contours).map(c=>contourPath(c.points,c.closed)).join(' ');}
 export function localPath(n:DesignNode):string {
+ if(n.type==='path'&&n.vectorNetwork&&hasNetworkRadii(n.vectorNetwork))return liveContoursPath(n,networkChainContours(n.vectorNetwork));
  if(n.type==='path'&&n.vectorNetwork)return n.vectorNetwork.version===3||n.strokes?.some(s=>s.cap!=='round'||s.join!=='round'||s.dash.length)?networkChainPath(n.vectorNetwork):networkPath(n.vectorNetwork);
  if(n.type==='path'){const live=liveCornerContours(n);if(live)return live.map(c=>contourPath(c.points,c.closed)).join(' ');}
  if(n.type==='path')return n.contours!==undefined?n.contours.map(c=>contourPath(c.points,c.closed)).join(' '):n.points.length?contourPath(n.points,n.closed):n.path;
