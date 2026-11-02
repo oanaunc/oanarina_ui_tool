@@ -1,7 +1,7 @@
 import type {DesignNode} from './model';
 
 /** Opening a dense page mounts complete root subtrees in batches so the first layers paint quickly and the window keeps responding. */
-export const PROGRESSIVE_PAGE_LIMITS={threshold:3000,keptLayers:400} as const;
+export const PROGRESSIVE_PAGE_LIMITS={threshold:3000,keptLayers:150} as const;
 /** Which batch each root belongs to. A big page stays in batches after it opens, so an edit or a camera move only redraws the ones it touched. Stacking follows root order, so concatenated batches paint exactly as one scene. */
 export interface BatchPlan {of:ReadonlyMap<string,number>;rootFor:ReadonlyMap<string,string>;count:number;}
 export interface LayerBatch {key:number;nodes:DesignNode[];detail?:number;}
