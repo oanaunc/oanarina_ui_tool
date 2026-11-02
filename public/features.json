@@ -1364,10 +1364,10 @@
     "category": "Pages and document structure",
     "name": "Move layers between pages",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar",
-    "notes": "Move to page transfers complete layer trees with stable identities, world geometry, live component inheritance and owned flows and motion, as one Undo step. Unsafe inherited appearance, split graph, prototype, mask, transform, timeline and deck cases refuse atomically. Canvas guides, comments and page settings stay on the source page."
+    "notes": "Move to page transfers complete layer trees with stable identities, world geometry, live component inheritance, owned flows, motion and pinned comments, as one Undo step. Connections with both ends moving stay; connections to layers left behind are removed and reported, and cleared guide pins are reported. Layers may leave clipping, masking, appearance and animation, with the loss listed, and inherited variable modes are carried. Moves that would change artwork left behind or cannot keep geometry refuse atomically. Canvas guides and page settings stay on the source page."
   },
   {
     "id": "UI-05-017",
@@ -3054,10 +3054,10 @@
     "category": "Basic shapes",
     "name": "Corner smoothing",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Corner smoothing now works on rectangles, frame-like boxes, polygons and stars through the shared path, with zero keeping the saved path. The polygon and star curve is an approximation, and general paths are not smoothed. Check source metadata for polygons and stars, which was not exercised."
+    "notes": "Corner radius and smoothing work live on rectangles, frame-like boxes, polygons, stars, vector paths and network vertices through one shared curve, with zero keeping the saved path. Paths take radius from the inspector and a canvas dot in point editing, as one Undo, saved in .oui and validated, and survive SVG, PDF, Booleans, flatten, stroke outlines and hit testing. Imported vectors keep their radii and smoothing live when the rebuilt shape matches the finished outline. Curved sides use a tangent circle with one cubic transition, and a plain cubic fit past 128 curved corners on a layer. Point-width strokes, junctions and the eraser refuse until corners are baked."
   },
   {
     "id": "UI-11-006",
@@ -4627,7 +4627,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Character ranges with different font, size, weight, style or tracking outline in Booleans and SVG outlines, and a range color change refuses. Still printable ASCII, exact static TTF, and text stops being editable as text."
+    "notes": "Text outlines into Booleans from TTF, OTF/CFF, variable and WOFF2 faces, in Latin and scripts with one glyph per character, and character ranges can change font, size, weight, style, tracking or variable axes. A range color change refuses, and text stops being editable as text. Live editable text operands are not implemented."
   },
   {
     "id": "UI-15-013",
@@ -6257,7 +6257,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Reviewed editable SVG layers cover stylesheets, filters, masks, clips, curved text, per-character positions and image patterns, with reports for reductions. Full SVG, CSS and typography conformance remains incomplete."
+    "notes": "Reviewed editable SVG layers cover document types and entities, stylesheets with media and supports rules, var() and calc(), CSS transforms, conditional switch, viewport clipping, gradients under any transform, vector and image patterns, masks, clips, markers, per-character text and embedded images, checked by a 411-case pixel sweep in WebKit and Chromium, with reports for reductions. Most filter primitives, foreignObject without an SVG fallback, vertical and right-to-left text, patterns on strokes and text, and external images remain reduced. Full SVG, CSS and typography conformance remains incomplete."
   },
   {
     "id": "UI-20-006",
@@ -8677,7 +8677,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/360040450513-Create-layout-guides",
-    "notes": "Guide snapping and durable direct-parent column and row span bindings work, with Undo, save and source automation. Arbitrary nested or rotated track relationships, alignment and offset-pin variants, and generated responsive CSS are unfinished."
+    "notes": "Guide snapping and durable column and row bindings work with Undo, save and source automation, with start, center, end and stretch alignment and kept offsets. A descendant can bind to an ancestor frame’s tracks through translation-only layers, and rotated, flipped or scaled layers between refuse. Inspect and HTML and React export generate grid CSS for bound layers. Nested bindings need a manual subgrid in CSS and keep saved positions in code export. Moving a bound layer by hand does not change its offset, and there is no scale variant."
   },
   {
     "id": "UI-26-025",
@@ -13327,7 +13327,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Outlines cover Latin, simple scripts, composed marks, composite glyphs, wrapped lines and run colors. CFF, variable and WOFF2 faces are not done, and color fonts refuse."
+    "notes": "Outlines cover TTF, OTF/CFF including CID-keyed fonts, variable faces at their weight and axis values, and WOFF2, for Latin and scripts with one glyph per character, with composites, wrapped lines, run colors and ranges in other families. Each new format is checked against what the browser draws. Decomposed marks outline only where the browser draws the same shape. Color fonts, CFF2, AAT shaping, scripts that join or reorder, and an optical size equal to the font default refuse."
   },
   {
     "id": "UI-40-025",
@@ -13767,7 +13767,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": "Reachable Assets and Inspect component playground derives an isolated fresh default instance. Try exact variants, exposed text, Boolean and swap values and supported nested swaps, reset without touching the source, and from Design insert the tried values as a real linked instance in one Undo. Disabled in Dev Mode. Slot-bearing, circular or oversized dependencies refuse, and there is no prototype execution. See docs/COMPONENT-PLAYGROUND.md."
+    "notes": "Reachable Assets and Inspect component playground derives an isolated fresh default instance. Try exact variants, exposed text, Boolean and swap values, supported nested swaps and slot content, reset without touching the source, and from Design insert the tried values as a real linked instance in one Undo. Click interactions that change variants or set variables run through the shared prototype runner on the temporary instance only. Navigation, overlays, links, audio, other triggers and transitions need the full prototype. Disabled in Dev Mode. Circular or oversized dependencies refuse, and sets too large to play preview as artwork. See docs/COMPONENT-PLAYGROUND.md."
   },
   {
     "id": "UI-41-029",
@@ -13807,7 +13807,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode-in-Figma",
-    "notes": "Inspect maps a component or component set to a code component per language with source path, property and value maps, stored in the optional validated document array with one Undo. Mappings travel in local library snapshots and a file's own mapping wins. Hand-authored: no repository reading, CLI or Bridge transfer. Deleted targets show as removable orphans. See docs/CODE-CONNECT.md."
+    "notes": "Inspect maps a component or component set to a code component per language with source path, property and value maps, stored in the optional validated document array with one Undo. Mappings travel in local library snapshots and a file’s own mapping wins. Export and import through a chosen JSON file with a reviewed conflict choice and one Undo, and local agents read and write them through MCP. Snippets use the instance’s current values. Hand-authored: no repository reading, CLI or Bridge transfer. Deleted targets show as removable orphans. See docs/CODE-CONNECT.md."
   },
   {
     "id": "UI-41-033",
@@ -14227,7 +14227,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "ui HTML up to 100 KB in an opaque frame; scripts run in a terminable worker and cannot freeze the editor. The mirrored DOM now has MutationObserver and viewport IntersectionObserver. Limits: geometry lags a frame, preventDefault applies from the next event, no DOMParser, custom elements or Shadow DOM. Dialog-bound."
+    "notes": "ui HTML up to 100 KB in an opaque frame; scripts run in a terminable worker and cannot freeze the editor. The mirrored DOM has MutationObserver, viewport IntersectionObserver, an inert bounded DOMParser, custom elements and a Shadow DOM mirrored to real roots. preventDefault holds on the first event for forms, links, Enter in a textarea, Tab and scroll keys. Limits: geometry lags a frame, typed characters and Tab at the page edges cancel from the next press, no Range or Selection, attachInternals or adoptedStyleSheets. Dialog-bound."
   },
   {
     "id": "UI-43-009",
@@ -14237,7 +14237,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Strict typed inputs through trusted host controls with a copied snapshot. Fields can list this file's pages, layers, components, styles or variables, passing only the chosen ID, and can show or hide on an earlier field. Package code cannot compute suggestions while the form is open."
+    "notes": "Strict typed inputs through trusted host controls with a copied snapshot. Fields can list this file’s pages, layers, components, styles or variables, passing only the chosen ID, and can show or hide on an earlier field. Text fields can ask package code for suggestions as you type, in a terminable worker with no grants that sees only the query and earlier fields, with a debounce, a 1.5-second limit and 50 rows. Suggestions cannot read the document, and the form lives in the plugin manager."
   },
   {
     "id": "UI-43-010",
@@ -14414,10 +14414,10 @@
     "category": "Plugins widgets and extensions",
     "name": "Widget resizing",
     "priority": "must",
-    "status": "partial",
+    "status": "implemented",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Canvas handles and size fields resize within package limits, and host layout regenerates the layers from the saved view. Code runs once with a resize event after a resize settles, not on each drag step or after Undo. Text layout is estimated."
+    "notes": "Canvas handles and size fields resize within package limits, and host layout regenerates the layers from the saved view. Code runs once after a resize settles and joins the resize’s Undo step. Undo and Redo refresh the view with no Undo step, and a package can opt in to throttled runs during a drag that never touch the document. Text layout is estimated."
   },
   {
     "id": "UI-43-028",
@@ -14427,7 +14427,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://developers.figma.com/docs/plugins/",
-    "notes": "Host hit targets send an action name to a fresh worker, one Undo step per event, with host-owned text input. Targets follow a rotated widget, and buttons can declare a host hover tint. No hover events in code and no timers, because every update is an Undo step."
+    "notes": "Host hit targets send an action name to a fresh worker, one Undo step per press, with host-owned text input. Targets follow a rotated widget, and buttons can declare a host hover tint. Packages can opt in to hover events and bounded timers, which show in a live view with no Undo step and no document change, and the next press commits their state. Hover covers buttons and fields only, and live state is lost on reload unless committed."
   },
   {
     "id": "UI-43-029",

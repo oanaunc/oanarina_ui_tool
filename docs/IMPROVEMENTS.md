@@ -6,7 +6,7 @@ Sizes: **S** is under a day, **M** is a few days, **L** is a week or more. "Done
 
 ## Why people are unhappy
 
-Nearly every complaint so far has one cause: Forma does the thing, but not the way a designer's hands expect. The feature register says 1,682 features are implemented. That counts whether a feature exists and works, not whether it feels right.
+Nearly every complaint so far has one cause: Forma does the thing, but not the way a designer's hands expect. The feature register says 1,685 features are implemented. That counts whether a feature exists and works, not whether it feels right.
 
 - **No designer has used Forma while it was being built.** One tester has found every serious problem, one at a time, by email.
 - **Our tests agreed with our own guesses.** Import tests used field names I had assumed, so they passed while the names were wrong. Masks never imported, and nothing showed it until today.
@@ -173,17 +173,11 @@ These prevent the next round of complaints, so they matter as much as any featur
 | --- | --- | --- |
 | UI-24-029 | Stroke included in layout | Stroke inclusion covers linear, grid, gap, padding, fill and wrap, transformed children, arrowheads, miter tips and vector networks including branching vertices. Tips add one even outset on all sides. Shadows are excluded. |
 
-### Basic shapes (1)
-
-| ID | Feature | Current state and limits |
-| --- | --- | --- |
-| UI-11-005 | Corner smoothing | Corner smoothing now works on rectangles, frame-like boxes, polygons and stars through the shared path, with zero keeping the saved path. The polygon and star curve is an approximation, and general paths are not smoothed. Check source metadata for polygons and stars, which was not exercised. |
-
 ### Boolean geometry (1)
 
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
-| UI-15-012 | Boolean operation with text | Character ranges with different font, size, weight, style or tracking outline in Booleans and SVG outlines, and a range color change refuses. Still printable ASCII, exact static TTF, and text stops being editable as text. |
+| UI-15-012 | Boolean operation with text | Text outlines into Booleans from TTF, OTF/CFF, variable and WOFF2 faces, in Latin and scripts with one glyph per character, and character ranges can change font, size, weight, style, tracking or variable axes. A range color change refuses, and text stops being editable as text. Live editable text operands are not implemented. |
 
 ### Canvas navigation (2)
 
@@ -215,8 +209,8 @@ These prevent the next round of complaints, so they matter as much as any featur
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
 | UI-41-019 | Automatic icon detection | Partial: Inspect automatically compares eligible transparent vector-container geometry with all 1,951 installed licensed Lucide icons in a bounded local worker. Normalized contour comparison accepts reversal/order/start offsets within explicit tolerance, keeps ambiguous known results and never guesses semantics/provenance. Names/colors/stroke weights/root pose are excluded; private IDs/text/comments/assets never enter numeric signatures. Deadline/cancel and permanent source/local-session receipts reject stale results; artwork/Undo remain unchanged. Unsupported composites, raster/network/special-stroke geometry refuse. See docs/AUTOMATIC-ICON-GEOMETRY.md. Native/reference coverage pending. |
-| UI-41-028 | Component playground | Reachable Assets and Inspect component playground derives an isolated fresh default instance. Try exact variants, exposed text, Boolean and swap values and supported nested swaps, reset without touching the source, and from Design insert the tried values as a real linked instance in one Undo. Disabled in Dev Mode. Slot-bearing, circular or oversized dependencies refuse, and there is no prototype execution. See docs/COMPONENT-PLAYGROUND.md. |
-| UI-41-032 | Code Connect component mapping | Inspect maps a component or component set to a code component per language with source path, property and value maps, stored in the optional validated document array with one Undo. Mappings travel in local library snapshots and a file's own mapping wins. Hand-authored: no repository reading, CLI or Bridge transfer. Deleted targets show as removable orphans. See docs/CODE-CONNECT.md. |
+| UI-41-028 | Component playground | Reachable Assets and Inspect component playground derives an isolated fresh default instance. Try exact variants, exposed text, Boolean and swap values, supported nested swaps and slot content, reset without touching the source, and from Design insert the tried values as a real linked instance in one Undo. Click interactions that change variants or set variables run through the shared prototype runner on the temporary instance only. Navigation, overlays, links, audio, other triggers and transitions need the full prototype. Disabled in Dev Mode. Circular or oversized dependencies refuse, and sets too large to play preview as artwork. See docs/COMPONENT-PLAYGROUND.md. |
+| UI-41-032 | Code Connect component mapping | Inspect maps a component or component set to a code component per language with source path, property and value maps, stored in the optional validated document array with one Undo. Mappings travel in local library snapshots and a file’s own mapping wins. Export and import through a chosen JSON file with a reviewed conflict choice and one Undo, and local agents read and write them through MCP. Snippets use the instance’s current values. Hand-authored: no repository reading, CLI or Bridge transfer. Deleted targets show as removable orphans. See docs/CODE-CONNECT.md. |
 | UI-41-033 | Code Connect snippets | Generates copyable snippets from the instance's real variant and property values for TSX, JSX, Vue, Svelte, HTML, Swift and Kotlin, with optional {{prop}} templates and nested swap mappings. Text is never executed and is not compiler-checked. |
 | UI-41-035 | VS Code integration | VS Code connects through the local MCP server: the MCP setup dialog shows a .vscode/mcp.json configuration and a code --add-mcp command. Real VS Code 1.140.0 accepted that command in a throwaway profile, and a test launches the server from the generated configuration. There is no VS Code extension, and no VS Code chat session calling a tool was run. See docs/VSCODE-INTEGRATION.md. |
 
@@ -231,7 +225,7 @@ These prevent the next round of complaints, so they matter as much as any featur
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
 | UI-40-007 | Export PDF | Keep shapes as vectors writes real PDF objects: blends, group opacity, all mask modes, transparent stops, angular and diamond gradients, rich text, Greek, Cyrillic and CJK, and Booleans, with Print and Share on the same plan. Effects stay raster because PDF has no such filter, and a page-level blur flattens that page. Checked with Poppler, not Preview or Acrobat. |
-| UI-40-024 | SVG text as outlines | Outlines cover Latin, simple scripts, composed marks, composite glyphs, wrapped lines and run colors. CFF, variable and WOFF2 faces are not done, and color fonts refuse. |
+| UI-40-024 | SVG text as outlines | Outlines cover TTF, OTF/CFF including CID-keyed fonts, variable faces at their weight and axis values, and WOFF2, for Latin and scripts with one glyph per character, with composites, wrapped lines, run colors and ranges in other families. Each new format is checked against what the browser draws. Decomposed marks outline only where the browser draws the same shape. Color fonts, CFF2, AAT shaping, scripts that join or reorder, and an optical size equal to the font default refuse. |
 | UI-40-026 | SVG simplify stroke | Opt-in simplification covers miter and rounded rectangles and circles and refuses unsupported geometry before download. Ellipse approximations and arbitrary vector networks remain out of scope. |
 | UI-40-027 | SVG outline stroke | Opt-in outlines cover supported solid strokes, including under clips, ancestor effects and masks, with refusal before download. Text and frame strokes refuse. |
 | UI-40-040 | Export assets folder | Batch delivery gives one ZIP with assets and a checksum manifest, and can take only the assets changed since the last export. Writing into a folder is absent, because it would need a new native permission. |
@@ -316,7 +310,7 @@ These prevent the next round of complaints, so they matter as much as any featur
 
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
-| UI-20-005 | Import SVG | Reviewed editable SVG layers cover stylesheets, filters, masks, clips, curved text, per-character positions and image patterns, with reports for reductions. Full SVG, CSS and typography conformance remains incomplete. |
+| UI-20-005 | Import SVG | Reviewed editable SVG layers cover document types and entities, stylesheets with media and supports rules, var() and calc(), CSS transforms, conditional switch, viewport clipping, gradients under any transform, vector and image patterns, masks, clips, markers, per-character text and embedded images, checked by a 411-case pixel sweep in WebKit and Chromium, with reports for reductions. Most filter primitives, foreignObject without an SVG fallback, vertical and right-to-left text, patterns on strokes and text, and external images remain reduced. Full SVG, CSS and typography conformance remains incomplete. |
 
 ### Import and interchange (8)
 
@@ -335,14 +329,14 @@ These prevent the next round of complaints, so they matter as much as any featur
 
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
-| UI-26-024 | Layout guide constraints | Guide snapping and durable direct-parent column and row span bindings work, with Undo, save and source automation. Arbitrary nested or rotated track relationships, alignment and offset-pin variants, and generated responsive CSS are unfinished. |
+| UI-26-024 | Layout guide constraints | Guide snapping and durable column and row bindings work with Undo, save and source automation, with start, center, end and stretch alignment and kept offsets. A descendant can bind to an ancestor frame’s tracks through translation-only layers, and rotated, flipped or scaled layers between refuse. Inspect and HTML and React export generate grid CSS for bound layers. Nested bindings need a manual subgrid in CSS and keep saved positions in code export. Moving a bound layer by hand does not change its offset, and there is no scale variant. |
 
 ### Libraries and design systems (4)
 
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
 | UI-29-011 | Browse available libraries | Adds search across cached libraries. No hosted or community discovery. |
-| UI-29-013 | Library asset preview | Set previews show any variant, within 4,096 layers, 2 million content units and 32 MB. Font-metric limits remain. |
+| UI-29-013 | Library asset preview | Set previews show any variant, within layer, content and size budgets raised in 1.0.4. Font-metric limits remain. |
 | UI-29-024 | Move component between libraries | Consumer-side repair: after a source removal is accepted, a group is re-homed to a cached library with the same topology. Local IDs, instances and overrides are kept in one Undo, and the next review offers the new definition. Sources are not edited. Refuses edited definitions, an already installed target, topology mismatch and changed slot identities. |
 | UI-29-032 | Component documentation page | Generated pages stay linked to their component. The inspector shows each as up to date or out of date when its source text changes, and Update page rebuilds generated text and examples in one Undo while keeping added layers. It runs on request, not automatically, and replaces edits to generated layers. |
 
@@ -388,12 +382,11 @@ These prevent the next round of complaints, so they matter as much as any featur
 | UI-54-024 | Cross-tool color palette exchange | Resources → palette exchange reads and writes .ase, .aco, .gpl, .sketchpalette, .swatches, design tokens JSON, CSS and hex lists, and also reads Tailwind-shaped JSON, with bounded validation and one-Undo import. Solid opaque colors only; CMYK and LAB convert without a profile. Tested with its own writers and one hand-built .ase, not files from the real applications. |
 | UI-54-027 | Local automation API | mcp/automation.ts is a source-checkout JSON CLI using the same transactions, validators and locks as MCP. No installed binary, stable API promise or in-app scripting host. |
 
-### Pages and document structure (4)
+### Pages and document structure (3)
 
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
 | UI-05-015 | Copy page link | Local page links work inside the open file, and in a browser they can open another saved file. On the Mac a link to another file still refuses, because each file has its own window and nothing may map a document identifier to a file path without widening native permissions. |
-| UI-05-016 | Move layers between pages | Move to page transfers complete layer trees with stable identities, world geometry, live component inheritance and owned flows and motion, as one Undo step. Unsafe inherited appearance, split graph, prototype, mask, transform, timeline and deck cases refuse atomically. Canvas guides, comments and page settings stay on the source page. |
 | UI-05-026 | Display P3 document profile | The canvas uses Display P3, and PNG, JPG and SVG keep it. PDF keeps vectors with colors converted to sRGB. GIF, video, clipboard and slides use the same default without a color test. In WebKit, pattern and image filter paints clip to sRGB. Panel swatches stay sRGB because they are native color controls. |
 | UI-05-028 | File cover selection | A reachable cover picker with search and reset uses any page frame, saved and undoable, with cached grid and list images, a 500 layer and 4 MB preview budget, and static posters. Exact thumbnail parity in the native file browser and against the reference is unverified. |
 
@@ -401,7 +394,7 @@ These prevent the next round of complaints, so they matter as much as any featur
 
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
-| UI-53-001 | Large document loading | Opening a measured 5,161-layer page in the real Mac app: longest freeze 428 ms, pan p95 102 ms. In WebKit, total stalling on open fell from 22.6 s to about 1.2 s. The whole document is still parsed and kept in memory. Synthetic file only; scripts/bench/open-lag.mjs and the native open-lag check. |
+| UI-53-001 | Large document loading | Opening a measured 5,161-layer page in the real Mac app from the notarized disk image: longest freeze 211 to 288 ms, total stalling about 1.3 s, pan p95 25 to 32 ms. The whole document is still parsed and kept in memory. Synthetic file only; real files of this size were not available. |
 | UI-53-002 | Progressive page loading | Pages with 1,500+ layers keep layers 30% of a viewport past the view and add batches one per frame. Pages of 3,000+ stay in memoized batches of whole roots, so a click leaves the artwork alone and a nudge touches only that frame. |
 | UI-53-003 | Viewport culling | Culling works per layer at any depth, reads text and shadow bounds, stops at clips and stays on during a drag. Masks, Booleans and live repeats keep their siblings. A pan moves a painted layer without repainting the scene on slow artwork, a zoom shows a scaled copy until it stops, and qualifying shadows show as a shared bitmap while the camera moves. |
 | UI-53-005 | Image decode scheduling | Page images decode in a bounded queue when a page opens, two at a time, nearest the view first, up to 256, and stop when the page changes. No speedup is claimed, and WebKit can still decode an image synchronously if it paints first. See docs/PERFORMANCE-BENCHMARK.md. |
@@ -411,18 +404,17 @@ These prevent the next round of complaints, so they matter as much as any featur
 | UI-53-019 | Export memory limits | Note change only: animation export reports progress, cancels, and keeps its 1,800-frame, 4,096-edge and 8-megapixel limits. Layer tree virtualization exists; broader performance acceptance remains. |
 | UI-53-026 | Missing asset placeholders | Missing or unreadable .fig images open as replaceable image placeholders, shown as a transparent checkerboard on the canvas only, instead of refusing the file. They select and move like any layer, and the inspector states the problem. Export leaves them empty. |
 
-### Plugins widgets and extensions (9)
+### Plugins widgets and extensions (8)
 
 | ID | Feature | Current state and limits |
 | --- | --- | --- |
-| UI-43-008 | Plugin iframe UI | ui HTML up to 100 KB in an opaque frame; scripts run in a terminable worker and cannot freeze the editor. The mirrored DOM now has MutationObserver and viewport IntersectionObserver. Limits: geometry lags a frame, preventDefault applies from the next event, no DOMParser, custom elements or Shadow DOM. Dialog-bound. |
-| UI-43-009 | Plugin parameter input | Strict typed inputs through trusted host controls with a copied snapshot. Fields can list this file's pages, layers, components, styles or variables, passing only the chosen ID, and can show or hide on an earlier field. Package code cannot compute suggestions while the form is open. |
+| UI-43-008 | Plugin iframe UI | ui HTML up to 100 KB in an opaque frame; scripts run in a terminable worker and cannot freeze the editor. The mirrored DOM has MutationObserver, viewport IntersectionObserver, an inert bounded DOMParser, custom elements and a Shadow DOM mirrored to real roots. preventDefault holds on the first event for forms, links, Enter in a textarea, Tab and scroll keys. Limits: geometry lags a frame, typed characters and Tab at the page edges cancel from the next press, no Range or Selection, attachInternals or adoptedStyleSheets. Dialog-bound. |
+| UI-43-009 | Plugin parameter input | Strict typed inputs through trusted host controls with a copied snapshot. Fields can list this file’s pages, layers, components, styles or variables, passing only the chosen ID, and can show or hide on an earlier field. Text fields can ask package code for suggestions as you type, in a terminable worker with no grants that sees only the query and earlier fields, with a debounce, a 1.5-second limit and 50 rows. Suggestions cannot read the document, and the form lives in the plugin manager. |
 | UI-43-012 | Plugin document write API | Up to 20 reviewed forma.commit proposals per run, each one Undo step, plus a final propose. Adds delete, reparent, effects and {op:'instance'} for property values and swapping mains, with subtree ownership checks shown in review. Variants as such, slots, shader effects and geometry updates on rich or controlled layers stay out of reach. |
 | UI-43-013 | Plugin node creation | Creates rectangle, ellipse, text, image, frame, group, section, component, instance, vector, line, polygon and star, nested with parent-relative coordinates, and masks at creation. Instances take property values and swapped mains. No slots or code layers. |
 | UI-43-019 | Plugin networking permissions | No network by default. Requires manifest allowedOrigins (exact https or loopback origins), reviewed display and a per-run network:fetch grant, enforced in the host and again by a separate frame that narrows its own connect-src; tests show zero requests to unlisted origins. Target must allow Origin: null; text responses to 1 MB; 25 requests per run; tested against loopback servers only. |
 | UI-43-023 | Plugin reload | Reload installed local catalog or replace a reviewed package; explicit rerun creates a fresh worker and invalidates old grants/handlers. No automatic code/file watching or external development runtime. See docs/LOCAL-COMMAND-PLUGINS.md. |
-| UI-43-027 | Widget resizing | Canvas handles and size fields resize within package limits, and host layout regenerates the layers from the saved view. Code runs once with a resize event after a resize settles, not on each drag step or after Undo. Text layout is estimated. |
-| UI-43-028 | Widget interaction | Host hit targets send an action name to a fresh worker, one Undo step per event, with host-owned text input. Targets follow a rotated widget, and buttons can declare a host hover tint. No hover events in code and no timers, because every update is an Undo step. |
+| UI-43-028 | Widget interaction | Host hit targets send an action name to a fresh worker, one Undo step per press, with host-owned text input. Targets follow a rotated widget, and buttons can declare a host hover tint. Packages can opt in to hover events and bounded timers, which show in a live view with no Undo step and no document change, and the next press commits their state. Hover covers buttons and fields only, and live state is lost on reload unless committed. |
 | UI-43-032 | Shader source filtering | Filters between Forma bundled and This file. No team, community or account sources exist. |
 
 ### Preferences and document settings (4)
