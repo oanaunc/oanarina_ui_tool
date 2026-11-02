@@ -365,6 +365,8 @@ export const SWEEP_CASES:SweepCase[]=[
  c('text/tspan-nested',`<text x="10" y="100" ${T}><tspan fill="#c00">A<tspan font-size="36">B</tspan>C</tspan>D</text>`),
  c('text/transformed',`<text x="0" y="0" ${T} transform="translate(40 40) rotate(30) scale(1.5)">Turn</text>`),
  c('text/nonuniform',`<text x="0" y="0" ${T} transform="translate(20 80) scale(2 1)">Wide</text>`,['text-transform']),
+ c('text/missing-family',`<text x="10" y="60" font-family="NoSuchFamily" font-size="32">Ready</text><text x="10" y="120" font-family="NoSuchFamily, AlsoMissing" font-size="32" font-weight="700">Ready</text>`),
+ c('text/missing-family-generic',`<text x="10" y="60" font-family="NoSuchFamily, sans-serif" font-size="32">Ready</text><text x="10" y="120" font-family="NoSuchFamily, monospace" font-size="24">Ready</text>`),
  c('text/case',`<text x="10" y="60" ${T} style="text-transform:uppercase">upper</text>`),
  c('text/small-caps',`<text x="10" y="60" ${T} style="font-variant:small-caps">Small Caps</text>`),
  c('text/empty',`<text x="10" y="60" ${T}></text><rect x="20" y="100" width="30" height="30"/>`),
