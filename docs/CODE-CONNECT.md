@@ -12,18 +12,32 @@ Variant axes accept a value map, written as `Large=lg, Small=sm`. Boolean, text 
 
 Mappings save in the file as an optional `codeConnect` array. Each save or removal is one Undo step. Input is validated on edit and on import, so URLs, schemes, unknown languages, invalid identifiers, duplicate targets, unsafe keys and oversized fields all refuse before anything changes. Legacy files carry no field. A document holds up to 2,000 mappings.
 
+## Moving mappings between files
+
+**Export mappings** saves every mapping in the file to a JSON file you choose, through the normal save panel. **Import mappings** opens one through the normal open panel. Orphans stay behind because they have no component to name.
+
+The file holds a `forma-code-connect` format name, version 1 and one row per mapping, with the target's kind, ID and name. Up to 16 MB and 2,000 mappings. The whole file is validated before anything else happens, by the same rules as a mapping in a document, and a bad file changes nothing.
+
+An import is reviewed first. Forma shows how many mappings are new, in conflict, already here or without a match, and names up to eight that have no match. Each row finds its target by its saved ID, then through an installed library's map, then by one exact name. Two components with that name count as no match rather than a guess.
+
+When a component already has a mapping in that language, this file's mapping stays, as it does for library installs. **Use the imported mapping** replaces it and keeps its ID. The import is one Undo step, and importing nothing adds none.
+
+## Local agents
+
+The source MCP server reads and writes the same field on the one `.oui` project it was started with. `read_code_connect` lists mappings with their current target names, and `apply_operations` takes `set_code_connect` and `remove_code_connect`. They use the same validators, revision check and MCP Undo as every other operation. A local agent can read your repository with its own tools and write the result here. The server itself never opens a source path, and no new file or network access is added.
+
 A deleted component leaves a visible orphan rather than an invalid file. **Remove orphaned mappings** clears them.
 
 ## Snippets
 
-The panel generates a snippet from the mapping and the selected instance's own values, including its variant, property values and mapped enum values. Languages are TSX, JSX, Vue, Svelte, HTML, SwiftUI-style Swift and Compose-style Kotlin. A swapped instance nests its own mapping in the same language, or falls back to its name with a note.
+The panel generates a snippet from the mapping and the selected instance's own values, including its variant, property values and mapped enum values. Languages are TSX, JSX, Vue, Svelte, HTML, SwiftUI-style Swift and Compose-style Kotlin. A swapped instance nests its own mapping in the same language, using the values of the nested instance that is really there, or falls back to its name with a note.
 
 **Snippet template** replaces the generated form. `{{codeProp}}` inserts a mapped value and `{{component}}` the component name. A placeholder with no mapping stays visible and raises a warning. Snippets are plain text, are never executed, and copy through the system clipboard.
 
 ## Limits
 
-- Mappings are written by hand. Forma does not read a repository, parse components, suggest mappings, check that a source path exists or sync anything.
-- Mappings stay in this file. Copying a component to another file, publishing a library or using the Figma Bridge does not carry them, and component copies inside a file are new components with no mapping.
+- Mappings are written by hand, imported from a file you choose or written by a local agent. Forma does not read a repository, parse components, suggest mappings, check that a source path exists or sync anything. There is no command-line tool or hosted bridge.
+- Mappings stay in this file until you export them or publish the component in a local library. Copying a component to another file or using the Figma Bridge does not carry them, and component copies inside a file are new components with no mapping.
 - Generated syntax is a starting point for review, not compiler-checked output.
 
 ## Code generators
@@ -36,4 +50,4 @@ Regeneration on selection is opt-in. **Generate on each selection** is off by de
 
 ## Validation
 
-`tests/code-connect.test.ts` covers schema refusal, instance and set resolution, language output, templates, nested swaps, orphans, Undo, codegen manifests, result bounds and input redaction. `tests/e2e/code-connect.spec.ts` drives the Inspect panel, clipboard, refused input, edit and orphan flows, a real sandboxed generator with every other capability refused, device persistence, failure reporting and cancellation on selection change.
+`tests/code-connect.test.ts` covers schema refusal, instance and set resolution, language output, templates, nested swaps, orphans, Undo, mapping files, target matching, conflicts, codegen manifests, result bounds and input redaction. `tests/e2e/code-connect.spec.ts` drives the Inspect panel, clipboard, refused input, edit and orphan flows, export and reviewed import through real file choosers, a real sandboxed generator with every other capability refused, device persistence, failure reporting and cancellation on selection change. `mcp/tests/code-connect.test.ts` covers the operations and a real client over stdio.
