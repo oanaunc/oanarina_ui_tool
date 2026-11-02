@@ -38,6 +38,7 @@ import {sampleMotion} from './motion';
 import {registerSampleExporter} from './shader-sample';
 import {insertInstance} from './components-model';
 import {renderToStaticMarkup} from 'react-dom/server';
+import {prepareSvgXml} from './svg-xml';
 import {assetsForUsage,fontCssForUsage,projectFontUsage,textFontUsage,activeRegisteredFontAssetsForFamilies} from './fonts';
 import {serializeFontDocument} from './font-data';
 import {Artwork} from './components/Artwork';
@@ -154,8 +155,7 @@ export async function importSvg(raw:string,name='Imported SVG'){
 }
 /** The visual route deliberately remains separate from editable layer parsing. */
 function sanitizedSvgNode(raw:string,name:string){
- if(/<!DOCTYPE|<!ENTITY/i.test(raw))throw Error('SVG document types and custom entities are not supported.');
- const xml=new DOMParser().parseFromString(raw,'image/svg+xml');if(xml.querySelector('parsererror')||xml.documentElement.localName!=='svg'||xml.documentElement.namespaceURI&&xml.documentElement.namespaceURI!=='http://www.w3.org/2000/svg')throw Error('Invalid SVG. Choose a well-formed SVG file.');
+ const xml=new DOMParser().parseFromString(prepareSvgXml(raw).text,'image/svg+xml');if(xml.querySelector('parsererror')||xml.documentElement.localName!=='svg'||xml.documentElement.namespaceURI&&xml.documentElement.namespaceURI!=='http://www.w3.org/2000/svg')throw Error('Invalid SVG. Choose a well-formed SVG file.');
  const allowed=new Set(['svg','g','defs','path','rect','ellipse','circle','line','polyline','polygon','text','tspan','linearGradient','radialGradient','stop','clipPath','mask','filter','feGaussianBlur','feDropShadow','title','desc']);
  const elements=[...xml.querySelectorAll('*')];if(elements.length>10000)throw Error('SVG exceeds 10,000 elements.');
  for(const el of elements){let depth=0,parent=el.parentElement;while(parent){if(++depth>80)throw Error('SVG nesting exceeds 80 levels.');parent=parent.parentElement;}if(!allowed.has(el.localName)){el.remove();continue;}for(const a of [...el.attributes])if(/^on/i.test(a.name)||a.localName==='href'||/url\(\s*['"]?(?!#)/i.test(a.value)||a.name==='style'){el.removeAttribute(a.name);}}

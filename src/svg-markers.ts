@@ -6,12 +6,15 @@ const degrees=(v:Vector)=>Math.atan2(v.y,v.x)*180/Math.PI;
 /** SVG's auto orientation: the bisector of the direction in and the direction out. */
 function bisect(into:Vector|undefined,out:Vector|undefined){const a=into??out,b=out??into;if(!a||!b)return 0;const la=Math.hypot(a.x,a.y),lb=Math.hypot(b.x,b.y),sum={x:a.x/la+b.x/lb,y:a.y/la+b.y/lb};return Math.hypot(sum.x,sum.y)>1e-9?degrees(sum):degrees(a)+90;}
 const MARKER_SPOT_LIMIT=20_000;
+const key=(p:Vector)=>Math.round(p.x*1e3)+','+Math.round(p.y*1e3);
+/** Where each path command ends. Curves split an arc into several pieces, and those joins are not vertices. */
+function commandEnds(data:string){const out=new Set<string>(),tokens=data.match(/[a-z]|[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?/gi)??[],arity:Record<string,number>={M:2,L:2,H:1,V:1,C:6,S:4,Q:4,T:2,A:7,Z:0};let x=0,y=0,startX=0,startY=0,i=0,command='';while(i<tokens.length){if(/^[a-z]$/i.test(tokens[i])&&!/^e$/i.test(tokens[i]))command=tokens[i++];const upper=command.toUpperCase(),n=arity[upper]??0,relative=command!==upper,v=tokens.slice(i,i+n).map(Number);i+=n;if(upper==='Z'){x=startX;y=startY;}else if(upper==='H')x=relative?x+v[0]:v[0];else if(upper==='V')y=relative?y+v[0]:v[0];else if(n){x=relative?x+v[n-2]:v[n-2];y=relative?y+v[n-1]:v[n-1];if(upper==='M'){startX=x;startY=y;command=relative?'l':'L';}}else if(!/^[a-z]$/i.test(tokens[i]??''))i++;out.add(key({x,y}));}return out;}
 /** Each vertex of a path with its marker kind and direction. The first vertex of the whole path is start and the last is end. */
 export function svgMarkerSpots(data:string):SvgMarkerSpot[]{
- const spots:SvgMarkerSpot[]=[],contours=cubicContours(data);
+ const spots:SvgMarkerSpot[]=[],contours=cubicContours(data),vertices=commandEnds(data),real=(p:Vector)=>vertices.has(key(p));
  contours.forEach(contour=>{
   const nodes=[contour.start,...contour.curves.map(c=>c.to)],leaving=contour.curves.map((c,i)=>toward(nodes[i],c.c1)??toward(nodes[i],c.c2)??toward(nodes[i],c.to)),arriving=contour.curves.map((c,i)=>toward(c.c2,c.to)??toward(c.c1,c.to)??toward(nodes[i],c.to)),last=contour.curves.length;
-  nodes.forEach((p,i)=>{const into=i>0?arriving[i-1]:contour.closed?arriving[last-1]:undefined,out=i<last?leaving[i]:contour.closed?leaving[0]:undefined;spots.push({kind:'mid',x:p.x,y:p.y,angle:bisect(into,out)});if(spots.length>MARKER_SPOT_LIMIT)throw Error('This path has too many marker positions.');});
+  nodes.forEach((p,i)=>{const into=i>0?arriving[i-1]:contour.closed?arriving[last-1]:undefined,out=i<last?leaving[i]:contour.closed?leaving[0]:undefined;if(!real(p))return;spots.push({kind:'mid',x:p.x,y:p.y,angle:bisect(into,out)});if(spots.length>MARKER_SPOT_LIMIT)throw Error('This path has too many marker positions.');});
  });
  if(spots.length){spots[0].kind='start';spots[spots.length-1].kind='end';}return spots;
 }
