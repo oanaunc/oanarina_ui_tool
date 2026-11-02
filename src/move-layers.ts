@@ -12,7 +12,7 @@ import {visibleLayerRows} from './selection';
 export interface MoveLayersRequest {sourcePageId:string;destinationPageId:string;nodeIds:string[];}
 export interface RemovedConnection {pageId:string;nodeId:string;name:string;count:number;}
 /** `inherited` names what the layers stop receiving from the parent they leave. `belowMask` says they landed under a page-level mask on the destination so it does not mask them. */
-export interface MoveLayersResult {document:DesignDocument;rootIds:string[];nodeIds:string[];flowCount:number;trackCount:number;commentCount:number;removedConnections:RemovedConnection[];inherited:string[];belowMask:boolean;validate:(doc:DesignDocument)=>void;}
+export interface MoveLayersResult {document:DesignDocument;rootIds:string[];nodeIds:string[];flowCount:number;trackCount:number;commentCount:number;removedConnections:RemovedConnection[];inherited:string[];guidePins:number;belowMask:boolean;validate:(doc:DesignDocument)=>void;}
 const clone=<T,>(v:T):T=>structuredClone(v);
 function validated(doc:DesignDocument){const raw=packedProject(doc);if(new TextEncoder().encode(raw).length>50_000_000)throw Error('This move would exceed the 50 MB project limit.');return parseDocument(raw);}
 const fail=(message:string):never=>{throw Error(message);};
@@ -60,6 +60,8 @@ export function moveDocumentLayers(input:DesignDocument,request:MoveLayersReques
   if(Object.keys(modes).length)root.variableModes={...modes,...root.variableModes};
   if(root.parentId&&root.prototypePosition&&root.prototypePosition!=='normal'){delete root.prototypePosition;inherited.add('fixed or sticky position');}
  }
+ // A pin needs its guide's frame above it. One left behind cannot hold, so it is cleared here and reported instead of vanishing in the next layout pass.
+ let guidePins=0;for(const n of source.nodes.filter(n=>ids.has(n.id))){const bindings=n.layoutGuideBindings;if(!bindings)continue;for(const axis of ['x','y'] as const)if(bindings[axis]&&!ids.has(bindings[axis].ownerId)){delete bindings[axis];guidePins++;inherited.add('guide pins');}if(!Object.keys(bindings).length)delete n.layoutGuideBindings;}
  for(const set of doc.componentSets??[]){const owned=[set.containerId,set.defaultComponentId,...set.variants.map(v=>v.componentId)];if(owned.some(id=>ids.has(id))&&!owned.every(id=>ids.has(id)))fail('Move the complete component set, including its container and every variant.');}
  for(const n of allNodes(doc))for(const prop of n.componentMetadata?.properties??[])if(ids.has(n.id)!==ids.has(prop.targetId))fail('This move would split a component property from its target. Move the complete main component.');
  const board=doc.whiteboard;if(board){
@@ -102,5 +104,5 @@ export function moveDocumentLayers(input:DesignDocument,request:MoveLayersReques
   // other pages when the shared component engine runs.
   for(const p of before.pages)for(const n of p.nodes)if(!ids.has(n.id)&&(ids.has(n.componentId??'')||ids.has(n.sourceId??''))){const np=next.pages.find(p=>p.nodes.some(a=>a.id===n.id)),nn=np?.nodes.find(a=>a.id===n.id);if(!np||!nn||!sameGeometry(n,p,nn,np))fail('Moving this main would change linked instances. Move the containing frame/group instead.');}
  };
- validate(doc);return {document:doc,rootIds:roots.map(n=>n.id),nodeIds:[...ids],flowCount:flows.length,trackCount:tracks.length,commentCount:comments.length,removedConnections,inherited:[...inherited],belowMask,validate};
+ validate(doc);return {document:doc,rootIds:roots.map(n=>n.id),nodeIds:[...ids],flowCount:flows.length,trackCount:tracks.length,commentCount:comments.length,removedConnections,inherited:[...inherited],guidePins,belowMask,validate};
 }
