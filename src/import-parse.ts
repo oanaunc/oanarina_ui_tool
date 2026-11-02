@@ -22,5 +22,7 @@ export type ParsedProject={rest:true;document?:undefined}|{rest?:undefined;docum
 /** A worker's reply arrives with every image use as its own string. */
 const shared=<T extends object>(document:T)=>{shareImages(document);return document;};
 export const parseProjectInWorker=(raw:string,signal?:AbortSignal)=>run<ParsedProject>({kind:'project',raw},signal).then((out):ParsedProject=>out.document?{document:shared(out.document)}:out);
-export const parseSvgInWorker=(raw:string,name:string,signal?:AbortSignal)=>run<EditableSvgImport>({kind:'svg',raw,name},signal);
+/** Text can only be measured against the page's fonts, so once the worker has shown a file is safe and quick to read, text-bearing SVG is read again here. */
+export const SVG_TEXT_REREAD_MS=1500;
+export const parseSvgInWorker=async(raw:string,name:string,signal?:AbortSignal)=>{const started=performance.now(),result=await run<EditableSvgImport>({kind:'svg',raw,name},signal);if(typeof document==='undefined'||typeof Worker==='undefined'||!/<(?:[\w-]+:)?text[\s>]/.test(raw)||performance.now()-started>SVG_TEXT_REREAD_MS)return result;const {runImportParseJob}=await import('./import-parse-core');return runImportParseJob({kind:'svg',raw,name}) as EditableSvgImport;};
 export const validateDocumentInWorker=(document:DesignDocument,signal?:AbortSignal)=>run<DesignDocument>({kind:'validate',document},signal).then(shared);

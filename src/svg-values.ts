@@ -3,10 +3,10 @@ import {identity,multiply} from './transforms';
 import {svgNamedColors} from './svg-css';
 /** CSS value grammar for SVG import: lengths, calc(), colors, var() and transform lists. Every reader here is bounded
  * and returns undefined rather than throwing on text it cannot read, so a caller can do what a browser does: ignore it. */
-export interface SvgLengthContext {font:number;rem:number;vw:number;vh:number;}
+export interface SvgLengthContext {font:number;rem:number;vw:number;vh:number;ex?:()=>number;}
 const number=String.raw`[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?`,plain=new RegExp(`^(${number})([a-z%]*)$`,'i');
 const FIXED:Record<string,number>={'':1,px:1,pt:96/72,pc:16,in:96,cm:96/2.54,mm:96/25.4,q:96/101.6};
-function unit(name:string,reference:number,c:SvgLengthContext):number|undefined{const u=name.toLowerCase();if(u in FIXED)return FIXED[u];switch(u){case '%':return reference/100;case 'em':case 'ic':return c.font;case 'ex':case 'ch':return c.font/2;case 'cap':return c.font*.7;case 'lh':return c.font*1.2;case 'rem':return c.rem;case 'rlh':return c.rem*1.2;case 'vw':case 'svw':case 'lvw':case 'dvw':return c.vw/100;case 'vh':case 'svh':case 'lvh':case 'dvh':return c.vh/100;case 'vmin':case 'svmin':case 'lvmin':case 'dvmin':return Math.min(c.vw,c.vh)/100;case 'vmax':case 'svmax':case 'lvmax':case 'dvmax':return Math.max(c.vw,c.vh)/100;}return undefined;}
+function unit(name:string,reference:number,c:SvgLengthContext):number|undefined{const u=name.toLowerCase();if(u in FIXED)return FIXED[u];switch(u){case '%':return reference/100;case 'em':case 'ic':return c.font;case 'ex':return c.ex?.()??c.font/2;case 'ch':return c.font/2;case 'cap':return c.font*.7;case 'lh':return c.font*1.2;case 'rem':return c.rem;case 'rlh':return c.rem*1.2;case 'vw':case 'svw':case 'lvw':case 'dvw':return c.vw/100;case 'vh':case 'svh':case 'lvh':case 'dvh':return c.vh/100;case 'vmin':case 'svmin':case 'lvmin':case 'dvmin':return Math.min(c.vw,c.vh)/100;case 'vmax':case 'svmax':case 'lvmax':case 'dvmax':return Math.max(c.vw,c.vh)/100;}return undefined;}
 /** calc(), min(), max() and clamp() over numbers that already resolve to user units. */
 function calcValue(raw:string,leaf:(value:number,unit:string)=>number|undefined):number|undefined{
  const tokens=raw.match(/[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?[a-z%]*|[a-z-]+\(|[()*/,+-]/gi);if(!tokens||tokens.length>400||raw.replace(/[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?[a-z%]*|[a-z-]+\(|[()*/,+-]/gi,'').trim())return;
@@ -57,7 +57,8 @@ export function substituteVars(value:string,lookup:(name:string)=>string|undefin
 }
 const ANGLE=/^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(deg|grad|rad|turn)?$/i;
 function angle(raw:string):number|undefined{const text=raw.trim();const m=ANGLE.exec(text);if(m){const v=Number(m[1]);return m[2]?.toLowerCase()==='rad'?v:m[2]?.toLowerCase()==='turn'?v*2*Math.PI:m[2]?.toLowerCase()==='grad'?v*Math.PI/200:v*Math.PI/180;}if(!/^calc\(/i.test(text))return;return calcValue(text,(value,name)=>{const u=name.toLowerCase();return u===''||u==='deg'?value*Math.PI/180:u==='rad'?value:u==='turn'?value*2*Math.PI:u==='grad'?value*Math.PI/200:undefined;});}
-const args=(body:string)=>{const out:string[]=[];let depth=0,current='';for(const c of body){if(c==='(')depth++;else if(c===')')depth--;if(!depth&&(c===','||c===' '||c==='\t'||c==='\n'||c==='\r')){if(current)out.push(current);current='';}else current+=c;}if(current)out.push(current);return out;};
+/** Numbers may touch with no separator, as in translate(0-464), which optimizers write. */
+const args=(body:string)=>{const out:string[]=[];let depth=0,current='';const flush=()=>{if(!current)return;if(current.includes('('))out.push(current);else out.push(...current.match(/[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?[a-z%]*|[^\s]+/gi)??[]);current='';};for(const c of body){if(c==='(')depth++;else if(c===')')depth--;if(!depth&&(c===','||c===' '||c==='\t'||c==='\n'||c==='\r'))flush();else current+=c;}flush();return out;};
 export interface SvgTransformBox {width:number;height:number;}
 /** Attribute and CSS transform lists share one reader: bare numbers read as user units and degrees, as the attribute has always allowed. Percentages need the reference box. */
 export function svgTransformList(raw:string,box:SvgTransformBox={width:0,height:0},c:SvgLengthContext={font:16,rem:16,vw:0,vh:0}):Matrix|undefined{
