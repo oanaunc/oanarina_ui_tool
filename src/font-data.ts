@@ -17,8 +17,8 @@ export function fontAssetKey(a:Pick<FontAsset,'family'|'weight'|'style'|'unicode
 /** Complete triplets keep intermediate padding out of the joined base64 data.
  * Bounded chunks avoid millions of tiny strings for a large licensed font. */
 export function bytesToBase64(bytes:ArrayBuffer){const data=new Uint8Array(bytes),chunks:string[]=[],size=3*8192;for(let at=0;at<data.length;at+=size)chunks.push(btoa(String.fromCharCode(...data.subarray(at,at+size))));return chunks.join('');}
-export function parseFontFile(bytes:ArrayBuffer):ParsedFont {
- if(bytes.byteLength<28||bytes.byteLength>MAX_FONT_BYTES)throw Error('Font files must be valid TTF or OTF files smaller than 20 MB.');
+export function parseFontFile(bytes:ArrayBuffer,limit=MAX_FONT_BYTES):ParsedFont {
+ if(bytes.byteLength<28||bytes.byteLength>limit)throw Error('Font files must be valid TTF or OTF files smaller than 20 MB.');
  const v=new DataView(bytes),tag=(o:number)=>String.fromCharCode(...new Uint8Array(bytes,o,4)),signature=v.getUint32(0);if(signature!==0x00010000&&tag(0)!=='OTTO'&&tag(0)!=='true')throw Error('Choose an individual TTF or OTF font file. Font collections and compressed web fonts are not supported.');
  const count=v.getUint16(4);if(!count||count>4096||12+16*count>bytes.byteLength)throw Error('Invalid font table directory.');const tables=new Map<string,{offset:number;length:number}>();
  for(let i=0;i<count;i++){const r=12+i*16,offset=v.getUint32(r+8),length=v.getUint32(r+12);if(offset+length>bytes.byteLength||offset<12+16*count)throw Error('Invalid font table bounds.');if(tables.has(tag(r)))throw Error('Duplicate font table.');tables.set(tag(r),{offset,length});}

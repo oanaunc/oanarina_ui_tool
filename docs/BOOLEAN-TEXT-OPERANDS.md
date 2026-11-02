@@ -12,11 +12,11 @@ Apply replaces each text layer with one ordinary path containing its real glyph 
 
 ## Actual glyph and font proof
 
-New conversion always invokes the established [static-TTF glyph-outline pipeline](SVG-TEXT-OUTLINES.md), even if a text layer carries a current imported outline cache. Cached/imported paths never bypass proof in this workflow. The plan itself obtains the actual active managed browser faces; a caller cannot supply a fabricated font-context object to mint an authoritative plan.
+New conversion always invokes the established [glyph-outline pipeline](SVG-TEXT-OUTLINES.md), even if a text layer carries a current imported outline cache. Cached/imported paths never bypass proof in this workflow. The plan itself obtains the actual active managed browser faces; a caller cannot supply a fabricated font-context object to mint an authoritative plan.
 
-At review and Apply, document-authored and registered face descriptors/bytes must agree. The exact managed FontFace must remain loaded and active, with complete coverage and no later ambiguous unmanaged same-family face. Restricted embedding flags, conflicting descriptors/bytes, synthetic/fallback faces and missing font readiness refuse. Every selected face's exact descriptor key, bytes and embedding flag are pinned; newly generated glyph paths/native positions must also match at Apply. No font is downloaded or licensed by this workflow, and no proprietary font is added. It uses existing authorized loaded assets only.
+At review and Apply, document-authored and registered face descriptors/bytes must agree. The exact managed FontFace must remain loaded and active, with complete coverage and no later ambiguous unmanaged same-family face. Restricted embedding flags, conflicting descriptors/bytes, synthetic/fallback faces and missing font readiness refuse. Every selected face's exact descriptor key, bytes and embedding flag are pinned, one for each character range; newly generated glyph paths/native positions must also match at Apply. No font is downloaded or licensed by this workflow, and no proprietary font is added. It uses existing authorized loaded assets only.
 
-The supported pipeline is deliberately narrow: one displayed LTR line of printable ASCII, one exact static uncompressed TrueType `glyf` face per text operand, simple glyphs with the existing side-bearing/cmap/shaping proofs, nonnegative tracking, 1–4,096 design-unit font size and supported physical alignment. Unsupported GSUB substitutions, non-advance GPOS positioning, composites, variable/CFF/color fonts, WOFF2, arbitrary scripts, rich ranges, decorations, links, backgrounds, lists, paragraph overrides, text-on-path, clipping and unsupported typography refuse. Native browser layout supplies actual character origins after glyph identity is established. Headless new conversion refuses; already-saved ordinary vector/Boolean results need no fonts or browser to render or recompute.
+The pipeline is the one SVG export uses, so it reads TrueType, CFF (including CID-keyed), variable TrueType at the layer's weight and axis values, and WOFF2 of any of those. It takes displayed LTR lines of Latin and the other scripts where one character is one glyph, composite glyphs, nonnegative tracking, 1–4,096 design-unit font size and supported physical alignment. Each character range uses its own face. Real substitutions, non-advance GPOS positioning, color fonts, `CFF2`, AAT shaping, scripts that join or reorder, decorations, links, backgrounds, lists, paragraph overrides, text-on-path, clipping and unsupported typography refuse. The formats, the browser check and the remaining refusals are in [SVG text outlines](SVG-TEXT-OUTLINES.md). Native browser layout supplies actual character origins after glyph identity is established. Headless new conversion refuses; already-saved ordinary vector/Boolean results need no fonts or browser to render or recompute.
 
 ## Source eligibility and bounded work
 
@@ -29,11 +29,11 @@ Limits:
 - 2,048 decoded input anchors across all vector/glyph operands; 8,192 result anchors, checked after each Boolean step; 512 compound subpaths.
 - 256 KB cumulative generated glyph paths and 256 KB result path data; 2 MB source metadata.
 - Ordinary vector operands: 512 saved anchors, 32 KB raw path input and a conservative 512 command-letter inspection each. Repeated coordinate batches can decode more than 2,048 anchors within the byte bound; they refuse **after bounded parsing, before any Boolean operator**, not under a claimed predecode-anchor guarantee.
-- Existing font decoder limits remain 10 MB per static TTF and 20 MB decoded distinct font data for one preparation.
+- Shared font decoder limits: 20 MB per font file, 64 MB per font after WOFF2 decompression and 100 MB decoded distinct font data for one preparation, with the per-format limits in [SVG text outlines](SVG-TEXT-OUTLINES.md).
 - 20,000 current-page layers, 100,000 total document layers, 1,000 pages and 64 acyclic ancestry levels.
 - Finite controls/geometry within ±1,000,000 parent-coordinate units and a finite result world envelope within ±1,000,000. Empty filled results currently refuse explicitly.
 
-The exact same existing Paper Boolean engine computes unions, differences, intersections and exclusions. It does not replace glyphs with text boxes. Real quadratic glyph curves become ordinary Paper path geometry with nonzero winding; compound glyph counters are retained.
+The exact same existing Paper Boolean engine computes unions, differences, intersections and exclusions. It does not replace glyphs with text boxes. Real quadratic or cubic glyph curves become ordinary Paper path geometry with nonzero winding; compound glyph counters are retained.
 
 ## Numerical and rendering limits
 
@@ -70,4 +70,4 @@ Final frozen-source validation: 2,396 headless tests in 213 files passed; 31 foc
 
 ## Character ranges
 
-Text with ranges now outlines, in Booleans and in SVG text outlines. Each range uses its own proven static TTF face, size, weight, style and tracking, with positions read from native layout of the whole line. A range that changes color, or anything else, refuses with a reason, because the Boolean result has one fill. The ASCII, static-TTF and exact-face rules are unchanged.
+Text with ranges outlines, in Booleans and in SVG text outlines. Each range uses its own proven face, size, weight, style, tracking and variable axis values, with positions read from native layout of the whole line. A range in another family now reaches the font proof in both paths; before, only the layer's base family was registered, so such a range refused. A range that changes color, or anything else, refuses with a reason, because the Boolean result has one fill.
