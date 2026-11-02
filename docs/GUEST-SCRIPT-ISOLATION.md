@@ -37,18 +37,25 @@ These are enforced in the frame, which keeps running whatever the worker does.
 | Queued operations | 400,000 | worker stopped |
 | One text or attribute value | 2,000,000 characters | refused, or worker stopped |
 | Elements with tracked geometry | 2,000 | further elements read their last value |
+| `DOMParser` input | 2,000,000 characters | refused |
+| Nodes from one parse | 100,000 | refused for HTML, `parsererror` for XML |
+| Parser depth | 512 levels | HTML nests no deeper, XML answers `parsererror` |
+| Custom element definitions | 500 | refused |
 
 For a plugin, a stop ends the run with no proposal. For a code layer, the dialog reports it and **Run again** starts a fresh worker. Cancel and Stop remove the frame, which ended the spin at once in the real `WKWebView` test (web content process 99% CPU, then 0%).
 
 ## What a guest script cannot do
 
-The mirrored DOM covers elements, text, attributes, `style`, `classList`, `dataset`, forms, selectors, `innerHTML`, event dispatch, `requestAnimationFrame`, `ResizeObserver`, `MutationObserver`, `IntersectionObserver` with the viewport as its root, and 2D canvas. Across threads, some things cannot be synchronous:
+The mirrored DOM covers elements, text, attributes, `style`, `classList`, `dataset`, forms, selectors, `innerHTML`, `template`, event dispatch, `requestAnimationFrame`, `ResizeObserver`, `MutationObserver`, `IntersectionObserver` with the viewport as its root, 2D canvas, `DOMParser`, `XMLSerializer`, custom elements and Shadow DOM. Across threads, some things cannot be synchronous:
 
 - **Geometry** comes from the last measurement. The first read in a page is accurate. After a change, read it in the next animation frame. `getComputedStyle` returns inline values and measured `width` and `height` only.
-- **`preventDefault`** arrives too late for the event that caused it. The frame remembers it and cancels the same event type on that element from the next event on. Submitting a form and following a link are always cancelled.
+- **`preventDefault`** arrives after the event, so the frame decides first. Submitting a form and following a link are cancelled outright, on the first event. A link to `#id` is cancelled too, and scrolls from the worker unless a listener cancelled it. For a few key defaults the frame cancels the key, waits for the worker, and replays the default if nothing cancelled it: Enter in a `textarea`, Tab when another control in the page can take focus, and arrow, page, Home, End and Space keys away from form controls. Anything else is remembered per element, event type and key, and cancelled from the next matching event, so stopping Tab in a field no longer stops typing in it. If a later event was not cancelled after all, the frame forgets that. Printable keys are never held, because replaying text would break input methods, so a filter on typed characters lets the first press of each key through. Tab at either end of the page leaves the frame on its first press, because the frame cannot move focus into the editor for it. Wheel and touch defaults stay as they were.
 - **Canvas** `toDataURL` is unavailable, because it is synchronous. Use `toBlob`. Drawing an `<img>` into a canvas is unavailable.
 - **Observers** see only what the guest's own script does. `MutationObserver` reports records in one microtask, and an edit the person makes in a field shows through its `input` event instead. `IntersectionObserver` updates with geometry, a frame late, and refuses a custom root.
-- **Not provided:** `DOMParser`, Range and Selection, Shadow DOM, custom elements, `document.write`, ES module scripts. Using one fails visibly instead of pretending to work.
+- **`DOMParser`** runs in the worker, on a bounded parser written for this runtime, and builds a separate document that the frame never sees. Its images do not load, its handler attributes stay text and its scripts never run. Inserting a node into the page sends it to the frame, where the usual checks apply and handler attributes become live, as they do in a browser. XML is strict: malformed input gives a document with a `parsererror` root, and a document type with an internal subset is refused, so entity expansion cannot happen. CDATA becomes plain text, and processing instructions are dropped.
+- **Custom elements** run wholly in the worker, so `define`, upgrades, `connectedCallback`, `disconnectedCallback`, `attributeChangedCallback`, `get`, `getName`, `whenDefined` and `upgrade` reach nothing a guest script could not already do. The frame sees an unknown tag and ordinary mutations. Customized built-ins and `attachInternals` are not provided, and `adoptedCallback` never runs.
+- **Shadow DOM** mirrors to a real shadow root in the frame, so `<style>`, `<slot>`, `:host` and `::slotted` behave natively. A `closed` root is closed only to guest code: the frame always opens the real one so it can forward events. Inside the mirror, selectors and child lists stop at the root, composed events cross to the host with their target retargeted, and non-composed events stay inside. Declarative shadow roots in parsed markup and `adoptedStyleSheets` are not provided. A code layer's captured preview leaves out shadow content, because a clone of the document does not carry it.
+- **Not provided:** Range and Selection, `document.write`, ES module scripts. Using one fails visibly instead of pretending to work.
 - **Inline handlers** run in the worker, so `this` and `event` work but the `with`-style scope of element properties does not.
 
 CSS animation and transitions run in the frame and are unaffected.
@@ -61,4 +68,4 @@ CSS animation and transitions run in the frame and are unaffected.
 
 ## Validation
 
-`tests/guest-dom-worker.test.ts` runs the real runtime text in an isolated realm and pins the frame's script hash. `tests/e2e/guest-isolation.spec.ts` covers a synchronous loop, a loop started from an event, a plugin interface loop, a promise chain that never yields, a mutation flood, DOM fidelity and refused reach. Both it and the plugin platform spec pass in Chromium and in Playwright's WebKit.
+`tests/guest-dom-worker.test.ts` runs the real runtime text in an isolated realm and pins the frame's script hash. `tests/e2e/guest-isolation.spec.ts` covers a synchronous loop, a loop started from an event, a plugin interface loop, a promise chain that never yields, a mutation flood, DOM fidelity, refused reach, parsing, custom elements and shadow roots in the real frame, and held key defaults. Both it and the plugin platform spec pass in Chromium and in Playwright's WebKit.
