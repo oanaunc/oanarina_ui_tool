@@ -7,9 +7,9 @@ import {scaledLocalPath} from './geometry';
 import {fillsFor,strokesFor} from './paints';
 /** Moving an SVG group makes the browser run every filter inside it again on the CPU, and a card shadow is a filter. So while the camera lands, a shadow can stand in as a bitmap of its own filter, shared by every layer with the same shape and effect. It lasts a few frames: the real filters come back as soon as the camera has landed, so what rests on the canvas is exactly what it always was. Exports never see any of this. */
 export const SHADOW_LIMITS={path:4000,side:2048,bitmaps:256,buildsPerPass:4,restoredPerFrame:10} as const;
-export interface ShadowRecipe {key:string;d:string;effects:Effect[];colors:string[];x:number;y:number;width:number;height:number;}
+export interface ShadowRecipe {key:string;d:string;fillRule:string;effects:Effect[];colors:string[];x:number;y:number;width:number;height:number;}
 const recipes=new WeakMap<DesignNode,ShadowRecipe|null>();
-const opaque=(n:DesignNode)=>fillsFor(n).some(p=>p.type==='solid'&&p.visible&&p.opacity>=1&&!/^#[\da-f]{6}(?!ff)[\da-f]{2}$/i.test(p.color));
+const opaque=(n:DesignNode)=>fillsFor(n).some(p=>p.type==='solid'&&p.visible&&p.opacity>=1&&/^#(?:[\da-f]{3}|[\da-f]{6}(?:ff)?)$/i.test(p.color));
 /** Only layers whose outline is known without drawing them. A shadow reads the alpha of everything in the layer, so anything else in there, or anything see-through, needs the real filter. */
 export function shadowRecipe(n:DesignNode,profile?:DocumentColorProfile,hasChildren=false):ShadowRecipe|null{
  const known=recipes.get(n);if(known!==undefined)return known;const made=build(n,profile,hasChildren);recipes.set(n,made);return made;
@@ -17,13 +17,13 @@ export function shadowRecipe(n:DesignNode,profile?:DocumentColorProfile,hasChild
 function build(n:DesignNode,profile:DocumentColorProfile|undefined,hasChildren:boolean):ShadowRecipe|null{
  const effects=effectsFor(n).filter(e=>e.visible&&e.type!=='background-blur');
  if(!effects.length||effects.some(e=>e.type!=='drop-shadow')||n.type==='text'||n.type==='spec'||n.booleanOp||n.mask||n.vectorNetwork||n.media||n.liveRepeat||n.flipX||n.flipY||n.motionScaleX!==undefined||n.motionScaleY!==undefined||hasChildren&&!n.clip||!opaque(n)||strokesFor(n).some(s=>s.visible))return null;
- const d=scaledLocalPath(n);if(!d||d.length>SHADOW_LIMITS.path)return null;const padding=Math.max(1,effectPadding(effects)),colors=effects.map(e=>displayColor(e.color,profile));
- return {key:JSON.stringify([d,n.width,n.height,n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero'),effects.map((e,i)=>[colors[i],e.opacity,e.x,e.y,e.radius,e.spread])]),d,effects,colors,x:-padding,y:-padding,width:n.width+padding*2,height:n.height+padding*2};
+ const d=scaledLocalPath(n);if(!d||d.length>SHADOW_LIMITS.path)return null;const padding=Math.max(1,effectPadding(effects)),colors=effects.map(e=>displayColor(e.color,profile)),fillRule=n.fillRule??(n.type==='ellipse'?'evenodd':'nonzero');
+ return {key:JSON.stringify([d,n.width,n.height,fillRule,effects.map((e,i)=>[colors[i],e.opacity,e.x,e.y,e.radius,e.spread])]),d,fillRule,effects,colors,x:-padding,y:-padding,width:n.width+padding*2,height:n.height+padding*2};
 }
 const number=(v:number)=>String(Number(v.toFixed(6)));
 /** The same primitives as the live filter, with the layer itself left out. */
 function shadowFilter(r:ShadowRecipe){let previous='',out='';[...r.effects].reverse().forEach((e,i)=>{const p='e'+i,color=r.colors[r.effects.indexOf(e)].replace(/[<>&"]/g,''),source=e.spread!==0?p+'s':'SourceAlpha';if(e.spread!==0)out+=`<feMorphology in="SourceAlpha" operator="${e.spread>=0?'dilate':'erode'}" radius="${number(Math.abs(e.spread))}" result="${source}"/>`;out+=`<feGaussianBlur in="${source}" stdDeviation="${number(e.radius/2)}" result="${p}b"/><feOffset in="${p}b" dx="${number(e.x)}" dy="${number(e.y)}" result="${p}o"/><feFlood flood-color="${color}" flood-opacity="${number(e.opacity)}" result="${p}c"/><feComposite in="${p}c" in2="${p}o" operator="in" result="${p}"/>`;if(previous)out+=`<feMerge result="${p}"><feMergeNode in="${p}"/><feMergeNode in="${previous}"/></feMerge>`;previous=p;});return out;}
-export function shadowSvg(r:ShadowRecipe,scale:number){return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(r.width*scale)}" height="${Math.ceil(r.height*scale)}" viewBox="${number(r.x)} ${number(r.y)} ${number(r.width)} ${number(r.height)}"><defs><filter id="s" filterUnits="userSpaceOnUse" x="${number(r.x)}" y="${number(r.y)}" width="${number(r.width)}" height="${number(r.height)}" color-interpolation-filters="sRGB">${shadowFilter(r)}</filter></defs><path d="${r.d}" fill="#000" filter="url(#s)"/></svg>`;}
+export function shadowSvg(r:ShadowRecipe,scale:number){return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(r.width*scale)}" height="${Math.ceil(r.height*scale)}" viewBox="${number(r.x)} ${number(r.y)} ${number(r.width)} ${number(r.height)}"><defs><filter id="s" filterUnits="userSpaceOnUse" x="${number(r.x)}" y="${number(r.y)}" width="${number(r.width)}" height="${number(r.height)}" color-interpolation-filters="sRGB">${shadowFilter(r)}</filter></defs><path d="${r.d}" fill="#000" fill-rule="${r.fillRule}" filter="url(#s)"/></svg>`;}
 /** Sharp enough for the zoom it's made at, and no bigger than a shadow can use. */
 export function shadowScale(r:Pick<ShadowRecipe,'width'|'height'>,zoom:number,density:number){const wanted=2**Math.ceil(Math.log2(Math.max(1,zoom*density)));return Math.min(wanted,4,SHADOW_LIMITS.side/Math.max(r.width,r.height));}
 interface Bitmap {url:string;image:HTMLImageElement;}
