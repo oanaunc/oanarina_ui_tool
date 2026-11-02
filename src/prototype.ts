@@ -1,8 +1,8 @@
-import {refusePassThroughPlayback,validateDocumentPassThrough} from './pass-through';
+import {validateDocumentPassThrough} from './pass-through';
 import {validateDocumentPrototypeAudio} from './prototype-audio';
 import {validateDocumentNetworks} from './vector-network';
 import {validateDocumentPrototypeInputs} from './prototype-input';
-import {refuseBackgroundBlurPlayback,validateDocumentBackgroundBlur} from './background-blur';
+import {validateDocumentBackgroundBlur} from './background-blur';
 import {applyPresentedVariants,previewComponentIds,validateInteractiveScope,validatePresentedVariantPlan} from './interactive-variants';
 import {validateDocumentTextPaths} from './text-path';
 import {hasDynamicStroke,validateDocumentDynamicStrokes} from './dynamic-stroke';
@@ -107,7 +107,7 @@ export function validatePrototype(d:DesignDocument){for(const p of d.pages){if(p
  }}}
 export function prototypeFrames(p:Page){return p.nodes.filter(n=>{if(n.type!=='frame')return false;let parent=p.nodes.find(a=>a.id===n.parentId);const seen=new Set([n.id]);while(parent&&!seen.has(parent.id)){if(parent.type==='frame')return false;seen.add(parent.id);parent=p.nodes.find(a=>a.id===parent!.parentId);}return true;});}
 export function resolveDestination(p:Page,id:string|undefined){const n=p.nodes.find(n=>n.id===id);if(n?.type==='frame')return n;if(n?.type==='section')return p.nodes.find(x=>x.type==='frame'&&descendants(p.nodes,[n.id]).includes(x.id));return undefined;}
-export function createPrototypeState(p:Page,selected?:string,flowId?:string):PrototypeState {refuseBackgroundBlurPlayback(p.nodes);refusePassThroughPlayback(p.nodes);const flow=p.flows?.find(f=>f.id===flowId)??p.flows?.[0];let containing=resolveDestination(p,selected),current=p.nodes.find(n=>n.id===selected);const seen=new Set<string>();if(!containing)while(current&&!seen.has(current.id)){seen.add(current.id);if(current.type==='frame')containing=current;current=p.nodes.find(n=>n.id===current!.parentId);}const frame=containing??resolveDestination(p,flow?.frameId)??prototypeFrames(p)[0];return {frameId:frame?.id??'',history:[],overlays:[],values:{},variants:{}};}
+export function createPrototypeState(p:Page,selected?:string,flowId?:string):PrototypeState {const flow=p.flows?.find(f=>f.id===flowId)??p.flows?.[0];let containing=resolveDestination(p,selected),current=p.nodes.find(n=>n.id===selected);const seen=new Set<string>();if(!containing)while(current&&!seen.has(current.id)){seen.add(current.id);if(current.type==='frame')containing=current;current=p.nodes.find(n=>n.id===current!.parentId);}const frame=containing??resolveDestination(p,flow?.frameId)??prototypeFrames(p)[0];return {frameId:frame?.id??'',history:[],overlays:[],values:{},variants:{}};}
 export function prototypeDocument(d:DesignDocument,state:PrototypeState){validateDocumentPrototypeAudio(d);validateDocumentPassThrough(d);validateDocumentNetworks(d);validateDocumentPrototypeInputs(d);validatePresentedVariantPlan(d,state.variants);const copy=structuredClone(d);for(const v of copy.variables??[])if(Object.hasOwn(state.values,v.id))for(const mode of Object.keys(v.values))v.values[mode]=state.values[v.id];const ids=previewComponentIds(d);synchronizeComponents(copy,ids);applyPresentedVariants(copy,state.variants,ids);applyDesignSystems(copy);for(const page of copy.pages){applyConstraints(page.nodes,d.pages.find(p=>p.id===page.id)?.nodes??[]);updateTextMetrics(page.nodes);reflow(page.nodes);updateBooleans(page.nodes);}validateDocumentBackgroundBlur(copy);validateDocumentPassThrough(copy);validateDocumentProgressiveBlur(copy);validateDocumentDynamicStrokes(copy);validateDocumentTextPaths(copy);validateDocumentCalligraphicStrokes(copy);validateDocumentNetworks(copy);validateDocumentPrototypeInputs(copy);validateDocumentPrototypeAudio(copy);return copy;}
 export function executeActions(d:DesignDocument,pageId:string,initial:PrototypeState,actions:PrototypeAction[]){
  validateActions(actions);const state=structuredClone(initial),effects:PrototypeEffect[]=[];let transition:PrototypeTransition|undefined,preserveScroll=false;
@@ -138,7 +138,7 @@ export function validatePrototypeStateChange(d:DesignDocument,pageId:string,_bef
 /** Art that cannot be interpolated. It travels with its layer and cross-fades if it changes, so one such layer never blocks the rest of the transition. */
 const heldArt=(n:DesignNode)=>!!n.vectorNetwork||!!n.textPath||hasDynamicStroke(n)||hasCalligraphicStroke(n)||!!n.effects?.some(e=>e.type==='progressive-blur');
 const artKey=({id:_id,parentId:_parent,x:_x,y:_y,rotation:_rotation,opacity:_opacity,visible:_visible,name:_name,reactions:_reactions,...art}:DesignNode)=>JSON.stringify(art);
-export function smartAnimate(from:Page,fromId:string,to:Page,toId:string,progress:number){refuseBackgroundBlurPlayback(from.nodes);refusePassThroughPlayback(from.nodes);refuseBackgroundBlurPlayback(to.nodes);refusePassThroughPlayback(to.nodes);
+export function smartAnimate(from:Page,fromId:string,to:Page,toId:string,progress:number){
  const a=normalizedNodes(from,fromId),b=normalizedNodes(to,toId),ka=pathKeys(a),kb=pathKeys(b),byKey=new Map(a.map(n=>[ka.get(n.id),n])),mapping=new Map<string,string>(),used=new Set<string>();
  for(const n of b){const before=byKey.get(kb.get(n.id));if(before){mapping.set(before.id,n.id);used.add(before.id);}}
  const color=(a:string,b:string,t:number)=>/^#[0-9a-f]{6}$/i.test(a)&&/^#[0-9a-f]{6}$/i.test(b)?'#'+[1,3,5].map(i=>Math.max(0,Math.min(255,Math.round(parseInt(a.slice(i,i+2),16)+(parseInt(b.slice(i,i+2),16)-parseInt(a.slice(i,i+2),16))*t))).toString(16).padStart(2,'0')).join(''):b;
@@ -162,7 +162,7 @@ export function reversedTransition(t:PrototypeTransition):PrototypeTransition{re
 /** The box a sticky layer holds by: its full rotated and scaled outline, in the scroller's own axes. */
 export function stickyBox(n:DesignNode,scroller:DesignNode,nodes:DesignNode[]){let m;try{m=multiply(inverseMatrix(worldMatrix(scroller,nodes)),worldMatrix(n,nodes));}catch{return {x:n.x,y:n.y,width:n.width,height:n.height};}const corners=[[0,0],[n.width,0],[n.width,n.height],[0,n.height]].map(([x,y])=>point(m,x,y)),left=Math.min(...corners.map(p=>p.x)),top=Math.min(...corners.map(p=>p.y));return {x:scroller.x+left,y:scroller.y+top,width:Math.max(...corners.map(p=>p.x))-left,height:Math.max(...corners.map(p=>p.y))-top};}
 /** Materialize fixed and sticky layers without changing the saved document. */
-export function prototypeScrollNodes(nodes:DesignNode[],frameId:string,offset:{x:number;y:number}){refuseBackgroundBlurPlayback(nodes);refusePassThroughPlayback(nodes);
+export function prototypeScrollNodes(nodes:DesignNode[],frameId:string,offset:{x:number;y:number}){
  const frame=nodes.find(n=>n.id===frameId);if(!frame||!offset.x&&!offset.y)return nodes;const copy=structuredClone(nodes),inside=new Set(descendants(nodes,[frameId])),positioned=nodes.filter(n=>n.id!==frameId&&inside.has(n.id)&&n.prototypePosition&&n.prototypePosition!=='normal');
  const contentRight=Math.max(frame.x+frame.width,...nodes.filter(n=>inside.has(n.id)).map(n=>n.x+n.width)),contentBottom=Math.max(frame.y+frame.height,...nodes.filter(n=>inside.has(n.id)).map(n=>n.y+n.height));
  for(const n of positioned){let ancestor=nodes.find(p=>p.id===n.parentId),nested=false;const seen=new Set<string>();while(ancestor&&ancestor.id!==frameId&&!seen.has(ancestor.id)){seen.add(ancestor.id);if(ancestor.prototypePosition&&ancestor.prototypePosition!=='normal'){nested=true;break;}ancestor=nodes.find(p=>p.id===ancestor!.parentId);}if(nested)continue;

@@ -15,6 +15,7 @@ import {validateDocumentMetadata} from './document-metadata';
 import {defaultCodeLayer,validateDocumentCodeLayers} from './code-layer';
 import {validateCodeConnect} from './code-connect';
 import {validateColorProfile} from './color-profile';
+import {validateIccProfiles} from './icc-profile';
 import {validateDocumentShaders} from './shaders';
 import {validateGrids} from './grid';
 import type {GridTrack,GridAlignment} from './grid';
@@ -73,7 +74,7 @@ export interface DesignNode {autoFit?:{padding:number};liveRepeat?:import('./liv
 }
 export interface Comment {surface?:'prototype';reactions?:import('./comment-reactions').CommentReaction[];id:string; x:number;y:number; text:string; resolved:boolean;author?:string;createdAt?:string;editedAt?:string;replies?:import('./comment-threads').CommentReply[];anchor?:import('./comment-threads').CommentAnchor;}
 export interface Page {documentation?:import('./component-documentation').DocumentationLink;developmentStatus?:DevelopmentStatus;background?:{color:string;opacity:number;visible:boolean};id:string;name:string;nodes:DesignNode[];comments:Comment[];motion?:Timeline;flows?:PrototypeFlow[];prototypeSettings?:PrototypeSettings;guides?:CanvasGuide[];guidesLocked?:boolean;guidesVisible?:boolean;}
-export interface DesignDocument {codeConnect?:import('./code-connect').CodeConnectMapping[];colorProfile?:import('./color-profile').DocumentColorProfile;shaders?:import('./shaders').ShaderDefinition[];fileCover?:DocumentCover;libraryPublication?:LibraryPublication;componentLibraries?:ComponentLibrary[];format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides'|'site';whiteboard?:WhiteboardData;slides?:SlideDeck;brand?:import('./brand-assets').BrandWorkspace;site?:SiteData;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
+export interface DesignDocument {iccProfiles?:import('./icc-profile').StoredIccProfile[];codeConnect?:import('./code-connect').CodeConnectMapping[];colorProfile?:import('./color-profile').DocumentColorProfile;shaders?:import('./shaders').ShaderDefinition[];fileCover?:DocumentCover;libraryPublication?:LibraryPublication;componentLibraries?:ComponentLibrary[];format:'oanarina-ui';version:2;id:string;name:string;description?:string;pages:Page[];colors:{name:string;value:string}[];updatedAt:string;workspace?:'design'|'whiteboard'|'slides'|'site';whiteboard?:WhiteboardData;slides?:SlideDeck;brand?:import('./brand-assets').BrandWorkspace;site?:SiteData;motionStyles?:MotionStyle[];componentSets?:ComponentSet[];variableCollections?:VariableCollection[];variables?:DesignVariable[];variableModes?:Record<string,string>;styles?:DesignStyle[];fonts?:FontAsset[];layoutGuideStyles?:LayoutGuideStyle[];snapping?:SnapPreferences;layoutGuidesVisible?:boolean;}
 export const uid = () => crypto.randomUUID();
 export const containers:NodeKind[]=['frame','group','section','component','instance'];
 export function node(type:NodeKind, props:Partial<DesignNode>={}):DesignNode {
@@ -104,7 +105,7 @@ export function parseDocument(raw:string):DesignDocument {
   if(d?.format!=='oanarina-ui'||![1,2].includes(d.version)||!Array.isArray(d.pages)||!d.pages.length||typeof d.name!=='string')throw Error('Choose an Oanarina .oui file.');
   if(raw.length-shareImages(d)>50_000_000)throw Error('This file exceeds the 50 MB project limit.');unpackImages(d);
   if(typeof d.id!=='string'||!d.id.trim()||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('Invalid document identity or timestamp.');
-  validateDocumentMetadata(d);validateColorProfile(d.colorProfile);validateDocumentShaders(d);
+  validateDocumentMetadata(d);validateColorProfile(d.colorProfile);validateIccProfiles(d);validateDocumentShaders(d);
   validateDocumentSurfaces(d);
   if(d.pages.length>1000)throw Error('Too many pages.');
   const ids=new Set<string>();

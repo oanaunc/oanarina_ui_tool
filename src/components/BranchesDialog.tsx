@@ -18,13 +18,14 @@ function ConflictList({plan,answers,choose}:{plan:MergeResult;answers:Answers;ch
   <ol className="branch-conflicts">{plan.conflicts.map(c=><li key={c.id}><fieldset><legend>{c.label}</legend><p>{c.detail}</p><label><input type="radio" name={'conflict-'+c.id} checked={answers[c.id]==='ours'} onChange={()=>choose(c.id,'ours')}/>Main: {c.ours}</label><label><input type="radio" name={'conflict-'+c.id} checked={answers[c.id]==='theirs'} onChange={()=>choose(c.id,'theirs')}/>Branch: {c.theirs}</label></fieldset></li>)}</ol></section>;
 }
 function Review({parts,onDone,onBack,refresh}:{parts:BranchParts;onDone:(message:string)=>void;onBack:()=>void;refresh:()=>void}){
- const main=useEditor(s=>s.doc),[answers,setAnswers]=useState<Answers>({}),[side,setSide]=useState<'branch'|'main'>('branch'),[error,setError]=useState(''),[reviewed,setReviewed]=useState(parts.record.review),[busy,setBusy]=useState(false),file=useBranchSession(v=>v.file);
+ const main=useEditor(s=>s.doc),[note,setNote]=useState(parts.record.review?.note??''),[answers,setAnswers]=useState<Answers>({}),[side,setSide]=useState<'branch'|'main'>('branch'),[error,setError]=useState(''),[reviewed,setReviewed]=useState(parts.record.review),[busy,setBusy]=useState(false),file=useBranchSession(v=>v.file);
  const result=useMemo(()=>{try{return {plan:mergeDocuments(parts.base,main,parts.branch,answers)};}catch(e){return {error:e instanceof Error?e.message:String(e)};}},[parts,main,answers]),plan=result.plan;
  const record={...parts.record,review:reviewed},block=plan?mergeBlock(file??parts.file,record,parts.branch,plan,answers):result.error??'',status=useMemo(()=>{try{return branchStatus(record,parts.base,main,parts.branch,plan);}catch{return undefined;}},[parts,main,plan,reviewed]),compared=side==='branch'?parts.branch:main,older=useMemo(()=>({...parts.base,id:compared.id}),[parts,compared]);
- const markReviewed=async()=>{setBusy(true);setError('');try{const next=await recordBranchReview(parts.record.id,parts.branch.updatedAt);setReviewed(next.review);await refreshBranchSession();}catch(e){setError(e instanceof Error?e.message:String(e));}finally{setBusy(false);}};
+ const markReviewed=async()=>{setBusy(true);setError('');try{const next=await recordBranchReview(parts.record.id,parts.branch.updatedAt,note);setReviewed(next.review);await refreshBranchSession();}catch(e){setError(e instanceof Error?e.message:String(e));}finally{setBusy(false);}};
  const merge=async()=>{setBusy(true);setError('');try{if(!plan||block)throw Error(block||'This merge is unavailable.');const live=useEditor.getState();if(live.doc!==main)throw Error('Main changed. Review this merge again.');const merged=committedMerge(plan);live.restoreVersion(merged,true);await setBranchLifecycle(parts.record.id,'merged');await refreshBranchSession();refresh();onDone(`“${parts.record.name}” merged into main. Undo is available.`);}catch(e){setError(e instanceof Error?e.message:String(e));setBusy(false);}};
  return <section aria-label={'Review '+parts.record.name}><div className="branch-review-heading"><button className="text-button" onClick={onBack}>← All branches</button><h3>Review “{parts.record.name}”</h3></div>
   {status&&<p role="status">{status.label}{status.reviewed?' · Reviewed at this revision':''}</p>}
+  {reviewed?.note&&<p role="note">Review note: {reviewed.note}</p>}
   {result.error&&<p role="alert">{result.error}</p>}
   {plan&&<ConflictList plan={plan} answers={answers} choose={(id,value)=>setAnswers(a=>({...a,[id]:value}))}/>}
   {plan?.warnings.map(w=><p role="note" key={w}>{w}</p>)}
@@ -32,7 +33,8 @@ function Review({parts,onDone,onBack,refresh}:{parts:BranchParts;onDone:(message
   <VersionChangeReview key={side} heading={side==='branch'?'Base → branch':'Base → main'} older={older} current={compared} pageId={compared.pages[0].id}/>
   {error&&<p role="alert">{error}</p>}
   {block&&<p role="status">{block}</p>}
-  <div className="button-row"><button className="outline-button" disabled={busy||parts.record.review?.revision===parts.branch.updatedAt&&!!reviewed} onClick={()=>void markReviewed()}>Mark as reviewed</button><button className="primary-button" disabled={busy||!!block} onClick={()=>void merge()}>Merge into main</button></div>
+  <label>Review note<textarea aria-label="Review note" maxLength={2000} value={note} onChange={e=>setNote(e.target.value)}/></label>
+  <div className="button-row"><button className="outline-button" disabled={busy||parts.record.review?.revision===parts.branch.updatedAt&&!!reviewed&&note===(reviewed.note??'')} onClick={()=>void markReviewed()}>Mark as reviewed</button><button className="primary-button" disabled={busy||!!block} onClick={()=>void merge()}>Merge into main</button></div>
  </section>;
 }
 export default function BranchesDialog(){
