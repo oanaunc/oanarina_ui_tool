@@ -2,7 +2,7 @@
 .spec-editor.picked .spec-row{background:color-mix(in srgb,var(--selection,#0d99ff) 14%,transparent)}
 .spec-row{position:relative}
 .spec-row.in-range{background:color-mix(in srgb,var(--selection,#0d99ff) 14%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--selection,#0d99ff) 14%,transparent);border-radius:2px}
-.spec-row.drop::before,.spec-row.drop-after::after{content:'';position:absolute;left:0;right:0;height:2px;background:var(--selection,#0d99ff);border-radius:1px}
+.spec-row.drop::before,.spec-row.drop-after::after{content:'';position:absolute;left:var(--spec-drop,0);right:0;height:2px;background:var(--selection,#0d99ff);border-radius:1px}
 .spec-row.drop::before{top:-5px}.spec-row.drop-after::after{bottom:-5px}
 .spec-field{outline:none;white-space:pre-wrap;overflow-wrap:break-word;min-height:1.65em;caret-color:currentColor}
 .spec-field[data-empty="true"]{position:relative}
@@ -16,6 +16,8 @@
 .spec-todo.done{color:#8f8f8f}
 .spec-lead{position:absolute;top:0;width:24px;height:1.65em;display:flex;align-items:center}
 .spec-marker{padding-left:6px}.spec-marker.number{padding-left:0}
+.spec-disclosure{display:grid;place-items:center;width:16px;height:16px;margin:0;padding:0;border:0;border-radius:3px;background:none;color:#8f8f8f;cursor:pointer}
+.spec-disclosure:hover{background:rgb(0 0 0 / 7%);color:#1e1e1e}
 .spec-check{margin:0;width:16px;height:16px;accent-color:#0d99ff;cursor:pointer}
 .spec-tools{position:absolute;left:-44px;top:2px;display:flex;gap:0;opacity:0;transition:opacity .12s;-webkit-user-select:none;user-select:none}
 .spec-row:hover>.spec-tools,.spec-row:focus-within>.spec-tools{opacity:1}

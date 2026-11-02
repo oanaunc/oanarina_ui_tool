@@ -1,4 +1,4 @@
-import {specMarkdown} from './spec';
+import {allBlocks,specMarkdown} from './spec';
 import {fontFamilyStack} from './font-fallback';
 import {resolveTextDirection} from './text-direction';
 import {guideBindingIssue,guideBindingRange} from './responsive-guides';
@@ -44,7 +44,7 @@ function lineage(n:DesignNode,nodes:DesignNode[]){const byId=new Map(nodes.map(n
 export function inspectMetadata(d:DesignDocument,page:Page,n:DesignNode,o:InspectOptions=defaultInspectOptions):InspectSection[]{
  const chain=lineage(n,page.nodes),modes=Object.assign(Object.create(null) as Record<string,string>,d.variableModes,...chain.map(n=>n.variableModes)),sections:InspectSection[]=[],all=new Map(d.pages.flatMap(p=>p.nodes).map(n=>[n.id,n]));let budget=MAX_INSPECT_ROWS;
  const name=(id:string|null|undefined)=>id?label(all.get(id)?.name??'Missing component'):'None',section=(name:string)=>{const value:InspectSection={name,rows:[]};sections.push(value);return value;},row=(s:InspectSection,make:()=>InspectRow)=>{if(budget<=0){s.truncated=true;return false;}budget--;const value=make();s.rows.push({name:label(value.name),value:label(value.value),...(value.detail?{detail:value.detail.length>8000?value.detail.slice(0,8000)+'… (detail truncated at 8000 characters)':value.detail}:{})});return true;};
- if(n.type==='spec'&&n.spec){const spec=n.spec,source=section('Spec');row(source,()=>({name:'Blocks',value:String(spec.blocks.length)}));const markdown=specMarkdown(spec.blocks);row(source,()=>({name:'Markdown',value:markdown.length+' characters',detail:markdown}));}
+ if(n.type==='spec'&&n.spec){const spec=n.spec,source=section('Spec');row(source,()=>({name:'Blocks',value:String(allBlocks(spec.blocks).length)}));const markdown=specMarkdown(spec.blocks);row(source,()=>({name:'Markdown',value:markdown.length+' characters',detail:markdown}));}
  if(n.type==='code'&&n.code){const code=n.code,source=section('Code layer'),values=codeLayerValues(code);for(const [name,text] of [['HTML',code.html],['CSS',code.css],['JavaScript',code.js]] as const)row(source,()=>({name,value:text.length+' characters',detail:text}));for(const p of code.properties)row(source,()=>({name:p.label,value:String(values[p.key]),detail:'Property '+p.key+' · '+p.type}));row(source,()=>({name:'Preview',value:code.preview}));}
  const resources=section('Developer resources');for(const resource of n.devResources??[])if(!row(resources,()=>({name:resource.kind,value:resource.name,detail:resource.url})))break;
  const styles=section('Applied styles');for(const [kind,id] of Object.entries(n.styleIds??{})){const style=d.styles?.find(s=>s.id===id&&s.type===styleSlotKind(kind));if(!row(styles,()=>({name:kind+' style',value:style?.name??'Missing style; saved values retained',detail:style?styleFields[style.type].filter(k=>Object.hasOwn(style.value,k)).map(k=>k+': '+inspectValue(style.value[k],o,k)+' → effective '+inspectValue(n[k],o,k)).join('\n'):undefined})))break;}

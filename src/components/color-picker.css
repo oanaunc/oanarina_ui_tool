@@ -78,3 +78,12 @@
 .app .color-save-style:hover{text-decoration:underline}
 .app .color-styles .forma-color-picker-panel{margin:0;padding:0;border:0;background:none;box-shadow:none}
 .app .color-styles .forma-color-picker-panel .color-picker-square{height:150px}
+.style-paints-title{margin-top:2px}
+.style-paints{display:grid;gap:2px;min-width:0}
+.style-paint-row{display:flex;align-items:center;gap:2px;min-height:24px}
+.style-paint-row .paint-kind{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-left:4px}
+.style-paint-row>button:not(.paint-color-chip){flex:none;display:grid;place-items:center;width:20px;height:20px;padding:0;border:0;border-radius:4px;background:none;color:var(--muted);cursor:pointer}
+.style-paint-row>button:not(.paint-color-chip):hover:not(:disabled){background:var(--hover);color:var(--text)}
+.style-paint-row>button:disabled{opacity:.35;cursor:default}
+.app .style-paint-row .paint-color-chip{flex:none;width:20px;height:20px;display:grid;place-items:center;color:var(--muted)}
+.style-paint.paint-hidden .paint-color-chip,.style-paint.paint-hidden .paint-kind{opacity:.45}

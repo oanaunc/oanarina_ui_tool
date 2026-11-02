@@ -1,5 +1,5 @@
 import {canvasSelectionRoots} from './canvas-geometry';
-import {gridCellStep} from './grid-ordering';
+import {gridBlockStep,gridCellStep} from './grid-ordering';
 import {isLocked} from './model';
 import type {DesignNode} from './model';
 import {inverseMatrix,point,worldMatrix} from './transforms';
@@ -30,7 +30,7 @@ export type NudgeDirection='left'|'right'|'up'|'down';
 export function layoutNudgeOrder(nodes:DesignNode[],ids:readonly string[],direction:NudgeDirection):DesignNode[]|undefined{
  const roots=canvasSelectionRoots(nodes,[...ids]);if(!roots.length)return undefined;const parent=nodes.find(n=>n.id===roots[0].parentId);if(!parent||parent.layout==='none'||roots.some(n=>n.parentId!==parent.id||n.ignoreLayout))return undefined;if(parent.instanceRootId||parent.type==='instance'||roots.some(n=>n.instanceRootId||isLocked(n,nodes)))return nodes;
  const across=direction==='left'||direction==='right',forward=direction==='right'||direction==='down';
- if(parent.layout==='grid')return roots.length===1?gridCellStep(nodes,roots[0].id,across?(forward?1:-1):0,across?0:forward?1:-1):nodes;
+ if(parent.layout==='grid'){const dx=across?(forward?1:-1):0,dy=across?0:forward?1:-1;return roots.length===1?gridCellStep(nodes,roots[0].id,dx,dy):gridBlockStep(nodes,roots.map(n=>n.id),dx,dy);}
  const horizontal=parent.layout==='horizontal',moved=new Set(roots.map(n=>n.id)),flow=nodes.filter(n=>n.parentId===parent.id&&n.visible&&!n.ignoreLayout),block=flow.filter(n=>moved.has(n.id)).map(n=>n.id);if(!block.length)return nodes;
  const drop=(beforeId:string|null)=>applyLayoutDrop(nodes,{parentId:parent.id,ids:block,beforeId,changed:true,line:{x1:0,y1:0,x2:0,y2:0}});
  if(across===horizontal){const first=flow.findIndex(n=>moved.has(n.id)),last=flow.map(n=>moved.has(n.id)).lastIndexOf(true);if(forward){if(last+1>=flow.length)return nodes;const after=flow.slice(last+2).find(n=>!moved.has(n.id));return drop(after?.id??null);}if(first===0)return nodes;return drop(flow[first-1].id);}

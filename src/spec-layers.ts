@@ -1,12 +1,14 @@
 import {descendants,node} from './model';
 import type {DesignNode,Page} from './model';
 import {createPaint} from './paints';
-import {isListBlock,specInlineMarks} from './spec';
+import {allBlocks,isListBlock,specInlineMarks,specRows} from './spec';
 import type {SpecBlock} from './spec';
 import {textLines,updateTextMetrics} from './text-layout';
 /** What the canvas paints for a spec: ordinary layers derived from its blocks, so every export path keeps working. They never enter the document. */
 export const SPEC_PAGE={margin:48,mono:'JetBrains Mono',body:16,line:1.65,code:13,step:24,marker:24,codePad:12,quotePad:15,cellPad:8,minWidth:320,defaultWidth:850,defaultHeight:1100};
 const HEADING=[[40,700],[30,700],[24,600],[20,600],[16,600],[14,600]],RULE='#e6e6e6',SHADE='#f5f5f5',MUTED='#8f8f8f',ACCENT='#0d99ff';
+/** The triangle beside a toggle, in a 16 box, the same on the canvas and in the editor. */
+export const SPEC_TOGGLE_CLOSED='M5.5 3.5L11.5 8L5.5 12.5Z',SPEC_TOGGLE_OPEN='M3.5 5.5L12.5 5.5L8 11.5Z';
 export interface SpecFrameEmbed {block:string;x:number;y:number;width:number;height:number;scale:number;root:DesignNode;nodes:DesignNode[];}
 export interface SpecLayout {layers:DesignNode[];frames:SpecFrameEmbed[];height:number;}
 type FrameBlock=Extract<SpecBlock,{kind:'frame'}>;
@@ -20,19 +22,19 @@ const solid=(color:string)=>({fill:color,paints:[createPaint(color)]});
 export const specBlockGap=(block:SpecBlock,above?:SpecBlock)=>!above?0:block.kind==='heading'?(block.level<=2?28:20):isListBlock(block)&&isListBlock(above)?6:12;
 const remember=new Map<string,{key:string;layout:Omit<SpecLayout,'frames'>&{frames:Omit<SpecFrameEmbed,'root'|'nodes'>[]}}>();
 function build(n:DesignNode,find:SpecLookup){
- const {margin}=SPEC_PAGE,color=ink(n.fill),width=Math.max(1,n.width-margin*2),family=n.fontFamily||'Inter',layers:DesignNode[]=[],frames:Omit<SpecFrameEmbed,'root'|'nodes'>[]=[],counters:number[]=[];let y=margin,serial=0,above:SpecBlock|undefined;
+ const {margin}=SPEC_PAGE,color=ink(n.fill),full=Math.max(1,n.width-margin*2),family=n.fontFamily||'Inter',layers:DesignNode[]=[],frames:Omit<SpecFrameEmbed,'root'|'nodes'>[]=[];let y=margin,serial=0;
  const key=(block:SpecBlock)=>`${n.id}-${block.id}-${serial++}`;
  const text=(block:SpecBlock,source:string,x:number,top:number,w:number,o:{size?:number;weight?:number;line?:number;mono?:boolean;marks?:boolean;fill?:string}={})=>{const marked=o.marks===false?{text:source,runs:[]}:specInlineMarks(source,SPEC_PAGE.mono),t=node('text',{id:key(block),name:'Text',x,y:top,width:w,height:o.size??SPEC_PAGE.body,text:marked.text,fontFamily:o.mono?SPEC_PAGE.mono:family,fontSize:o.size??SPEC_PAGE.body,fontWeight:o.weight??400,lineHeight:o.line??SPEC_PAGE.line,letterSpacing:0,textAlign:'left',textResize:'auto-height',...solid(o.fill??color),...(marked.runs.length?{textRuns:marked.runs}:{})});updateTextMetrics([t]);t.height=Math.max(1,textLines(t,false).length)*t.fontSize*t.lineHeight;layers.push(t);return t;};
  const box=(block:SpecBlock,x:number,top:number,w:number,h:number,paint:string,extra:Partial<DesignNode>={})=>{const r=node('rectangle',{id:key(block),name:'Shape',x,y:top,width:w,height:h,stroke:'',strokeWidth:0,text:'',...solid(paint),...extra});layers.push(r);return r;};
- for(const block of n.spec?.blocks??[]){
-  y+=specBlockGap(block,above);const left=margin,listLeft=isListBlock(block)?left+SPEC_PAGE.step*(block.indent??0):left;
-  if(block.kind==='number'){const level=block.indent??0;counters.length=level+1;counters[level]=(counters[level]??0)+1;}else if(!isListBlock(block))counters.length=0;
+ for(const {block,depth,number,above} of specRows(n.spec?.blocks??[])){
+  y+=specBlockGap(block,above);const left=margin+SPEC_PAGE.step*depth,width=Math.max(1,full-SPEC_PAGE.step*depth),listLeft=isListBlock(block)?left+SPEC_PAGE.step*(block.indent??0):left;
   switch(block.kind){
    case 'paragraph':y+=text(block,block.text,left,y,width).height;break;
    case 'heading':{const [size,weight]=HEADING[block.level-1];y+=text(block,block.text,left,y,width,{size,weight,line:1.25}).height;break;}
    case 'bullet':text(block,'•',listLeft+6,y,SPEC_PAGE.marker,{marks:false});y+=text(block,block.text,listLeft+SPEC_PAGE.marker,y,width-(listLeft-left)-SPEC_PAGE.marker).height;break;
-   case 'number':text(block,counters[block.indent??0]+'.',listLeft,y,SPEC_PAGE.marker,{marks:false});y+=text(block,block.text,listLeft+SPEC_PAGE.marker,y,width-(listLeft-left)-SPEC_PAGE.marker).height;break;
+   case 'number':text(block,number+'.',listLeft,y,SPEC_PAGE.marker,{marks:false});y+=text(block,block.text,listLeft+SPEC_PAGE.marker,y,width-(listLeft-left)-SPEC_PAGE.marker).height;break;
    case 'todo':{const top=y+5;box(block,listLeft,top,16,16,block.checked?ACCENT:'#ffffff',{radius:3,...(block.checked?{}:{stroke:MUTED,strokeWidth:1})});if(block.checked)text(block,'✓',listLeft+3,y+1,14,{size:12,weight:700,marks:false,fill:'#ffffff'});y+=text(block,block.text,listLeft+SPEC_PAGE.marker,y,width-(listLeft-left)-SPEC_PAGE.marker,block.checked?{fill:MUTED}:{}).height;break;}
+   case 'toggle':layers.push(node('path',{id:key(block),name:'Toggle',x:left,y:y+5,width:16,height:16,pathWidth:16,pathHeight:16,path:block.open?SPEC_TOGGLE_OPEN:SPEC_TOGGLE_CLOSED,stroke:'',strokeWidth:0,text:'',...solid(MUTED)}));y+=text(block,block.text,left+SPEC_PAGE.marker,y,width-SPEC_PAGE.marker).height;break;
    case 'quote':{const t=text(block,block.text,left+SPEC_PAGE.quotePad,y,width-SPEC_PAGE.quotePad);box(block,left,y,3,t.height,RULE);y+=t.height;break;}
    case 'code':{const shade=box(block,left,y,width,1,SHADE,{radius:6}),t=text(block,block.text,left+SPEC_PAGE.codePad,y+SPEC_PAGE.codePad,width-SPEC_PAGE.codePad*2,{size:SPEC_PAGE.code,line:1.5,mono:true,marks:false});shade.height=t.height+SPEC_PAGE.codePad*2;y+=shade.height;break;}
    case 'divider':box(block,left,y+6,width,1,RULE);y+=13;break;
@@ -40,7 +42,6 @@ function build(n:DesignNode,find:SpecLookup){
    case 'image':{const shown=Math.min(width,block.width||width),h=block.width?shown*(block.height/block.width):width*.5625;if(block.src){const paint=createPaint('#000000');Object.assign(paint,{type:'image',image:block.src,imageWidth:block.width,imageHeight:block.height,scaleMode:'fit'});layers.push(node('image',{id:key(block),name:'Image',x:left,y,width:shown,height:h,fill:'none',stroke:'',text:'',paints:[paint]}));}else{box(block,left,y,shown,h,SHADE,{radius:6});text(block,'Image not available',left+SPEC_PAGE.codePad,y+SPEC_PAGE.codePad,shown-SPEC_PAGE.codePad*2,{size:13,fill:MUTED,marks:false});}y+=h;break;}
    case 'frame':{const found=find(block),root=found?.root,scale=root&&root.width?Math.min(1,width/root.width):1,h=root?Math.max(1,root.height*scale):96;if(root)frames.push({block:block.id,x:left,y,width:root.width*scale,height:h,scale});else{box(block,left,y,width,h,SHADE,{radius:6});text(block,block.name?`“${block.name}” is not available`:'This frame is not available',left+SPEC_PAGE.codePad,y+SPEC_PAGE.codePad,width-SPEC_PAGE.codePad*2,{size:13,fill:MUTED,marks:false});}y+=h;break;}
   }
-  above=block;
  }
  return {layers,frames,height:y+margin};
 }
@@ -50,9 +51,9 @@ export const forgetSpecLayouts=()=>remember.clear();
 function embedded(owner:string,block:string,source:{nodes:DesignNode[]}){const name=(id:string)=>`${owner}-${block}-${id}`,ids=new Set(source.nodes.map(n=>n.id));return source.nodes.map(n=>({...n,id:name(n.id),parentId:n.parentId&&ids.has(n.parentId)?name(n.parentId):null}));}
 /** Layout is measured once per page content and width; frame contents are read fresh, so they stay live. */
 export function layoutSpec(n:DesignNode,find:SpecLookup):SpecLayout{
- const sizes=(n.spec?.blocks??[]).flatMap(b=>{if(b.kind!=='frame')return [];const root=find(b)?.root;return [root?[root.width,root.height]:0];}),key=JSON.stringify([n.spec?.blocks,n.width,n.fontFamily,n.fill,sizes]);let held=remember.get(n.id);
+ const sizes=specRows(n.spec?.blocks??[]).flatMap(({block:b})=>{if(b.kind!=='frame')return [];const root=find(b)?.root;return [root?[root.width,root.height]:0];}),key=JSON.stringify([n.spec?.blocks,n.width,n.fontFamily,n.fill,sizes]);let held=remember.get(n.id);
  if(held?.key!==key){if(remember.size>256)remember.clear();held={key,layout:build(n,find)};remember.set(n.id,held);}
- const blocks=n.spec?.blocks??[],frames=held.layout.frames.flatMap(f=>{const block=blocks.find(b=>b.id===f.block) as FrameBlock,source=find(block);return source?[{...f,root:source.root,nodes:embedded(n.id,f.block,source)}]:[];});
+ const blocks=allBlocks(n.spec?.blocks??[]),frames=held.layout.frames.flatMap(f=>{const block=blocks.find(b=>b.id===f.block) as FrameBlock,source=find(block);return source?[{...f,root:source.root,nodes:embedded(n.id,f.block,source)}]:[];});
  return {layers:held.layout.layers,frames,height:Math.max(n.minHeight??0,held.layout.height)};
 }
 /** A spec is as tall as its words, down to the page height it was given. A drag on its height changes that floor. */

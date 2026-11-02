@@ -11,15 +11,21 @@ export const styleIsSolid=(style:Pick<DesignStyle,'value'>)=>{const fills=styleF
 export const styleStrokePaint=(style:Pick<DesignStyle,'value'>)=>{const fills=styleFills(style);return fills.find(p=>p.visible)??fills[0]??createPaint('#000000');};
 const gradientTypes:Paint['type'][]=['linear','radial','angular','diamond'];
 export const isGradientPaint=(p:Paint)=>!p.surface&&gradientTypes.includes(p.type);
-/** One solid or gradient paint can be edited in the color panel. Anything else stays in Manage styles. */
-export const styleEditable=(style:Pick<DesignStyle,'value'>)=>{const fills=styleFills(style);return fills.length===1&&(fills[0].type==='solid'&&!fills[0].surface||isGradientPaint(fills[0]));};
-export const paintBackground=(p:Paint)=>{if(!isGradientPaint(p)||!p.stops?.length)return p.color;const stops=[...p.stops].sort((a,b)=>a.position-b.position).map(s=>`${s.color} ${s.position*100}%`).join(',');return p.type==='angular'?`conic-gradient(${stops})`:p.type==='linear'?`linear-gradient(135deg,${stops})`:`radial-gradient(circle,${stops})`;};
-export function swatchBackground(style:Pick<DesignStyle,'value'>){const p=styleFills(style)[0];if(!p)return 'transparent';if(p.type==='solid'||isGradientPaint(p))return paintBackground(p);return '#8f8f8f';}
+/** One paint edits directly in the color panel. A style holding several lists them, as a fill section does. */
+export const styleEditable=(style:Pick<DesignStyle,'value'>)=>styleFills(style).length===1;
+const withAlpha=(color:string,alpha:number)=>alpha>=1?color:color+Math.round(Math.max(0,alpha)*255).toString(16).padStart(2,'0');
+export const paintBackground=(p:Paint)=>{if(!isGradientPaint(p)||!p.stops?.length)return p.color;const stops=[...p.stops].sort((a,b)=>a.position-b.position).map(s=>`${withAlpha(s.color,s.opacity*p.opacity)} ${s.position*100}%`).join(',');return p.type==='angular'?`conic-gradient(${stops})`:p.type==='linear'?`linear-gradient(135deg,${stops})`:`radial-gradient(circle,${stops})`;};
+/** One CSS background layer for a paint. Images show themselves, and shaders their two fallback colors, so a swatch never needs a GPU. */
+const paintLayer=(p:Paint)=>{if(isGradientPaint(p))return paintBackground(p);if(p.type==='image'&&p.image&&/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(p.image))return `center/cover no-repeat url("${p.image}")`;if(p.type==='shader'&&p.stops?.length>1)return `linear-gradient(135deg,${p.stops.map(s=>s.color).join(',')})`;const color=withAlpha(p.color,p.opacity);return `linear-gradient(${color},${color})`;};
+/** A swatch stacks what the style really paints, top paint first. */
+export function swatchBackground(style:Pick<DesignStyle,'value'>){const shown=styleFills(style).filter(p=>p.visible);if(!shown.length)return 'transparent';if(shown.length===1&&shown[0].type==='solid'&&!shown[0].surface)return withAlpha(shown[0].color,shown[0].opacity);return shown.map(paintLayer).join(',');}
 const find=(d:DesignDocument,id:string)=>{const style=d.styles?.find(s=>s.id===id&&s.type==='paint');if(!style)throw Error('This color style no longer exists.');return style;};
 /** The paint keeps its id, so a fill row that shows this style stays where it is while the color changes. */
 export function setStyleColor(d:DesignDocument,id:string,color:string,opacity:number){const style=find(d,id),paint=createPaint(color);paint.opacity=opacity;paint.id=style.value.paints?.[0]?.id??paint.id;style.value={fill:color,paints:[paint],gradient:false};}
 /** Changes a style's single paint in place, as a gradient edit or a switch between solid and gradient. */
 export function setStylePaint(d:DesignDocument,id:string,patch:Partial<Paint>){const style=find(d,id),current=styleFills(style)[0],paint={...current,...patch,id:style.value.paints?.[0]?.id??current.id};validatePaint(paint);style.value={fill:paint.color,paints:[paint],gradient:false};}
+/** Replaces the whole stack at once, so a reorder or removal stays one change. */
+export function setStylePaints(d:DesignDocument,id:string,paints:Paint[]){const style=find(d,id);if(!paints.length)throw Error('A style needs at least one paint.');if(paints.length>100)throw Error('A style holds up to 100 paints.');paints.forEach(validatePaint);style.value={fill:paints.find(p=>p.visible)?.color??'none',paints:structuredClone(paints),gradient:false};}
 export function renameStyle(d:DesignDocument,id:string,name:string,description?:string){const clean=name.trim();if(!clean)throw Error('Give the style a name.');if(clean.length>512)throw Error('Use a shorter style name.');const style=find(d,id);style.name=clean;if(description!==undefined)style.description=description.slice(0,4096);}
 /** Layers keep the color they had and simply stop following the style. */
 export function deleteStyle(d:DesignDocument,id:string){find(d,id);d.styles=d.styles!.filter(s=>s.id!==id);for(const n of d.pages.flatMap(p=>p.nodes)){if(n.styleIds?.paint===id)delete n.styleIds.paint;if(n.styleIds?.strokePaint===id)delete n.styleIds.strokePaint;}}
