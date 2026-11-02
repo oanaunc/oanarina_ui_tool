@@ -42,6 +42,7 @@ export function svgColor(raw:string):{color:string;alpha:number}|undefined{
  const text=raw.trim().toLowerCase();if(text==='transparent')return {color:'#000000',alpha:0};const known=Object.hasOwn(named,text)?named[text]:Object.hasOwn(svgNamedColors,text)?svgNamedColors[text]:undefined;if(known)return {color:known,alpha:1};
  if(/^#[\da-f]{3,4}$/.test(text)){const long='#'+[...text.slice(1)].map(c=>c+c).join('');return {color:long.slice(0,7),alpha:long.length===9?parseInt(long.slice(7),16)/255:1};}if(/^#[\da-f]{6}(?:[\da-f]{2})?$/.test(text))return {color:text.slice(0,7),alpha:text.length===9?parseInt(text.slice(7),16)/255:1};
  const call=/^([a-z0-9-]+)\((.*)\)$/s.exec(text);if(!call)return;const [,name,body]=call;
+ if(name==='light-dark'){let depth=0;for(let i=0;i<body.length;i++){if(body[i]==='(')depth++;else if(body[i]===')')depth--;else if(body[i]===','&&!depth)return svgColor(body.slice(0,i));}return;}
  if(name==='rgb'||name==='rgba'){const read=channels(body);if(!read)return;const v=read.parts.map(p=>percentOr(p,255));if(v.some(x=>x===undefined))return;return {color:hex((v as number[]).map(x=>x/255)),alpha:read.alpha};}
  if(name==='hsl'||name==='hsla'){const read=channels(body);if(!read)return;const h=hue(read.parts[0]),s=percentOr(read.parts[1],1),l=percentOr(read.parts[2],1);if(h===undefined||s===undefined||l===undefined)return;const scale=/%/.test(read.parts[1])||read.parts[1]==='none'?1:.01,lightness=/%/.test(read.parts[2])||read.parts[2]==='none'?1:.01;return {color:hex(hslRgb((h%360+360)%360,clamp(s*scale),clamp(l*lightness))),alpha:read.alpha};}
  return modernColor(name,body);
@@ -50,8 +51,8 @@ const VAR_LIMIT={depth:32,length:65536} as const;
 function closeParen(text:string,open:number){let depth=0,quote='';for(let i=open;i<text.length;i++){const c=text[i];if(quote){if(c==='\\')i++;else if(c===quote)quote='';}else if(c==='"'||c==="'")quote=c;else if(c==='(')depth++;else if(c===')'&&!--depth)return i;}return -1;}
 /** Replaces var() through the inherited custom properties. A cycle, a missing name with no fallback or runaway growth makes the whole value invalid. */
 export function substituteVars(value:string,lookup:(name:string)=>string|undefined,stack:string[]=[]):string|undefined{
- if(!/var\(/i.test(value))return value;if(stack.length>VAR_LIMIT.depth)return;let out='',at=0;
- for(;;){const low=value.toLowerCase().indexOf('var(',at);if(low<0){out+=value.slice(at);break;}const end=closeParen(value,low+3);if(end<0)return;out+=value.slice(at,low);const body=value.slice(low+4,end),comma=body.indexOf(','),name=(comma<0?body:body.slice(0,comma)).trim(),fallback=comma<0?undefined:body.slice(comma+1);if(!name.startsWith('--'))return;
+ if(!/var\(/i.test(value))return value;if(stack.length>VAR_LIMIT.depth)return;const lower=value.toLowerCase();let out='',at=0;
+ for(;;){const low=lower.indexOf('var(',at);if(low<0){out+=value.slice(at);break;}const end=closeParen(value,low+3);if(end<0)return;out+=value.slice(at,low);const body=value.slice(low+4,end),comma=body.indexOf(','),name=(comma<0?body:body.slice(0,comma)).trim(),fallback=comma<0?undefined:body.slice(comma+1);if(!name.startsWith('--'))return;
   let piece:string|undefined;if(!stack.includes(name)){const found=lookup(name);if(found!==undefined)piece=substituteVars(found,lookup,[...stack,name]);}if(piece===undefined&&fallback!==undefined)piece=substituteVars(fallback.trim(),lookup,stack);if(piece===undefined)return;out+=piece;if(out.length>VAR_LIMIT.length)return;at=end+1;}
  return out;
 }
