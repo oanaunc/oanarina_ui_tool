@@ -9,7 +9,7 @@ import {CanvasDetailContext,coarser,detailZoom,gestureDetail} from '../canvas-de
 import {shareUnchangedNodes} from '../share-nodes';
 import {cullStillCovers,cullViewportRoots,indexViewportRoots,layerInView,retainedReach} from '../viewport-culling';
 import type {CullCamera} from '../viewport-culling';
-import {cameraMoving,cameraWatchers,liveCamera} from '../canvas-camera';
+import {cameraMoving,cameraWatchers,liveCamera,readyShadows} from '../canvas-camera';
 import {cutBatches,planBatches,stepBatches} from '../progressive-page';
 import type {BatchPlan,LayerBatch} from '../progressive-page';
 import {decodeImage,decodeOrder,runDecodeQueue} from '../image-decode-queue';
@@ -43,6 +43,7 @@ export default function ViewportCanvasArtwork({nodes,canvasRef,activeId,drafting
  else if(step.left&&step.pulse!==pulse.current){const next=stepBatches(target,step.batches,opening.current?undefined:needed);drawn.current={...step,...next,pulse:pulse.current};}
  const {batches,left}=drawn.current,total=opening.current?target.length:0,shown=opening.current?total-left:0,loading=left>0&&total>0;
  useEffect(()=>{if(!left)return;const frame=requestAnimationFrame(()=>{pulse.current++;advance();});return()=>cancelAnimationFrame(frame);});
+ useEffect(()=>{if(!left&&!drafting&&canvasRef.current)readyShadows(canvasRef.current);},[batches,left,drafting,canvasRef]);
  const handler=useRef(onNode);handler.current=onNode;const pressed=useCallback((e:React.PointerEvent,id:string)=>handler.current(e,id),[]);
  // One pass per opened page: the first view decides the order, and later edits reuse images already decoded.
  const [decoding,setDecoding]=useState('');

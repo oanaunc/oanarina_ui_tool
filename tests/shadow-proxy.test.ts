@@ -1,0 +1,27 @@
+import {expect,it} from 'vitest';
+import {createEffect} from '../src/effects';
+import {node} from '../src/model';
+import type {DesignNode} from '../src/model';
+import {createPaint,createStroke} from '../src/paints';
+import {shadowRecipe,shadowScale,shadowSvg} from '../src/shadow-proxy';
+const shadow=(o={})=>({...createEffect('drop-shadow'),...o});
+const card=(o:Partial<DesignNode>={})=>node('rectangle',{id:crypto.randomUUID(),x:400,y:300,width:343,height:44,radius:10,paints:[createPaint('#f7f7f8')],effects:[shadow({y:2,radius:8})],...o});
+it('layers with the same outline and shadow share one bitmap wherever they stand',()=>{expect(shadowRecipe(card())!.key).toBe(shadowRecipe(card({x:9,y:9,name:'Other'}))!.key);expect(shadowRecipe(card({width:300}))!.key).not.toBe(shadowRecipe(card())!.key);expect(shadowRecipe(card({effects:[shadow({y:3,radius:8})]}))!.key).not.toBe(shadowRecipe(card())!.key);expect(shadowRecipe(card({effects:[shadow({y:2,radius:8,color:'#ff0000'})]}))!.key).not.toBe(shadowRecipe(card())!.key);});
+it('a recipe covers the same region as the live filter',()=>{const r=shadowRecipe(card())!;expect(r).toMatchObject({x:-18,y:-18,width:379,height:80});});
+it('only an opaque outline with nothing else in it stands in for its filter',()=>{
+ expect(shadowRecipe(card({type:'text',text:'Hi'}))).toBeNull();
+ expect(shadowRecipe(card({paints:[]}))).toBeNull();
+ expect(shadowRecipe(card({paints:[{...createPaint('#ffffff'),opacity:.5}]}))).toBeNull();
+ expect(shadowRecipe(card({paints:[createPaint('#ffffff80')]}))).toBeNull();
+ expect(shadowRecipe(card({paints:[createPaint('#ffffffff')]}))).not.toBeNull();
+ expect(shadowRecipe(card({strokes:[createStroke('#000000')]}))).toBeNull();
+ expect(shadowRecipe(card({flipX:true}))).toBeNull();
+ expect(shadowRecipe(card({effects:[shadow(),createEffect('inner-shadow')]}))).toBeNull();
+ expect(shadowRecipe(card({effects:[createEffect('layer-blur')]}))).toBeNull();
+ expect(shadowRecipe(card({effects:[]}))).toBeNull();
+ expect(shadowRecipe(card({effects:[shadow({visible:false})]}))).toBeNull();
+});
+it('children count only when the layer lets them past its outline',()=>{expect(shadowRecipe(card({type:'frame',clip:false}),undefined,true)).toBeNull();expect(shadowRecipe(card({type:'frame',clip:true}),undefined,true)).not.toBeNull();expect(shadowRecipe(card({type:'frame',clip:false}),undefined,false)).not.toBeNull();});
+it('a changed layer is a new object, so a stale recipe never survives an edit',()=>{const n=card();const before=shadowRecipe(n)!;const next={...n,effects:[shadow({y:9,radius:8})]};expect(shadowRecipe(next)!.key).not.toBe(before.key);});
+it('the bitmap draws only the shadow, in the order the live filter stacks them',()=>{const svg=shadowSvg(shadowRecipe(card({effects:[shadow({id:'a',y:2,radius:8,opacity:.25}),shadow({id:'b',y:9,radius:20,spread:3,color:'#112233'})]}))!,2);expect(svg).not.toContain('SourceGraphic');expect(svg).toContain('feMorphology');expect(svg).toContain('flood-color="#112233"');expect(svg).toContain('color-interpolation-filters="sRGB"');const first=svg.indexOf('stdDeviation="10"'),second=svg.indexOf('stdDeviation="4"');expect(first).toBeGreaterThan(-1);expect(second).toBeGreaterThan(first);expect(svg.match(/<feMergeNode in="[^"]+"\/>/g)).toEqual(['<feMergeNode in="e1"/>','<feMergeNode in="e0"/>']);});
+it('a bitmap is as sharp as the camera needs and stays a sensible size',()=>{const r={width:400,height:100};expect(shadowScale(r,.75,2)).toBe(2);expect(shadowScale(r,.1,1)).toBe(1);expect(shadowScale(r,1.5,2)).toBe(4);expect(shadowScale(r,8,2)).toBe(4);expect(shadowScale({width:2048,height:10},8,2)).toBe(1);});

@@ -11,7 +11,7 @@ await page.waitForSelector('#forma-design-canvas',{timeout:15000});
 await page.evaluate(()=>{const w=window,b=w.__bench={gaps:[],stalls:[],on:true,last:performance.now(),start:performance.now()};const tick=()=>{const now=performance.now(),gap=now-b.last;b.last=now;b.gaps.push(gap);if(gap>50)b.stalls.push([Math.round(now-b.start),Math.round(gap)]);if(b.on)requestAnimationFrame(tick);};requestAnimationFrame(tick);});
 await page.getByRole('menuitem',{name:'File',exact:true}).click();
 const choose=page.waitForEvent('filechooser');await page.getByRole('menuitem',{name:/^Open project…/}).click();
-await page.evaluate(()=>{const b=window.__bench;b.start=performance.now();b.gaps.length=0;b.stalls.length=0;});
+await page.evaluate(nofit=>{const b=window.__bench;b.start=performance.now();b.gaps.length=0;b.stalls.length=0;/* The Mac app opens at the page's default camera. A browser open fits the page, so OPEN_NOFIT drops that one call to compare like with like. */if(nofit){const wait=window.setTimeout;window.setTimeout=(f,d,...a)=>!d&&/\.fit\(\)/.test(String(f))?0:wait(f,d,...a);}},!!process.env.OPEN_NOFIT);
 await (await choose).setFiles({name:'bench.oui',mimeType:'application/json',buffer});
 await page.waitForFunction(()=>document.querySelectorAll('#forma-design-canvas [data-node-id]').length>50,undefined,{timeout:Number(process.env.OPEN_LIMIT??120000)}).catch(async e=>{console.log(await page.evaluate(()=>document.body.innerText.slice(0,700)));if(process.env.OPEN_SHOT)await page.screenshot({path:process.env.OPEN_SHOT});throw e;});
 const report=await page.evaluate(async process_sample=>{
