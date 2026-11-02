@@ -17477,7 +17477,7 @@
     "status": "partial",
     "verification": "implementation-validated; reference-verification-pending",
     "source": "https://help.figma.com/hc/en-us/articles/15297425105303-Explore-design-files",
-    "notes": "Opening a measured 5,161-layer page in the real Mac app: longest freeze 428 ms, pan p95 102 ms. In WebKit, total stalling on open fell from 22.6 s to about 1.2 s. The whole document is still parsed and kept in memory. Synthetic file only; scripts/bench/open-lag.mjs and the native open-lag check."
+    "notes": "Opening a measured 5,161-layer page in the real Mac app from the notarized disk image: longest freeze 211 to 288 ms, total stalling about 1.3 s, pan p95 25 to 32 ms. The whole document is still parsed and kept in memory. Synthetic file only; real files of this size were not available."
   },
   {
     "id": "UI-53-002",
