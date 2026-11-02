@@ -15,7 +15,7 @@ export function svgFilterEffects(filter:XmlElement,primitives:XmlElement[],color
  const finish=()=>{if(shadow)out.push(toEffect(shadow));shadow=undefined;matrixApplied=false;};
  for(const p of primitives){const kind=p.localName||p.tagName,input=p.getAttribute('in')??'',result=p.getAttribute('result')??'';
   if(kind==='feFlood'){if(result==='BackgroundImageFix')continue;const c=color(p.getAttribute('flood-color')??'black');shadow??=fresh();if(c){shadow.color=c.color;shadow.alpha=c.alpha*scalar(p,'flood-opacity',1);}continue;}
-  if(kind==='feColorMatrix'){if(result==='hardAlpha'||input==='SourceAlpha'){shadow??=fresh();if(input==='SourceAlpha'&&result!=='hardAlpha')continue;continue;}const values=(p.getAttribute('values')??'').trim().split(/[\s,]+/).map(Number);if((p.getAttribute('type')??'matrix')!=='matrix'||values.length!==20||values.some(v=>!Number.isFinite(v)))return {effects:[],reduced,supported:false};shadow??=fresh();shadow.color='#'+hex(values[4])+hex(values[9])+hex(values[14]);shadow.alpha=values[18];matrixApplied=true;continue;}
+  if(kind==='feColorMatrix'){if(result==='hardAlpha'||input==='SourceAlpha'){shadow??=fresh();if(input==='SourceAlpha'&&result!=='hardAlpha')continue;continue;}const values=(p.getAttribute('values')??'').trim().split(/[\s,]+/).map(Number);if(!shadow||(p.getAttribute('type')??'matrix')!=='matrix'||values.length!==20||values.some(v=>!Number.isFinite(v)))return {effects:[],reduced,supported:false};shadow.color='#'+hex(values[4])+hex(values[9])+hex(values[14]);shadow.alpha=values[18];matrixApplied=true;continue;}
   if(kind==='feMorphology'){shadow??=fresh();const radius=scalar(p,'radius');shadow.spread=(p.getAttribute('operator')??'erode')==='dilate'?radius:-radius;continue;}
   if(kind==='feOffset'){shadow??=fresh();shadow.dx=scalar(p,'dx');shadow.dy=scalar(p,'dy');continue;}
   if(kind==='feGaussianBlur'){const radius=scalar(p,'stdDeviation')*2;if(input==='BackgroundImageFix'||input==='BackgroundImage'){reduced.push('Background blur was omitted; Forma applies it to root-level shapes only.');continue;}if(!shadow){out.push({id:crypto.randomUUID(),type:'layer-blur',visible:true,color:'#000000',opacity:1,x:0,y:0,radius:clamp(radius,0,1000),spread:0});continue;}shadow.blur=radius;continue;}
@@ -24,4 +24,12 @@ export function svgFilterEffects(filter:XmlElement,primitives:XmlElement[],color
   if(kind==='feBlend'||kind==='feMerge'){if(shadow&&(matrixApplied||shadow.blur||shadow.dx||shadow.dy||shadow.spread)){finish();}else shadow=undefined;continue;}
   return {effects:[],reduced,supported:false};}
  finish();return {effects:out,reduced,supported:out.length>0||reduced.length>0};
+}
+/** The CSS filter functions a layer effect can carry. Anything else in the list leaves the whole list out, so nothing half-applies. */
+export function svgCssFilterEffects(raw:string,color:Color,length:(value:string)=>number|undefined):SvgFilterResult{
+ const out:Effect[]=[],pattern=/([a-z-]+)\(((?:[^()]|\([^()]*\))*)\)/gi;let end=0;for(const m of raw.matchAll(pattern)){if(raw.slice(end,m.index).trim())return {effects:[],reduced:[],supported:false};end=m.index+m[0].length;const name=m[1].toLowerCase(),body=m[2].trim();
+  if(name==='blur'){const radius=body?length(body):0;if(radius===undefined||radius<0)return {effects:[],reduced:[],supported:false};out.push({id:crypto.randomUUID(),type:'layer-blur',visible:true,color:'#000000',opacity:1,x:0,y:0,radius:clamp(radius*2,0,1000),spread:0});continue;}
+  if(name==='drop-shadow'){const parts=body.match(/(?:[a-z-]+\([^()]*\)|[^\s()]+)/gi)??[],lengths:number[]=[];let shade:{color:string;alpha:number}|undefined;for(const part of parts){const value=length(part);if(value!==undefined)lengths.push(value);else if(!shade)shade=color(part);else return {effects:[],reduced:[],supported:false};}if(lengths.length<2||lengths.length>3)return {effects:[],reduced:[],supported:false};out.push(toEffect({...fresh(),dx:lengths[0],dy:lengths[1],blur:(lengths[2]??0)*2,color:(shade??color('currentColor'))?.color??'#000000',alpha:(shade??color('currentColor'))?.alpha??1}));continue;}
+  return {effects:[],reduced:[],supported:false};}
+ if(raw.slice(end).trim())return {effects:[],reduced:[],supported:false};return {effects:out,reduced:[],supported:out.length>0};
 }
