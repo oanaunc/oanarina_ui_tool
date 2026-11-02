@@ -1,5 +1,6 @@
-import {networkChainPath,networkPath} from './vector-network-geometry';
+import {hasNetworkRadii,networkChainContours,networkChainPath,networkPath} from './vector-network-geometry';
 import {smoothedBoxPath} from './corner-smoothing';
+import {hasLiveCorners,liveCornerContours} from './vector-corner-rounding';
 import {refuseVariableWidthConversion} from './variable-width';
 import {roundedPolygonPath} from './basic-shapes';
 import paper from 'paper/dist/paper-core.js';
@@ -31,8 +32,12 @@ export interface PathCurve {c1:{x:number;y:number};c2:{x:number;y:number};to:{x:
 export interface PathContour {start:{x:number;y:number};curves:PathCurve[];closed:boolean;}
 /** Plain cubic contours for writers that have no SVG path parser. Arcs and shorthands arrive already converted. */
 export function cubicContours(d:string):PathContour[]{if(!d)return [];scope.activate();const item=scope.PathItem.create(d);item.remove();const paths=(item as paper.CompoundPath).children?[...(item as paper.CompoundPath).children] as paper.Path[]:[item as paper.Path];const out=paths.filter(p=>p.segments.length).map(p=>({start:{x:p.firstSegment.point.x,y:p.firstSegment.point.y},closed:p.closed,curves:p.curves.map(c=>({c1:{x:c.point1.x+c.handle1.x,y:c.point1.y+c.handle1.y},c2:{x:c.point2.x+c.handle2.x,y:c.point2.y+c.handle2.y},to:{x:c.point2.x,y:c.point2.y}}))}));return out;}
+/** Network loops and chains round through the same contour path as every other vector. */
+export function liveContoursPath(n:DesignNode,contours:VectorContour[]){return (liveCornerContours({...n,vectorNetwork:undefined,booleanOp:undefined,contours,points:[]})??contours).map(c=>contourPath(c.points,c.closed)).join(' ');}
 export function localPath(n:DesignNode):string {
+ if(n.type==='path'&&n.vectorNetwork&&hasNetworkRadii(n.vectorNetwork))return liveContoursPath(n,networkChainContours(n.vectorNetwork));
  if(n.type==='path'&&n.vectorNetwork)return n.vectorNetwork.version===3||n.strokes?.some(s=>s.cap!=='round'||s.join!=='round'||s.dash.length)?networkChainPath(n.vectorNetwork):networkPath(n.vectorNetwork);
+ if(n.type==='path'){const live=liveCornerContours(n);if(live)return live.map(c=>contourPath(c.points,c.closed)).join(' ');}
  if(n.type==='path')return n.contours!==undefined?n.contours.map(c=>contourPath(c.points,c.closed)).join(' '):n.points.length?contourPath(n.points,n.closed):n.path;
  if(n.type==='ellipse')return ellipsePath(n);
  if(n.type==='polygon'||n.type==='star')return n.radius>0?roundedPolygonPath(shapePoints(n),n.radius,n.cornerSmoothing):contourPath(shapePoints(n),true);
@@ -86,7 +91,8 @@ export function flattenGeometry(nodes:DesignNode[],selected:string[]){const ids=
 export function normalizedRootSelection(nodes:DesignNode[],ids:string[]){return nodes.filter(n=>ids.includes(n.id)&&!ids.some(id=>id!==n.id&&descendants(nodes,[id]).includes(n.id)));}
 export function selectionBounds(nodes:DesignNode[]){return bounds(nodes);}
 
-export function insertVectorPoint(n:DesignNode,world:{x:number;y:number}){refuseVariableWidthConversion(n);const p=geometry(n);const location=p.getNearestLocation(new scope.Point(world.x,world.y));if(!location)throw Error('No vector segment found.');location.path.divideAt(location);const props=pathProperties(p);p.remove();const converted={...n,...props};return {...props,contours:pathContours(converted)};}
+/** Adding a point works on the anchors the user sees, so a live corner keeps its radius and stays live. */
+export function insertVectorPoint(n:DesignNode,world:{x:number;y:number}){refuseVariableWidthConversion(n);const live=hasLiveCorners(n)?n.contours:undefined,p=geometry(live?{...n,contours:live.map(c=>({...c,points:c.points.map(({radius:_,...point})=>point)}))}:n);const location=p.getNearestLocation(new scope.Point(world.x,world.y));if(!location)throw Error('No vector segment found.');const contour=p instanceof scope.CompoundPath?location.path.index:0,index=location.curve.index+1,before=location.path.segments.length;location.path.divideAt(location);const added=location.path.segments.length>before,props=pathProperties(p);p.remove();const converted={...n,...props},contours=pathContours(converted);if(live)for(const [ci,c] of live.entries())for(const [pi,point] of c.points.entries())if(point.radius){const shifted=added&&ci===contour&&pi>=index?pi+1:pi;if(contours[ci]?.points[shifted])contours[ci].points[shifted].radius=point.radius;}return {...props,...(live?{cornerSmoothing:n.cornerSmoothing}:{}),contours};}
 
 const scaledPaths=new Map<string,string>();
 export function scaledLocalPath(n:DesignNode,data=localPath(n)){if(!['path','line','arrow'].includes(n.type)||(!n.pathWidth&&!n.pathHeight))return data;const sx=n.width/(n.pathWidth||n.width||1),sy=n.height/(n.pathHeight||n.height||1);if(sx===1&&sy===1)return data;const key=data+'@'+sx+':'+sy;if(scaledPaths.has(key))return scaledPaths.get(key)!;scope.activate();const p=scope.PathItem.create(data||'M0 0');p.remove();p.scale(sx,sy,new scope.Point(0,0));const result=p.pathData;p.remove();if(scaledPaths.size>500)scaledPaths.clear();scaledPaths.set(key,result);return result;}

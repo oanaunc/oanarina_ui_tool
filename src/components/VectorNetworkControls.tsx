@@ -11,7 +11,7 @@ import {useVectorEraser} from '../vector-eraser';
 import type {EraserShape} from '../vector-eraser-geometry';
 import {startVectorKnife} from '../illustration-tools';
 import {contoursToNetwork,networkNodePatch,validateDocumentNetworks} from '../vector-network';
-import {deleteNetworkEdges,deleteNetworkVertices,moveNetworkVertices,setNetworkHandle} from '../vector-network-geometry';
+import {deleteNetworkEdges,deleteNetworkVertices,moveNetworkVertices,networkCorner,setNetworkHandle,setNetworkVertexRadii} from '../vector-network-geometry';
 import NumberField from './NumberField';
 import {notifyError} from '../files';
 export default function VectorNetworkControls({n}:{n:DesignNode}){
@@ -34,6 +34,7 @@ export default function VectorNetworkControls({n}:{n:DesignNode}){
  {active.action==='eraser'&&<><NumberField label="Network eraser size" value={eraser.diameter} min={1} max={500} onChange={value=>action(()=>eraser.configure(value,eraser.shape))}/><label>Network eraser shape<select aria-label="Network eraser shape" value={eraser.shape} onChange={e=>action(()=>eraser.configure(eraser.diameter,e.target.value as EraserShape))}><option value="round">Round</option><option value="square">Square</option></select></label></>}
  {active.action&&<p className="inspector-note">{active.action==='cut'?'Click an edge to cut it, or a junction to let its edges go. A cut through the outline of a face opens that face and its fill goes with it.':'Drag across the network. Strokes stop at the brush and filled faces lose the area it covered. Erasing everything removes the layer. Escape puts the tool down.'}</p>}
  {vertex&&<button className="outline-button" onClick={()=>edit(()=>deleteNetworkVertices(g,[vertex.id]))}>Delete selected network vertex</button>}
+ {vertex&&networkCorner(g,vertex.id)&&<NumberField key={JSON.stringify([n.id,vertex.id,'radius'])} label="Network vertex radius" value={vertex.radius??0} min={0} max={1000000} onChange={value=>edit(()=>setNetworkVertexRadii(g,[vertex.id],value))}/>}
  {vertex&&(['x','y'] as const).map(axis=><NumberField key={JSON.stringify([n.id,vertex.id,axis,vertex[axis]])} label={'Network vertex '+axis.toUpperCase()} value={vertex[axis]} min={-995000} max={995000} onChange={value=>edit(()=>moveNetworkVertices(g,[vertex.id],{x:axis==='x'?value-vertex.x:0,y:axis==='y'?value-vertex.y:0}))}/>)}
  {edge&&<><button className="outline-button" disabled={g.edges.length===1} onClick={()=>edit(()=>deleteNetworkEdges(g,[edge.id]))}>Delete selected network edge</button>{(['fromHandle','toHandle'] as const).map(side=><fieldset key={side} style={{border:0,padding:0,minInlineSize:0}}><legend>{side==='fromHandle'?'Start':'End'} edge handle offsets</legend>{(['x','y'] as const).map(axis=><NumberField key={JSON.stringify([n.id,edge.id,side,axis,edge[side]?.[axis]])} label={'Network '+(side==='fromHandle'?'start':'end')+' handle '+axis.toUpperCase()} value={edge[side]?.[axis]??0} min={-995000} max={995000} onChange={value=>edit(()=>setNetworkHandle(g,edge.id,side,{x:edge[side]?.x??0,y:edge[side]?.y??0,[axis]:value}))}/>)}</fieldset>)}</>}
  </>}
