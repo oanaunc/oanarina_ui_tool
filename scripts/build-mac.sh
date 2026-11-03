@@ -22,7 +22,7 @@ cp LICENSE "$APP/Contents/Resources/LICENSE.txt"
 cp public/icon.icns "$APP/Contents/Resources/icon.icns"
 rm -rf "$APP/Contents/Resources/editor"
 ditto dist "$APP/Contents/Resources/editor"
-SDK="$(xcrun --show-sdk-path)"
+SDK="$(xcrun --sdk macosx --show-sdk-path)"
 for arch in arm64 x86_64; do
  xcrun swiftc macos/main.swift macos/NativeSmoke.swift macos/ProjectFileSafety.swift macos/NodePasteboard.swift macos/ClipboardNativeSmoke.swift macos/LiveContext.swift macos/NativeIntegration.swift macos/IntegrationNativeSmoke.swift macos/NativeDrop.swift macos/NativeServices.swift macos/ServicesNativeSmoke.swift macos/extensions/OuiProject.swift macos/extensions/OuiRenderer.swift macos/AcceptanceNativeSmoke.swift -O -sdk "$SDK" -target "$arch-apple-macos13.0" -framework AppKit -framework WebKit -framework PDFKit -o "build/OanarinaUITool-$arch"
 done
